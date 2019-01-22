@@ -1,6 +1,6 @@
 <template>
   <div class="compent">
-    <div v-if="componShow">
+   
       <div class="compent-head">
         <div class="compent-head-type">
           <span>组件类型:</span>
@@ -8,7 +8,7 @@
         </div>
         <div class="compent-head-class">
           <span>组件分类:</span>
-          <el-input></el-input>
+          <el-input placeholder="请输入组件分类名称"></el-input>
           <el-button type="primary" size="small">查询</el-button>
           <el-button type="primary" size="small">批量删除</el-button>
           <el-button type="primary" size="small" @click="addComponClass">新增组件分类</el-button>
@@ -17,13 +17,13 @@
       </div>
       <div class="compent-box">
         <el-table :data="tableData3" height="250" border style="width: 100%" tooltip-effect="dark" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55">
+          <el-table-column type="selection" width="55" align="center">
           </el-table-column>
-          <el-table-column prop="name" label="组件分类" width="180" align="center">
+          <el-table-column prop="name" label="组件分类"  align="center">
           </el-table-column>
           <el-table-column prop="address" label="组件类型" align="center">
           </el-table-column>
-          <el-table-column prop="date" label="组件个数" width="180" align="center">
+          <el-table-column prop="date" label="组件个数"  align="center">
           </el-table-column>
           <el-table-column prop="date" label="操作" width="180" align="center">
             <template slot-scope="scope">
@@ -34,8 +34,7 @@
           </el-table-column>
         </el-table>
       </div>
-    </div>
-    <componentEditor v-else @back="back"></componentEditor>
+   
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">
         <el-form :inline="true" :model="formCompon" class="demo-form-inline" ref="formCompon">
@@ -75,7 +74,6 @@
 </template>
 
 <script>
-  import componentEditor from './componentEditor'
   export default {
     name: 'manageComponent',
     data() {
@@ -85,7 +83,6 @@
         },
         btnShow: '',
         componTitle: '',
-        componShow: true,
         classBtn: 1,
         dialogVisible: false,
         dialogStu: '',
@@ -145,19 +142,19 @@
         }],
       }
     },
-    watch:{
-    	  dialogVisible:function(val){
-    	  	 if(!val){
-    	  	 	this.resetForm()
-    	  	 }
-    	  }
+    watch: {
+      dialogVisible: function(val) {
+        if(!val) {
+          this.resetForm()
+        }
+      }
     },
     components: {
-      componentEditor
+      
     },
     methods: {
-    	//重置验证
-    	  resetForm() {
+      //重置验证
+      resetForm() {
         this.$refs['formCompon'].resetFields();
         this.$refs['formAdd'].resetFields();
       },
@@ -166,13 +163,13 @@
         this.btnShow = i
       },
       //清除
-      clear(){
-      	this.formCompon.name = ''
-      	this.formAdd.selectText = ''
+      clear() {
+        this.formCompon.name = ''
+        this.formAdd.selectText = ''
       },
       //编辑
       editCompon() {
-      	this.clear()
+        this.clear()
         this.dialogVisible = true
         this.editShow = true
         this.addShow = false
@@ -190,25 +187,19 @@
       },
       //管理
       manageCompon() {
-        this.componShow = false
         this.$router.push({
-          path: '/manageComponent',
-          query: {
-            text: 'componEdit'
-          }
+          path: '/componentEditor',
+          query:{text:'导航'}
         })
       },
-      //后退
-      back() {
-        this.componShow = true
-      },
+      
       //check 选择
       handleSelectionChange(res) {
         console.log(res)
       },
       //新增组件分类
       addComponClass() {
-      	this.clear()
+        this.clear()
         this.dialogVisible = true
         this.editShow = true
         this.addShow = false
@@ -218,7 +209,7 @@
       },
       //新增组件
       addComponent() {
-      	this.clear()
+        this.clear()
         this.dialogVisible = true
         this.editShow = false
         this.addShow = true
@@ -248,7 +239,7 @@
 </script>
 
 <style lang="less">
-  .compent-head {
+    .compent-head {
     margin-top: 10px;
     .compent-head-class {
       align-items: center;
@@ -275,6 +266,7 @@
       }
     }
   }
+  
   .addCom {
     display: flex;
     height: 60px;
@@ -305,7 +297,6 @@
     }
   }
   
-  
   .el-componClassBtn {
     display: flex;
     justify-content: center;
@@ -322,6 +313,7 @@
       color: white;
     }
   }
+  
   .warFater {
     position: relative;
     width: 110px !important;
@@ -334,4 +326,5 @@
       left: 25px;
     }
   }
+
 </style>

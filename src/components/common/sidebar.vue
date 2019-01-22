@@ -1,84 +1,72 @@
 <template>
   <div class="sidebar">
-    <div class="sidebar-head"></div>
+    <div class="sidebar-head"><div class="sidebar-logo" :class="{'logoOff':switchLeft}"></div></div>
     <el-menu   class="el-menu-vertical-demo" 
     	:collapse="switchLeft" 
     	:default-active="showItem"
     	@select="jump"
+    	:unique-opened="one"
     	background-color="#001529" 
     	text-color="#a5acb3" 
-    	active-text-color="white">
-      <el-submenu index="1">
+    	active-text-color="#ecf1f5">
+      <el-submenu :index="item.index" v-for="(item,i) in sideText" :key="i" v-if="item.list.length>0" >
         <template slot="title">
-          <i class="el-icon-tickets"></i>
-          <span slot="title">用户管理</span>
+          <i :class="item.ico"></i>
+          <span slot="title">{{item.title}}</span>
         </template>
-        <el-menu-item-group>
-          <el-menu-item index="1-1">个人资料</el-menu-item>
+        <el-menu-item-group v-for="(x,i) in item.list" :key="i">
+          <el-menu-item :index="x.index">{{x.name}}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="2">
-        <template slot="title">
-          <i class="el-icon-edit-outline"></i>
-          <span slot="title">模板管理</span>
-        </template>
-         <el-menu-item-group>
-          <el-menu-item index="2-1">组件管理</el-menu-item>
-          <el-menu-item index="2-2">全部模板</el-menu-item>
-          <el-menu-item index="2-3">套件管理</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-       <el-menu-item index="3">
-	    <i class="el-icon-setting"></i>
-	    <span slot="title">站点管理</span>
+       <el-menu-item :index="item.index" v-for="(item,i) in sideText" v-if="item.list.length==0" :key="i">
+	    <i :class="item.ico"></i>
+	    <span slot="title">{{item.title}}</span>
 	  </el-menu-item>
     </el-menu>
   </div>
 </template>
 
 <script>
+  import {navHead,sideText} from '../config/sideConfig'
   export default {
     name: 'sidebar',
     data() {
       return {
-         showItem:'1-1'
+         showItem:'1-1',
+         one:true,
+         sideText:sideText
       }
     },
     watch:{
     	   $route(to,from){
-	  	var msg = this.$route.query.text
-	  	switch(to.name)
-			{
-			case 'userData':
-			  this.showItem = '1-1'
-			  break;
-			case 'manageComponent':
-			  this.showItem = '2-1'
-			  break;
-			case 'siteManage':
-			  this.showItem = '3'
-			  break;
-			}
+	  	 for(var i =0;i<navHead.length;i++){
+	  	 	if(to.name==navHead[i].path){
+	  	 		this.showItem = navHead[i].index
+	  	 	}
+	  	 }
 	  },
     },
-    created(){
-    	  this.$router.push({path:'/userData'})
+    beforeDestroy(){
+//  	   alert('退出登录')
     },
     props:['switchLeft'],
     methods: {
+    	//点击
       jump(key,index){
-      	switch(key){
-      		case '1-1':
-      		this.$router.push({path:'/userData'})
-      		break;
-      		case '2-1':
-      		this.$router.push({path:'/manageComponent'})
-      		break;
-      		case '3':
-      		this.$router.push({path:'/siteManage'})
-      		break;
-      	}
-      	
+         this.page(sideText,key)
+      },
+      //搜索路由
+      page(val,key){
+      	 for(let i=0;i<val.length;i++){
+        	    if(key==val[i].index){
+        	    	  this.$router.push({path:val[i].path})
+        	    	  return
+        	    }else{
+        	    	  if(val[i].list){
+        	    	  	 this.page(val[i].list,key)
+        	    	  }
+        	    }
+        }
       }
     }
   }
@@ -92,16 +80,8 @@
  	.sidebar-head{
  		width: 100%;
  		height: 60px;
- 		background: #00284d;
- 		justify-content: center;
- 		align-items: center;
- 		display:flex;
- 		p{
- 			font-size: 20px;
- 			color: white;
- 		}
  	}
- }
+
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 230px;
     height: auto;
@@ -109,5 +89,41 @@
   }
   .el-menu{
   	border-right: 0;
+  	.el-submenu__title{
+  	   &:hover{
+       color:#ecf1f5 !important;
+      }
+       &:hover>i{
+         color: #ecf1f5;
+       }
+   }
+   .el-menu-item-group__title {
+   	display: none;
+   }
+  .el-menu-item{
+   	 &:hover{
+       color:#ecf1f5 !important;
+      }
+      &:hover>i{
+   		color:#ecf1f5 !important;
+   	 }
+   } 
+ }
+  .sidebar-logo{
+  	background: url(../../assets/logo.jpeg) no-repeat;
+  	background-size: cover;
+ 	background-position-y: -35px;
+    width: 100%;
+    height: 100%;
+    display: block;
+    animation: aa 1s ease-out;
   }
+  @keyframes aa{
+  	from{opacity: 0;}
+  	to{opacity: 1;}
+  }
+  .logoOff{
+  	display: none;
+  }
+   }
 </style>

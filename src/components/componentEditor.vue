@@ -7,7 +7,7 @@
     <div class="compon-edit-box">
       <p>组件个数 ：7</p>
       <div class="compon-edit-add">
-        <div class="compon-edit-add-btn" @click="dialogAdd = true,dialogShow = true">
+        <div class="compon-edit-add-btn" @click="addCompon">
           <i class="el-icon-circle-plus-outline"></i><span>新增组件</span>
         </div>
       </div>
@@ -19,7 +19,7 @@
       </div>
     </div>
     <el-dialog :visible.sync="dialogAdd" width="500px">
-      <div class="el-dialog-componAdd" v-if="dialogShow">
+      <div class="el-dialog-componAdd">
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="选择组件分类：">
             <el-select v-model="value" placeholder="请选择">
@@ -29,15 +29,11 @@
           </el-form-item>
           <div class="el-dialog-componAdd-update">
             <span class="el-componAdd-update-title">上传文件：</span>
-            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" 
-            	list-type="text">
+            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" list-type="text">
               <el-button size="small" type="primary">选择文件</el-button>
             </el-upload>
           </div>
         </el-form>
-      </div>
-      <div class="el-dialog-componDel" v-else>
-      	<span>确定要删除组件吗？</span>
       </div>
       <div class="el-dialog-componAdd-btn">
         <el-button @click="dialogAdd = false">取 消</el-button>
@@ -56,7 +52,6 @@
         delShow: null,
         dialogAdd: false,
         value: '',
-        dialogShow:true,
         options: [{
           value: '选项1',
           label: '黄金糕'
@@ -76,14 +71,30 @@
       }
     },
     methods: {
-    	  //删除组件
+      //删除组件
       delComponent() {
-      	this.dialogAdd = true
-      	this.dialogShow = false
+        this.$confirm('是否删除该组件?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      //新增组件
+      addCompon() {
+        this.dialogAdd = true
       },
       //返回
       backCompon() {
-        this.$emit('back', true)
         this.$router.push({
           path: '/manageComponent'
         })
@@ -159,15 +170,15 @@
     .el-dialog-componAdd-update {
       height: 60px;
       display: flex;
-      .upload-demo{
-  		display: flex;
-  		ul{
-  			margin-left: 10px;
-  			li{
-  				margin: 0;
-  			}
-  		}
-  	}
+      .upload-demo {
+        display: flex;
+        ul {
+          margin-left: 10px;
+          li {
+            margin: 0;
+          }
+        }
+      }
     }
     .el-componAdd-update-title {
       display: inline-block;
@@ -175,9 +186,9 @@
       text-align: end;
       margin-right: 10px;
     }
-    .el-dialog-componDel{
-    	  height: 60px;
-    	  font-size: 18px;
+    .el-dialog-componDel {
+      height: 60px;
+      font-size: 18px;
     }
   }
 </style>

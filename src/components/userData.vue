@@ -1,6 +1,5 @@
 <template>
   <div class="userData">
-    <div v-if="infoShow">
       <div class="user-head">
         <div class="user-head-left">
           <el-form :inline="true">
@@ -22,7 +21,10 @@
           <div class="user-head-stu">
             <el-form :inline="true">
               <el-form-item label="状态:">
-                <el-input v-model="fromUser.state"></el-input>
+                <el-select v-model="value" placeholder="请选择">
+                  <el-option v-for="item in tableData3" :key="item.data" :label="item.data" :value="item.name">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-form>
           </div>
@@ -47,7 +49,7 @@
           <el-table-column prop="address" label="操作" align="center" width="180">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="lookUser">查看</el-button>
-              <el-button type="text" size="small" @click="dialogshow = true">禁用</el-button>
+              <el-button type="text" size="small" @click="disableUser">禁用</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -64,29 +66,19 @@
       :total="100">
     </el-pagination>-->
       </div>
-    </div>
-    <usrInfo v-else @back="back"></usrInfo>
-    <el-dialog :visible.sync="dialogshow" width="300px">
-      <span>确定要禁用该用户吗？</span>
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogshow = false" size="small">取 消</el-button>
-    <el-button type="primary" @click="dialogshow = false" size="small">确 定</el-button>
-    </span>
-    </el-dialog>
+   
   </div>
 
 </template>
 
 <script>
-  import usrInfo from './userInfo'
   export default {
     name: 'userData',
     data() {
       return {
         timeData: '',
-        dialogshow:false,
         stu: 1,
-        infoShow: true,
+        value:'',
         fromUser: {
           account: '',
           name: '',
@@ -126,24 +118,33 @@
     methods: {
       //用户信息
       lookUser() {
-        this.infoShow = false
         this.$router.push({
-          path: '/userData',
-          query: {
-            text: 'userInfo'
-          }
+          name: 'userInfo',
+          params:{
+          id:'123'
+        }
         })
       },
-      //返回
-      back(res) {
-        this.infoShow = true
+      disableUser(){
+      	this.$confirm('是否禁用该用户?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       }
     },
-    watch: {
-
-    },
+    
     components: {
-      usrInfo
     }
   }
 </script>

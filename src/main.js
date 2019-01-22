@@ -5,10 +5,11 @@ import App from './App'
 import router from './router'
 import 'element-ui/lib/theme-chalk/index.css';
 import ElementUI from 'element-ui'
-
+import http from './components/config/http.js'
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false
+Vue.prototype.$http = http
 
 /* eslint-disable no-new */
 new Vue({

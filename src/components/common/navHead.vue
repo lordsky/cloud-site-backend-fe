@@ -8,6 +8,7 @@
 </template>
 
 <script>
+	import {setNav} from '../config/sideConfig'
   export default {
     name: 'navHead',
     data() {
@@ -20,23 +21,7 @@
 	  $route(to,from){
 	  	this.list = []
 	  	var msg = this.$route.query.text
-	  	switch(to.name)
-			{
-			case 'userData':
-			  this.list.push('用户管理','个人资料')
-			  break;
-			case 'manageComponent':
-			  this.list.push('模板管理','组件管理')
-			  break;
-			case 'siteManage':
-			  this.list.push('站点管理')
-			  break;
-			}
-		if(msg=='userInfo'){
-			this.list.push('查看用户详细信息')
-		}else if(msg == 'componEdit'){
-			this.list.push('导航')
-		}
+	  	this.list = setNav(to,msg)
 	  },
 	},
 	created(){

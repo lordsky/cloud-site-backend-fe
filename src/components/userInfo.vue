@@ -7,13 +7,13 @@
     <div class="userInfo-box">
       <p class="userInfo-title">基本信息</p>
       <div class="resetassword">
-        <el-button type="text" @click="diaShow=true">重置密码(默认为123456)</el-button>
+        <el-button type="text" @click="resetPass">重置密码(默认为123456)</el-button>
       </div>
       <div class="userInfo-table">
         <table border="1" cellspacing="0" cellpadding="0">
           <tr>
             <td class="gray">头像</td>
-            <td></td>
+            <td><span class="grayIco"></span></td>
             <td class="gray">手机号</td>
             <td>188888</td>
           </tr>
@@ -45,14 +45,12 @@
             <div class="site-item-btn">
               <div class="site-item-btns">
                 <div>
-                  <span></span>
-                  <span>查看</span>
+                  <el-button type="" round>查看</el-button>
                 </div>
               </div>
               <div class="site-item-btns">
                 <div>
-                  <span></span>
-                  <span>禁用</span>
+                  <el-button type="danger" round @click="disable">禁用</el-button>
                 </div>
               </div>
             </div>
@@ -61,7 +59,7 @@
       </div>
     </div>
     <el-dialog title="提示" :visible.sync="diaShow" width="30%">
-      <span>您确定要重置密码吗？</span>
+      <span>{{dialogText}}</span>
       <span slot="footer" class="dialog-footer">
     <el-button @click="diaShow = false" size="small">取 消</el-button>
     <el-button type="primary" @click="diaShow = false" size="small">确 定</el-button>
@@ -77,14 +75,27 @@
     data() {
       return {
          diaShow:false,
+         dialogText:''
       }
     },
     methods: {
     	//返回上一页
       goBack() {
-      	this.$emit('back',true)
         this.$router.push({path:'/userData'})
       },
+      //禁用
+      disable(){
+      	this.diaShow = true
+      	this.dialogText = '是否确定禁用该站点？'
+      },
+      //重置密码
+      resetPass(){
+      	this.diaShow = true
+      	this.dialogText = '确定要重置密码吗？'
+      }
+    },
+    created(){
+    	   var id = this.$route.params.id
     }
   }
 </script>
@@ -124,6 +135,14 @@
       }
       .gray {
         background: #cccccc;
+      }
+      .grayIco{
+      	display: block;
+      	width: 50px;
+      	height: 50px;
+      	border-radius: 50%;
+      	border: 1px solid black;
+      	margin: 0 auto;
       }
     }
     .site-info {
