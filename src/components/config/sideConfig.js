@@ -25,6 +25,46 @@ const navHead = [{
     text: ['模板管理', '组件管理']
   },
   {
+    path: 'allTemplate',
+    index: '2-2',
+    text: ['模板管理', '全部模版']
+  },
+  {
+    path: 'templateEditor',
+    index: '2-2',
+    text: ['模板管理', '全部模版']
+  },
+  {
+    path: 'addTemplate',
+    index: '2-2',
+    text: ['模板管理', '全部模版']
+  },
+  {
+    path: 'designTemplate',
+    index: '2-2',
+    text: ['模板管理', '全部模版']
+  },
+  {
+    path: 'suiteManagement',
+    index: '2-3',
+    text: ['模板管理', '套件管理']
+  },
+  {
+    path: 'suiteClassification',
+    index: '2-3',
+    text: ['模板管理', '套件管理']
+  },
+  {
+    path: 'suiteAdd',
+    index: '2-3',
+    text: ['模板管理', '套件管理']
+  },
+  {
+    path: 'suiteEditor',
+    index: '2-3',
+    text: ['模板管理', '套件管理']
+  },
+  {
     path: 'siteManage',
     index: '3',
     text: ['站点管理']
@@ -59,12 +99,12 @@ const sideText = [{
       {
         name: '全部模板',
         index: '2-2',
-        path: ''
+        path: '/allTemplate'
       },
       {
         name: '套件管理',
         index: '2-3',
-        path: ''
+        path: '/suiteManagement'
       }
     ]
   },
@@ -78,8 +118,11 @@ const sideText = [{
 ]
 
 function setNav(router, val) {
-  for(var i = 0; i < navHead.length; i++) {
+  for(let i = 0; i < navHead.length; i++) {
     if(router.name == navHead[i].path) {
+      if(val && navHead[i].text.length > 2){
+        navHead[i].text.splice(2,1)
+      }
       if(val && navHead[i].text.length <= 2) {
         navHead[i].text.push(val)
       }

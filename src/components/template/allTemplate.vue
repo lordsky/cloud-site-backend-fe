@@ -1,10 +1,10 @@
 <template>
-  <div class="suite">
-   <el-col :span="24" class="toolbar">
+  <div class="compent">
+   <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
         <div>
-				<el-form-item label="套件分类:">
-					<el-input v-model="filters.name" placeholder="请输入套件分类名称" clearable></el-input>
+				<el-form-item label="模版分类:">
+					<el-input v-model="filters.name" placeholder="请输入模版分类名称" clearable></el-input>
 				</el-form-item>
         <el-form-item label="添加时间:">
             <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
@@ -14,26 +14,30 @@
 				<el-form-item>
 					<el-button type="primary" size="small" v-on:click="getUsers">查询</el-button>
           <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>
-          <el-button type="primary" size="small" @click="addSuite">新增套件</el-button>
-          <el-button type="primary" size="small" @click="addComponClass">新增套件分类</el-button>
+          <el-button type="primary" size="small" @click="addTemplate">新增模版</el-button>
+          <el-button type="primary" size="small" @click="addComponClass">新增模版分类</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
-      <div class="suite-box">
+      <div class="compent-box">
         <el-table :data="tableData3" height="250" border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
-          <el-table-column prop="name" label="套件分类"  align="center">
+          <el-table-column prop="name" label="模版分类"  align="center">
           </el-table-column>
           <el-table-column prop="addTime" label="添加时间" align="center">
           </el-table-column>
-          <el-table-column prop="num" label="套件个数"  align="center">
+          <el-table-column prop="num" label="模版个数"  align="center">
+          </el-table-column>
+          <el-table-column prop="state" label="状态"  align="center">
           </el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
-              <el-button type="text" @click="manageSuite(scope.$index, scope.row)">管理</el-button>
+              <el-button type="text" @click="manageCompon(scope.$index, scope.row)">管理</el-button>
               <el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>
+              <el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>
+              <el-button type="text" v-if="scope.row.state == '上线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
               <el-button type="text" v-if="scope.row.num == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -46,14 +50,14 @@
 		  </div>
    
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
-      <div class="el-suiteClass" v-show="editShow">
+      <div class="el-componClass" v-show="editShow">
         <el-form :inline="true" :model="formCompon" class="demo-form-inline" ref="formCompon">
-          <el-form-item label="套件分类名称:" prop="name" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
+          <el-form-item label="模版分类名称:" prop="name" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
             <el-input v-model="formCompon.name" :placeholder="dialogText"></el-input>
           </el-form-item>
         </el-form>
       </div>
-      <div class="el-suiteClassBtn">
+      <div class="el-componClassBtn">
         <el-button @click="dialogVisible = false" size="medium">取 消</el-button>
         <el-button type="primary" @click="saveCompon" size="medium">确 定</el-button>
       </div>
@@ -63,7 +67,7 @@
 
 <script>
   export default {
-    name: 'suiteManagement',
+    name: 'allTemplate',
     data() {
       return {
         filters: {
@@ -75,9 +79,6 @@
 				listLoading: false,
 				sels: [],//列表选中列
         timeData: [new Date(), new Date().setFullYear(new Date().getFullYear()+1)],
-        formAdd: {
-          selectText: ''
-        },
         btnShow: '',
         componTitle: '',
         classBtn: 1,
@@ -93,43 +94,43 @@
         tableData3: [{
           id:1,
           addTime: '2016-05-03',
-          name: '企业官网',
+          name: '关于我们',
           num: '0',
           state:'下线'
         }, {
           id:2,
           addTime: '2016-05-02',
-          name: '在线商城',
+          name: '联系我们',
           num: '5',
-          state:'下线'
+          state:'上线'
         }, {
           id:3,
           addTime: '2016-05-04',
-          name: '外贸站',
+          name: '专题活动',
           num: '3',
-          state:'下线'
+          state:'上线'
         }, {
           id:4,
           addTime: '2016-05-01',
-          name: '工作室',
+          name: '新闻咨询',
           num: '6',
           state:'下线'
         }, {
           id:5,
           addTime: '2016-05-08',
-          name: '协会组织',
+          name: '产品展示',
           num: '6',
           state:'下线'
         }, {
           id:6,
           addTime: '2016-05-06',
-          name: '个人网站',
+          name: '摄影作品',
           num: '2',
           state:'下线'
         }, {
           id:7,
           addTime: '2016-05-07',
-          name: '学校官网',
+          name: '招聘信息',
           num: '3',
           state:'下线'
         }]
@@ -157,13 +158,12 @@
       //清除
       clear() {
         this.formCompon.name = ''
-        this.formAdd.selectText = ''
       },
       //新增组件
-      addSuite() {
+      addTemplate() {
         this.$router.push({
-          path:'/suiteAdd',
-          query:{text:'新增套件'}
+          path:'/addTemplate',
+          query:{text:'新增模版'}
         })
       },
       //  新模版件分类
@@ -191,6 +191,38 @@
         this.componTitle = '删除组件分类后将不可恢复，确定删除吗？'
         this.dialogStu = 'del'
         this.editShow = false
+      },
+      //上线
+      popCompon(index, row) {
+        this.$confirm('上线后该分类将出现在模版选择器,确认上线该模块吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          //NProgress.start();
+          let id = row.id;
+          setTimeout(() => {
+            this.listLoading = false;
+            this.tableData3[index].state = '上线'
+          }, 500);
+        }).catch(() => {
+
+        });
+      },
+      //下线
+      offlineCompon(index, row) {
+        this.$confirm('下线后该分类将消失在模版选择器,确认下线该模块吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          //NProgress.start();
+          let id = row.id;
+          setTimeout(() => {
+            this.listLoading = false;
+            this.tableData3[index].state = '下线'
+          }, 500);
+        }).catch(() => {
+
+        });
       },
       //删除
 			handleDel: function (index, row) {
@@ -246,9 +278,9 @@
 				});
 			},
       //管理
-      manageSuite(index, row) {
+      manageCompon(index, row) {
         this.$router.push({
-          path: '/suiteClassification',
+          path: '/templateEditor',
           query:{text:row.name}
         })
       },
@@ -290,35 +322,56 @@
   }
 </script>
 
-<style lang="scss">
-    .suite{
-      .toolbar{
-        padding-bottom: 0;
-      }
-      .suite-head {
-        margin-top: 10px;
-      }
-
-      .el-suiteClassBtn {
-        display: flex;
-        justify-content: center;
-      }
-      .pagination{
-        display: flex;
-        justify-content: center;
-        margin-bottom: 10px;
-      }
-
-      .suite-box {
-        margin-top: 10px;
-        margin-bottom: 10px;
-        .el-table {
-          height: auto !important;
-        }
-        th {
-          background: #add4ff;
-          color: white;
-        }
+<style lang="scss" scoped>
+    .compent-head {
+    margin-top: 10px;
+    .compent-head-class {
+      align-items: center;
+      display: flex;
+      .el-input {
+        width: 300px;
+        margin: 0 10px 0 10px;
       }
     }
+    .compent-head-type {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      .compent-head-btn {
+        padding: 5px 12px 5px 12px;
+        font-size: 14px;
+        margin-left: 10px;
+        cursor: pointer;
+      }
+      .active {
+        border-radius: 4px;
+        color: white;
+        background: #409eff;
+      }
+    }
+  }
+  
+  .el-componClassBtn {
+    display: flex;
+    justify-content: center;
+  }
+  .pagination{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .compent-box {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    .el-table {
+      height: auto !important;
+    }
+    th {
+      background: #add4ff;
+      color: white;
+    }
+  }
+  
+
 </style>
