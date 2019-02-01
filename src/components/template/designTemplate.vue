@@ -7,7 +7,7 @@
     <div class="topside">
       <label>顶部区</label>
       <div class="topside-right" :class="{'side-right-border':topDate.length == 0}">
-        <div class="topside-right-list"  @mousemove="showTop = true" @mouseleave="showTop=false">
+        <div class="topside-right-list" :class="{'height_auto':footerDate.length != 0}"  @mousemove="showTop = true" @mouseleave="showTop=false">
           <el-button type="primary" v-if="topDate.length == 0">+添加组件</el-button>
           <img v-if="topDate.length != 0" src="@/assets/img/topside.png">
           <div v-if="topDate.length != 0" :class="{'delItem':showTop}">
@@ -22,7 +22,7 @@
     <div class="footerside">
       <label>页脚区</label>
       <div class="footerside-right" :class="{'side-right-border':footerDate.length == 0}">
-        <div class="footerside-right-list"  @mousemove="showFooter = true" @mouseleave="showFooter=false">
+        <div class="footerside-right-list" :class="{'height_auto':footerDate.length != 0}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">
           <el-button type="primary" v-if="footerDate.length == 0" @click="addComponent">+添加组件</el-button>
           <img v-if="footerDate.length != 0" src="@/assets/img/topside.png">
           <div v-if="footerDate.length != 0" :class="{'delItem':showFooter}">
@@ -88,8 +88,8 @@
         name: "designTemplate",
       data() {
           return {
-            html1:'<div class="headTop"><div class="head-left"></div> <div class="head-right"><span class="head-user-ico"></span> <div class="el-dropdown"><span class="el-dropdown-link el-dropdown-selfdefine" aria-haspopup="list" aria-controls="dropdown-menu-1584" role="button" tabindex="0"><span class="head-right-user">用户名称</span> <i class="el-icon-arrow-down el-icon--right"></i></span> <ul class="el-dropdown-menu el-popper" id="dropdown-menu-1584" style="display: none;"><button type="button" class="el-button el-button--text" style="padding: 5px 30px;"><!----><!----><span>退出登录</span></button></ul></div></div> <div class="el-dialog__wrapper" style="display: none;"><div role="dialog" aria-modal="true" aria-label="退出" class="el-dialog" style="margin-top: 15vh;"><div class="el-dialog__header"><span class="el-dialog__title">退出</span><button type="button" aria-label="Close" class="el-dialog__headerbtn"><i class="el-dialog__close el-icon el-icon-close"></i></button></div><!----><div class="el-dialog__footer"><span class="dialog-footer"><button type="button" class="el-button el-button--default"><!----><!----><span>取 消</span></button> <button type="button" class="el-button el-button--primary"><!----><!----><span>确 定</span></button></span></div></div></div></div>',
-            html2:'<div class="headTop"><div class="head-left"></div> <div class="head-right"><span class="head-user-ico"></span> <div class="el-dropdown"><span class="el-dropdown-link el-dropdown-selfdefine" aria-haspopup="list" aria-controls="dropdown-menu-1584" role="button" tabindex="0"><span class="head-right-user">用户名称</span> <i class="el-icon-arrow-down el-icon--right"></i></span> <ul class="el-dropdown-menu el-popper" id="dropdown-menu-1584" style="display: none;"><button type="button" class="el-button el-button--text" style="padding: 5px 30px;"><!----><!----><span>退出登录</span></button></ul></div></div> <div class="el-dialog__wrapper" style="display: none;"><div role="dialog" aria-modal="true" aria-label="退出" class="el-dialog" style="margin-top: 15vh;"><div class="el-dialog__header"><span class="el-dialog__title">退出</span><button type="button" aria-label="Close" class="el-dialog__headerbtn"><i class="el-dialog__close el-icon el-icon-close"></i></button></div><!----><div class="el-dialog__footer"><span class="dialog-footer"><button type="button" class="el-button el-button--default"><!----><!----><span>取 消</span></button> <button type="button" class="el-button el-button--primary"><!----><!----><span>确 定</span></button></span></div></div></div></div>',
+            html1:'',
+            html2:'',
             row:{
               name:'导航'
             },
@@ -243,6 +243,9 @@
           justify-content: center;
           overflow: hidden;
         }
+        .height_auto{
+          height: auto;
+        }
         img{
           width: 100%;
           border: 1px solid #cccccc;
@@ -278,6 +281,9 @@
           align-items: center;
           justify-content: center;
           overflow: hidden;
+        }
+        .height_auto{
+          height: auto;
         }
         img{
           width: 100%;

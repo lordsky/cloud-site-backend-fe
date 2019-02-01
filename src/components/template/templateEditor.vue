@@ -120,7 +120,6 @@
       }
     }
     .template-edit-list {
-      border: 1px #ccc solid;
       margin: 10px 0 10px 0;
       ul {
         width: 95%;

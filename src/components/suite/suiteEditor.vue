@@ -114,6 +114,10 @@
       onSubmit() {
         this.$refs.suite.validate((valid) => {
           if (valid) {
+            this.$router.push({
+              path:'/websiteEditor',
+              query:{text:'网站编辑器'}
+            })
             // this.$confirm('确认提交吗？', '提示', {}).then(() => {
             //   this.addLoading = true;
             //   let para = Object.assign({}, this.suite);

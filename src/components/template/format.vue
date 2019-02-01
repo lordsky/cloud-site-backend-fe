@@ -4,7 +4,7 @@
     <table border="0" cellspacing="0" cellpadding="0" v-if="typographyId==0">
       <tr>
         <td :class="{'side-right-border':html2.length == 0}">
-          <div class="formatside-right-list" @mousemove="showFormat = true" @mouseleave="showFormat=false">
+          <div class="formatside-right-list" :class="{'height_auto':html2.length != 0}" @mousemove="showFormat = true" @mouseleave="showFormat=false">
             <el-button type="primary" v-if="html2.length == 0" @click="addComponent">+添加组件</el-button>
             <div v-if="html2.length != 0" v-html="html2" style="width: 100%">
               {{html2}}
@@ -16,14 +16,13 @@
             </div>
           </div>
         </td>
-        <td :class="{'side-right-border':formatDate.length == 0}">
-          <el-button type="primary" v-if="formatDate.length == 0" @click="addComponent">+添加组件</el-button>
-        </td>
       </tr>
       <tr>
         <td :class="{'side-right-border':formatDate.length == 0}">
           <el-button type="primary" v-if="formatDate.length == 0" @click="addComponent">+添加组件</el-button>
         </td>
+      </tr>
+      <tr>
         <td :class="{'side-right-border':formatDate.length == 0}">
           <el-button type="primary" v-if="formatDate.length == 0" @click="addComponent">+添加组件</el-button>
         </td>
@@ -124,6 +123,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+          }
+          .height_auto{
+            height: auto;
           }
           img{
             width: 100%;

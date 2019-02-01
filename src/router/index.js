@@ -13,7 +13,8 @@ import DesignTemplate from '@/components/template/designTemplate'//新增模版-
 import SuiteManagement from '@/components/suite/suiteManagement'//套件管理
 import SuiteAdd from '@/components/suite/suiteAdd'//套件管理-新增套件
 import SuiteEditor from '@/components/suite/suiteEditor'//套件管理-编辑套件
-import SuiteClassification from '@/components/suite/SuiteClassification'//套件管理
+import SuiteClassification from '@/components/suite/suiteClassification'//套件管理
+import WebsiteEditor from '@/components/suite/websiteEditor'//套件管理--网站编辑器
 import SiteManage from '@/components/siteManage'//站点管理
 
 import CmsUser from '@/components/cmsUser'
@@ -23,7 +24,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/login',
       name: 'login',
       component: Login
     },
@@ -91,6 +92,11 @@ export default new Router({
       path: '/suiteEditor',
       name: 'suiteEditor',
       component: SuiteEditor
+     },
+     {
+      path: '/websiteEditor',
+      name: 'websiteEditor',
+      component: WebsiteEditor
      },
 		 {
 		  path: '/siteManage',

@@ -2,7 +2,7 @@
   <div class="bannerside" v-if="typographyId == 0">
     <label>横幅区</label>
     <div class="bannerside-right" :class="{'side-right-border':html1.length == 0}">
-      <div class="bannerside-right-list" @mousemove="showBanner = true" @mouseleave="showBanner=false">
+      <div class="bannerside-right-list" :class="{'height_auto':html1.length != 0}" @mousemove="showBanner = true" @mouseleave="showBanner=false">
         <el-button type="primary" v-if="html1.length == 0" @click="addComponent">+添加组件</el-button>
         <div v-if="html1.length != 0" v-html="html1" style="width: 100%">
           {{html1}}
@@ -75,6 +75,9 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
+      }
+      .height_auto{
+        height: auto;
       }
       img{
         width: 100%;

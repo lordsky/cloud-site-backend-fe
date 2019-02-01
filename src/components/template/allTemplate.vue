@@ -12,7 +12,7 @@
           </el-form-item>
           </div>
 				<el-form-item>
-					<el-button type="primary" size="small" v-on:click="getUsers">查询</el-button>
+					<el-button type="primary" size="small" v-on:click="getComponList">查询</el-button>
           <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>
           <el-button type="primary" size="small" @click="addTemplate">新增模版</el-button>
           <el-button type="primary" size="small" @click="addComponClass">新增模版分类</el-button>
@@ -66,6 +66,7 @@
 </template>
 
 <script>
+  import http from '../../components/config/http.js'
   export default {
     name: 'allTemplate',
     data() {
@@ -141,6 +142,9 @@
         if(!val) {
           this.resetForm()
         }
+      },
+      timeData:function (val) {
+        console.log(http.getLocalTime(this.timeData[0]))
       }
     },
     components: {
@@ -301,23 +305,36 @@
           break;
         }
       },
-      //获取用户列表
-			getUsers() {
+      //获取模版分类列表
+			getComponList() {
 				console.log('获取列表')
+        let para = {
+          page: this.page,
+          pageSize: this.pageSize,
+          name: this.filters.name,
+          startTime:this.timeData[0],
+          endTime:this.timeData[1]
+        };
+        // this.listLoading = true;
+        // getUserListPage(para).then((res) => {
+        //   this.total = res.data.total;
+        //   this.users = res.data.users;
+        //   this.listLoading = false;
+        // });
       },
       //当前页码
 			handleCurrentChange(val) {
 				this.page = val;
-				this.getUsers();
+				this.getComponList();
 			},
 			//当前条数
 			handleSizeChange(val) {
 				this.pageSize = val;
-				this.getUsers();
+				this.getComponList();
 			},
     },
 		mounted() {
-			this.getUsers();
+			this.getComponList();
 		}
   }
 </script>
