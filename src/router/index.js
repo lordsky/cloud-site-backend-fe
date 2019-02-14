@@ -16,8 +16,8 @@ import SuiteEditor from '@/components/suite/suiteEditor'//套件管理-编辑套
 import SuiteClassification from '@/components/suite/suiteClassification'//套件管理
 import WebsiteEditor from '@/components/suite/websiteEditor'//套件管理--网站编辑器
 import SiteManage from '@/components/siteManage'//站点管理
+import PictureManage from '@/components/pictureManage'//素材库
 
-import CmsUser from '@/components/cmsUser'
 
 Vue.use(Router)
 
@@ -103,10 +103,10 @@ export default new Router({
 		  name: 'siteManage',
 		  component: SiteManage
 		 },
-		{
-		  path: '/cmsUser',
-		  name: 'cmsUser',
-		  component: CmsUser
+		 {
+		  path: '/pictureManage',
+		  name: 'pictureManage',
+		  component: PictureManage
 		 },
       ]
     }]

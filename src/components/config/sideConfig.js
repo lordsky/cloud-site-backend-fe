@@ -10,11 +10,6 @@ const navHead = [{
     text: ['用户管理', '个人资料', '查看用户信息']
   },
   {
-    path: 'cmsUser',
-    index: '1-2',
-    text: ['cms管理']
-  },
-  {
     path: 'manageComponent',
     index: '2-1',
     text: ['模板管理', '组件管理']
@@ -74,6 +69,11 @@ const navHead = [{
     index: '3',
     text: ['站点管理']
   },
+  {
+    path: 'pictureManage',
+    index: '4',
+    text: ['素材库']
+  },
 ]
 //侧边栏信息
 const sideText = [{
@@ -84,11 +84,6 @@ const sideText = [{
         name: '个人资料',
         index: '1-1',
         path: '/userData'
-      },
-      {
-        name: 'cms用户信息',
-        index: '1-2',
-        path: '/cmsUser'
       },
     ]
   },
@@ -118,6 +113,13 @@ const sideText = [{
     index: '3',
     ico: 'el-icon-setting',
     path: '/siteManage',
+    list: []
+  },
+  {
+    title: '素材库',
+    index: '4',
+    ico: 'el-icon-picture-outline',
+    path: '/pictureManage',
     list: []
   },
 ]
