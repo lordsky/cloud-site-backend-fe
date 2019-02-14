@@ -24,23 +24,23 @@
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
-          <el-table-column prop="name" label="模版分类"  align="center">
+          <el-table-column prop="catName" label="模版分类"  align="center">
           </el-table-column>
-          <el-table-column prop="addTime" label="添加时间" align="center">
+          <!--<el-table-column prop="addTime" label="添加时间" align="center">-->
+          <!--</el-table-column>-->
+          <el-table-column prop="catNum" label="模版个数"  align="center">
           </el-table-column>
-          <el-table-column prop="num" label="模版个数"  align="center">
-          </el-table-column>
-          <el-table-column prop="state" label="状态"  align="center">
-          </el-table-column>
-          <el-table-column label="操作" width="200" align="center">
-            <template slot-scope="scope">
-              <el-button type="text" @click="manageCompon(scope.$index, scope.row)">管理</el-button>
-              <el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>
-              <el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>
-              <el-button type="text" v-if="scope.row.state == '上线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
-              <el-button type="text" v-if="scope.row.num == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
+          <!--<el-table-column prop="state" label="状态"  align="center">-->
+          <!--</el-table-column>-->
+          <!--<el-table-column label="操作" width="200" align="center">-->
+            <!--<template slot-scope="scope">-->
+              <!--<el-button type="text" @click="manageCompon(scope.$index, scope.row)">管理</el-button>-->
+              <!--<el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>-->
+              <!--<el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>-->
+              <!--<el-button type="text" v-if="scope.row.state == '上线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>-->
+              <!--<el-button type="text" v-if="scope.row.num == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>-->
+            <!--</template>-->
+          <!--</el-table-column>-->
         </el-table>
       </div>
 
@@ -96,49 +96,49 @@
           catType:2
         },
         findCatByType: [
-          {
-            id:1,
-            addTime: '2016-05-03',
-            name: '关于我们',
-            num: '0',
-            state:'下线'
-          }, {
-            id:2,
-            addTime: '2016-05-02',
-            name: '联系我们',
-            num: '5',
-            state:'上线'
-          }, {
-            id:3,
-            addTime: '2016-05-04',
-            name: '专题活动',
-            num: '3',
-            state:'上线'
-          }, {
-            id:4,
-            addTime: '2016-05-01',
-            name: '新闻咨询',
-            num: '6',
-            state:'下线'
-          }, {
-            id:5,
-            addTime: '2016-05-08',
-            name: '产品展示',
-            num: '6',
-            state:'下线'
-          }, {
-            id:6,
-            addTime: '2016-05-06',
-            name: '摄影作品',
-            num: '2',
-            state:'下线'
-          }, {
-            id:7,
-            addTime: '2016-05-07',
-            name: '招聘信息',
-            num: '3',
-            state:'下线'
-          }
+          // {
+          //   id:1,
+          //   addTime: '2016-05-03',
+          //   name: '关于我们',
+          //   num: '0',
+          //   state:'下线'
+          // }, {
+          //   id:2,
+          //   addTime: '2016-05-02',
+          //   name: '联系我们',
+          //   num: '5',
+          //   state:'上线'
+          // }, {
+          //   id:3,
+          //   addTime: '2016-05-04',
+          //   name: '专题活动',
+          //   num: '3',
+          //   state:'上线'
+          // }, {
+          //   id:4,
+          //   addTime: '2016-05-01',
+          //   name: '新闻咨询',
+          //   num: '6',
+          //   state:'下线'
+          // }, {
+          //   id:5,
+          //   addTime: '2016-05-08',
+          //   name: '产品展示',
+          //   num: '6',
+          //   state:'下线'
+          // }, {
+          //   id:6,
+          //   addTime: '2016-05-06',
+          //   name: '摄影作品',
+          //   num: '2',
+          //   state:'下线'
+          // }, {
+          //   id:7,
+          //   addTime: '2016-05-07',
+          //   name: '招聘信息',
+          //   num: '3',
+          //   state:'下线'
+          // }
         ]
       }
     },
@@ -297,6 +297,7 @@
       saveCompon() {
         switch(this.dialogStu) {
           case 'addClass':
+            //新增模板分类
             API.apiAddCat({
               catExt: this.addCatRequest.catName,
               catName: this.addCatRequest.catName,
@@ -334,7 +335,7 @@
         };
         API.apiCatType(2).then(res => {
           if(res.msg === "success") {
-            this.templateTypeList = res.data
+            this.findCatByType = res.data
           } else {
             this.$message.error(res.msg)
           }

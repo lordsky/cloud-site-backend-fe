@@ -3,8 +3,8 @@
     <p>新增模版</p>
     <div class="select-template">
       <p>①选择模版分类</p>
-      <el-select v-model="value" placeholder="请选择模版分类" class="el-select">
-        <el-option v-for="item in templateTypeList" :key="item.id" :label="item.catName" :value="item.id">
+      <el-select v-model="templateId" placeholder="请选择模版分类" class="el-select">
+        <el-option v-for="(item,index) in templateTypeList" :key="item.id" :label="item.catName" :value="index">
         </el-option>
       </el-select>
     </div>
@@ -21,14 +21,12 @@
     </div>
     <div class="template-btn">
       <el-button @click="back">返回</el-button>
-      <el-button type="primary" @click="toAddTemplate" :loading="loading">下一步</el-button>
+      <el-button type="primary" @click="toAddTemplate(templateId)" :loading="loading">下一步</el-button>
     </div>
   </div>
 </template>
 
-<script>
-  import API from "../config/server";
-
+<script scoped>
   export default {
     name: 'addTemplate',
     data() {
@@ -37,7 +35,7 @@
         delShow: null,
         dialogAdd: false,
         loading:false,
-        value: '',
+        templateId: '',
         typographyId:0,
         // options: [{
         //   value: '1',
@@ -81,11 +79,13 @@
       back() {
         this.$router.go(-1)
       },
-      toAddTemplate() {
+      //点击下一步进行模板页面设计
+      toAddTemplate(index) {
         this.loading = true;
         let param = {
-          templateId : this.value,
-          typographyId : this.typographyId
+          //templateId : this.templateTypeList[index].id,
+          typographyId : this.typographyId,
+          //pageName:this.templateTypeList[index].catName
         }
         setTimeout(() => {
           this.$router.push({
@@ -97,8 +97,9 @@
           })
         }, 500);
       },
+      //获取模板分类
       getTemplateTypeList(val){
-        API.apiCatType(val).then(res => {
+        this.$api.apiCatType(val).then(res => {
           if(res.msg === "success") {
             this.templateTypeList = res.data
           } else {

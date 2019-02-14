@@ -52,10 +52,10 @@
             introduce: ''
           },
           classification:[
-            {name:'企业官网'},
-            {name:'在线商城'},
-            {name:'外贸站'},
-            {name:'工作室'},
+            // {name:'企业官网'},
+            // {name:'在线商城'},
+            // {name:'外贸站'},
+            // {name:'工作室'},
           ],
           rules:{
             name: [
@@ -104,6 +104,7 @@
           let oV1 =  document.getElementsByClassName('el-upload__input')
           oV1[0].disabled=true
         },
+        //点击下一步保存套件信息
         onSubmit() {
           this.$refs.suite.validate((valid) => {
             if (valid) {
@@ -116,6 +117,7 @@
               }).then(res => {
                 console.log(res)
                 if(res.code === 200) {
+                  this.$refs.upload.submit();
                   this.addLoading = false;
                 } else {
                   this.$message.error(res.msg)
@@ -125,9 +127,23 @@
             }
           });
         },
+        //返回
         back() {
           this.$router.go(-1)
+        },
+        //获取模板分类
+        getSuiteTypeList(val){
+          API.apiCatType(val).then(res => {
+            if(res.msg === "success") {
+              this.classification = res.data
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
         }
+      },
+      created() {
+        this.getSuiteTypeList(3)
       }
     }
 </script>

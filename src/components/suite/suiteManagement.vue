@@ -20,7 +20,7 @@
 			</el-form>
 		</el-col>
       <div class="suite-box">
-        <el-table :data="tableData3" height="250" border style="width: 100%" tooltip-effect="dark"
+        <el-table :data="suiteByType" height="250" border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
@@ -47,9 +47,9 @@
    
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-suiteClass" v-show="editShow">
-        <el-form :inline="true" :model="formCompon" class="demo-form-inline" ref="formCompon">
+        <el-form :inline="true" :model="addCatRequest" class="demo-form-inline" ref="addCatRequest">
           <el-form-item label="套件分类名称:" prop="name" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
-            <el-input v-model="formCompon.name" :placeholder="dialogText"></el-input>
+            <el-input v-model="addCatRequest.catName" :placeholder="dialogText"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -61,7 +61,7 @@
   </div>
 </template>
 
-<script>
+<script scoped>
   export default {
     name: 'suiteManagement',
     data() {
@@ -87,10 +87,12 @@
         editShow: true,
         addShow: false,
         value: '',
-        formCompon: {
-          name: ''
+        addCatRequest: {
+          catExt: '',
+          catName: '',
+          catType:3
         },
-        tableData3: [{
+        suiteByType: [{
           id:1,
           addTime: '2016-05-03',
           name: '企业官网',
@@ -132,7 +134,8 @@
           name: '学校官网',
           num: '3',
           state:'下线'
-        }]
+        }
+        ]
       }
     },
     watch: {
@@ -148,7 +151,7 @@
     methods: {
       //重置验证
       resetForm() {
-        this.$refs['formCompon'].resetFields();
+        this.$refs['addCatRequest'].resetFields();
       },
       //组件类型
       btnType(i) {
@@ -156,7 +159,7 @@
       },
       //清除
       clear() {
-        this.formCompon.name = ''
+        this.addCatRequest.catName = ''
         this.formAdd.selectText = ''
       },
       //新增组件
@@ -180,7 +183,7 @@
         // this.clear()
         this.dialogVisible = true
         this.editShow = true
-        this.formCompon = Object.assign({}, row);
+        this.addCatRequest.catName = row.name;
         this.componTitle = '编辑组件分类'
         this.dialogStu = 'edit'
         //this.dialogText = '导航'
@@ -256,6 +259,20 @@
       saveCompon() {
         switch(this.dialogStu) {
           case 'addClass':
+            //新增套件分类
+            this.$api.apiAddCat({
+              catExt: this.addCatRequest.catName,
+              catName: this.addCatRequest.catName,
+              catType:this.addCatRequest.catType
+            }).then(res => {
+              console.log(res)
+              if(res.code === 200) {
+                this.getSuiteList()
+              } else {
+                this.$message.error(res.msg)
+              }
+
+            })
             console.log('新增分类')
             break;
           case 'edit':
@@ -269,23 +286,37 @@
           break;
         }
       },
-      //获取用户列表
-			getUsers() {
-				console.log('获取列表')
+      //获取套件分类列表
+      getSuiteList() {
+        console.log('获取列表')
+        let para = {
+          page: this.page,
+          pageSize: this.pageSize,
+          name: this.filters.name,
+          startTime:this.timeData[0],
+          endTime:this.timeData[1]
+        };
+        this.$api.apiCatType(3).then(res => {
+          if(res.msg === "success") {
+            this.suiteByType = res.data
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       },
       //当前页码
 			handleCurrentChange(val) {
 				this.page = val;
-				this.getUsers();
+				this.getSuiteList();
 			},
 			//当前条数
 			handleSizeChange(val) {
 				this.pageSize = val;
-				this.getUsers();
+				this.getSuiteList();
 			},
     },
 		mounted() {
-			this.getUsers();
+			this.getSuiteList();
 		}
   }
 </script>

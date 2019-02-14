@@ -8,24 +8,24 @@
       <label>顶部区</label>
       <div class="topside-right" :class="{'side-right-border':topDate.length == 0}">
         <div class="topside-right-list" :class="{'height_auto':topDate.length != 0}"  @mousemove="showTop = true" @mouseleave="showTop=false">
-          <el-button type="primary" v-if="topDate.length == 0" @click="openManage(row,0)">+添加组件</el-button>
+          <el-button type="primary" v-if="topDate.length == 0" @click="addComponent('top')">+添加组件</el-button>
           <div v-if="topDate.length != 0" v-html="topDate" style="width: 100%">
             {{topDate}}
           </div>
           <div v-if="topDate.length != 0" :class="{'delItem':showTop}">
-            <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="openManage(row,0)"></i>
+            <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent(row,'top')"></i>
             <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>
           </div>
         </div>
       </div>
     </div>
-    <Banner @addComponent="addComponent" :typographyId="typographyId"></Banner>
-    <Format @addComponent="addComponent" :typographyId="typographyId"></Format>
+    <Banner @addComponent="addComponent('banner')" :typographyId="typographyId"></Banner>
+    <Format @addComponent="addComponent('format')" :typographyId="typographyId"></Format>
     <div class="footerside">
       <label>页脚区</label>
       <div class="footerside-right" :class="{'side-right-border':footerDate.length == 0}">
         <div class="footerside-right-list" :class="{'height_auto':footerDate.length != 0}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">
-          <el-button type="primary" v-if="footerDate.length == 0" @click="addComponent">+添加组件</el-button>
+          <el-button type="primary" v-if="footerDate.length == 0" @click="addComponent('footer')">+添加组件</el-button>
           <div v-if="footerDate.length != 0" v-html="footerDate" style="width: 100%">
             {{footerDate}}
           </div>
@@ -45,11 +45,6 @@
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="340px">
       <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="常用组件" name="used" class="com-tab-pane"><ul>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
         </ul></el-tab-pane>
         <el-tab-pane label="基础组件" name="basis" class="com-tab-pane">
           <ul>
@@ -62,8 +57,6 @@
           </ul>
         </el-tab-pane>
         <el-tab-pane label="其他组件" name="other" class="com-tab-pane"><ul>
-          <li></li>
-          <li></li>
         </ul></el-tab-pane>
       </el-tabs>
     </el-dialog>
@@ -72,13 +65,14 @@
     <el-dialog :title="manageComponTitle" :visible.sync="dialogVisibleManage" width="80%" class="manage-dialog">
       <div class="compon-edit-list">
         <ul>
-          <li v-for="(x,i) in 5" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i">
+          <li v-for="(item,i) in componentList" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i" v-html="item.componentCode">
+          {{item.componentCode}}
           </li>
         </ul>
       </div>
       <div class="dialog-footer">
         <div @click="cancelDialog">取消</div>
-        <div @click="completeDialog">完成</div>
+        <div @click="completeDialog(type)">完成</div>
       </div>
     </el-dialog>
     <!--组件模版弹框-->
@@ -97,6 +91,7 @@
             row:{
               name:'导航'
             },
+            type:'',//操作区域
             topDate:'',
             template:{},
             loading:false,
@@ -115,6 +110,7 @@
             manageComponTitle:'',
             activeName:'basis',
             typographyId:null,
+            componentList:[],//组件数组
             basisList:[{
               id:1,
               name: '导航',
@@ -154,9 +150,26 @@
           this.dialogVisibleManage = false
         },
         //完成选择模版
-        completeDialog(){
-          this.dialogVisibleManage = false
-          this.dialogVisible = false
+        completeDialog(type){
+          switch(type) {
+            case 'top':
+              this.topDate = this.componentList[this.activeShow].componentCode
+              this.dialogVisibleManage = false
+              this.dialogVisible = false
+              console.log('顶部区')
+              break;
+            case 'banner':
+              console.log('横幅区')
+              this.html1 = Banner.data().html1
+              break;
+            case 'format':
+              this.html2 = ''
+              console.log('版式区')
+              break;
+            case 'footer':
+              console.log('页脚区')
+              break;
+          }
         },
         saveTemplate(){
           this.loading = true;
@@ -185,16 +198,44 @@
               break;
           }
         },
-        addComponent(){
-          this.dialogVisible = true
-          this.activeName = 'basis'
-          this.componTitle = '添加组件'
+        //添加组件
+        addComponent(type){
+          this.type = type
+          switch(type) {
+            case 'top':
+              this.openTopFooter('导航')
+              console.log('顶部区')
+              break;
+            case 'banner':
+              this.dialogVisible = true
+              this.activeName = 'basis'
+              this.componTitle = '添加组件'
+              console.log('横幅区')
+              this.html1 = Banner.data().html1
+              break;
+            case 'format':
+              this.dialogVisible = true
+              this.activeName = 'basis'
+              this.componTitle = '添加组件'
+              this.html2 = ''
+              console.log('版式区')
+              break;
+            case 'footer':
+              this.openTopFooter('页脚')
+              console.log('页脚区')
+              break;
+          }
+        },
+        //直接打开页头页脚组件选择
+        openTopFooter(row){
+          this.getComponentList()
+          this.dialogVisibleManage = true
+          this.manageComponTitle = row
         },
         openManage(row,i){
-          if(i==0){
+            this.getComponentList()
             this.dialogVisibleManage = true
             this.manageComponTitle = row.name
-          }
         },
         handleClick(tab, event) {
           console.log(tab, event);
@@ -202,7 +243,16 @@
         back(){
           this.$router.go(-1)
         },
-
+        //获取组件列表
+        getComponentList(val){
+          this.$api.apiTemplateComponentList(val).then(res => {
+            if(res.msg === "success") {
+              this.componentList = res.data
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }
       },
       mounted() {
           this.typographyId = this.$route.query.template.typographyId
