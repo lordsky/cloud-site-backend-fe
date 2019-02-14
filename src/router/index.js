@@ -114,9 +114,6 @@ export default new Router({
 		  name: 'cmsUser',
 		  component: CmsUser
 		 },
-     {
-      path: '/preview.html',
-     },
       ]
     }]
 
