@@ -1,8 +1,6 @@
 
-//请求接口
-const API = {
-	
-	
+const hostConfig = {
+  hostUrl: 'http://192.168.4.64:8870'
 }
 
-export default API
+export default hostConfig

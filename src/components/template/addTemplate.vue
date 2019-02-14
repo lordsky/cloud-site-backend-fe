@@ -4,7 +4,7 @@
     <div class="select-template">
       <p>①选择模版分类</p>
       <el-select v-model="value" placeholder="请选择模版分类" class="el-select">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+        <el-option v-for="item in templateTypeList" :key="item.id" :label="item.catName" :value="item.id">
         </el-option>
       </el-select>
     </div>
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+  import API from "../config/server";
+
   export default {
     name: 'addTemplate',
     data() {
@@ -37,22 +39,23 @@
         loading:false,
         value: '',
         typographyId:0,
-        options: [{
-          value: '1',
-          label: '关于我们'
-        }, {
-          value: '2',
-          label: '联系我们'
-        }, {
-          value: '3',
-          label: '蚵仔煎'
-        }, {
-          value: '4',
-          label: '龙须面'
-        }, {
-          value: '5',
-          label: '北京烤鸭'
-        }],
+        // options: [{
+        //   value: '1',
+        //   label: '关于我们'
+        // }, {
+        //   value: '2',
+        //   label: '联系我们'
+        // }, {
+        //   value: '3',
+        //   label: '蚵仔煎'
+        // }, {
+        //   value: '4',
+        //   label: '龙须面'
+        // }, {
+        //   value: '5',
+        //   label: '北京烤鸭'
+        // }],
+        templateTypeList:[],
         templateList:[
           {
             name:'模版1',
@@ -66,6 +69,7 @@
       }
     },
     mounted() {
+
     },
     methods: {
       //选择排版
@@ -92,7 +96,19 @@
             }
           })
         }, 500);
+      },
+      getTemplateTypeList(val){
+        API.apiCatType(val).then(res => {
+          if(res.msg === "success") {
+            this.templateTypeList = res.data
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       }
+    },
+    created() {
+      this.getTemplateTypeList(2)
     }
   }
 </script>

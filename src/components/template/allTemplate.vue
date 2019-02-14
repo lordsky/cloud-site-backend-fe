@@ -20,7 +20,7 @@
 			</el-form>
 		</el-col>
       <div class="compent-box">
-        <el-table :data="tableData3" height="250" border style="width: 100%" tooltip-effect="dark"
+        <el-table :data="findCatByType" height="250" border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
@@ -51,9 +51,9 @@
    
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">
-        <el-form :inline="true" :model="formCompon" class="demo-form-inline" ref="formCompon">
+        <el-form :inline="true" :model="addCatRequest" class="demo-form-inline" ref="addCatRequest">
           <el-form-item label="模版分类名称:" prop="name" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
-            <el-input v-model="formCompon.name" :placeholder="dialogText"></el-input>
+            <el-input v-model="addCatRequest.catName" :placeholder="dialogText"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -66,7 +66,8 @@
 </template>
 
 <script>
-  import http from '../../components/config/http.js'
+  //import http from '../../components/config/http.js'
+  import API from '../config/server';
   export default {
     name: 'allTemplate',
     data() {
@@ -89,52 +90,56 @@
         editShow: true,
         addShow: false,
         value: '',
-        formCompon: {
-          name: ''
+        addCatRequest: {
+          catExt: '',
+          catName: '',
+          catType:2
         },
-        tableData3: [{
-          id:1,
-          addTime: '2016-05-03',
-          name: '关于我们',
-          num: '0',
-          state:'下线'
-        }, {
-          id:2,
-          addTime: '2016-05-02',
-          name: '联系我们',
-          num: '5',
-          state:'上线'
-        }, {
-          id:3,
-          addTime: '2016-05-04',
-          name: '专题活动',
-          num: '3',
-          state:'上线'
-        }, {
-          id:4,
-          addTime: '2016-05-01',
-          name: '新闻咨询',
-          num: '6',
-          state:'下线'
-        }, {
-          id:5,
-          addTime: '2016-05-08',
-          name: '产品展示',
-          num: '6',
-          state:'下线'
-        }, {
-          id:6,
-          addTime: '2016-05-06',
-          name: '摄影作品',
-          num: '2',
-          state:'下线'
-        }, {
-          id:7,
-          addTime: '2016-05-07',
-          name: '招聘信息',
-          num: '3',
-          state:'下线'
-        }]
+        findCatByType: [
+          {
+            id:1,
+            addTime: '2016-05-03',
+            name: '关于我们',
+            num: '0',
+            state:'下线'
+          }, {
+            id:2,
+            addTime: '2016-05-02',
+            name: '联系我们',
+            num: '5',
+            state:'上线'
+          }, {
+            id:3,
+            addTime: '2016-05-04',
+            name: '专题活动',
+            num: '3',
+            state:'上线'
+          }, {
+            id:4,
+            addTime: '2016-05-01',
+            name: '新闻咨询',
+            num: '6',
+            state:'下线'
+          }, {
+            id:5,
+            addTime: '2016-05-08',
+            name: '产品展示',
+            num: '6',
+            state:'下线'
+          }, {
+            id:6,
+            addTime: '2016-05-06',
+            name: '摄影作品',
+            num: '2',
+            state:'下线'
+          }, {
+            id:7,
+            addTime: '2016-05-07',
+            name: '招聘信息',
+            num: '3',
+            state:'下线'
+          }
+        ]
       }
     },
     watch: {
@@ -144,7 +149,7 @@
         }
       },
       timeData:function (val) {
-        console.log(http.getLocalTime(this.timeData[0]))
+        //console.log(http.getLocalTime(this.timeData[0]))
       }
     },
     components: {
@@ -153,7 +158,7 @@
     methods: {
       //重置验证
       resetForm() {
-        this.$refs['formCompon'].resetFields();
+        this.$refs['addCatRequest'].resetFields();
       },
       //组件类型
       btnType(i) {
@@ -161,7 +166,7 @@
       },
       //清除
       clear() {
-        this.formCompon.name = ''
+        this.addCatRequest.catName = ''
       },
       //新增组件
       addTemplate() {
@@ -184,7 +189,7 @@
         // this.clear()
         this.dialogVisible = true
         this.editShow = true
-        this.formCompon = Object.assign({}, row);
+        this.addCatRequest.catName = row.name;
         this.componTitle = '编辑组件分类'
         this.dialogStu = 'edit'
         //this.dialogText = '导航'
@@ -206,7 +211,7 @@
           let id = row.id;
           setTimeout(() => {
             this.listLoading = false;
-            this.tableData3[index].state = '上线'
+            this.findCatByType[index].state = '上线'
           }, 500);
         }).catch(() => {
 
@@ -222,7 +227,7 @@
           let id = row.id;
           setTimeout(() => {
             this.listLoading = false;
-            this.tableData3[index].state = '下线'
+            this.findCatByType[index].state = '下线'
           }, 500);
         }).catch(() => {
 
@@ -285,14 +290,26 @@
       manageCompon(index, row) {
         this.$router.push({
           path: '/templateEditor',
-          query:{text:row.name}
+          query:{text:row.name,catId:row.id}
         })
       },
       //保存
       saveCompon() {
         switch(this.dialogStu) {
           case 'addClass':
-            console.log('新增分类')
+            API.apiAddCat({
+              catExt: this.addCatRequest.catName,
+              catName: this.addCatRequest.catName,
+              catType:this.addCatRequest.catType
+            }).then(res => {
+              console.log(res)
+              if(res.code === 200) {
+                this.getComponList()
+              } else {
+                this.$message.error(res.msg)
+              }
+
+            })
             break;
           case 'edit':
             console.log('编辑')
@@ -315,12 +332,13 @@
           startTime:this.timeData[0],
           endTime:this.timeData[1]
         };
-        // this.listLoading = true;
-        // getUserListPage(para).then((res) => {
-        //   this.total = res.data.total;
-        //   this.users = res.data.users;
-        //   this.listLoading = false;
-        // });
+        API.apiCatType(2).then(res => {
+          if(res.msg === "success") {
+            this.templateTypeList = res.data
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       },
       //当前页码
 			handleCurrentChange(val) {

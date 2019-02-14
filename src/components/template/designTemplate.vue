@@ -7,9 +7,11 @@
     <div class="topside">
       <label>顶部区</label>
       <div class="topside-right" :class="{'side-right-border':topDate.length == 0}">
-        <div class="topside-right-list" :class="{'height_auto':footerDate.length != 0}"  @mousemove="showTop = true" @mouseleave="showTop=false">
-          <el-button type="primary" v-if="topDate.length == 0">+添加组件</el-button>
-          <img v-if="topDate.length != 0" src="@/assets/img/topside.png">
+        <div class="topside-right-list" :class="{'height_auto':topDate.length != 0}"  @mousemove="showTop = true" @mouseleave="showTop=false">
+          <el-button type="primary" v-if="topDate.length == 0" @click="openManage(row,0)">+添加组件</el-button>
+          <div v-if="topDate.length != 0" v-html="topDate" style="width: 100%">
+            {{topDate}}
+          </div>
           <div v-if="topDate.length != 0" :class="{'delItem':showTop}">
             <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="openManage(row,0)"></i>
             <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>
@@ -24,7 +26,9 @@
       <div class="footerside-right" :class="{'side-right-border':footerDate.length == 0}">
         <div class="footerside-right-list" :class="{'height_auto':footerDate.length != 0}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">
           <el-button type="primary" v-if="footerDate.length == 0" @click="addComponent">+添加组件</el-button>
-          <img v-if="footerDate.length != 0" src="@/assets/img/topside.png">
+          <div v-if="footerDate.length != 0" v-html="footerDate" style="width: 100%">
+            {{footerDate}}
+          </div>
           <div v-if="footerDate.length != 0" :class="{'delItem':showFooter}">
             <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}"></i>
             <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}"></i>
@@ -93,16 +97,14 @@
             row:{
               name:'导航'
             },
-            topDate:[{
-              url:'111'
-            }],
+            topDate:'',
             template:{},
             loading:false,
             activeShow:'',
             delShow:null,
             bannnerDate:[],
             formatDate:[],
-            footerDate:[],
+            footerDate:'',
             showTop:false,
             showBanner:false,
             showFormat:false,
@@ -199,7 +201,8 @@
         },
         back(){
           this.$router.go(-1)
-        }
+        },
+
       },
       mounted() {
           this.typographyId = this.$route.query.template.typographyId

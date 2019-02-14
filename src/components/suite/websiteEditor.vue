@@ -14,9 +14,9 @@
           </el-col>
           <el-col :span="10">
             <div class="header-right">
-              <span>保存</span>
-              <span>预览</span>
-              <span>退出</span>
+              <span @click="saveWeb">保存</span>
+              <span @click="preview">预览</span>
+              <span @click="dialogVisible4=true">退出</span>
             </div>
           </el-col>
         </el-col>
@@ -89,7 +89,7 @@
                 <li v-for="(x,i) in selectVal" @mousemove="delShow = i" @mouseleave="delShow=null">
                   <img :src="x.url">
                   <div :class="{'delItem':delShow == i}">
-                    <span class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="dialogVisible3=false">选择</span>
+                    <span class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage">选择</span>
                   </div>
                 </li>
               </ul>
@@ -97,11 +97,21 @@
           </div>
         </el-dialog>
         <!--添加页面弹框-->
+        <!--退出弹框-->
+        <el-dialog :visible.sync="dialogVisible4" width="340px" center>
+          <div>是否保存您对套件的修改？</div>
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="notSave">不保存</el-button>
+            <el-button type="primary" @click="saveWeb2">保存</el-button>
+          </span>
+        </el-dialog>
+        <!--退出弹框-->
       </el-row>
     </div>
 </template>
 
 <script>
+  import '@/assets/js/jquery';
   import WebPage from './webPage'
   let id = 1000;
     export default {
@@ -109,28 +119,119 @@
       data(){
         return{
           webPageList:{
-            header:'<div class="headTop"><div class="head-left"></div> <div class="head-right"><span class="head-user-ico"></span> <div class="el-dropdown"><span class="el-dropdown-link el-dropdown-selfdefine" aria-haspopup="list" aria-controls="dropdown-menu-1584" role="button" tabindex="0"><span class="head-right-user">用户名称</span> <i class="el-icon-arrow-down el-icon--right"></i></span> <ul class="el-dropdown-menu el-popper" id="dropdown-menu-1584" style="display: none;"><button type="button" class="el-button el-button--text" style="padding: 5px 30px;"><!----><!----><span>退出登录</span></button></ul></div></div> <div class="el-dialog__wrapper" style="display: none;"><div role="dialog" aria-modal="true" aria-label="退出" class="el-dialog" style="margin-top: 15vh;"><div class="el-dialog__header"><span class="el-dialog__title">退出</span><button type="button" aria-label="Close" class="el-dialog__headerbtn"><i class="el-dialog__close el-icon el-icon-close"></i></button></div><!----><div class="el-dialog__footer"><span class="dialog-footer"><button type="button" class="el-button el-button--default"><!----><!----><span>取 消</span></button> <button type="button" class="el-button el-button--primary"><!----><!----><span>确 定</span></button></span></div></div></div></div>',
-            footer:'<div></div>',
-            content:'<div></div>',
+            header:'<div style="width:100%;height:6.25vw;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);display: flex;box-sizing: border-box;">\n' +
+              '\t\t\t<div style="display: flex;width: 100%;">\n' +
+              '\t\t\t<ul id="silder" style="display: flex;list-style: none;white-space: nowrap;padding: 0;;justify-content: center;align-items: center;width: 100%;margin: 0;">\n' +
+              '\t\t\t\t<li style="padding: 0 2vw;font-size:14px;font-weight:400;color:rgba(2,111,194,1);cursor: pointer">首页</li>\n' +
+              '\t\t\t</ul>\n' +
+              '\t\t\t</div>\n' +
+              '\t\t</div>',
+            footer:'<div style="width:100%;min-height: 15em;background:rgba(255,255,255,1);box-shadow:2px 0px 4px 2px rgba(0,0,0,0.05);display: flex;">\n' +
+              '\t\t\t<div style="display: flex;width: 100%;">\n' +
+              '\t\t\t\t<div style="margin-top: 5.8125vw;margin-left: 9.375vw;">\n' +
+              '\t\t\t\t\t<div style="font-size:18px;font-family:AppleSystemUIFont;color:rgba(74,144,226,1);cursor: pointer">MUC</div>\n' +
+              '\t\t\t\t\t<div style="margin-top: 3vw;font-size:14px;font-family:AppleSystemUIFont;color:rgba(157,175,189,1);white-space: nowrap;">\n' +
+              '\t\t\t\t\t\t<div>Copyright &#169 CMCC</div>\n' +
+              '\t\t\t\t\t\t<div>All rights reserved</div>\n' +
+              '\t\t\t\t\t</div>\n' +
+              '\t\t\t\t\t<div style="display: flex;margin-top: 1.5vw;">\n' +
+              '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
+              '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
+              '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
+              '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
+              '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
+              '\t\t\t\t\t</div>\n' +
+              '\t\t\t\t</div>\n' +
+              '\t\t\t\t<div style="margin: 5vw 0 5vw 10vw;">\n' +
+              '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">热门产品</div>\n' +
+              '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">特色产品</li>\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">2B 产品</li>\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">2C 产品</li>\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">解决方案</li>\n' +
+              '\t\t\t\t\t</ul>\n' +
+              '\t\t\t\t</div>\n' +
+              '\t\t\t\t<div style="margin: 5vw 0 5vw 14vw;">\n' +
+              '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">公司概况</div>\n' +
+              '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">关于我们</li>\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">人员招聘</li>\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">行业观点</li>\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">联系我们</li>\n' +
+              '\t\t\t\t\t</ul>\n' +
+              '\t\t\t\t</div>\n' +
+              '\t\t\t\t<div style="margin: 5vw 0 5vw 14vw;">\n' +
+              '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">服务支持</div>\n' +
+              '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">客服中心</li>\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">在线帮助</li>\n' +
+              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">FAQ</li>\n' +
+              '\t\t\t\t\t</ul>\n' +
+              '\t\t\t\t</div>\n' +
+              '\t\t\t</div>\n' +
+              '\t\t</div>',
+            content:'<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;">\n' +
+              '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;">产品特色</div>\n' +
+              '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: .3vw;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
+              '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: space-around;margin-top: 5.625vw;">\n' +
+              '\t\t\t\t<div>\n' +
+              '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
+              '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计需求管理</div>\n' +
+              '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">归口到 MUC|移动用户体验中心 统一管理，统一协调设计资源展开设计、咨询、评审等工作</div>\n' +
+              '\t\t\t\t</div>\n' +
+              '\t\t\t\t<div>\n' +
+              '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
+              '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计立项管理</div>\n' +
+              '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">全部产品设计相关需求立项工作：由统筹整体资源，统一立项并进行设计项目管理</div>\n' +
+              '\t\t\t\t</div>\n' +
+              '\t\t\t\t<div>\n' +
+              '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
+              '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计质量把控</div>\n' +
+              '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">全部产品的“宣传材料”、“UI/UE界面”相关的环节必须由MUC|移动用户体验中心统一质量把控、设计评审</div>\n' +
+              '\t\t\t\t</div>\n' +
+              '\t\t\t\t<div>\n' +
+              '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
+              '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计跟进监督</div>\n' +
+              '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">发布《产品体验设计指数报告》等形式对各产品线设计质量监管，更好改进“大体验”设计来提升品牌价值</div>\n' +
+              '\t\t\t\t</div>\n' +
+              '\t\t\t</div>\n' +
+              '\t\t</div>' +
+              '<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;margin-top: 10px;">\n' +
+              '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;margin-top: 5.1875vw;;">产品特色</div>\n' +
+              '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: 5px;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
+              '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: center;margin-top: 5.625vw;">\n' +
+              '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(238,242,244,1);border-radius:5px;margin-right: 1.875vw;text-align: center;">\n' +
+              '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;margin: 6.75vw auto 0 auto;">设计需求管理</div>\n' +
+              '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;margin: .5vw auto 0 auto;">对“大体验”设计相关需求，包括视觉设计、体验设计、工业设计，改进我们的产品体验而努力</div>\n' +
+              '\t\t\t\t</div>\n' +
+              '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;margin-right: 1.875vw;"></div>\n' +
+              '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;"></div>\n' +
+              '\t\t\t</div>\n' +
+              '\t\t</div>',
           },
           formCompon: {
             name: ''
           },
+          silderList:[
+            {
+              name:'关于我们',
+              path:'/me'
+            },
+            {
+              name:'联系我们',
+              path:'/me2'
+            }],
           delShow: null,
           activeShow:'',
           dialogVisible:false,//页面管理弹框
           dialogVisible2:false,//修改导航标题弹框
           dialogVisible3:false,//添加新页面弹框
-          data1: [{
-            id: 1,
-            label: '一级 1',
-          }, {
-            id: 2,
-            label: '一级 2',
-          }, {
-            id: 3,
-            label: '一级 3',
-          }],
+          dialogVisible4:false,//退出弹框
+          data1: [
+            {
+              id: 1,
+              label: '一级 1',
+            }],
           classifyList: [
             {
               name: "关于我们"
@@ -172,6 +273,13 @@
         WebPage
       },
       methods:{
+        //保存页面
+        saveWeb(){
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          });
+        },
         btnType(index){
           this.activeShow = index;
         },
@@ -192,6 +300,7 @@
           this.dialogVisible2=true
           this.formCompon.name = node.label
         },
+        //重命名导航名
         editorTitle(){
           this.dialogVisible2=false
           const parent = this.node.parent;
@@ -199,14 +308,47 @@
           const index = children.findIndex(d => d.id === this.data2.id);
           children[index].label = this.formCompon.name
         },
+        //删除导航和页面
         remove(node, data) {
           const parent = node.parent;
           const children = parent.data.children || parent.data;
           const index = children.findIndex(d => d.id === data.id);
           children.splice(index, 1);
+          $("#"+data.id).remove()
         },
         addPage(){
           this.dialogVisible3=false
+        },
+        notSave(){
+          this.$router.push({
+            path:'/suiteClassification'
+          })
+        },
+        saveWeb2(){
+          this.$router.push({
+            path:'/suiteClassification'
+          })
+        },
+        preview(){
+          let segment = {
+            header:this.webPageList.header,
+            content:this.webPageList.content,
+            footer:this.webPageList.footer
+          }
+          //window.open('/#/preview','_blank')
+          this.$router.push({
+            path:'/preview',
+            query:{segment:segment}
+          })
+        },
+        selectPage(){
+          this.dialogVisible3=false
+          const newChild = { id: id++, label: '关于我们'+ id, children: [] };
+          if (!this.data1.children) {
+            this.$set(this.data1, '关于我们', []);
+          }
+          this.data1.push(newChild);
+          $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;font-size:14px;font-weight:400;color:rgba(2,111,194,1);cursor: pointer">关于我们</li>')
         }
       }
     }
@@ -232,6 +374,7 @@
         align-items: center;
         justify-content: space-between;
         font-size: 14px;
+        white-space: nowrap;
         .navigation_info{
           display: flex;
           align-items: center;

@@ -15,10 +15,9 @@
       <el-upload
         ref='upload'
         class="avatar-uploader"
-        action="https://jsonplaceholder.typicode.com/posts/"
+        action="http://six-pulse-nerve-gateway-dev.uworks.cc/common/upload"
         :show-file-list="false"
-        :on-change="handleChange"
-        :auto-upload="false">
+        :on-change="handleChange">
         <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
           <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
           <div v-if="suite.imageUrl" :class="{'delItem':showDel}">
@@ -84,6 +83,9 @@
             oV1[0].disabled=false
           }, 100);
         },
+        handleAvatarSuccess(res, file) {
+          this.suite.imageUrl = URL.createObjectURL(file.raw);
+        },
         handleChange(file){
           const isType = file.raw.type === 'image/jpeg' || file.raw.type === 'image/png';
           const isLt10M = file.size / 1024 / 1024 < 10;
@@ -106,20 +108,20 @@
           this.$refs.suite.validate((valid) => {
             if (valid) {
               this.addLoading = true;
-              setTimeout(() => {
-                this.addLoading = false;
-              }, 500);
-              // this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              //   this.addLoading = true;
-              //   let para = Object.assign({}, this.suite);
-              //   addUser(para).then((res) => {
-              //     this.addLoading = false;
-              //     this.$message({
-              //       message: '提交成功',
-              //       type: 'success'
-              //     });
-              //   });
-              // });
+              this.$api.apiAddTemplate({
+                name: this.suite.name,
+                catId: this.suite.catId,
+                description:this.suite.introduce,
+                thumb:this.suite.imageUrl
+              }).then(res => {
+                console.log(res)
+                if(res.code === 200) {
+                  this.addLoading = false;
+                } else {
+                  this.$message.error(res.msg)
+                }
+
+              })
             }
           });
         },
