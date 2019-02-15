@@ -12,7 +12,7 @@
           </el-form-item>
           </div>
 				<el-form-item>
-					<el-button type="primary" size="small" v-on:click="getUsers">查询</el-button>
+					<el-button type="primary" size="small" v-on:click="getSuiteList">查询</el-button>
           <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>
           <el-button type="primary" size="small" @click="addSuite">新增套件</el-button>
           <el-button type="primary" size="small" @click="addComponClass">新增套件分类</el-button>

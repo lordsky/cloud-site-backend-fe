@@ -6,30 +6,30 @@
     </div>
     <div class="topside">
       <label>顶部区</label>
-      <div class="topside-right" :class="{'side-right-border':topDate.length == 0}">
-        <div class="topside-right-list" :class="{'height_auto':topDate.length != 0}"  @mousemove="showTop = true" @mouseleave="showTop=false">
-          <el-button type="primary" v-if="topDate.length == 0" @click="addComponent('top')">+添加组件</el-button>
-          <div v-if="topDate.length != 0" v-html="topDate" style="width: 100%">
+      <div class="topside-right" :class="{'side-right-border':topDate == ''}">
+        <div class="topside-right-list" :class="{'height_auto':topDate != ''}"  @mousemove="showTop = true" @mouseleave="showTop=false">
+          <el-button type="primary" v-if="topDate == ''" @click="addComponent('top')">+添加组件</el-button>
+          <div v-if="topDate != ''" v-html="topDate" style="width: 100%">
             {{topDate}}
           </div>
-          <div v-if="topDate.length != 0" :class="{'delItem':showTop}">
+          <div v-if="topDate != ''" :class="{'delItem':showTop}">
             <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent(row,'top')"></i>
             <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>
           </div>
         </div>
       </div>
     </div>
-    <Banner @addComponent="addComponent('banner')" :typographyId="typographyId"></Banner>
-    <Format @addComponent="addComponent('format')" :typographyId="typographyId"></Format>
+    <Banner @addComponent="addComponent('banner')" @delComponent="delComponent('banner')"  :typographyId="typographyId" :bannnerDate="bannnerDate"></Banner>
+    <Format @addComponent="addComponent" @delComponent="delComponent" :typographyId="typographyId" :formatDate="formatDate" :formatDate2="formatDate2" :formatDate3="formatDate3"></Format>
     <div class="footerside">
       <label>页脚区</label>
-      <div class="footerside-right" :class="{'side-right-border':footerDate.length == 0}">
-        <div class="footerside-right-list" :class="{'height_auto':footerDate.length != 0}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">
-          <el-button type="primary" v-if="footerDate.length == 0" @click="addComponent('footer')">+添加组件</el-button>
-          <div v-if="footerDate.length != 0" v-html="footerDate" style="width: 100%">
+      <div class="footerside-right" :class="{'side-right-border':footerDate == ''}">
+        <div class="footerside-right-list" :class="{'height_auto':footerDate != ''}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">
+          <el-button type="primary" v-if="footerDate == ''" @click="addComponent('footer')">+添加组件</el-button>
+          <div v-if="footerDate != ''" v-html="footerDate" style="width: 100%">
             {{footerDate}}
           </div>
-          <div v-if="footerDate.length != 0" :class="{'delItem':showFooter}">
+          <div v-if="footerDate != ''" :class="{'delItem':showFooter}">
             <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}"></i>
             <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}"></i>
           </div>
@@ -88,18 +88,17 @@
           return {
             html1:'',
             html2:'',
-            row:{
-              name:'导航'
-            },
             type:'',//操作区域
-            topDate:'',
             template:{},
             loading:false,
             activeShow:'',
             delShow:null,
-            bannnerDate:[],
-            formatDate:[],
-            footerDate:'',
+            topDate:'',//页头代码
+            bannnerDate:'',//横幅代码
+            formatDate:'',//版式代码
+            formatDate2:'',//版式代码
+            formatDate3:'',//版式代码
+            footerDate:'',//页脚代码
             showTop:false,
             showBanner:false,
             showFormat:false,
@@ -111,6 +110,9 @@
             activeName:'basis',
             typographyId:null,
             componentList:[],//组件数组
+            templateId:0,//模板分类id
+            pageName:'',//模板姓名
+            pageCode:'',//页面代码拼接
             basisList:[{
               id:1,
               name: '导航',
@@ -154,47 +156,71 @@
           switch(type) {
             case 'top':
               this.topDate = this.componentList[this.activeShow].componentCode
-              this.dialogVisibleManage = false
-              this.dialogVisible = false
               console.log('顶部区')
               break;
             case 'banner':
               console.log('横幅区')
-              this.html1 = Banner.data().html1
+              this.bannnerDate = this.componentList[this.activeShow].componentCode
               break;
-            case 'format':
-              this.html2 = ''
-              console.log('版式区')
+            case 'formatDate':
+              this.formatDate = this.componentList[this.activeShow].componentCode
+              break;
+            case 'formatDate2':
+              this.formatDate2 = this.componentList[this.activeShow].componentCode
+              break;
+            case 'formatDate3':
+              this.formatDate3 = this.componentList[this.activeShow].componentCode
               break;
             case 'footer':
+              this.footerDate = this.componentList[this.activeShow].componentCode
               console.log('页脚区')
               break;
           }
+          this.dialogVisibleManage = false
+          this.dialogVisible = false
         },
         saveTemplate(){
           this.loading = true;
-          setTimeout(() => {
-            this.$router.push({
-              path:'/templateEditor'
-            })
-          }, 500);
+          this.pageCode = this.topDate + this.bannnerDate + this.formatDate + this.formatDate2 + this.formatDate3 + this.footerDate
+          this.$api.apiAddTemplatePage({
+            pageName: this.pageName,
+            templateId: this.templateId,
+            pageCode:this.pageCode,
+            pageAlias:''
+          }).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.$router.push({
+                path:'/templateEditor'
+              })
+            } else {
+              this.$message.error(res.msg)
+            }
+
+          })
         },
         //删除组件
         delComponent(type) {
           switch(type) {
             case 'top':
-              console.log('顶部区')
+              this.topDate = ''
               break;
             case 'banner':
-              console.log('横幅区')
-               this.html1 = Banner.data().html1
+              this.bannnerDate = ''
               break;
             case 'format':
-              this.html2 = ''
-              console.log('版式区')
+              break;
+            case 'formatDate':
+              this.formatDate = ''
+              break;
+            case 'formatDate2':
+              this.formatDate2 = ''
+              break;
+            case 'formatDate3':
+              this.formatDate3 = ''
               break;
             case 'footer':
-              console.log('页脚区')
+              this.footerDate = ''
               break;
           }
         },
@@ -223,6 +249,11 @@
             case 'footer':
               this.openTopFooter('页脚')
               console.log('页脚区')
+              break;
+            default:
+              this.dialogVisible = true
+              this.activeName = 'basis'
+              this.componTitle = '添加组件'
               break;
           }
         },
@@ -255,7 +286,9 @@
         }
       },
       mounted() {
-          this.typographyId = this.$route.query.template.typographyId
+        this.typographyId = this.$route.query.template.typographyId
+        this.pageName = this.$route.query.template.pageName
+        this.templateId = this.$route.query.template.templateId
       }
     }
 </script>

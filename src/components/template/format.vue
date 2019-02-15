@@ -3,41 +3,61 @@
     <label>版式区</label>
     <table border="0" cellspacing="0" cellpadding="0" v-if="typographyId==0">
       <tr>
-        <td :class="{'side-right-border':html2.length == 0}">
-          <div class="formatside-right-list" :class="{'height_auto':html2.length != 0}" @mousemove="showFormat = true" @mouseleave="showFormat=false">
-            <el-button type="primary" v-if="html2.length == 0" @click="addComponent">+添加组件</el-button>
-            <div v-if="html2.length != 0" v-html="html2" style="width: 100%">
-              {{html2}}
+        <td :class="{'side-right-border':formatDate == ''}">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate != ''}" @mousemove="showFormat = true" @mouseleave="showFormat=false">
+            <el-button type="primary" v-if="formatDate == ''" @click="addComponent('formatDate')">+添加组件</el-button>
+            <div v-if="formatDate != ''" v-html="formatDate" style="width: 100%">
+              {{formatDate}}
             </div>
             <!--<img src="@/assets/img/topside.png">-->
-            <div v-if="html2.length != 0" :class="{'delItem':showFormat}">
+            <div v-if="formatDate != ''" :class="{'delItem':showFormat}">
               <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat}" @click="addComponent"></i>
-              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat}" @click="delComponent('format')"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat}" @click="delComponent('formatDate')"></i>
             </div>
           </div>
         </td>
       </tr>
       <tr>
-        <td :class="{'side-right-border':formatDate.length == 0}">
-          <el-button type="primary" v-if="formatDate.length == 0" @click="addComponent">+添加组件</el-button>
+        <td :class="{'side-right-border':formatDate2 == ''}">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate2 != ''}" @mousemove="showFormat2 = true" @mouseleave="showFormat2=false">
+            <el-button type="primary" v-if="formatDate2 == ''" @click="addComponent('formatDate2')">+添加组件</el-button>
+            <div v-if="formatDate2 != ''" v-html="formatDate2" style="width: 100%">
+              {{formatDate2}}
+            </div>
+            <!--<img src="@/assets/img/topside.png">-->
+            <div v-if="formatDate2 != ''" :class="{'delItem':showFormat2}">
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat2}" @click="addComponent"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat2}" @click="delComponent('formatDate2')"></i>
+            </div>
+          </div>
         </td>
       </tr>
       <tr>
-        <td :class="{'side-right-border':formatDate.length == 0}">
-          <el-button type="primary" v-if="formatDate.length == 0" @click="addComponent">+添加组件</el-button>
+        <td :class="{'side-right-border':formatDate3 == ''}">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate3 != ''}" @mousemove="showFormat3 = true" @mouseleave="showFormat3=false">
+            <el-button type="primary" v-if="formatDate3 == ''" @click="addComponent('formatDate3')">+添加组件</el-button>
+            <div v-if="formatDate3 != ''" v-html="showFormat3" style="width: 100%">
+              {{formatDate3}}
+            </div>
+            <!--<img src="@/assets/img/topside.png">-->
+            <div v-if="formatDate3 != ''" :class="{'delItem':showFormat3}">
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat3}" @click="addComponent"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat3}" @click="delComponent('formatDate3')"></i>
+            </div>
+          </div>
         </td>
       </tr>
     </table>
     <table border="0" cellspacing="0" cellpadding="0" v-if="typographyId==1">
       <tr>
-        <td :class="{'side-right-border':html2.length == 0}">
+        <td :class="{'side-right-border':formatDate == ''}">
           <div class="formatside-right-list2" @mousemove="showFormat = true" @mouseleave="showFormat=false">
-            <el-button type="primary" v-if="html2.length == 0" @click="addComponent">+添加组件</el-button>
-            <div v-if="html2.length != 0" v-html="html2" style="width: 100%">
-              {{html2}}
+            <el-button type="primary" v-if="formatDate == ''" @click="addComponent('formatDate')">+添加组件</el-button>
+            <div v-if="formatDate != ''" v-html="formatDate" style="width: 100%">
+              {{formatDate}}
             </div>
             <!--<img src="@/assets/img/topside.png">-->
-            <div v-if="html2.length != 0" :class="{'delItem':showFormat}">
+            <div v-if="formatDate != ''" :class="{'delItem':showFormat}">
               <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat}" @click="addComponent"></i>
               <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat}" @click="delComponent('format')"></i>
             </div>
@@ -53,32 +73,27 @@
       name: "format",
       data() {
         return {
-            html2:'',
-          formatDate:[],
           showFormat:false,
+          showFormat2:false,
+          showFormat3:false,
+          type:''
         }
       },
-      props:['typographyId'],
+      props:['typographyId','formatDate','formatDate2','formatDate3'],
       methods:{
-        addComponent() {
-          this.$emit('addComponent', 'on')
+        addComponent(type) {
+          this.type=type
+          this.$emit('addComponent', type)
         },
         //删除组件
         delComponent(type) {
           switch(type) {
-            case 'top':
-              console.log('顶部区')
+            case 'formatDate':
+
               break;
-            case 'banner':
-              console.log('横幅区')
-              this.html1 = ''
+            case 'formatDate2':
               break;
-            case 'format':
-              this.html2 = ''
-              console.log('版式区')
-              break;
-            case 'footer':
-              console.log('页脚区')
+            case 'formatDate3':
               break;
           }
         },
