@@ -16,8 +16,8 @@
       </div>
       <div class="template-edit-list">
         <ul>
-          <li v-for="(x,i) in templateList" @mousemove="delShow = i" @mouseleave="delShow=null">
-            <img :src="x.url">
+          <li v-for="(item,i) in templateList" @mousemove="delShow = i" @mouseleave="delShow=null">
+            <div v-html="item.pageCode">{{x.pageCode}}</div>
             <div :class="{'delItem':delShow == i}">
             <i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>
             <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}"></i>
@@ -40,10 +40,10 @@
         value: '',
         text:'',
         templateList:[
-          {url: require('../../assets/img/template3.png')},
-          {url: require('../../assets/img/template.png')},
-          {url: require('../../assets/img/template3.png')},
-          {url: require('../../assets/img/template3.png')}
+          // {url: require('../../assets/img/template3.png')},
+          // {url: require('../../assets/img/template.png')},
+          // {url: require('../../assets/img/template3.png')},
+          // {url: require('../../assets/img/template3.png')}
         ]
       }
     },
@@ -76,8 +76,8 @@
           path:'/allTemplate'
         })
       },
-      getTemplateList(val){
-        this.$api.apiTemplateList(val).then(res => {
+      getPageList(val){
+        this.$api.apiPageList(val).then(res => {
           if(res.msg === "success") {
             this.templateList = res.data
           } else {
@@ -88,7 +88,7 @@
     },
     mounted() {
       this.text = this.$route.query.text;
-      this.getTemplateList(this.$route.query.catId)
+      this.getPageList(this.$route.query.templateId)
     }
   }
 </script>

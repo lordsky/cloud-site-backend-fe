@@ -83,7 +83,7 @@
       toAddTemplate(index) {
         this.loading = true;
         let param = {
-          //templateId : this.templateTypeList[index].id,
+          //templateId : this.templateTypeList[index].catType,
           typographyId : this.typographyId,
           //pageName:this.templateTypeList[index].catName
         }

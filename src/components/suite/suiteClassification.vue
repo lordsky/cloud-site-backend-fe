@@ -22,25 +22,25 @@
       </el-form>
     </el-col>
       <div class="suite-box">
-        <el-table :data="tableData3" height="250" border style="width: 100%" tooltip-effect="dark"
+        <el-table :data="templateList" height="250" border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
-          <el-table-column prop="cname" label="套件名称"  align="center">
+          <el-table-column prop="name" label="套件名称"  align="center">
           </el-table-column>
-          <el-table-column prop="name" label="套件分类"  align="center">
+          <el-table-column prop="catId" label="套件分类"  align="center">
           </el-table-column>
-          <el-table-column prop="addTime" label="添加时间" align="center">
-          </el-table-column>
-          <el-table-column prop="state" label="状态"  align="center">
-          </el-table-column>
+          <!--<el-table-column prop="addTime" label="添加时间" align="center">-->
+          <!--</el-table-column>-->
+          <!--<el-table-column prop="state" label="状态"  align="center">-->
+          <!--</el-table-column>-->
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button type="text">预览</el-button>
-              <el-button type="text" v-if="scope.row.state == '下线'" @click="popSuite(scope.$index, scope.row)">上线</el-button>
-              <el-button type="text" v-if="scope.row.state == '上线'" @click="offlineSuite(scope.$index, scope.row)">下线</el-button>
+              <!--<el-button type="text" v-if="scope.row.state == '下线'" @click="popSuite(scope.$index, scope.row)">上线</el-button>-->
+              <!--<el-button type="text" v-if="scope.row.state == '上线'" @click="offlineSuite(scope.$index, scope.row)">下线</el-button>-->
               <el-button type="text" @click="editSuite(scope.$index, scope.row)">编辑</el-button>
-              <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+              <!--<el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>-->
             </template>
           </el-table-column>
         </el-table>
@@ -76,7 +76,7 @@
         componTitle: '',
         classBtn: 1,
         value: '',
-        tableData3: [{
+        templateList: [{
           id:1,
           addTime: '2016-05-03',
           cname:'套件名称1',
@@ -266,6 +266,23 @@
 				this.pageSize = val;
 				this.getUsers();
 			},
+      //获取套件列表
+      getSuiteList(val) {
+        let para = {
+          page: this.page,
+          pageSize: this.pageSize,
+          name: this.filters.name,
+          startTime:this.timeData[0],
+          endTime:this.timeData[1]
+        };
+        this.$api.apiTemplateList(val).then(res => {
+          if(res.msg === "success") {
+            this.templateList = res.data
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      },
     },
 		mounted() {
 			this.getUsers();

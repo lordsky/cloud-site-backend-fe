@@ -1,5 +1,5 @@
 
-import http from './http'
+import http from './http2'
 
 // login
 const apiLogin = (data) => {
@@ -46,10 +46,32 @@ const apiCatType = (data) => {
   })
 }
 
-//查询模板
+//查询模板套件
 const apiTemplateList= (data) => {
   return new Promise((resolve, reject)=>{
     http.get(`/template/list?catId=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//查询模板
+const apiPageList= (data) => {
+  return new Promise((resolve, reject)=>{
+    http.get(`/page/list?catId=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//添加模板
+const apiAddPage = (data) => {
+  return new Promise((resolve, reject)=>{
+    http.post('/page/add',data).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -112,6 +134,17 @@ const apiTemplatePageList= (data) => {
   })
 }
 
+//查询组件（查看组件页面)
+const apiComponentList= (data) => {
+  return new Promise((resolve, reject)=>{
+    http.get(`/component/list?catId=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -120,5 +153,8 @@ export default {
   apiAddTemplateComponent,
   apiAddTemplatePage,
   apiTemplateComponentList,
-  apiTemplatePageList
+  apiTemplatePageList,
+  apiPageList,
+  apiAddPage,
+  apiComponentList
 }

@@ -1,6 +1,6 @@
 
 const hostConfig = {
-  hostUrl: 'http://192.168.4.64:8870'
+  hostUrl: 'http://six-pulse-nerve-backend-dev.uworks.cc'
 }
 
 export default hostConfig

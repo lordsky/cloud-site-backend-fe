@@ -24,17 +24,17 @@
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
-          <el-table-column prop="name" label="套件分类"  align="center">
+          <el-table-column prop="catName" label="套件分类"  align="center">
           </el-table-column>
-          <el-table-column prop="addTime" label="添加时间" align="center">
-          </el-table-column>
-          <el-table-column prop="num" label="套件个数"  align="center">
+          <!--<el-table-column prop="addTime" label="添加时间" align="center">-->
+          <!--</el-table-column>-->
+          <el-table-column prop="catNum" label="套件个数"  align="center">
           </el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="manageSuite(scope.$index, scope.row)">管理</el-button>
-              <el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>
-              <el-button type="text" v-if="scope.row.num == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+              <!--<el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>-->
+              <!--<el-button type="text" v-if="scope.row.num == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>-->
             </template>
           </el-table-column>
         </el-table>
@@ -92,46 +92,47 @@
           catName: '',
           catType:3
         },
-        suiteByType: [{
+        suiteByType: [
+          {
           id:1,
           addTime: '2016-05-03',
-          name: '企业官网',
+          catName: '企业官网',
           num: '0',
           state:'下线'
         }, {
           id:2,
           addTime: '2016-05-02',
-          name: '在线商城',
+          catName: '在线商城',
           num: '5',
           state:'下线'
         }, {
           id:3,
           addTime: '2016-05-04',
-          name: '外贸站',
+          catName: '外贸站',
           num: '3',
           state:'下线'
         }, {
           id:4,
           addTime: '2016-05-01',
-          name: '工作室',
+          catName: '工作室',
           num: '6',
           state:'下线'
         }, {
           id:5,
           addTime: '2016-05-08',
-          name: '协会组织',
+          catName: '协会组织',
           num: '6',
           state:'下线'
         }, {
           id:6,
           addTime: '2016-05-06',
-          name: '个人网站',
+          catName: '个人网站',
           num: '2',
           state:'下线'
         }, {
           id:7,
           addTime: '2016-05-07',
-          name: '学校官网',
+          catName: '学校官网',
           num: '3',
           state:'下线'
         }
@@ -252,7 +253,7 @@
       manageSuite(index, row) {
         this.$router.push({
           path: '/suiteClassification',
-          query:{text:row.name}
+          query:{text:row.catName,catId:row.id}
         })
       },
       //保存

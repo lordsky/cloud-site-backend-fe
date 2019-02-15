@@ -78,7 +78,7 @@
                 <h3 class="classify-title">页面分类</h3>
                 <ul class="classify-list">
                   <li class="classify-item" @click="btnType(index)" :class="{'active':activeShow==index}" v-for="(item,index) of classifyList" :key="index">
-                    {{item.name}}
+                    {{item.catName}}
                     <el-icon class="el-icon-arrow-right fr"></el-icon>
                   </li>
                 </ul>
@@ -86,8 +86,9 @@
             </div>
             <div class="template-edit-list">
               <ul>
-                <li v-for="(x,i) in selectVal" @mousemove="delShow = i" @mouseleave="delShow=null">
-                  <img :src="x.url">
+                <li v-for="(x,i) in componentList" @mousemove="delShow = i" @mouseleave="delShow=null">
+                  <!--<img :src="x.url">-->
+                  <div v-html="x.segmentCode">{{segmentCode}}</div>
                   <div :class="{'delItem':delShow == i}">
                     <span class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage">选择</span>
                   </div>
@@ -110,7 +111,7 @@
     </div>
 </template>
 
-<script>
+<script scoped>
   import '@/assets/js/jquery';
   import WebPage from './webPage'
   let id = 1000;
@@ -119,95 +120,98 @@
       data(){
         return{
           webPageList:{
-            header:'<div style="width:100%;height:6.25vw;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);display: flex;box-sizing: border-box;">\n' +
-              '\t\t\t<div style="display: flex;width: 100%;">\n' +
-              '\t\t\t<ul id="silder" style="display: flex;list-style: none;white-space: nowrap;padding: 0;;justify-content: center;align-items: center;width: 100%;margin: 0;">\n' +
-              '\t\t\t\t<li style="padding: 0 2vw;font-size:14px;font-weight:400;color:rgba(2,111,194,1);cursor: pointer">首页</li>\n' +
-              '\t\t\t</ul>\n' +
-              '\t\t\t</div>\n' +
-              '\t\t</div>',
-            footer:'<div style="width:100%;min-height: 15em;background:rgba(255,255,255,1);box-shadow:2px 0px 4px 2px rgba(0,0,0,0.05);display: flex;">\n' +
-              '\t\t\t<div style="display: flex;width: 100%;">\n' +
-              '\t\t\t\t<div style="margin-top: 5.8125vw;margin-left: 9.375vw;">\n' +
-              '\t\t\t\t\t<div style="font-size:18px;font-family:AppleSystemUIFont;color:rgba(74,144,226,1);cursor: pointer">MUC</div>\n' +
-              '\t\t\t\t\t<div style="margin-top: 3vw;font-size:14px;font-family:AppleSystemUIFont;color:rgba(157,175,189,1);white-space: nowrap;">\n' +
-              '\t\t\t\t\t\t<div>Copyright &#169 CMCC</div>\n' +
-              '\t\t\t\t\t\t<div>All rights reserved</div>\n' +
-              '\t\t\t\t\t</div>\n' +
-              '\t\t\t\t\t<div style="display: flex;margin-top: 1.5vw;">\n' +
-              '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
-              '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
-              '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
-              '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
-              '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
-              '\t\t\t\t\t</div>\n' +
-              '\t\t\t\t</div>\n' +
-              '\t\t\t\t<div style="margin: 5vw 0 5vw 10vw;">\n' +
-              '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">热门产品</div>\n' +
-              '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">特色产品</li>\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">2B 产品</li>\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">2C 产品</li>\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">解决方案</li>\n' +
-              '\t\t\t\t\t</ul>\n' +
-              '\t\t\t\t</div>\n' +
-              '\t\t\t\t<div style="margin: 5vw 0 5vw 14vw;">\n' +
-              '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">公司概况</div>\n' +
-              '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">关于我们</li>\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">人员招聘</li>\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">行业观点</li>\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">联系我们</li>\n' +
-              '\t\t\t\t\t</ul>\n' +
-              '\t\t\t\t</div>\n' +
-              '\t\t\t\t<div style="margin: 5vw 0 5vw 14vw;">\n' +
-              '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">服务支持</div>\n' +
-              '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">客服中心</li>\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">在线帮助</li>\n' +
-              '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">FAQ</li>\n' +
-              '\t\t\t\t\t</ul>\n' +
-              '\t\t\t\t</div>\n' +
-              '\t\t\t</div>\n' +
-              '\t\t</div>',
-            content:'<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;">\n' +
-              '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;">产品特色</div>\n' +
-              '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: .3vw;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
-              '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: space-around;margin-top: 5.625vw;">\n' +
-              '\t\t\t\t<div>\n' +
-              '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
-              '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计需求管理</div>\n' +
-              '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">归口到 MUC|移动用户体验中心 统一管理，统一协调设计资源展开设计、咨询、评审等工作</div>\n' +
-              '\t\t\t\t</div>\n' +
-              '\t\t\t\t<div>\n' +
-              '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
-              '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计立项管理</div>\n' +
-              '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">全部产品设计相关需求立项工作：由统筹整体资源，统一立项并进行设计项目管理</div>\n' +
-              '\t\t\t\t</div>\n' +
-              '\t\t\t\t<div>\n' +
-              '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
-              '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计质量把控</div>\n' +
-              '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">全部产品的“宣传材料”、“UI/UE界面”相关的环节必须由MUC|移动用户体验中心统一质量把控、设计评审</div>\n' +
-              '\t\t\t\t</div>\n' +
-              '\t\t\t\t<div>\n' +
-              '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
-              '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计跟进监督</div>\n' +
-              '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">发布《产品体验设计指数报告》等形式对各产品线设计质量监管，更好改进“大体验”设计来提升品牌价值</div>\n' +
-              '\t\t\t\t</div>\n' +
-              '\t\t\t</div>\n' +
-              '\t\t</div>' +
-              '<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;margin-top: 10px;">\n' +
-              '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;margin-top: 5.1875vw;;">产品特色</div>\n' +
-              '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: 5px;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
-              '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: center;margin-top: 5.625vw;">\n' +
-              '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(238,242,244,1);border-radius:5px;margin-right: 1.875vw;text-align: center;">\n' +
-              '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;margin: 6.75vw auto 0 auto;">设计需求管理</div>\n' +
-              '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;margin: .5vw auto 0 auto;">对“大体验”设计相关需求，包括视觉设计、体验设计、工业设计，改进我们的产品体验而努力</div>\n' +
-              '\t\t\t\t</div>\n' +
-              '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;margin-right: 1.875vw;"></div>\n' +
-              '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;"></div>\n' +
-              '\t\t\t</div>\n' +
-              '\t\t</div>',
+            header: '',
+            footer: '',
+            content: ''
+            // header:'<div style="width:100%;height:6.25vw;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);display: flex;box-sizing: border-box;">\n' +
+            //   '\t\t\t<div style="display: flex;width: 100%;">\n' +
+            //   '\t\t\t<ul id="silder" style="display: flex;list-style: none;white-space: nowrap;padding: 0;;justify-content: center;align-items: center;width: 100%;margin: 0;">\n' +
+            //   '\t\t\t\t<li style="padding: 0 2vw;font-size:14px;font-weight:400;color:rgba(2,111,194,1);cursor: pointer">首页</li>\n' +
+            //   '\t\t\t</ul>\n' +
+            //   '\t\t\t</div>\n' +
+            //   '\t\t</div>',
+            // footer:'<div style="width:100%;min-height: 15em;background:rgba(255,255,255,1);box-shadow:2px 0px 4px 2px rgba(0,0,0,0.05);display: flex;">\n' +
+            //   '\t\t\t<div style="display: flex;width: 100%;">\n' +
+            //   '\t\t\t\t<div style="margin-top: 5.8125vw;margin-left: 9.375vw;">\n' +
+            //   '\t\t\t\t\t<div style="font-size:18px;font-family:AppleSystemUIFont;color:rgba(74,144,226,1);cursor: pointer">MUC</div>\n' +
+            //   '\t\t\t\t\t<div style="margin-top: 3vw;font-size:14px;font-family:AppleSystemUIFont;color:rgba(157,175,189,1);white-space: nowrap;">\n' +
+            //   '\t\t\t\t\t\t<div>Copyright &#169 CMCC</div>\n' +
+            //   '\t\t\t\t\t\t<div>All rights reserved</div>\n' +
+            //   '\t\t\t\t\t</div>\n' +
+            //   '\t\t\t\t\t<div style="display: flex;margin-top: 1.5vw;">\n' +
+            //   '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
+            //   '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
+            //   '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
+            //   '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
+            //   '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
+            //   '\t\t\t\t\t</div>\n' +
+            //   '\t\t\t\t</div>\n' +
+            //   '\t\t\t\t<div style="margin: 5vw 0 5vw 10vw;">\n' +
+            //   '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">热门产品</div>\n' +
+            //   '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">特色产品</li>\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">2B 产品</li>\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">2C 产品</li>\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">解决方案</li>\n' +
+            //   '\t\t\t\t\t</ul>\n' +
+            //   '\t\t\t\t</div>\n' +
+            //   '\t\t\t\t<div style="margin: 5vw 0 5vw 14vw;">\n' +
+            //   '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">公司概况</div>\n' +
+            //   '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">关于我们</li>\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">人员招聘</li>\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">行业观点</li>\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">联系我们</li>\n' +
+            //   '\t\t\t\t\t</ul>\n' +
+            //   '\t\t\t\t</div>\n' +
+            //   '\t\t\t\t<div style="margin: 5vw 0 5vw 14vw;">\n' +
+            //   '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">服务支持</div>\n' +
+            //   '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">客服中心</li>\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">在线帮助</li>\n' +
+            //   '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">FAQ</li>\n' +
+            //   '\t\t\t\t\t</ul>\n' +
+            //   '\t\t\t\t</div>\n' +
+            //   '\t\t\t</div>\n' +
+            //   '\t\t</div>',
+            // content:'<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;">\n' +
+            //   '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;">产品特色</div>\n' +
+            //   '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: .3vw;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
+            //   '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: space-around;margin-top: 5.625vw;">\n' +
+            //   '\t\t\t\t<div>\n' +
+            //   '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
+            //   '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计需求管理</div>\n' +
+            //   '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">归口到 MUC|移动用户体验中心 统一管理，统一协调设计资源展开设计、咨询、评审等工作</div>\n' +
+            //   '\t\t\t\t</div>\n' +
+            //   '\t\t\t\t<div>\n' +
+            //   '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
+            //   '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计立项管理</div>\n' +
+            //   '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">全部产品设计相关需求立项工作：由统筹整体资源，统一立项并进行设计项目管理</div>\n' +
+            //   '\t\t\t\t</div>\n' +
+            //   '\t\t\t\t<div>\n' +
+            //   '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
+            //   '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计质量把控</div>\n' +
+            //   '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">全部产品的“宣传材料”、“UI/UE界面”相关的环节必须由MUC|移动用户体验中心统一质量把控、设计评审</div>\n' +
+            //   '\t\t\t\t</div>\n' +
+            //   '\t\t\t\t<div>\n' +
+            //   '\t\t\t\t\t<div style="width:4.25vw;height:4.25vw;background:rgba(249,251,252,1);border-radius:4.25vw;border:1px solid rgba(157,175,189,1);text-align: center;margin: 0 auto;"></div>\n' +
+            //   '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;">设计跟进监督</div>\n' +
+            //   '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;">发布《产品体验设计指数报告》等形式对各产品线设计质量监管，更好改进“大体验”设计来提升品牌价值</div>\n' +
+            //   '\t\t\t\t</div>\n' +
+            //   '\t\t\t</div>\n' +
+            //   '\t\t</div>' +
+            //   '<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;margin-top: 10px;">\n' +
+            //   '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;margin-top: 5.1875vw;;">产品特色</div>\n' +
+            //   '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: 5px;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
+            //   '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: center;margin-top: 5.625vw;">\n' +
+            //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(238,242,244,1);border-radius:5px;margin-right: 1.875vw;text-align: center;">\n' +
+            //   '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;margin: 6.75vw auto 0 auto;">设计需求管理</div>\n' +
+            //   '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;margin: .5vw auto 0 auto;">对“大体验”设计相关需求，包括视觉设计、体验设计、工业设计，改进我们的产品体验而努力</div>\n' +
+            //   '\t\t\t\t</div>\n' +
+            //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;margin-right: 1.875vw;"></div>\n' +
+            //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;"></div>\n' +
+            //   '\t\t\t</div>\n' +
+            //   '\t\t</div>',
           },
           formCompon: {
             name: ''
@@ -234,32 +238,17 @@
             }],
           classifyList: [
             {
-              name: "关于我们"
+              catName: "关于我们"
             },
             {
-              name: "联系我们"
-            },
-            {
-              name: "专题活动"
-            },
-            {
-              name: "新闻咨询"
-            },
-            {
-              name: "产品展示"
-            },
-            {
-              name: "摄影作品"
-            },
-            {
-              name: "招聘信息"
+              catName: "联系我们"
             }
           ],
-          selectVal:[
-            {url: require('../../assets/img/template3.png')},
-            {url: require('../../assets/img/template.png')},
-            {url: require('../../assets/img/template3.png')},
-            {url: require('../../assets/img/template3.png')}
+          componentList:[
+            // {url: require('../../assets/img/template3.png')},
+            // {url: require('../../assets/img/template.png')},
+            // {url: require('../../assets/img/template3.png')},
+            // {url: require('../../assets/img/template3.png')}
           ],
           data2:[],
           node:[],
@@ -349,7 +338,28 @@
           }
           this.data1.push(newChild);
           $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;font-size:14px;font-weight:400;color:rgba(2,111,194,1);cursor: pointer">关于我们</li>')
-        }
+        },
+        //获取模版分类列表
+        getComponList() {
+          console.log('获取列表')
+          API.apiCatType(2).then(res => {
+            if(res.msg === "success") {
+              this.classifyList = res.data
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        },
+        //获取组件页面列表
+        getComponentList(val){
+          this.$api.apiComponentList(val).then(res => {
+            if(res.msg === "success") {
+              this.componentList = res.data
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        },
       }
     }
 </script>
@@ -448,7 +458,7 @@
         display: flex;
         width: 100%;
         .classify {
-          width: 60%;
+          width: 25vw;;
           margin-right: 20px;
           .classify-warp {
             margin-top: 30px;

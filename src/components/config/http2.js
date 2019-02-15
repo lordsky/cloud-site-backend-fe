@@ -28,9 +28,10 @@ let closeLoading = ()=> {
 let instance = axios.create({
   baseURL: hostConfig.hostUrl,
   // withCredentials: true,
-  timeout: 1000 * 12,
+  timeout: 1000 * 2,
   headers: {
-    'Content-Type': 'application/json;charset=utf-8'
+    'Content-Type': 'application/json;charset=utf-8',
+    'Access-Control-Allow-Origin': '*'
   }
 })
 

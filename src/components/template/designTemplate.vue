@@ -13,7 +13,7 @@
             {{topDate}}
           </div>
           <div v-if="topDate != ''" :class="{'delItem':showTop}">
-            <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent(row,'top')"></i>
+            <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent('top')"></i>
             <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>
           </div>
         </div>
@@ -50,8 +50,8 @@
           <ul>
             <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)">
               <div>
-              <div><i class="compon-edit-ico" :class="x.icon"></i></div>
-              <div>{{x.name}}</div>
+              <div><i class="compon-edit-ico el-icon-news"></i></div>
+              <div>{{x.catName}}</div>
               </div>
             </li>
           </ul>
@@ -65,8 +65,8 @@
     <el-dialog :title="manageComponTitle" :visible.sync="dialogVisibleManage" width="80%" class="manage-dialog">
       <div class="compon-edit-list">
         <ul>
-          <li v-for="(item,i) in componentList" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i" v-html="item.componentCode">
-          {{item.componentCode}}
+          <li v-for="(item,i) in componentList" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i" v-html="item.segmentCode">
+          {{item.segmentCode}}
           </li>
         </ul>
       </div>
@@ -113,23 +113,24 @@
             templateId:0,//模板分类id
             pageName:'',//模板姓名
             pageCode:'',//页面代码拼接
-            basisList:[{
-              id:1,
-              name: '导航',
-              icon: 'el-icon-news',
-            },{
-              id:2,
-              name: '内容',
-              icon: 'el-icon-tickets',
-            },{
-              id:3,
-              name: '轮播条',
-              icon: 'el-icon-picture',
-            },{
-              id:4,
-              name: '作品案例',
-              icon: 'el-icon-document',
-            }],
+            basisList:[],//组件分类
+            // basisList:[{
+            //   id:1,
+            //   name: '导航',
+            //   icon: 'el-icon-news',
+            // },{
+            //   id:2,
+            //   name: '内容',
+            //   icon: 'el-icon-tickets',
+            // },{
+            //   id:3,
+            //   name: '轮播条',
+            //   icon: 'el-icon-picture',
+            // },{
+            //   id:4,
+            //   name: '作品案例',
+            //   icon: 'el-icon-document',
+            // }],
             form: {
               top: '',
               banner: '',
@@ -155,24 +156,24 @@
         completeDialog(type){
           switch(type) {
             case 'top':
-              this.topDate = this.componentList[this.activeShow].componentCode
+              this.topDate = this.componentList[this.activeShow].segmentCode
               console.log('顶部区')
               break;
             case 'banner':
               console.log('横幅区')
-              this.bannnerDate = this.componentList[this.activeShow].componentCode
+              this.bannnerDate = this.componentList[this.activeShow].segmentCode
               break;
             case 'formatDate':
-              this.formatDate = this.componentList[this.activeShow].componentCode
+              this.formatDate = this.componentList[this.activeShow].segmentCode
               break;
             case 'formatDate2':
-              this.formatDate2 = this.componentList[this.activeShow].componentCode
+              this.formatDate2 = this.componentList[this.activeShow].segmentCode
               break;
             case 'formatDate3':
-              this.formatDate3 = this.componentList[this.activeShow].componentCode
+              this.formatDate3 = this.componentList[this.activeShow].segmentCode
               break;
             case 'footer':
-              this.footerDate = this.componentList[this.activeShow].componentCode
+              this.footerDate = this.componentList[this.activeShow].segmentCode
               console.log('页脚区')
               break;
           }
@@ -191,7 +192,8 @@
             console.log(res)
             if(res.code === 200) {
               this.$router.push({
-                path:'/templateEditor'
+                path:'/templateEditor',
+                query:{text:this.pageName,templateId:this.templateId}
               })
             } else {
               this.$message.error(res.msg)
@@ -227,28 +229,27 @@
         //添加组件
         addComponent(type){
           this.type = type
+          this.getBasisList
           switch(type) {
             case 'top':
-              this.openTopFooter('导航')
-              console.log('顶部区')
+              this.dialogVisible = true
+              this.activeName = 'basis'
+              this.componTitle = '添加组件'
               break;
             case 'banner':
               this.dialogVisible = true
               this.activeName = 'basis'
               this.componTitle = '添加组件'
-              console.log('横幅区')
-              this.html1 = Banner.data().html1
               break;
             case 'format':
               this.dialogVisible = true
               this.activeName = 'basis'
               this.componTitle = '添加组件'
-              this.html2 = ''
-              console.log('版式区')
               break;
             case 'footer':
-              this.openTopFooter('页脚')
-              console.log('页脚区')
+              this.dialogVisible = true
+              this.activeName = 'basis'
+              this.componTitle = '添加组件'
               break;
             default:
               this.dialogVisible = true
@@ -258,13 +259,13 @@
           }
         },
         //直接打开页头页脚组件选择
-        openTopFooter(row){
-          this.getComponentList()
+        openTopFooter(row,index){
+          this.getComponentList(index)
           this.dialogVisibleManage = true
           this.manageComponTitle = row
         },
         openManage(row,i){
-            this.getComponentList()
+            this.getComponentList(row.id)
             this.dialogVisibleManage = true
             this.manageComponTitle = row.name
         },
@@ -276,14 +277,24 @@
         },
         //获取组件列表
         getComponentList(val){
-          this.$api.apiTemplateComponentList(val).then(res => {
+          this.$api.apiComponentList(val).then(res => {
             if(res.msg === "success") {
               this.componentList = res.data
             } else {
               this.$message.error(res.msg)
             }
           })
-        }
+        },
+        //获取组件分类
+        getBasisList() {
+          this.$api.apiCatType(1).then(res => {
+            if(res.msg === "success") {
+              this.basisList = res.data
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        },
       },
       mounted() {
         this.typographyId = this.$route.query.template.typographyId

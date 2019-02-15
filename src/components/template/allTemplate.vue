@@ -32,15 +32,15 @@
           </el-table-column>
           <!--<el-table-column prop="state" label="状态"  align="center">-->
           <!--</el-table-column>-->
-          <!--<el-table-column label="操作" width="200" align="center">-->
-            <!--<template slot-scope="scope">-->
-              <!--<el-button type="text" @click="manageCompon(scope.$index, scope.row)">管理</el-button>-->
+          <el-table-column label="操作" width="200" align="center">
+            <template slot-scope="scope">
+              <el-button type="text" @click="manageCompon(scope.$index, scope.row)">管理</el-button>
               <!--<el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>-->
               <!--<el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>-->
               <!--<el-button type="text" v-if="scope.row.state == '上线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>-->
               <!--<el-button type="text" v-if="scope.row.num == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>-->
-            <!--</template>-->
-          <!--</el-table-column>-->
+            </template>
+          </el-table-column>
         </el-table>
       </div>
 
@@ -52,7 +52,7 @@
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">
         <el-form :inline="true" :model="addCatRequest" class="demo-form-inline" ref="addCatRequest">
-          <el-form-item label="模版分类名称:" prop="name" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
+          <el-form-item label="模版分类名称:" prop="addCatRequest" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
             <el-input v-model="addCatRequest.catName" :placeholder="dialogText"></el-input>
           </el-form-item>
         </el-form>
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-  //import http from '../../components/config/http.js'
+  //import http from '../../components/config/http2.js'
   import API from '../config/server';
   export default {
     name: 'allTemplate',
@@ -290,7 +290,7 @@
       manageCompon(index, row) {
         this.$router.push({
           path: '/templateEditor',
-          query:{text:row.name,catId:row.id}
+          query:{text:row.name,templateId:row.catType}
         })
       },
       //保存
