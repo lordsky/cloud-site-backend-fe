@@ -28,7 +28,7 @@
     methods: {
     	//伸缩按钮
       onLeft(res) {
-      	console.log(res)
+//    	console.log(res)
         this.switchLeft = !this.switchLeft
       },
       

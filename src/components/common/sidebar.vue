@@ -72,7 +72,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
  .sidebar{
  	float: left;
  	height: 100vh;
@@ -116,7 +116,7 @@
     width: 100%;
     height: 100%;
     display: block;
-    animation: aa 1s ease-out;
+    animation: aa 1s ease;
   }
   @keyframes aa{
   	from{opacity: 0;}
