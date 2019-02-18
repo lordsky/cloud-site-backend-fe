@@ -261,16 +261,8 @@
         WebPage
       },
       methods:{
-        //保存页面
-        saveWeb(){
-          if(this.webPageAll.length == 0){
-            this.$message({
-              message: '请先添加页面',
-              type: 'warning'
-            });
-            return false
-          }
-          //上次页头代码
+        //保存页头
+        saveHeaderPage : async function(){
           this.$api.apiAddTemplateComponent({
             componentCat: 1,
             componentCode: this.webPageList.header,
@@ -282,7 +274,9 @@
               this.$message.error(res.msg)
             }
           })
-          //上传页脚代码
+        },
+        //保存页脚
+        saveFooterPage : async function(){
           this.$api.apiAddTemplateComponent({
             componentCat: 2,
             componentCode: this.webPageList.footer,
@@ -294,6 +288,20 @@
               this.$message.error(res.msg)
             }
           })
+        },
+        //保存页面
+        saveWeb(){
+          if(this.webPageAll.length == 0){
+            this.$message({
+              message: '请先添加页面',
+              type: 'warning'
+            });
+            return false
+          }
+          //上次页头代码
+          this.saveHeaderPage()
+          //上传页脚代码
+          this.saveFooterPage()
           //上传内容代码
           for(let i=0;i<this.webPageAll.length;i++){
             this.$api.apiAddTemplatePage({
@@ -377,11 +385,13 @@
           if(this.savePage == false){
             this.saveWeb()
             if(this.saveWeb() != false){
+              pageNum = 1
               this.$router.push({
                 path:'/suiteClassification'
               })
             }
           }else{
+            pageNum = 1
             this.$router.push({
               path:'/suiteClassification'
             })
@@ -462,18 +472,19 @@
             pageNum++
           }
           this.dialogVisible3=false
-          this.webPageList.content = '<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;">\n' +
-            '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;margin-top: 5.1875vw;;">产品特色</div>\n' +
-            '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: 5px;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
-            '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: center;margin-top: 5.625vw;">\n' +
-            '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(238,242,244,1);border-radius:5px;margin-right: 1.875vw;text-align: center;">\n' +
-            '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;margin: 6.75vw auto 0 auto;">设计需求管理</div>\n' +
-            '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;margin: .5vw auto 0 auto;">对“大体验”设计相关需求，包括视觉设计、体验设计、工业设计，改进我们的产品体验而努力</div>\n' +
-            '\t\t\t\t</div>\n' +
-            '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;margin-right: 1.875vw;"></div>\n' +
-            '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;"></div>\n' +
-            '\t\t\t</div>\n' +
-            '\t\t</div>'
+          this.webPageList.content = data.pageCode
+          // this.webPageList.content = '<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;">\n' +
+          //   '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;margin-top: 5.1875vw;;">产品特色</div>\n' +
+          //   '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: 5px;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
+          //   '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: center;margin-top: 5.625vw;">\n' +
+          //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(238,242,244,1);border-radius:5px;margin-right: 1.875vw;text-align: center;">\n' +
+          //   '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;margin: 6.75vw auto 0 auto;">设计需求管理</div>\n' +
+          //   '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;margin: .5vw auto 0 auto;">对“大体验”设计相关需求，包括视觉设计、体验设计、工业设计，改进我们的产品体验而努力</div>\n' +
+          //   '\t\t\t\t</div>\n' +
+          //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;margin-right: 1.875vw;"></div>\n' +
+          //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;"></div>\n' +
+          //   '\t\t\t</div>\n' +
+          //   '\t\t</div>'
           const newChild = { id: id++, label: this.pageName, children: [] };
           if (!this.data1.children) {
             this.$set(this.data1, '关于我们', []);
