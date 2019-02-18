@@ -6,7 +6,7 @@
 // axios.defaults.headers.common['Content-Type'] = 'application/json; charset=UTF-8';
 import axios from 'axios'
 import hostConfig from './host'
-import { Loading , Message} from 'element-ui'
+import { Loading } from 'element-ui'
 
 const options = {
   lock: true,
@@ -31,12 +31,10 @@ let instance = axios.create({
   timeout: 1000 * 2,
   headers: {
     'Content-Type': 'application/json;charset=utf-8',
-    'Access-Control-Allow-Origin': '*',
-    'Authorization':'26fc18b978ad4fe69c31241e3324aac7'
+    'Access-Control-Allow-Origin': '*'
   }
 })
 
-instance.defaults.headers.common["Authorization"] = '26fc18b978ad4fe69c31241e3324aac7';
 
 // http请求拦截器
 instance.interceptors.request.use(config => {
@@ -46,10 +44,6 @@ instance.interceptors.request.use(config => {
 }, error => {
   closeLoading()
   console.log('请求失败')
-  Message({
-    message: '网络错误，请稍后重试',
-    type: 'error'
-  })
   return Promise.reject(error)
 })
 
@@ -61,10 +55,6 @@ instance.interceptors.response.use(data => {
 }, error => {
   closeLoading()
   console.log('响应失败')
-  Message({
-    message: '服务器端错误，请稍后重试',
-    type: 'error'
-  })
   throw Error(error)
   return Promise.reject(error)
 })

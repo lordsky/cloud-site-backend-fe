@@ -32,7 +32,7 @@
     name: 'sidebar',
     data() {
       return {
-         showItem:'1-1',
+         showItem:'2-1',
          one:true,
          sideText:sideText
       }

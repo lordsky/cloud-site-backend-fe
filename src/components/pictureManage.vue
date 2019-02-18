@@ -15,23 +15,23 @@
       </div>
       <div class="picture-list" v-show="listLabel==1">
         <div class="picture-list-item update" >
-          <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="imgSuccess" :before-upload="imgUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <el-upload class="avatar-uploader" :action="host.hostUrl+'common/upload'"  :on-success="imgSuccess">
+            <!--<img v-if="imageUrl" :src="imageUrl" class="avatar">-->
+            <i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传图片支持jpg,png,gif等格式，不超过10M</i>
         </div>
-        <div class="picture-list-item" v-for="(x,i) in 7" @mouseleave="itemShow = null" @mouseenter="itemShow = i" >
-        	  <img src="../assets/logo.jpeg" @click="choose(i,checkShow[i])"/>
+        <div class="picture-list-item" v-for="(x,i) in picList" @mouseleave="itemShow = null" @mouseenter="itemShow = i" :key="i">
+        	  <img :src="x.filePath" @click="choose(i,checkShow[i])"/>
         	  <div class="picture-list-item-check">
         	  	
         	    <el-checkbox v-model="checkList[i]" v-show="checkShow[i]" disabled></el-checkbox>
         	  </div>
-        	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>导航栏</span></div>
+        	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
         	  	<span class="el-icon-view"></span>
-        	  	<span class="el-icon-edit" @click="editItem"></span>
-        	  	<span class="el-icon-delete" @click="delItem"></span>
+        	  	<!--<span class="el-icon-edit" @click="editItem"></span>-->
+        	  	<span class="el-icon-delete" @click="delItemPic(x)"></span>
         	  </div>
         </div>
       </div>
@@ -41,22 +41,21 @@
       </div>
       <div class="picture-list" v-show="listLabel==2">
         <div class="picture-list-item update" >
-          <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="imgSuccess" :before-upload="videoUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <el-upload class="avatar-uploader" :action="host.hostUrl+'common/upload'" :on-success="videoSuccess" >
+          	<i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传视频支持MP4,wma等格式，不超过10M</i>
         </div>
-        <div class="picture-list-item" v-for="(x,i) in 3" @mouseleave="itemShow = null" @mouseenter="itemShow = i" >
-        	  <img src="../assets/logo.jpeg" @click="videoChoose(i,checkVideoShow[i])"/>
+        <div class="picture-list-item" v-for="(x,i) in videoList" @mouseleave="itemShow = null" @mouseenter="itemShow = i" :key="i">
+        	  <img :src="x.filePath" @click="videoChoose(i,checkVideoShow[i])"/>
         	  <div class="picture-list-item-check">
         	    <el-checkbox v-model="checkVideoList[i]" v-show="checkVideoShow[i]" disabled></el-checkbox>
         	  </div>
-        	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>记录视频</span></div>
+        	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
         	  	<span class="el-icon-view"></span>
-        	  	<span class="el-icon-edit" @click="editItem"></span>
-        	  	<span class="el-icon-delete" @click="delItem"></span>
+        	  	<!--<span class="el-icon-edit" @click="editItem"></span>-->
+        	  	<span class="el-icon-delete" @click="delItemVideo(x)"></span>
         	  </div>
         </div>
       </div>
@@ -67,9 +66,9 @@
       background
       @current-change="handleCurrentChange"
       :current-page.sync="currentPage"
-      :page-size="100"
+      :page-size="10"
       layout="prev, pager, next, jumper"
-      :total="1000">
+      :total="10">
         </el-pagination>
       </div>
        <div class="pictrue-page"v-show="listLabel==2">
@@ -78,9 +77,9 @@
       background
       @current-change="handleCurrentChange"
       :current-page.sync="currentPage"
-      :page-size="100"
+      :page-size="10"
       layout="prev, pager, next, jumper"
-      :total="1000">
+      :total="10">
         </el-pagination>
       </div>
     </div>
@@ -88,6 +87,7 @@
 </template>
 
 <script>
+	import host from './config/host'
   export default {
     name: 'pictureManage',
     data() {
@@ -103,13 +103,47 @@
         checkVideoShow:[],
         checkVideoList:[],
         picAllStatu:false,
-        videoAllStatu:false
+        videoAllStatu:false,
+        picList:[],
+        videoList:[],
+        host:host
       }
     },
     watch:{
     	
     },
+    created(){
+    	   this.getpicList()
+    	   this.getVideo()
+    },
     methods: {
+    	  getpicList(){
+    	  	this.$http.get(this.$API.getMaterials+'?materialsType=1',(res)=>{
+    	  		console.log(res)
+    	  		if(res.data.code==200){
+    	  			this.picList = res.data.data
+    	  		}
+    	  	})
+    	  },
+    	  getVideo(){
+    	  	this.$http.get(this.$API.getMaterials+'?materialsType=2',(res)=>{
+    	  		console.log(res)
+    	  		if(res.data.code==200){
+    	  			this.videoList = res.data.data
+    	  		}
+    	  	})
+    	  },
+    	  videoSuccess(file){
+    	  	console.log(file)
+        if(file.status=='success'){
+        	   this.$http.post(this.$API.materialsUpload,{
+        	   	filePath:file.response,
+        	   	materialsType:2
+        	   },(res)=>{
+        	   	console.log(res)
+        	   })
+        }
+    	  },
     	 //全选
     	  picAllChange(val){
     	  	if(this.picAllStatu){
@@ -130,16 +164,47 @@
     	  	console.log(this.checked)
     	  },
     	  //删除
-    	  delItem(){
+    	  delItemPic(res){
+    	  	console.log(res)
     	  	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+        	  this.$http.delete(this.$API.materialsAllDel+'?materialsIds='+res.id,{},(res)=>{
+        	  	 console.log(res)
+        	  	 if(res.data.data){
+        	  	 	this.getpicList()
+        	  	 	this.$message({
+	            type: 'success',
+	            message: '删除成功!'
+	          });
+        	  	 }
+        	  })
+        }).catch(() => {
           this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    	  },
+    	  delItemVideo(res){
+    	  	console.log(res)
+    	  	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        	  this.$http.delete(this.$API.materialsAllDel+'?materialsIds='+res.id,{},(res)=>{
+        	  	 console.log(res)
+        	  	 if(res.data.data){
+        	  	 	this.getVideo()
+        	  	 	this.$message({
+	            type: 'success',
+	            message: '删除成功!'
+	          });
+        	  	 }
+        	  })
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -149,7 +214,6 @@
     	  },
     	  //修改
     	  editItem(){
-    	  	
     	  	this.$prompt('', '修改文件名', {
           confirmButtonText: '保存',
           cancelButtonText: '取消',
@@ -170,7 +234,15 @@
         this.listLabel = key
       },
       imgSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
+        console.log(file)
+        if(file.status=='success'){
+        	   this.$http.post(this.$API.materialsUpload,{
+        	   	filePath:file.response,
+        	   	materialsType:1
+        	   },(res)=>{
+        	   	console.log(res)
+        	   })
+        }
       },
       //图片上传
       imgUpload(file) {
@@ -251,7 +323,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
   .picture-head {
     margin-top: 10px;
   }
@@ -275,6 +347,9 @@
   		content: '';
   		clear: both;
   		display:block;
+  	}
+  	.el-upload-list{
+  		display: none;
   	}
   	.picture-list-item{
   		overflow: hidden;
@@ -351,8 +426,8 @@
   	   	.el-checkbox__inner{
   	   		background-color:#1afa29;
   	   		border-color: #1afa29;
-  	   		width: 40px;
-  	   		height: 40px;
+  	   		width: 40px !important;
+  	   		height: 40px !important;
   	   		border-radius: 50%;
   	   		display: flex;
   	   		justify-content: center;

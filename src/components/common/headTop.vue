@@ -2,10 +2,10 @@
   <div class="headTop">
     <div class="head-left" :class="{'offIco':icoShow}" @click="onLeft"></div>
     <div class="head-right">
-      <span class="head-user-ico"></span>
+      <!--<span class="head-user-ico"></span>-->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link">
-        	<span class="head-right-user">用户名称</span>
+        	<span class="head-right-user">{{user.username}}</span>
         <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -29,10 +29,12 @@
     data() {
       return {
         icoShow: false,
-        dialogVisible:false
+        dialogVisible:false,
+        user:{}
       }
     },
     methods: {
+    	
     	//伸缩按钮
       onLeft() {
         this.icoShow = !this.icoShow
@@ -41,7 +43,14 @@
       //退出
       exitUser(){
       	this.$router.push({path:'/'})
+    	 	localStorage.removeItem('cloudUser');
+    	 	console.log(localStorage.cloudUser)
       }
+    },
+    created(){
+    	   if(this.$userInfo){
+    	   	  this.user = this.$userInfo
+    	   }
     }
   }
 </script>
@@ -65,17 +74,10 @@
       background-size: 100% 100%;
     }
     .head-right {
-      margin-right: 40px;
+      margin-right: 2.5vw;
       display: flex;
       align-items: center;
-      .head-user-ico {
-        display: inline-block;
-        height: 30px;
-        width: 30px;
-        border-radius: 50%;
-        margin-right: 10px;
-        background: saddlebrown;
-      }
+      
       .el-dropdown {
         cursor: pointer;
       }

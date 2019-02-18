@@ -5,7 +5,7 @@
       <el-button type="text" @click="backCompon">返回</el-button>
     </div>
     <div class="compon-edit-box">
-      <p>组件个数 ：7</p>
+      <p>组件个数 ：</p>
       <div class="compon-edit-add">
         <div class="compon-edit-add-btn" @click="addCompon">
           <i class="el-icon-circle-plus-outline"></i><span>新增组件</span>
@@ -13,8 +13,8 @@
       </div>
       <div class="compon-edit-list">
         <ul>
-          <li v-for="(x,i) in 10" :class="{'delItem':delShow==i}" @mousemove="delShow = i" @mouseleave="delShow=null">
-            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent"></i></li>
+          <li v-for="(x,i) in comItem" :class="{'delItem':delShow==i}" @mousemove="delShow = i" @mouseleave="delShow=null" :key="i">
+            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i></li>
         </ul>
       </div>
     </div>
@@ -23,15 +23,15 @@
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="选择组件分类：">
             <el-select v-model="value" placeholder="请选择">
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+              <el-option v-for="item in options" :key="item.id" :label="item.catName" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
           <div class="el-dialog-componAdd-update">
             <span class="el-componAdd-update-title">上传文件：</span>
-            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" list-type="text">
-              <el-button size="small" type="primary">选择文件</el-button>
-            </el-upload>
+             <form enctype="multipart/form-data" method="POST" ref="uploadForm">
+			    <input name="file" type="file" ref="file" @change="uploadText"> 
+			</form>
           </div>
         </el-form>
       </div>
@@ -52,25 +52,22 @@
         delShow: null,
         dialogAdd: false,
         value: '',
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
+        options:[],
+        comItem:{},
+        comList:{},
+        textData:{}
       }
     },
+    created(){
+    	   console.log(this.$route.query)
+    	   this.comItem = this.$route.query.msg
+    	   this.options.push(this.$route.query.list)
+    },
     methods: {
+    	 uploadText(e){
+    	  	var file = e.target.files[0] 
+    	  	this.textData = file
+    	  },
       //删除组件
       delComponent() {
         this.$confirm('是否删除该组件?', '提示', {

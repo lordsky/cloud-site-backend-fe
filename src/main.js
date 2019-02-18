@@ -5,11 +5,14 @@ import App from './App'
 import router from './router'
 import 'element-ui/lib/theme-chalk/index.css';
 import ElementUI from 'element-ui'
-import http from './components/config/http2.js'
+import {http} from './components/config/http.js'
 import API from "./components/config/server";
 import store from './store'
 import NProgress from "nprogress"; // Progress 进度条
 import "nprogress/nprogress.css"; // Progress 进度条样式
+
+import service from './components/config/service'
+Vue.prototype.$API = service
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false
@@ -35,6 +38,15 @@ router.afterEach(transition => {
   NProgress.done();
 });
 
+let USERINFO = (function(){
+	if(localStorage.getItem('cloudUser')){
+		let user = localStorage.getItem('cloudUser')
+		return JSON.parse(user)
+	}else{
+		return ''
+	}
+})()
+Vue.prototype.$userInfo = USERINFO
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

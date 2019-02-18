@@ -7,11 +7,11 @@
       </div>
       <div class="login-input">
         <el-form :model="data" status-icon :rules="rules2" ref="ruleForm2" class="demo-ruleForm">
-          <el-form-item prop="account">
-            <el-input v-model="data.account" placeholder="请输入管理员账号"></el-input>
+          <el-form-item prop="phone">
+            <el-input v-model="data.phone" placeholder="请输入管理员账号"></el-input>
           </el-form-item>
-          <el-form-item prop="password">
-            <el-input type="password" v-model="data.password" placeholder="请输入密码"></el-input>
+          <el-form-item prop="pwd">
+            <el-input type="password" v-model="data.pwd" placeholder="请输入密码"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="login">立即登陆</el-button>
@@ -28,15 +28,15 @@
     data() {
       return {
         data: {
-          account: '',
-          password: '',
+          phone: '',
+          pwd: '',
         },
         rules2: {
-          account: [{
+          phone: [{
             required: true,
             message: '账号不能为空'
           }, ],
-          password: [{
+          pwd: [{
             required: true,
             message: '密码不能为空'
           }, ],
@@ -46,13 +46,15 @@
     methods: {
       //登录
       login() { 
-        if(this.data.account && this.data.password) { 
-        	  this.$http.get('http://rap2api.taobao.org/app/mock/94406/example/1539570567895',(res)=>{
-        	  	        console.log(res)
+        if(this.data.phone && this.data.pwd) { 
+        	  this.$http.post(this.$API.login,this.data,(res)=>{
+        	  	        if(res.data.code==200){
+        	  	        	    localStorage.setItem('cloudUser',JSON.stringify(res.data.data))
+        	  	        	    this.$router.push({
+				          path: '/manageComponent'
+				        })
+        	  	        }
         	  })
-          this.$router.push({
-            path: '/userData'
-          })
         }
       }
     }
