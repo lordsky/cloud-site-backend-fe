@@ -8,28 +8,31 @@
         </div>
         <div class="compent-head-class">
           <span>组件分类:</span>
-          <el-input placeholder="请输入组件分类名称"></el-input>
-          <el-button type="primary" size="small">查询</el-button>
-          <el-button type="primary" size="small">批量删除</el-button>
+          <el-input placeholder="请输入组件分类名称" v-model="queryText"></el-input>
+          <el-button type="primary" size="small" @click="queryList">查询</el-button>
+          <!--<el-button type="primary" size="small">批量删除</el-button>-->
           <el-button type="primary" size="small" @click="addComponClass">新增组件分类</el-button>
           <el-button type="primary" size="small" @click="addComponent">新增组件</el-button>
         </div>
       </div>
       <div class="compent-box">
-        <el-table :data="tableData3" height="250" border style="width: 100%" tooltip-effect="dark" @selection-change="handleSelectionChange">
+        <el-table :data="tableData3" border style="width: 100%;height: auto;" tooltip-effect="dark" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
-          <el-table-column prop="name" label="组件分类"  align="center">
+          <el-table-column prop="catName" label="组件分类"  align="center">
           </el-table-column>
-          <el-table-column prop="address" label="组件类型" align="center">
+          <el-table-column prop="catType" label="组件类型" align="center">
+          	 <template slot-scope="scope">
+          	 	<span>{{scope.row.catType==1?'基础组件':'其他组件'}}</span>
+          	 </template>
           </el-table-column>
-          <el-table-column prop="date" label="组件个数"  align="center">
+          <el-table-column prop="catNum" label="组件个数"  align="center">
           </el-table-column>
           <el-table-column prop="date" label="操作" width="180" align="center">
             <template slot-scope="scope">
-              <el-button type="text" @click="manageCompon">管理</el-button>
-              <el-button type="text" @click="editCompon">编辑</el-button>
-              <el-button type="text" @click="delCompon">删除</el-button>
+              <el-button type="text" @click="manageCompon(scope.row)">管理</el-button>
+              <el-button type="text" @click="editCompon(scope.row)">编辑</el-button>
+              <el-button type="text" @click="delCompon(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -51,17 +54,18 @@
 
       <div class="el-componAdd" v-show="addShow">
         <el-form :inline="true" class="demo-form-inline" ref="formAdd" :model="formAdd">
-          <el-form-item label="选择组件分类:" prop="selectText" :rules="[{required: true,message: '组件分类不能为空'}]">
-            <el-select v-model="formAdd.selectText" placeholder="请选择">
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+          <el-form-item label="选择组件分类:" prop="selectId" :rules="[{required: true,message: '组件分类不能为空'}]">
+            <el-select v-model="formAdd.selectId" placeholder="请选择">
+              <el-option v-for="item in tableData3" :key="item.catName" :label="item.catName" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
           <div class="addCom">
             <span class="addCom-title warFater">组件类型：<i class="war-ico">*</i></span>
-            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" list-type="text">
-              <el-button size="small" type="primary">选择文件</el-button>
-            </el-upload>
+           
+            <form enctype="multipart/form-data" method="POST" ref="uploadForm">
+			    <input name="file" type="file" ref="file" @change="uploadText"> 
+			</form>
           </div>
         </el-form>
       </div>
@@ -74,16 +78,18 @@
 </template>
 
 <script>
+  import host from './config/host'
   export default {
     name: 'manageComponent',
     data() {
       return {
         formAdd: {
-          selectText: ''
+          selectId: ''
         },
         btnShow: '',
         componTitle: '',
-        classBtn: 1,
+        classBtn: 1,//组件类型
+        componentType:0,
         dialogVisible: false,
         dialogStu: '',
         dialogText: '',
@@ -94,52 +100,13 @@
         formCompon: {
           name: ''
         },
-        btnList: ['全部', '常用组件', '基础组件', '其他组件'],
-        tableData3: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
+        validationText:'',
+        btnList: ['全部','基础组件', '其他组件'],
+        tableData3: [],
+        list:{},
+        host:host,
+        textData:{},
+        queryText:''
       }
     },
     watch: {
@@ -149,10 +116,18 @@
         }
       }
     },
+    created(){
+    	   this.refreshTable()
+    },
     components: {
       
     },
     methods: {
+    	 
+    	  uploadText(e){
+    	  	var file = e.target.files[0] 
+    	  	this.textData = file
+    	  },
       //重置验证
       resetForm() {
         this.$refs['formCompon'].resetFields();
@@ -161,6 +136,7 @@
       //组件类型
       btnType(i) {
         this.btnShow = i
+        this.componentType = i
       },
       //清除
       clear() {
@@ -168,29 +144,38 @@
         this.formAdd.selectText = ''
       },
       //编辑
-      editCompon() {
+      editCompon(res) {
         this.clear()
         this.dialogVisible = true
         this.editShow = true
         this.addShow = false
         this.componTitle = '编辑组件分类'
         this.dialogStu = 'edit'
-        this.dialogText = '导航'
+        this.dialogText = res.catName
+        this.list = res
       },
       //删除
-      delCompon() {
+      delCompon(res) {
         this.dialogVisible = true
         this.componTitle = '删除组件分类后将不可恢复，确定删除吗？'
         this.dialogStu = 'del'
         this.editShow = false
         this.addShow = false
+        this.list = res
       },
       //管理
-      manageCompon() {
-        this.$router.push({
-          path: '/componentEditor',
-          query:{text:'导航'}
-        })
+      manageCompon(res) {
+      	let list = res
+      	this.$http.get(this.$API.componentList+'?catId='+res.id,(res)=>{
+      		console.log(res)
+      		if(res.data.code==200){
+      			this.$router.push({
+		          path: '/componentEditor',
+		          query:{text:'导航',msg:res.data.data,list:list}
+		        })
+      		}
+      		
+      	})
       },
       
       //check 选择
@@ -205,7 +190,9 @@
         this.addShow = false
         this.componTitle = '新增组件分类'
         this.dialogStu = 'addClass'
+        this.validationText = 'formCompon'
         this.dialogText = '不超过4个字符'
+        
       },
       //新增组件
       addComponent() {
@@ -213,26 +200,94 @@
         this.dialogVisible = true
         this.editShow = false
         this.addShow = true
+        this.validationText = 'formAdd'
         this.componTitle = '新增组件'
         this.dialogStu = 'addCom'
+        
+      },
+      //查询
+      queryList(){
+      	let list =  this.tableData3
+      	let copyList =  this.tableData3
+      	for (let i=0;i<list.length;i++){
+      		if(list[i].catType==this.componentType){
+      			if(list[i].catName==this.queryText){
+      			  console.log(list[i])
+      			  this.tableData3 = {}
+				  this.$set(this.tableData3,0,list[i])
+				  return
+      		  }
+      		}
+      	}
+      },
+      //刷新
+      refreshTable: async function(){
+      	var a = []
+      	var b = []
+         a = await this.getQueryCompon(1)
+         b = await this.getQueryCompon(2)
+         var c = a.concat(b);
+         this.tableData3 = c
+      },
+      getQueryCompon : function (type) {
+      	return new Promise (resolve =>{
+      		this.$http.get(this.$API.queryCompon+'?catType='+type,(res)=>{
+	    	   	  if(res.data.code === 200){
+	    	   	  	resolve(res.data.data)
+	    	   	  }
+    	  		})
+      	})
       },
       //保存
       saveCompon() {
-        switch(this.dialogStu) {
-          case 'addClass':
-            console.log('新增分类')
-            break;
-          case 'addCom':
-            console.log('新增组件')
-            console.log(this.formAdd.selectText)
-            break;
-          case 'edit':
-            console.log('编辑')
-            break;
-          case 'del':
-            console.log('删除')
-            break;
-        }
+      	 if(this.dialogStu=='del'){
+        	   this.$http.delete(this.$API.componentDel+this.list.id,{
+			        },(res)=>{
+			        	   if(res.data.data){
+			        	   	  this.refreshTable()
+	            	   	      this.dialogVisible = false
+			        	   }
+			        })
+        	   return
+           }
+      	this.$refs[this.validationText].validate((valid) => {
+          if (valid) {
+	        switch(this.dialogStu) {
+	          case 'addClass':
+	            console.log('新增分类')
+	            this.$http.post(this.$API.componentAddClass,{
+	            	 catExt:'',
+	            	 catName:this.formCompon.name,
+	            	 catType:this.classBtn,
+	            },(res)=>{
+	            	   console.log(res)
+	            	   if(res.data.data){
+	            	   	  this.refreshTable()
+	            	   	  this.dialogVisible = false
+	            	   }
+	            })
+	            break;
+	          case 'addCom':
+	            console.log('新增组件')
+	            console.log(this.formAdd.selectId)
+	            let formData = new FormData();
+    	            formData.append('file',this.textData);
+    	            formData.append('catExt','');
+    	            formData.append('catId',this.formAdd.selectId);
+//  	            console.log(formData)
+	            this.$http.post(this.$API.componentAdd,formData,(res)=>{
+	            	    console.log(res)
+	            },{"Content-Type":"multipart/form-data"})
+	            break;
+	          case 'edit':
+	            console.log('编辑')
+	            break;
+	        }
+         } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       }
     }
   }
@@ -266,7 +321,11 @@
       }
     }
   }
-  
+  .compent{
+  	.el-upload-list{
+  	width: 100px;
+   }
+  }
   .addCom {
     display: flex;
     height: 60px;
@@ -305,9 +364,7 @@
   .compent-box {
     margin-top: 10px;
     margin-bottom: 10px;
-    .el-table {
-      height: auto !important;
-    }
+    
     th {
       background: #add4ff;
       color: white;

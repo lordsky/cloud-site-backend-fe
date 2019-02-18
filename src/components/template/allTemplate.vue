@@ -20,7 +20,7 @@
 			</el-form>
 		</el-col>
       <div class="compent-box">
-        <el-table :data="findCatByType" height="250" border style="width: 100%" tooltip-effect="dark"
+        <el-table :data="findCatByType"  border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>

@@ -76,17 +76,18 @@ const navHead = [{
   },
 ]
 //侧边栏信息
-const sideText = [{
-    title: '用户管理',
-    index: '1',
-    ico: 'el-icon-tickets',
-    list: [{
-        name: '个人资料',
-        index: '1-1',
-        path: '/userData'
-      },
-    ]
-  },
+const sideText = [
+// {
+//  title: '用户管理',
+//  index: '1',
+//  ico: 'el-icon-tickets',
+//  list: [{
+//      name: '个人资料',
+//      index: '1-1',
+//      path: '/userData'
+//    },
+//  ]
+//},
   {
     title: '模板管理',
     index: '2',
@@ -108,13 +109,13 @@ const sideText = [{
       }
     ]
   },
-  {
-    title: '站点管理',
-    index: '3',
-    ico: 'el-icon-setting',
-    path: '/siteManage',
-    list: []
-  },
+//{
+//  title: '站点管理',
+//  index: '3',
+//  ico: 'el-icon-setting',
+//  path: '/siteManage',
+//  list: []
+//},
   {
     title: '素材库',
     index: '4',

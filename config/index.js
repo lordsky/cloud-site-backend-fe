@@ -11,13 +11,13 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-    	//    '/api':{
-      //   target: 'http://six-pulse-nerve-backend-dev.uworks.cc',
-      //   changeOrigin:true,
-      //   pathRewrite:{
-      //     '^/api':'/'
-      //   }
-      // }
+//  	   '/api':{
+//              target: '',
+//              changeOrigin:true,
+//              pathRewrite:{
+//                  '^/api':'/'
+//              }
+//          }
     },
 
     // Various Dev Server settings

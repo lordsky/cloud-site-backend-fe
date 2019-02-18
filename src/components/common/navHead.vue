@@ -25,7 +25,8 @@
 	  },
 	},
 	created(){
-		this.list = ['用户管理','个人资料']
+//		this.list = ['用户管理','个人资料']
+        this.list = ['模板管理','组件管理']
 	}
   }
 </script>
