@@ -7,10 +7,10 @@
     <div class="template-edit-box">
       <p>
         <span>模版分类 ：{{text}}</span>
-        <span>模版个数 ：7</span>
+        <span>模版个数 ：{{num}}</span>
         </p>
       <div class="template-edit-add">
-        <div class="template-edit-add-btn" @click="addTemplate">
+        <div class="template-edit-add-btn">
           <i class="el-icon-circle-plus-outline"></i><span>新增组件</span>
         </div>
       </div>
@@ -38,7 +38,8 @@
         delShow: null,
         dialogAdd: false,
         value: '',
-        text:'',
+        text:'',//模板分类名称
+        num:0,//模板个数
         templateList:[
           // {url: require('../../assets/img/template3.png')},
           // {url: require('../../assets/img/template.png')},
@@ -87,8 +88,9 @@
       }
     },
     mounted() {
-      this.text = this.$route.query.text;
-      this.getPageList(this.$route.query.templateId)
+      this.text = this.$route.query.data.catName
+      this.num = this.$route.query.data.catNum
+      this.getPageList(this.$route.query.data.id)
     }
   }
 </script>

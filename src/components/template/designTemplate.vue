@@ -4,38 +4,38 @@
     <div class="design-template">
       <p>③设计模版</p>
     </div>
-    <div class="topside">
-      <label>顶部区</label>
-      <div class="topside-right" :class="{'side-right-border':topDate == ''}">
-        <div class="topside-right-list" :class="{'height_auto':topDate != ''}"  @mousemove="showTop = true" @mouseleave="showTop=false">
-          <el-button type="primary" v-if="topDate == ''" @click="addComponent('top')">+添加组件</el-button>
-          <div v-if="topDate != ''" v-html="topDate" style="width: 100%">
-            {{topDate}}
-          </div>
-          <div v-if="topDate != ''" :class="{'delItem':showTop}">
-            <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent('top')"></i>
-            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!--<div class="topside">-->
+      <!--<label>顶部区</label>-->
+      <!--<div class="topside-right" :class="{'side-right-border':topDate == ''}">-->
+        <!--<div class="topside-right-list" :class="{'height_auto':topDate != ''}"  @mousemove="showTop = true" @mouseleave="showTop=false">-->
+          <!--<el-button type="primary" v-if="topDate == ''" @click="addComponent('top')">+添加组件</el-button>-->
+          <!--<div v-if="topDate != ''" v-html="topDate" style="width: 100%">-->
+            <!--{{topDate}}-->
+          <!--</div>-->
+          <!--<div v-if="topDate != ''" :class="{'delItem':showTop}">-->
+            <!--<i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent('top')"></i>-->
+            <!--<i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
     <Banner @addComponent="addComponent('banner')" @delComponent="delComponent('banner')"  :typographyId="typographyId" :bannnerDate="bannnerDate"></Banner>
     <Format @addComponent="addComponent" @delComponent="delComponent" :typographyId="typographyId" :formatDate="formatDate" :formatDate2="formatDate2" :formatDate3="formatDate3"></Format>
-    <div class="footerside">
-      <label>页脚区</label>
-      <div class="footerside-right" :class="{'side-right-border':footerDate == ''}">
-        <div class="footerside-right-list" :class="{'height_auto':footerDate != ''}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">
-          <el-button type="primary" v-if="footerDate == ''" @click="addComponent('footer')">+添加组件</el-button>
-          <div v-if="footerDate != ''" v-html="footerDate" style="width: 100%">
-            {{footerDate}}
-          </div>
-          <div v-if="footerDate != ''" :class="{'delItem':showFooter}">
-            <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}"></i>
-            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}"></i>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!--<div class="footerside">-->
+      <!--<label>页脚区</label>-->
+      <!--<div class="footerside-right" :class="{'side-right-border':footerDate == ''}">-->
+        <!--<div class="footerside-right-list" :class="{'height_auto':footerDate != ''}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">-->
+          <!--<el-button type="primary" v-if="footerDate == ''" @click="addComponent('footer')">+添加组件</el-button>-->
+          <!--<div v-if="footerDate != ''" v-html="footerDate" style="width: 100%">-->
+            <!--{{footerDate}}-->
+          <!--</div>-->
+          <!--<div v-if="footerDate != ''" :class="{'delItem':showFooter}">-->
+            <!--<i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}"></i>-->
+            <!--<i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}"></i>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
     <div class="template-btn">
       <label></label>
       <el-button @click="back">上一步</el-button>
@@ -182,18 +182,20 @@
         },
         saveTemplate(){
           this.loading = true;
-          this.pageCode = this.topDate + this.bannnerDate + this.formatDate + this.formatDate2 + this.formatDate3 + this.footerDate
-          this.$api.apiAddTemplatePage({
-            pageName: this.pageName,
-            templateId: this.templateId,
+          this.pageCode = this.bannnerDate + this.formatDate + this.formatDate2 + this.formatDate3
+          this.$api.apiAddPage({
+            catExt: this.pageName,
+            catId: this.templateId,
             pageCode:this.pageCode,
-            pageAlias:''
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
               this.$router.push({
                 path:'/templateEditor',
-                query:{text:this.pageName,templateId:this.templateId}
+                query:{data:{
+                    catName:this.pageName,
+                    id:this.templateId
+                  }}
               })
             } else {
               this.$message.error(res.msg)
@@ -229,7 +231,6 @@
         //添加组件
         addComponent(type){
           this.type = type
-          this.getBasisList
           switch(type) {
             case 'top':
               this.dialogVisible = true
@@ -267,7 +268,7 @@
         openManage(row,i){
             this.getComponentList(row.id)
             this.dialogVisibleManage = true
-            this.manageComponTitle = row.name
+            this.manageComponTitle = row.catName
         },
         handleClick(tab, event) {
           console.log(tab, event);
@@ -297,6 +298,7 @@
         },
       },
       mounted() {
+        this.getBasisList()
         this.typographyId = this.$route.query.template.typographyId
         this.pageName = this.$route.query.template.pageName
         this.templateId = this.$route.query.template.templateId

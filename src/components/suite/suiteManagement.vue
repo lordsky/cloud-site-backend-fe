@@ -20,7 +20,7 @@
 			</el-form>
 		</el-col>
       <div class="suite-box">
-        <el-table :data="suiteByType" height="250" border style="width: 100%" tooltip-effect="dark"
+        <el-table :data="suiteByType" border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
@@ -48,7 +48,7 @@
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-suiteClass" v-show="editShow">
         <el-form :inline="true" :model="addCatRequest" class="demo-form-inline" ref="addCatRequest">
-          <el-form-item label="套件分类名称:" prop="name" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
+          <el-form-item label="套件分类名称:" prop="catName" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
             <el-input v-model="addCatRequest.catName" :placeholder="dialogText"></el-input>
           </el-form-item>
         </el-form>
@@ -93,49 +93,49 @@
           catType:3
         },
         suiteByType: [
-          {
-          id:1,
-          addTime: '2016-05-03',
-          catName: '企业官网',
-          num: '0',
-          state:'下线'
-        }, {
-          id:2,
-          addTime: '2016-05-02',
-          catName: '在线商城',
-          num: '5',
-          state:'下线'
-        }, {
-          id:3,
-          addTime: '2016-05-04',
-          catName: '外贸站',
-          num: '3',
-          state:'下线'
-        }, {
-          id:4,
-          addTime: '2016-05-01',
-          catName: '工作室',
-          num: '6',
-          state:'下线'
-        }, {
-          id:5,
-          addTime: '2016-05-08',
-          catName: '协会组织',
-          num: '6',
-          state:'下线'
-        }, {
-          id:6,
-          addTime: '2016-05-06',
-          catName: '个人网站',
-          num: '2',
-          state:'下线'
-        }, {
-          id:7,
-          addTime: '2016-05-07',
-          catName: '学校官网',
-          num: '3',
-          state:'下线'
-        }
+        //   {
+        //   id:1,
+        //   addTime: '2016-05-03',
+        //   catName: '企业官网',
+        //   num: '0',
+        //   state:'下线'
+        // }, {
+        //   id:2,
+        //   addTime: '2016-05-02',
+        //   catName: '在线商城',
+        //   num: '5',
+        //   state:'下线'
+        // }, {
+        //   id:3,
+        //   addTime: '2016-05-04',
+        //   catName: '外贸站',
+        //   num: '3',
+        //   state:'下线'
+        // }, {
+        //   id:4,
+        //   addTime: '2016-05-01',
+        //   catName: '工作室',
+        //   num: '6',
+        //   state:'下线'
+        // }, {
+        //   id:5,
+        //   addTime: '2016-05-08',
+        //   catName: '协会组织',
+        //   num: '6',
+        //   state:'下线'
+        // }, {
+        //   id:6,
+        //   addTime: '2016-05-06',
+        //   catName: '个人网站',
+        //   num: '2',
+        //   state:'下线'
+        // }, {
+        //   id:7,
+        //   addTime: '2016-05-07',
+        //   catName: '学校官网',
+        //   num: '3',
+        //   state:'下线'
+        // }
         ]
       }
     },
@@ -251,9 +251,10 @@
 			},
       //管理
       manageSuite(index, row) {
+        this.$store.commit('saveSuiteId', row.id)
         this.$router.push({
           path: '/suiteClassification',
-          query:{text:row.catName,catId:row.id}
+          query:{data:row}
         })
       },
       //保存
@@ -268,6 +269,7 @@
             }).then(res => {
               console.log(res)
               if(res.code === 200) {
+                this.dialogVisible = false
                 this.getSuiteList()
               } else {
                 this.$message.error(res.msg)

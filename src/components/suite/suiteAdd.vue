@@ -5,7 +5,7 @@
     </el-form-item>
     <el-form-item label="套件分类:" prop="classification">
       <el-select v-model="suite.classification" placeholder="请选择模版分类" class="el-select-suite">
-        <el-option :label="x.name" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
+        <el-option :label="x.catName" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="套件介绍:" prop="introduce">
@@ -17,7 +17,8 @@
         class="avatar-uploader"
         action="http://six-pulse-nerve-gateway-dev.uworks.cc/common/upload"
         :show-file-list="false"
-        :on-change="handleChange">
+        :on-change="handleChange"
+        :auto-upload="false">
         <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
           <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
           <div v-if="suite.imageUrl" :class="{'delItem':showDel}">
@@ -35,12 +36,12 @@
     </el-form-item>
     <el-form-item>
       <el-button @click="back">返回</el-button>
-      <el-button type="primary" @click="onSubmit" :loading="addLoading">下一步</el-button>
+      <el-button type="primary" @click="onSubmit(suite.classification)" :loading="addLoading">下一步</el-button>
     </el-form-item>
   </el-form>
 </template>
 
-<script>
+<script scoped>
     export default {
       name: "suiteAdd",
       data() {
@@ -104,21 +105,28 @@
           let oV1 =  document.getElementsByClassName('el-upload__input')
           oV1[0].disabled=true
         },
-        //点击下一步保存套件信息
-        onSubmit() {
+        //点击下一步保存套件信息并进入下一步
+        onSubmit(index) {
           this.$refs.suite.validate((valid) => {
             if (valid) {
               this.addLoading = true;
+              this.$refs.upload.submit();
               this.$api.apiAddTemplate({
                 name: this.suite.name,
-                catId: this.suite.catId,
+                catId: this.classification[index].id,
                 description:this.suite.introduce,
                 thumb:this.suite.imageUrl
               }).then(res => {
                 console.log(res)
                 if(res.code === 200) {
-                  this.$refs.upload.submit();
                   this.addLoading = false;
+                  this.$router.push({
+                    path:'/websiteEditor',
+                    query:{text:'网站编辑器'
+                      ,data:{
+                        templateId:this.classification[index].id,
+                      }}
+                  })
                 } else {
                   this.$message.error(res.msg)
                 }
@@ -133,7 +141,7 @@
         },
         //获取模板分类
         getSuiteTypeList(val){
-          API.apiCatType(val).then(res => {
+          this.$api.apiCatType(val).then(res => {
             if(res.msg === "success") {
               this.classification = res.data
             } else {

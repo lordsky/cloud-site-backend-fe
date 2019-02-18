@@ -7,6 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import ElementUI from 'element-ui'
 import http from './components/config/http2.js'
 import API from "./components/config/server";
+import store from './store'
 import NProgress from "nprogress"; // Progress 进度条
 import "nprogress/nprogress.css"; // Progress 进度条样式
 Vue.use(ElementUI)
@@ -38,6 +39,7 @@ router.afterEach(transition => {
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

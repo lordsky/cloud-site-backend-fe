@@ -3,10 +3,14 @@
     <p>新增模版</p>
     <div class="select-template">
       <p>①选择模版分类</p>
-      <el-select v-model="templateId" placeholder="请选择模版分类" class="el-select">
+      <el-form :inline="true" class="demo-form-inline" ref="template" :model="template">
+        <el-form-item prop="templateId" :rules="[{required: true,message: '组件分类不能为空'}]">
+      <el-select v-model="template.templateId" placeholder="请选择模版分类" class="el-select">
         <el-option v-for="(item,index) in templateTypeList" :key="item.id" :label="item.catName" :value="index">
         </el-option>
       </el-select>
+        </el-form-item>
+      </el-form>
     </div>
     <div class="select-template">
       <p>②选择排版</p>
@@ -21,7 +25,7 @@
     </div>
     <div class="template-btn">
       <el-button @click="back">返回</el-button>
-      <el-button type="primary" @click="toAddTemplate(templateId)" :loading="loading">下一步</el-button>
+      <el-button type="primary" @click="toAddTemplate(template.templateId)" :loading="loading">下一步</el-button>
     </div>
   </div>
 </template>
@@ -35,7 +39,9 @@
         delShow: null,
         dialogAdd: false,
         loading:false,
-        templateId: '',
+        template:{
+          templateId: '',
+        },
         typographyId:0,
         // options: [{
         //   value: '1',
@@ -82,10 +88,19 @@
       //点击下一步进行模板页面设计
       toAddTemplate(index) {
         this.loading = true;
+        if(index === '' || index === null){
+          this.$message({
+            showClose: true,
+            message: '请选择模板分类',
+            type: 'warning'
+          });
+          this.loading = false;
+          return
+        }
         let param = {
-          //templateId : this.templateTypeList[index].catType,
+          templateId : this.templateTypeList[index].id,
           typographyId : this.typographyId,
-          //pageName:this.templateTypeList[index].catName
+          pageName:this.templateTypeList[index].catName
         }
         setTimeout(() => {
           this.$router.push({

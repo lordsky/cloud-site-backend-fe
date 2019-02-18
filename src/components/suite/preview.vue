@@ -3,6 +3,7 @@
     <div v-html="preview.header">{{preview.header}}</div>
     <div v-html="preview.content" class="content2">{{preview.content}}</div>
     <div v-html="preview.footer" class="footer">{{preview.footer}}</div>
+    <div>{{ceshi}}</div>
   </div>
 </template>
 
@@ -15,8 +16,13 @@
             header:this.$route.query.segment.header,
             content:this.$route.query.segment.content,
             footer:this.$route.query.segment.footer
-          }
+          },
+          ceshi:''
         }
+      },
+      mounted(){
+        this.ceshi = this.$route.query.segment
+        console.log(this.ceshi)
       }
     }
 </script>

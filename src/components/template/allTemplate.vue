@@ -20,7 +20,7 @@
 			</el-form>
 		</el-col>
       <div class="compent-box">
-        <el-table :data="findCatByType" height="250" border style="width: 100%" tooltip-effect="dark"
+        <el-table :data="templateTypeLsit"  border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
@@ -52,7 +52,7 @@
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">
         <el-form :inline="true" :model="addCatRequest" class="demo-form-inline" ref="addCatRequest">
-          <el-form-item label="模版分类名称:" prop="addCatRequest" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
+          <el-form-item label="模版分类名称:" prop="catName" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
             <el-input v-model="addCatRequest.catName" :placeholder="dialogText"></el-input>
           </el-form-item>
         </el-form>
@@ -95,51 +95,7 @@
           catName: '',
           catType:2
         },
-        findCatByType: [
-          // {
-          //   id:1,
-          //   addTime: '2016-05-03',
-          //   name: '关于我们',
-          //   num: '0',
-          //   state:'下线'
-          // }, {
-          //   id:2,
-          //   addTime: '2016-05-02',
-          //   name: '联系我们',
-          //   num: '5',
-          //   state:'上线'
-          // }, {
-          //   id:3,
-          //   addTime: '2016-05-04',
-          //   name: '专题活动',
-          //   num: '3',
-          //   state:'上线'
-          // }, {
-          //   id:4,
-          //   addTime: '2016-05-01',
-          //   name: '新闻咨询',
-          //   num: '6',
-          //   state:'下线'
-          // }, {
-          //   id:5,
-          //   addTime: '2016-05-08',
-          //   name: '产品展示',
-          //   num: '6',
-          //   state:'下线'
-          // }, {
-          //   id:6,
-          //   addTime: '2016-05-06',
-          //   name: '摄影作品',
-          //   num: '2',
-          //   state:'下线'
-          // }, {
-          //   id:7,
-          //   addTime: '2016-05-07',
-          //   name: '招聘信息',
-          //   num: '3',
-          //   state:'下线'
-          // }
-        ]
+        templateTypeLsit: []
       }
     },
     watch: {
@@ -211,7 +167,7 @@
           let id = row.id;
           setTimeout(() => {
             this.listLoading = false;
-            this.findCatByType[index].state = '上线'
+            this.templateTypeLsit[index].state = '上线'
           }, 500);
         }).catch(() => {
 
@@ -227,7 +183,7 @@
           let id = row.id;
           setTimeout(() => {
             this.listLoading = false;
-            this.findCatByType[index].state = '下线'
+            this.templateTypeLsit[index].state = '下线'
           }, 500);
         }).catch(() => {
 
@@ -290,7 +246,7 @@
       manageCompon(index, row) {
         this.$router.push({
           path: '/templateEditor',
-          query:{text:row.name,templateId:row.catType}
+          query:{data:row}
         })
       },
       //保存
@@ -305,6 +261,7 @@
             }).then(res => {
               console.log(res)
               if(res.code === 200) {
+                this.dialogVisible = false
                 this.getComponList()
               } else {
                 this.$message.error(res.msg)
@@ -335,7 +292,7 @@
         };
         API.apiCatType(2).then(res => {
           if(res.msg === "success") {
-            this.findCatByType = res.data
+            this.templateTypeLsit = res.data
           } else {
             this.$message.error(res.msg)
           }

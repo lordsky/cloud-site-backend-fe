@@ -22,7 +22,7 @@
       </el-form>
     </el-col>
       <div class="suite-box">
-        <el-table :data="templateList" height="250" border style="width: 100%" tooltip-effect="dark"
+        <el-table :data="templateList" border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
@@ -36,7 +36,7 @@
           <!--</el-table-column>-->
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
-              <el-button type="text">预览</el-button>
+              <!--<el-button type="text">预览</el-button>-->
               <!--<el-button type="text" v-if="scope.row.state == '下线'" @click="popSuite(scope.$index, scope.row)">上线</el-button>-->
               <!--<el-button type="text" v-if="scope.row.state == '上线'" @click="offlineSuite(scope.$index, scope.row)">下线</el-button>-->
               <el-button type="text" @click="editSuite(scope.$index, scope.row)">编辑</el-button>
@@ -52,7 +52,7 @@
   </div>
 </template>
 
-<script>
+<script scoped>
   export default {
     name: 'suiteManagement',
     data() {
@@ -76,56 +76,58 @@
         componTitle: '',
         classBtn: 1,
         value: '',
-        templateList: [{
-          id:1,
-          addTime: '2016-05-03',
-          cname:'套件名称1',
-          name: '企业官网',
-          num: '0',
-          state:'下线'
-        }, {
-          id:2,
-          addTime: '2016-05-02',
-          cname:'套件名称2',
-          name: '在线商城',
-          num: '5',
-          state:'上线'
-        }, {
-          id:3,
-          addTime: '2016-05-04',
-          cname:'套件名称3',
-          name: '外贸站',
-          num: '3',
-          state:'上线'
-        }, {
-          id:4,
-          addTime: '2016-05-01',
-          cname:'套件名称4',
-          name: '工作室',
-          num: '6',
-          state:'下线'
-        }, {
-          id:5,
-          addTime: '2016-05-08',
-          cname:'套件名称5',
-          name: '协会组织',
-          num: '6',
-          state:'下线'
-        }, {
-          id:6,
-          addTime: '2016-05-06',
-          cname:'套件名称6',
-          name: '个人网站',
-          num: '2',
-          state:'下线'
-        }, {
-          id:7,
-          addTime: '2016-05-07',
-          cname:'套件名称7',
-          name: '学校官网',
-          num: '3',
-          state:'下线'
-        }]
+        templateList: [
+        //   {
+        //   id:1,
+        //   addTime: '2016-05-03',
+        //   cname:'套件名称1',
+        //   name: '企业官网',
+        //   num: '0',
+        //   state:'下线'
+        // }, {
+        //   id:2,
+        //   addTime: '2016-05-02',
+        //   cname:'套件名称2',
+        //   name: '在线商城',
+        //   num: '5',
+        //   state:'上线'
+        // }, {
+        //   id:3,
+        //   addTime: '2016-05-04',
+        //   cname:'套件名称3',
+        //   name: '外贸站',
+        //   num: '3',
+        //   state:'上线'
+        // }, {
+        //   id:4,
+        //   addTime: '2016-05-01',
+        //   cname:'套件名称4',
+        //   name: '工作室',
+        //   num: '6',
+        //   state:'下线'
+        // }, {
+        //   id:5,
+        //   addTime: '2016-05-08',
+        //   cname:'套件名称5',
+        //   name: '协会组织',
+        //   num: '6',
+        //   state:'下线'
+        // }, {
+        //   id:6,
+        //   addTime: '2016-05-06',
+        //   cname:'套件名称6',
+        //   name: '个人网站',
+        //   num: '2',
+        //   state:'下线'
+        // }, {
+        //   id:7,
+        //   addTime: '2016-05-07',
+        //   cname:'套件名称7',
+        //   name: '学校官网',
+        //   num: '3',
+        //   state:'下线'
+        // }
+        ]
       }
     },
     watch: {
@@ -285,7 +287,8 @@
       },
     },
 		mounted() {
-			this.getUsers();
+			// this.getSuiteList(this.$route.query.data.id);
+      this.getSuiteList(this.$store.state.sutieId);
 		}
   }
 </script>

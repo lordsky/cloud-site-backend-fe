@@ -101,7 +101,7 @@ const apiAddTemplateComponent = (data) => {
   })
 }
 
-//添加模板页面（新增模板页面)
+//添加模板页面（新增套件页面)
 const apiAddTemplatePage = (data) => {
   return new Promise((resolve, reject)=>{
     http.post('/template/page/add',data).then((res)=> {
