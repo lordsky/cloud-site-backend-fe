@@ -9,7 +9,8 @@ const store = new Vuex.Store({
 		curClassify: null,
 		token: null,
     sutieId:null,
-
+    previewCode:null,
+    templateData:null
 	},
 	mutations: {
 		// save user data
@@ -22,6 +23,12 @@ const store = new Vuex.Store({
 		},
     saveSuiteId(state, data) {
       state.sutieId = data
+    },
+    savePreview(state, data){
+      state.previewCode = data
+    },
+    saveTemplateData(state, data){
+      state.templateData = data
     }
 	}
 })

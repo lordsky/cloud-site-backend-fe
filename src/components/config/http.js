@@ -4,11 +4,26 @@
  import host from './host'
 
 
+const options = {
+  lock: true,
+  text: '加载中'
+}
+
+let loading
+
+let showLoading = ()=> {
+  loading = Loading.service(options)
+}
+
+let closeLoading = ()=> {
+  loading.close()
+}
+
 var instance = axios.create({
     baseURL:host.hostUrl,
 //  baseURL:'http://six-pulse-nerve-backend-dev.uworks.cc',
 //  withCredentials: true,
-    timeout: 15000,
+    timeout: 100 * 15,
     headers: {
         'Content-Type': 'application/json;charset=utf-8',
 //      "Accept":'application/json',
@@ -22,6 +37,7 @@ var AUTH_TOKEN = (function(){
 
 instance.interceptors.request.use(config => {
     console.log(config)
+  showLoading()
    if(config.url.indexOf('adminLogin') >-1){
     	   console.log('login')
     }else{
@@ -29,11 +45,13 @@ instance.interceptors.request.use(config => {
     }
     return config
 }, error => {
+  closeLoading()
 	console.log(error)
    Promise.reject(error)
 })
 
 instance.interceptors.response.use(data => {
+  closeLoading()
 	if(data.data.code!==200){
 		Message({
         message: data.data.msg,
@@ -42,6 +60,7 @@ instance.interceptors.response.use(data => {
 	}
     return data
 }, error => {
+  closeLoading()
     Message({
         message: '服务器端错误，请稍后重试',
         type: 'error'
@@ -49,9 +68,6 @@ instance.interceptors.response.use(data => {
     return Promise.reject(error)
 })
 
-var options = {
-		text:'加载中'
-	}
 const http = {
 	post:function(url,data,success,headers){
 		let loadingInstance = Loading.service(options);

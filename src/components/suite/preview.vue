@@ -3,7 +3,6 @@
     <div v-html="preview.header">{{preview.header}}</div>
     <div v-html="preview.content" class="content2">{{preview.content}}</div>
     <div v-html="preview.footer" class="footer">{{preview.footer}}</div>
-    <div>{{ceshi}}</div>
   </div>
 </template>
 
@@ -13,16 +12,11 @@
       data() {
         return {
           preview:{
-            header:this.$route.query.segment.header,
-            content:this.$route.query.segment.content,
-            footer:this.$route.query.segment.footer
-          },
-          ceshi:''
+            header: window.localStorage.getItem('saveHeader'),
+            content:window.localStorage.getItem('saveContent'),
+            footer:window.localStorage.getItem('saveFooter')
+          }
         }
-      },
-      mounted(){
-        this.ceshi = this.$route.query.segment
-        console.log(this.ceshi)
       }
     }
 </script>

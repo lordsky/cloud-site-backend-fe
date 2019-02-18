@@ -10,7 +10,7 @@
         <span>模版个数 ：{{num}}</span>
         </p>
       <div class="template-edit-add">
-        <div class="template-edit-add-btn">
+        <div class="template-edit-add-btn" @click="addTemplate">
           <i class="el-icon-circle-plus-outline"></i><span>新增组件</span>
         </div>
       </div>
@@ -88,9 +88,9 @@
       }
     },
     mounted() {
-      this.text = this.$route.query.data.catName
-      this.num = this.$route.query.data.catNum
-      this.getPageList(this.$route.query.data.id)
+      this.text = this.$store.state.templateData.catName
+      this.num = this.$store.state.templateData.catNum
+      this.getPageList(this.$store.state.templateData.id)
     }
   }
 </script>

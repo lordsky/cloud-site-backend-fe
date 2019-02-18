@@ -66,7 +66,6 @@
 </template>
 
 <script>
-  //import http from '../../components/config/http2.js'
   import API from '../config/server';
   export default {
     name: 'allTemplate',
@@ -244,9 +243,9 @@
 			},
       //管理
       manageCompon(index, row) {
+        this.$store.commit('saveTemplateData', row)
         this.$router.push({
-          path: '/templateEditor',
-          query:{data:row}
+          path: '/templateEditor'
         })
       },
       //保存

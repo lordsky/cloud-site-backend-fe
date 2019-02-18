@@ -183,6 +183,14 @@
         saveTemplate(){
           this.loading = true;
           this.pageCode = this.bannnerDate + this.formatDate + this.formatDate2 + this.formatDate3
+          if(this.pageCode == ''){
+            this.$message({
+              type: 'warning',
+              message: '请选择组件!'
+            });
+            this.loading = false;
+            return
+          }
           this.$api.apiAddPage({
             catExt: this.pageName,
             catId: this.templateId,
@@ -299,9 +307,9 @@
       },
       mounted() {
         this.getBasisList()
-        this.typographyId = this.$route.query.template.typographyId
-        this.pageName = this.$route.query.template.pageName
-        this.templateId = this.$route.query.template.templateId
+        this.typographyId = this.$store.state.templateData.typographyId
+        this.pageName = this.$store.state.templateData.catName
+        this.templateId = this.$store.state.templateData.id
       }
     }
 </script>

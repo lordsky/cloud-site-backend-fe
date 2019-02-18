@@ -98,10 +98,12 @@
           return
         }
         let param = {
-          templateId : this.templateTypeList[index].id,
+          id : this.templateTypeList[index].id,
           typographyId : this.typographyId,
-          pageName:this.templateTypeList[index].catName
+          catName:this.templateTypeList[index].catName,
+          catNum:this.templateTypeList[index].catNum
         }
+        this.$store.commit('saveTemplateData', param)
         setTimeout(() => {
           this.$router.push({
             path: '/designTemplate',

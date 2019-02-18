@@ -120,6 +120,7 @@
       name: "websiteEditor",
       data(){
         return{
+          templateId:'',
           webPageAll:[],
           webPageList:{
             header: '',
@@ -234,6 +235,7 @@
           dialogVisible2:false,//修改导航标题弹框
           dialogVisible3:false,//添加新页面弹框
           dialogVisible4:false,//退出弹框
+          savePage:false,//是否已经保存
           data1: [
             // {
             //   id: 1,
@@ -261,11 +263,18 @@
       methods:{
         //保存页面
         saveWeb(){
+          if(this.webPageAll.length == 0){
+            this.$message({
+              message: '请先添加页面',
+              type: 'warning'
+            });
+            return false
+          }
           //上次页头代码
           this.$api.apiAddTemplateComponent({
             componentCat: 1,
-            componentCode: this.webPageAll[i].templateId,
-            templateId:1,
+            componentCode: this.webPageList.header,
+            templateId:this.templateId,
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
@@ -277,7 +286,7 @@
           this.$api.apiAddTemplateComponent({
             componentCat: 2,
             componentCode: this.webPageList.footer,
-            templateId:1,
+            templateId:this.templateId,
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
@@ -289,7 +298,7 @@
           for(let i=0;i<this.webPageAll.length;i++){
             this.$api.apiAddTemplatePage({
               pageName: this.webPageAll[i].pageName,
-              templateId: this.webPageAll[i].templateId,
+              templateId: this.templateId,
               pageCode:this.webPageAll[i].pageCode,
               pageAlias:''
             }).then(res => {
@@ -300,6 +309,7 @@
                     message: '保存成功',
                     type: 'success'
                   });
+                  this.savePage = true //已保存
                 }
               } else {
                 this.$message.error(res.msg)
@@ -307,6 +317,7 @@
 
             })
           }
+          return true
         },
         //切换不同分类页面列表
         btnType(data,index){
@@ -363,9 +374,18 @@
           })
         },
         saveWeb2(){
-          this.$router.push({
-            path:'/suiteClassification'
-          })
+          if(this.savePage == false){
+            this.saveWeb()
+            if(this.saveWeb() != false){
+              this.$router.push({
+                path:'/suiteClassification'
+              })
+            }
+          }else{
+            this.$router.push({
+              path:'/suiteClassification'
+            })
+          }
         },
         //预览
         preview(){
@@ -377,9 +397,11 @@
             footer:this.webPageList.footer
           }
           //window.open('/#/preview','_blank')
+          window.localStorage.setItem('saveHeader',this.webPageList.header)
+          window.localStorage.setItem('saveContent',this.webPageList.content)
+          window.localStorage.setItem('saveFooter',this.webPageList.footer)
           let routeData = this.$router.resolve({
-            path:'/preview',
-            query:{segment:'nihao'}
+            path:'/preview'
           })
           window.open(routeData.href, '_blank');
         },
@@ -461,7 +483,7 @@
           //this.webPageAll.push(this.webPageList.content)
           this.webPageAll.push({
             pageName:this.pageName,
-            templateId:data.catId,
+            templateId:this.templateId,
             pageCode:this.webPageList.content,
             pageAlias:''})
           console.log(this.webPageAll)
@@ -489,6 +511,7 @@
         },
       },
       mounted() {
+        this.templateId = this.$route.query.data.templateId
         this.$api.apiCatType(2).then(res => {
           if(res.msg === "success") {
             this.classifyList = res.data
