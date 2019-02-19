@@ -276,7 +276,7 @@
     	            formData.append('catId',this.formAdd.selectId);
 	            this.$http.post(this.$API.componentAdd,formData,(res)=>{
 	            	    console.log(res)
-	            	    if(res.data){
+	            	    if(res.data.data){
 	            	    	   this.dialogVisible = false
 	            	    	   this.$message({
 				          showClose: true,

@@ -13,8 +13,10 @@
       </div>
       <div class="compon-edit-list">
         <ul>
-          <li v-for="(x,i) in comItem" :class="{'delItem':delShow==i}" @mousemove="delShow = i" @mouseleave="delShow=null" :key="i">
-            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i></li>
+          <li v-for="(x,i) in comItem"  :key="i" @mousemove="delShow = i" @mouseleave="delShow=null">
+          	<div :class="{'delItem':delShow==i}" class="mask-compon"><i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i></div>
+          	<div v-html="x.segmentCode"></div>
+            </li>
         </ul>
       </div>
     </div>
@@ -59,22 +61,34 @@
     },
     created() {
       this.options.push(this.$route.query.msg)
-      this.$http.get(this.$API.componentList+'?catId='+this.$route.query.msg.id,(res)=>{
+      this.update()
+    },
+    methods: {
+    	  update(){
+    	  	this.$http.get(this.$API.componentList+'?catId='+this.$route.query.msg.id,(res)=>{
       		console.log(res)
       		if(res.data.code==200){
       			this.comItem = res.data.data
       		}
       	})
-    },
-    methods: {
+    	  },
       saveCompon() {
         if(this.value === '' || this.textData === '') return
         let formData = new FormData();
+        console.log(this.textData)
         formData.append('file', this.textData);
         formData.append('catExt', '11');
         formData.append('catId', this.value);
         this.$http.post(this.$API.componentAdd, formData, (res) => {
           console.log(res)
+          this.update()
+          this.dialogAdd = false
+          if(res.data.data){
+          	this.$message({
+		            type: 'success',
+		            message: '添加成功!'
+		          });
+          }
         }, {
           "Content-Type": "multipart/form-data"
         })
@@ -91,16 +105,15 @@
           type: 'warning'
         }).then(() => {
         	  console.log(val)
-        	  
         	  this.$http.delete(this.$API.componentDel+val.id,{},(res)=>{
         	  	 console.log(res)
-        	  	 
+        	  	 if(res.data.data){
+        	  	 	this.$message({
+		            type: 'success',
+		            message: '删除成功!'
+		          });
+        	  	 }
         	  })
-        	
-//        this.$message({
-//          type: 'success',
-//          message: '删除成功!'
-//        });
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -162,16 +175,17 @@
         width: 95%;
         margin: 0 auto;
         li {
-          height: 65px;
+          /*height: 65px;*/
           border: 1px #cccccc solid;
           list-style: none;
           margin: 10px 0 10px 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          position: relative;
+          overflow: hidden;
           .compon-edit-ico {
             display: none;
-            font-size: 30px;
+            font-size: 2vw;
+            color: white;
+            cursor: pointer;
           }
           .icoShow {
             display: block;
@@ -179,9 +193,7 @@
         }
       }
     }
-    .delItem {
-      background: rgba(0, 0, 0, 0.3);
-    }
+    
     .el-dialog-componAdd-btn {
       display: flex;
       justify-content: center;
@@ -208,6 +220,22 @@
     .el-dialog-componDel {
       height: 60px;
       font-size: 18px;
+    }
+    .mask-compon{
+    	  position: absolute;
+    	  top: 0;
+    	  width: 100%;
+    	  height: 100%;
+    	  background: rgba(0,0,0,0.3);
+    	  z-index: 100;
+    	  display: none;
+    	  justify-content: center;
+    	  align-items: center;
+    }
+    .delItem {
+      display: block;
+      display: flex;
+      
     }
   }
 </style>

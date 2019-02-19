@@ -77,7 +77,7 @@
       width: 100%;
       height: 150px;
       margin: 20px auto;
-      background: url(../assets/logo.jpeg) no-repeat center center;
+      background: url(../../static/logo.8b56fd6.jpeg) no-repeat center center;
     }
     .login-title {
       width: 280px;
