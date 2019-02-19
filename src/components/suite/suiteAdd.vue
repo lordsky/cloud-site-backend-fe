@@ -124,7 +124,7 @@
                     path:'/websiteEditor',
                     query:{text:'网站编辑器'
                       ,data:{
-                        templateId:this.classification[index].id,
+                        templateId:res.data,//带参新增套件id
                       }}
                   })
                 } else {

@@ -27,6 +27,7 @@
     .content{
       height: auto;
       margin-top: 10px;
+      display: inline;
     }
     .footer{
       /*margin-top: 10px;*/
