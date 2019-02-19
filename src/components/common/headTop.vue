@@ -50,6 +50,7 @@
     created(){
     	   if(this.$userInfo){
     	   	  this.user = this.$userInfo
+    	   	  console.log(this.user)
     	   }
     }
   }
