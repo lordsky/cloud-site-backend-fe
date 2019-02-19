@@ -141,7 +141,9 @@
     	  
     	  videoSuccess(file,fileList){
     	  	console.log(fileList)
-        	   this.$http.post(this.$API.materialsUpload+'?filePath='+fileList.response+'&materialsType=2',{
+        	   this.$http.post(this.$API.materialsUpload,{
+        	   	filePath:fileList.response,
+        	   	materialsType2
         	   },(res)=>{
 	        	   	if(res.data.data){
 	        	   		this.getVideo()
@@ -259,7 +261,9 @@
       imgSuccess(res, file) {
         console.log(file)
         if(file.status=='success'){
-        	   this.$http.post(this.$API.materialsUpload+'?filePath='+file.response+'&materialsType=1',{
+        	   this.$http.post(this.$API.materialsUpload,{
+        	   	filePath:file.response,
+        	   	materialsType:1
         	   },(res)=>{
         	   	if(res.data.data){
         	   		this.getpicList()
