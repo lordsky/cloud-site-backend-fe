@@ -31,7 +31,7 @@
           <el-table-column prop="date" label="操作" width="180" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="manageCompon(scope.row)">管理</el-button>
-              <el-button type="text" @click="editCompon(scope.row)">编辑</el-button>
+              <!--<el-button type="text" @click="editCompon(scope.row)">编辑</el-button>-->
               <el-button type="text" @click="delCompon(scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -62,10 +62,10 @@
           </el-form-item>
           <div class="addCom">
             <span class="addCom-title warFater">组件类型：<i class="war-ico">*</i></span>
+            	 <a href="javascript:void(0);" class="upload-text">选择文件
+           	 <input name="file" type="file" ref="file" @change="uploadText"></a>
+             <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件'}}</span>
            
-            <form enctype="multipart/form-data" method="POST" ref="uploadForm">
-			    <input name="file" type="file" ref="file" @change="uploadText"> 
-			</form>
           </div>
         </el-form>
       </div>
@@ -79,6 +79,8 @@
 
 <script>
   import host from './config/host'
+  import { Message } from 'element-ui';
+
   export default {
     name: 'manageComponent',
     data() {
@@ -106,7 +108,8 @@
         list:{},
         host:host,
         textData:{},
-        queryText:''
+        queryText:'',
+        copyTable:{}
       }
     },
     watch: {
@@ -127,6 +130,7 @@
     	  uploadText(e){
     	  	var file = e.target.files[0] 
     	  	this.textData = file
+    	  	console.log(this.textData.name)
     	  },
       //重置验证
       resetForm() {
@@ -165,19 +169,12 @@
       },
       //管理
       manageCompon(res) {
-      	let list = res
-      	this.$http.get(this.$API.componentList+'?catId='+res.id,(res)=>{
-      		console.log(res)
-      		if(res.data.code==200){
-      			this.$router.push({
+      	this.$router.push({
 		          path: '/componentEditor',
-		          query:{text:'导航',msg:res.data.data,list:list}
+		          query:{text:'导航',msg:res}
 		        })
-      		}
-      		
-      	})
+      	
       },
-      
       //check 选择
       handleSelectionChange(res) {
         console.log(res)
@@ -203,31 +200,34 @@
         this.validationText = 'formAdd'
         this.componTitle = '新增组件'
         this.dialogStu = 'addCom'
-        
       },
       //查询
       queryList(){
+      	if(this.queryText=='')return   this.$message.error('请输入组件名称');
       	let list =  this.tableData3
-      	let copyList =  this.tableData3
-      	for (let i=0;i<list.length;i++){
-      		if(list[i].catType==this.componentType){
-      			if(list[i].catName==this.queryText){
-      			  console.log(list[i])
-      			  this.tableData3 = {}
-				  this.$set(this.tableData3,0,list[i])
-				  return
-      		  }
+      	let array = []
+      	for (let i =0;i<list.length;i++){
+      		if(this.queryText===list[i].catName){
+      			array.push(list[i])
+      			this.tableData3 = array
+      			return
       		}
       	}
+      	this.$message({
+          message: '抱歉，没有找到该组件',
+          type: 'warning'
+        });
+        this.tableData3 = this.copyTable
       },
       //刷新
       refreshTable: async function(){
       	var a = []
       	var b = []
          a = await this.getQueryCompon(1)
-         b = await this.getQueryCompon(2)
-         var c = a.concat(b);
-         this.tableData3 = c
+//       b = await this.getQueryCompon(2)
+//       var c = a.concat(b);
+         this.tableData3 = a
+         this.copyTable = a
       },
       getQueryCompon : function (type) {
       	return new Promise (resolve =>{
@@ -258,7 +258,7 @@
 	            this.$http.post(this.$API.componentAddClass,{
 	            	 catExt:'',
 	            	 catName:this.formCompon.name,
-	            	 catType:this.classBtn,
+	            	 catType:1,
 	            },(res)=>{
 	            	   console.log(res)
 	            	   if(res.data.data){
@@ -272,11 +272,18 @@
 	            console.log(this.formAdd.selectId)
 	            let formData = new FormData();
     	            formData.append('file',this.textData);
-    	            formData.append('catExt','');
+    	            formData.append('catExt','11');
     	            formData.append('catId',this.formAdd.selectId);
-//  	            console.log(formData)
 	            this.$http.post(this.$API.componentAdd,formData,(res)=>{
 	            	    console.log(res)
+	            	    if(res.data){
+	            	    	   this.dialogVisible = false
+	            	    	   this.$message({
+				          showClose: true,
+				          message: '添加成功',
+				          type: 'success'
+				        });
+	            	    }
 	            },{"Content-Type":"multipart/form-data"})
 	            break;
 	          case 'edit':
@@ -364,7 +371,6 @@
   .compent-box {
     margin-top: 10px;
     margin-bottom: 10px;
-    
     th {
       background: #add4ff;
       color: white;
@@ -383,5 +389,34 @@
       left: 25px;
     }
   }
-
+.upload-text{
+    	   text-decoration: none;
+    	   display: inline-block;
+    	   width: 100px;
+    	   height: 30px;
+    	   position: relative;
+    	   text-align: center;
+    	   line-height: 30px;
+    	   background: #00b3ee;
+    	   color: white;
+    	   border-radius: 4px;
+    	   z-index: 100;
+    	   margin-right: 10px;
+    	   input{
+    	     position: absolute;
+    	   	 left: 0;
+    	   	 color: black;
+    	   	 width: 100px;
+    	   	 height: 30px;
+    	   	 opacity: 0;
+    	   }
+    }
+ .upload-prompt{
+ 	font-size: 13px;
+ 	font-weight: 300;
+ 	line-height: 30px;
+ 	width: 100px;
+ 	overflow: hidden;
+ 	text-overflow : ellipsis; 
+ }
 </style>

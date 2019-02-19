@@ -44,7 +44,7 @@
       exitUser(){
       	this.$router.push({path:'/'})
     	 	localStorage.removeItem('cloudUser');
-    	 	console.log(localStorage.cloudUser)
+//  	 	console.log(localStorage.cloudUser)
       }
     },
     created(){

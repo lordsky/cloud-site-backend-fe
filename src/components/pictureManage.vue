@@ -11,51 +11,50 @@
     <div class="picture-box">
       <div class="picture-check" v-show="listLabel==1">
         <span class="check-item"><el-checkbox v-model="checked" :indeterminate="picAllStatu"  @change="picAllChange">全选</el-checkbox></span>
-        <span class="check-item"><el-button type="primary" size="small" @click="allDel">批量删除</el-button></span>
+        <span class="check-item"><el-button type="primary" size="small" @click="allDel('pic')">批量删除</el-button></span>
       </div>
       <div class="picture-list" v-show="listLabel==1">
         <div class="picture-list-item update" >
-          <el-upload class="avatar-uploader" :action="host.hostUrl+'common/upload'"  :on-success="imgSuccess">
+          <el-upload class="avatar-uploader" :action="host.hostUrl+'/common/upload'"  :on-success="imgSuccess">
             <!--<img v-if="imageUrl" :src="imageUrl" class="avatar">-->
             <i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传图片支持jpg,png,gif等格式，不超过10M</i>
         </div>
         <div class="picture-list-item" v-for="(x,i) in picList" @mouseleave="itemShow = null" @mouseenter="itemShow = i" :key="i">
-        	  <img :src="x.filePath" @click="choose(i,checkShow[i])"/>
+        	  <img :src="x.filePath" @click="choose(i,checkShow[i],x)"/>
         	  <div class="picture-list-item-check">
-        	  	
         	    <el-checkbox v-model="checkList[i]" v-show="checkShow[i]" disabled></el-checkbox>
         	  </div>
         	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
-        	  	<span class="el-icon-view"></span>
+        	  	<span class="el-icon-view" @click="lookItem(x)"></span>
         	  	<!--<span class="el-icon-edit" @click="editItem"></span>-->
-        	  	<span class="el-icon-delete" @click="delItemPic(x)"></span>
+        	  	<span class="el-icon-delete" @click="delItem(x,'pic')"></span>
         	  </div>
         </div>
       </div>
       <div class="picture-check" v-show="listLabel==2">
         <span class="check-item"><el-checkbox v-model="checkVideo":indeterminate="videoAllStatu"  @change="videoAllChange">全选</el-checkbox></span>
-        <span class="check-item"><el-button type="primary" size="small" @click="allDel">批量删除</el-button></span>
+        <span class="check-item"><el-button type="primary" size="small" @click="allDel('video')">批量删除</el-button></span>
       </div>
       <div class="picture-list" v-show="listLabel==2">
         <div class="picture-list-item update" >
-          <el-upload class="avatar-uploader" :action="host.hostUrl+'common/upload'" :on-success="videoSuccess" >
+          <el-upload class="avatar-uploader" :action="host.hostUrl+'/common/upload'" :on-success="videoSuccess" >
           	<i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传视频支持MP4,wma等格式，不超过10M</i>
         </div>
         <div class="picture-list-item" v-for="(x,i) in videoList" @mouseleave="itemShow = null" @mouseenter="itemShow = i" :key="i">
-        	  <img :src="x.filePath" @click="videoChoose(i,checkVideoShow[i])"/>
+        	  <img :src="x.filePath" @click="videoChoose(i,checkVideoShow[i],x)"/>
         	  <div class="picture-list-item-check">
         	    <el-checkbox v-model="checkVideoList[i]" v-show="checkVideoShow[i]" disabled></el-checkbox>
         	  </div>
         	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
-        	  	<span class="el-icon-view"></span>
+        	  	<span class="el-icon-view"  @click="lookItem(x)"></span>
         	  	<!--<span class="el-icon-edit" @click="editItem"></span>-->
-        	  	<span class="el-icon-delete" @click="delItemVideo(x)"></span>
+        	  	<span class="el-icon-delete" @click="delItem(x,'video')"></span>
         	  </div>
         </div>
       </div>
@@ -106,7 +105,7 @@
         videoAllStatu:false,
         picList:[],
         videoList:[],
-        host:host
+        host:host,
       }
     },
     watch:{
@@ -122,6 +121,9 @@
     	  		console.log(res)
     	  		if(res.data.code==200){
     	  			this.picList = res.data.data
+    	  			this.checkShow = []
+    	  			this.checkList = []
+    	  			this.checked = ''
     	  		}
     	  	})
     	  },
@@ -130,19 +132,24 @@
     	  		console.log(res)
     	  		if(res.data.code==200){
     	  			this.videoList = res.data.data
+    	  			this.checkVideoShow=[]
+        			this.checkVideoList=[]
+        			this.checkVideo = ''
     	  		}
     	  	})
     	  },
-    	  videoSuccess(file){
-    	  	console.log(file)
-        if(file.status=='success'){
-        	   this.$http.post(this.$API.materialsUpload,{
-        	   	filePath:file.response,
-        	   	materialsType:2
+    	  
+    	  videoSuccess(file,fileList){
+    	  	console.log(fileList)
+        	   this.$http.post(this.$API.materialsUpload+'?filePath='+fileList.response+'&materialsType=2',{
         	   },(res)=>{
-        	   	console.log(res)
+	        	   	if(res.data.data){
+	        	   		this.getVideo()
+	        	   	}
         	   })
-        }
+    	  },
+    	  lookItem(val){
+    	  	window.open(val.filePath)
     	  },
     	 //全选
     	  picAllChange(val){
@@ -150,21 +157,56 @@
     	  	    this.picAllStatu = false
     	  	    this.checked = val
     	  	}
-    	  	this.setcheckAll(val,'pic',7)
+    	  	this.setcheckAll(val,'pic',this.picList)
     	  },
     	  videoAllChange(val){
     	  	if(this.videoAllStatu){
     	  	    this.videoAllStatu = false
     	  	    this.checkVideo = val
     	  	}
-    	  	this.setcheckAll(val,'video',3)
+    	  	this.setcheckAll(val,'video',this.videoList)
     	  },
     	//批量删除
-    	  allDel(){
-    	  	console.log(this.checked)
+    	  allDel(val){
+    	  	if(val==='pic'){
+    	  		this.setDel(this.checked,val)
+    	  	}else{
+    	  		this.setDel(this.checkVideo,val)
+    	  	}
     	  },
+    	  setDel(stu,text){
+    	  	let a 
+    	  	let id =[]
+    	    if(text=='pic'){
+    	    	   a = this.picList
+    	    }else{
+    	    	   a = this.videoList
+    	    }
+    	  	if(stu){
+    	  			for(var i =0;i<a.length;i++){
+    	  				id.push(a[i].id)
+    	  			}
+    	  		}else{
+    	  			for(var i =0;i<a.length;i++){
+    	  				if(a[i].idItem){
+    	  					id.push(a[i].idItem)
+    	  				}
+    	  			}
+    	  		}
+    	    console.log(id)
+		this.$http.delete(this.$API.materialsAllDel+'?materialsIds='+id,{},(res)=>{
+					if(res.data.data){
+						if(text=='pic'){
+							this.getpicList()
+						}else{
+							this.getVideo()
+						}
+					}
+			})
+    	  },
+    	  
     	  //删除
-    	  delItemPic(res){
+    	  delItem(res,val){
     	  	console.log(res)
     	  	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -174,7 +216,11 @@
         	  this.$http.delete(this.$API.materialsAllDel+'?materialsIds='+res.id,{},(res)=>{
         	  	 console.log(res)
         	  	 if(res.data.data){
-        	  	 	this.getpicList()
+        	  	 	if(val=='pic'){
+        	  	 		this.getpicList()
+        	  	 	}else{
+        	  	 		this.getVideo()
+        	  	 	}
         	  	 	this.$message({
 	            type: 'success',
 	            message: '删除成功!'
@@ -188,30 +234,7 @@
           });          
         });
     	  },
-    	  delItemVideo(res){
-    	  	console.log(res)
-    	  	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-        	  this.$http.delete(this.$API.materialsAllDel+'?materialsIds='+res.id,{},(res)=>{
-        	  	 console.log(res)
-        	  	 if(res.data.data){
-        	  	 	this.getVideo()
-        	  	 	this.$message({
-	            type: 'success',
-	            message: '删除成功!'
-	          });
-        	  	 }
-        	  })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-    	  },
+    	 
     	  //修改
     	  editItem(){
     	  	this.$prompt('', '修改文件名', {
@@ -236,11 +259,11 @@
       imgSuccess(res, file) {
         console.log(file)
         if(file.status=='success'){
-        	   this.$http.post(this.$API.materialsUpload,{
-        	   	filePath:file.response,
-        	   	materialsType:1
+        	   this.$http.post(this.$API.materialsUpload+'?filePath='+file.response+'&materialsType=1',{
         	   },(res)=>{
-        	   	console.log(res)
+        	   	if(res.data.data){
+        	   		this.getpicList()
+        	   	}
         	   })
         }
       },
@@ -272,21 +295,26 @@
       },
      
       //图片选择
-      choose(key,stu){
+      choose(key,stu,val){
       	if(stu){
       		this.setArray('pic',key,false)
+      		this.picList[key].idItem = ''
       	}else{
       		this.setArray('pic',key,true)
+      		this.picList[key].idItem = val.id
       	}
+      	console.log(this.picList)
       	this.picAllStatu = true
       	this.checked = false
       },
       //视频选择
-      videoChoose(key,stu){
+      videoChoose(key,stu,val){
       	if(stu){
       		this.setArray('video',key,false)
+      		this.videoList[key].idItem = ''
       	}else{
       		this.setArray('video',key,true)
+      		this.videoList[key].idItem = val.id
       	}
       	this.videoAllStatu = true
       	this.checkVideo = false
@@ -303,11 +331,11 @@
       },
       setcheckAll(val,text,list){
       	  if(val){
-    	     	for(var i =0;i<list;i++){
+    	     	for(var i =0;i<list.length;i++){
     	     		this.setArray(text,i,true)
     	     	}
     	      }else{
-    	     	for(var i =0;i<list;i++){
+    	     	for(var i =0;i<list.length;i++){
     	     		this.setArray(text,i,false)
     	     	}
     	      }

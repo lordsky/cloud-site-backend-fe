@@ -5,7 +5,7 @@
       <el-button type="text" @click="backCompon">返回</el-button>
     </div>
     <div class="compon-edit-box">
-      <p>组件个数 ：</p>
+      <p>组件个数 ：{{comItem.length}}</p>
       <div class="compon-edit-add">
         <div class="compon-edit-add-btn" @click="addCompon">
           <i class="el-icon-circle-plus-outline"></i><span>新增组件</span>
@@ -29,15 +29,14 @@
           </el-form-item>
           <div class="el-dialog-componAdd-update">
             <span class="el-componAdd-update-title">上传文件：</span>
-             <form enctype="multipart/form-data" method="POST" ref="uploadForm">
-			    <input name="file" type="file" ref="file" @change="uploadText"> 
-			</form>
+            <a href="javascript:void(0);" class="upload-text">选择文件<input name="file" type="file" ref="file" @change="uploadText"></a>
+            <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件'}}</span>
           </div>
         </el-form>
       </div>
       <div class="el-dialog-componAdd-btn">
         <el-button @click="dialogAdd = false">取 消</el-button>
-        <el-button type="primary" @click="dialogAdd = false">保存</el-button>
+        <el-button type="primary" @click="saveCompon">保存</el-button>
       </div>
       </span>
     </el-dialog>
@@ -52,33 +51,56 @@
         delShow: null,
         dialogAdd: false,
         value: '',
-        options:[],
-        comItem:{},
-        comList:{},
-        textData:{}
+        options: [],
+        comItem: [],
+        comList: {},
+        textData: ''
       }
     },
-    created(){
-    	   console.log(this.$route.query)
-    	   this.comItem = this.$route.query.msg
-    	   this.options.push(this.$route.query.list)
+    created() {
+      this.options.push(this.$route.query.msg)
+      this.$http.get(this.$API.componentList+'?catId='+this.$route.query.msg.id,(res)=>{
+      		console.log(res)
+      		if(res.data.code==200){
+      			this.comItem = res.data.data
+      		}
+      	})
     },
     methods: {
-    	 uploadText(e){
-    	  	var file = e.target.files[0] 
-    	  	this.textData = file
-    	  },
+      saveCompon() {
+        if(this.value === '' || this.textData === '') return
+        let formData = new FormData();
+        formData.append('file', this.textData);
+        formData.append('catExt', '11');
+        formData.append('catId', this.value);
+        this.$http.post(this.$API.componentAdd, formData, (res) => {
+          console.log(res)
+        }, {
+          "Content-Type": "multipart/form-data"
+        })
+      },
+      uploadText(e) {
+        var file = e.target.files[0]
+        this.textData = file
+      },
       //删除组件
-      delComponent() {
+      delComponent(val) {
         this.$confirm('是否删除该组件?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+        	  console.log(val)
+        	  
+        	  this.$http.delete(this.$API.componentDel+val.id,{},(res)=>{
+        	  	 console.log(res)
+        	  	 
+        	  })
+        	
+//        this.$message({
+//          type: 'success',
+//          message: '删除成功!'
+//        });
         }).catch(() => {
           this.$message({
             type: 'info',
