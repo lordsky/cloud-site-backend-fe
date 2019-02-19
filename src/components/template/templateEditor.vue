@@ -19,7 +19,7 @@
           <li v-for="(item,i) in templateList" @mousemove="delShow = i" @mouseleave="delShow=null">
             <div v-html="item.pageCode">{{item.pageCode}}</div>
             <div :class="{'delItem':delShow == i}">
-            <i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>
+            <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
             <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}" @click="preview(item)"></i>
             <i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(i)"></i>
             </div>

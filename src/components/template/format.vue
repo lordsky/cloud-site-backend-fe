@@ -11,7 +11,7 @@
             </div>
             <!--<img src="@/assets/img/topside.png">-->
             <div v-if="formatDate != ''" :class="{'delItem':showFormat}">
-              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat}" @click="addComponent"></i>
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat}" @click="addComponent('formatDate')"></i>
               <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat}" @click="delComponent('formatDate')"></i>
             </div>
           </div>
@@ -26,7 +26,7 @@
             </div>
             <!--<img src="@/assets/img/topside.png">-->
             <div v-if="formatDate2 != ''" :class="{'delItem':showFormat2}">
-              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat2}" @click="addComponent"></i>
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat2}" @click="addComponent('formatDate2')"></i>
               <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat2}" @click="delComponent('formatDate2')"></i>
             </div>
           </div>
@@ -34,14 +34,14 @@
       </tr>
       <tr>
         <td :class="{'side-right-border':formatDate3 == ''}">
-          <div class="formatside-right-list" :class="{'height_auto':formatDate3 != ''}" @mousemove="showFormat3 = true" @mouseleave="showFormat3=false">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate3 != ''}" @mousemove="showFormat2 = true" @mouseleave="showFormat2=false">
             <el-button type="primary" v-if="formatDate3 == ''" @click="addComponent('formatDate3')">+添加组件</el-button>
-            <div v-if="formatDate3 != ''" v-html="showFormat3" style="width: 100%">
+            <div v-if="formatDate3 != ''" v-html="formatDate3" style="width: 100%">
               {{formatDate3}}
             </div>
             <!--<img src="@/assets/img/topside.png">-->
             <div v-if="formatDate3 != ''" :class="{'delItem':showFormat3}">
-              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat3}" @click="addComponent"></i>
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat3}" @click="addComponent('formatDate3')"></i>
               <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat3}" @click="delComponent('formatDate3')"></i>
             </div>
           </div>
@@ -58,8 +58,8 @@
             </div>
             <!--<img src="@/assets/img/topside.png">-->
             <div v-if="formatDate != ''" :class="{'delItem':showFormat}">
-              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat}" @click="addComponent"></i>
-              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat}" @click="delComponent('format')"></i>
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat}" @click="addComponent('formatDate')"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat}" @click="delComponent('formatDate')"></i>
             </div>
           </div>
         </td>
@@ -87,15 +87,8 @@
         },
         //删除组件
         delComponent(type) {
-          switch(type) {
-            case 'formatDate':
-
-              break;
-            case 'formatDate2':
-              break;
-            case 'formatDate3':
-              break;
-          }
+          this.type=type
+          this.$emit('delComponent', type)
         },
       }
     }
@@ -133,7 +126,7 @@
           }
           .formatside-right-list2{
             position: relative;
-            height: 252px;
+            height: auto;
             list-style: none;
             display: flex;
             align-items: center;

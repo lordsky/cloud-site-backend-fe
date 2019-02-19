@@ -1,6 +1,7 @@
 
 const hostConfig = {
-  hostUrl: 'http://six-pulse-nerve-gateway-dev.uworks.cc'
+  // hostUrl: 'http://six-pulse-nerve-gateway-dev.uworks.cc'
+  hostUrl: 'http://six-pulse-nerve-gateway-test.uworks.cc'
 }
 var domain = window.location.host;
 domain = domain.split(".")[0];

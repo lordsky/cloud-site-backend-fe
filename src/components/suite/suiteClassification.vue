@@ -76,6 +76,7 @@
         componTitle: '',
         classBtn: 1,
         value: '',
+        suiteByType:[],
         templateList: [
         //   {
         //   id:1,
@@ -280,6 +281,17 @@
         this.$api.apiTemplateList(val).then(res => {
           if(res.msg === "success") {
             this.templateList = res.data
+            let x = null
+            for(let j = 0;j<this.suiteByType.length;j++){
+              const index = this.templateList.findIndex(d => d.catId === this.suiteByType[j].id);
+              if(index != -1){
+                x = j
+              }
+              // this.templateList[i].catId = this.suiteByType[index].catName
+            }
+            for(let i = 0;i<this.templateList.length;i++){
+                this.templateList[i].catId = this.suiteByType[x].catName
+            }
           } else {
             this.$message.error(res.msg)
           }
@@ -287,8 +299,16 @@
       },
     },
 		mounted() {
+      //获取套件分类列表
+      this.$api.apiCatType(3).then(res => {
+        if(res.msg === "success") {
+          this.suiteByType = res.data
+          this.getSuiteList(this.$store.state.sutieId);
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
 			// this.getSuiteList(this.$route.query.data.id);
-      this.getSuiteList(this.$store.state.sutieId);
 		}
   }
 </script>
