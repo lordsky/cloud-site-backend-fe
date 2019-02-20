@@ -281,6 +281,8 @@
         },
         //保存页面
         saveWeb(){
+          let headerHtml = $('#headerHtml').html()
+          this.webPageList.header = headerHtml
           if(this.webPageAll.length == 0){
             this.$message({
               message: '请先添加页面',
@@ -297,7 +299,7 @@
             this.$api.apiAddTemplatePage({
               pageName: this.webPageAll[i].pageName,
               templateId: this.templateId,
-              pageCode:this.webPageAll[i].pageCode,
+              pageCode:this.webPageList.header + this.webPageAll[i].pageCode + this.webPageList.footer,
               pageAlias:''
             }).then(res => {
               console.log(res)

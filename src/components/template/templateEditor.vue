@@ -185,6 +185,7 @@
             display: flex;
             align-items: center;
             justify-content: space-evenly;
+            z-index: 9999;
           }
           .template-edit-ico {
             display: none;

@@ -48,7 +48,7 @@
         </ul></el-tab-pane>
         <el-tab-pane label="基础组件" name="basis" class="com-tab-pane">
           <ul>
-            <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)">
+            <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)" v-if="x.id != 36 && x.id != 37">
               <div>
               <div><i class="compon-edit-ico el-icon-news"></i></div>
               <div>{{x.catName}}</div>
@@ -79,7 +79,7 @@
   </div>
 </template>
 
-<script>
+<script scoped>
   import Banner from './banner';//横幅区
   import Format from './format';//版式区
     export default {

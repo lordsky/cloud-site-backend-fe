@@ -34,6 +34,51 @@
         <img width="100%" :src="suite.imageUrl" alt="">
       </el-dialog>
     </el-form-item>
+    <!--<div class="topside">-->
+      <!--<label>顶部区</label>-->
+      <!--<div class="topside-right" :class="{'side-right-border':topDate == ''}">-->
+        <!--<div class="topside-right-list" :class="{'height_auto':topDate != ''}"  @mousemove="showTop = true" @mouseleave="showTop=false">-->
+          <!--<el-button type="primary" v-if="topDate == ''" @click="addComponent('top')">+添加组件</el-button>-->
+          <!--<div v-if="topDate != ''" v-html="topDate" style="width: 100%">-->
+            <!--{{topDate}}-->
+          <!--</div>-->
+          <!--<div v-if="topDate != ''" :class="{'delItem':showTop}">-->
+            <!--<i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent('top')"></i>-->
+            <!--<i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div class="footerside">-->
+      <!--<label>页脚区</label>-->
+      <!--<div class="footerside-right" :class="{'side-right-border':footerDate == ''}">-->
+        <!--<div class="footerside-right-list" :class="{'height_auto':footerDate != ''}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">-->
+          <!--<el-button type="primary" v-if="footerDate == ''" @click="addComponent('footer')">+添加组件</el-button>-->
+          <!--<div v-if="footerDate != ''" v-html="footerDate" style="width: 100%">-->
+            <!--{{footerDate}}-->
+          <!--</div>-->
+          <!--<div v-if="footerDate != ''" :class="{'delItem':showFooter}">-->
+            <!--<i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}"></i>-->
+            <!--<i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}"></i>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--&lt;!&ndash;组件模版弹框&ndash;&gt;-->
+    <!--<el-dialog :title="componTitle" :visible.sync="dialogTemplate" width="80%" class="manage-dialog">-->
+      <!--<div class="compon-edit-list">-->
+        <!--<ul>-->
+          <!--<li v-for="(item,i) in componentList" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i" v-html="item.segmentCode">-->
+            <!--{{item.segmentCode}}-->
+          <!--</li>-->
+        <!--</ul>-->
+      <!--</div>-->
+      <!--<div class="dialog-footer">-->
+        <!--<div @click="dialogTemplate = false">取消</div>-->
+        <!--<div @click="completeDialog(type,activeShow)">完成</div>-->
+      <!--</div>-->
+    <!--</el-dialog>-->
+    <!--&lt;!&ndash;组件模版弹框&ndash;&gt;-->
     <el-form-item>
       <el-button @click="back">返回</el-button>
       <el-button type="primary" @click="onSubmit(suite.classification)" :loading="addLoading">下一步</el-button>
@@ -46,6 +91,15 @@
       name: "suiteAdd",
       data() {
         return {
+          topDate:'',
+          footerDate:'',
+          showTop:false,
+          showFooter:false,
+          dialogTemplate:false,
+          componTitle:'',
+          activeShow:'',
+          componentList:[],
+          classifyList:[],
           suite: {
             name: '',
             classification: '',
@@ -71,7 +125,7 @@
             ],
           },
           addLoading:false,
-          dialogVisible:false,
+          dialogVisible:false,//用于图片展示
           showDel:false,
         }
       },
@@ -104,6 +158,52 @@
           this.suite.imageUrl = URL.createObjectURL(file.raw);
           let oV1 =  document.getElementsByClassName('el-upload__input')
           oV1[0].disabled=true
+        },
+        //获取组件列表
+        getComponentList(val){
+          this.$api.apiComponentList(val).then(res => {
+            if(res.msg === "success") {
+              this.componentList = res.data
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        },
+        //添加组件
+        addComponent(type){
+          this.type = type
+          switch(type) {
+            case 'top':
+              this.$api.apiCatType(1).then(res => {
+                if(res.msg === "success") {
+                  this.classifyList = res.data
+                  const index = this.classifyList.findIndex(d => d.catName === '页头');
+                  let id = this.classifyList[index].id
+                  this.getComponentList(id)
+                } else {
+                  this.$message.error(res.msg)
+                }
+              })
+              this.dialogTemplate = true
+              this.componTitle = '页头'
+              break;
+            case 'footer':
+              this.getComponentList(index)
+              this.dialogTemplate = true
+              this.componTitle = '页脚'
+              break;
+          }
+        },
+        //删除组件
+        delComponent(type) {
+          switch(type) {
+            case 'top':
+              this.topDate = ''
+              break;
+            case 'footer':
+              this.footerDate = ''
+              break;
+          }
         },
         //点击下一步保存套件信息并进入下一步
         onSubmit(index) {
@@ -222,6 +322,177 @@
         align-items: center;
         justify-content:space-evenly;
       }
+    }
+    .topside{
+      display: flex;
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      align-items: center;
+      label{
+        width: 80px;
+      }
+      .topside-right{
+        width: 100%;
+        .topside-right-list{
+          width: 100%;
+          position: relative;
+          height: 60px;
+          list-style: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+        .height_auto{
+          height: auto;
+        }
+        img{
+          width: 100%;
+          border: 1px solid #cccccc;
+        }
+        .compon-edit-ico {
+          display: none;
+          font-size: 30px;
+          color: #ffffff;
+          margin-right: 30px;
+          cursor: pointer;
+        }
+        .icoShow {
+          display: block;
+        }
+      }
+    }
+    .footerside{
+      display: flex;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      align-items: center;
+      label{
+        width: 80px;
+      }
+      .footerside-right{
+        width: 100%;
+        .footerside-right-list{
+          width: 100%;
+          position: relative;
+          height: 82px;
+          list-style: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+        .height_auto{
+          height: auto;
+        }
+        img{
+          width: 100%;
+          border: 1px solid #cccccc;
+        }
+        .compon-edit-ico {
+          display: none;
+          font-size: 30px;
+          color: #ffffff;
+          margin-right: 30px;
+          cursor: pointer;
+        }
+        .icoShow {
+          display: block;
+        }
+      }
+    }
+    .side-right-border{
+      border: 2px #4d78ff dashed;
+    }
+    .delItem {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .manage-dialog{
+      .compon-edit-list {
+        margin: 10px 0 10px 0;
+        height: 400px;
+        overflow-y: auto;
+        padding-bottom: 45px;
+        ul {
+          width: 95%;
+          margin: 0 auto;
+          li {
+            height: auto;
+            border: 1px #cccccc solid;
+            list-style: none;
+            margin: 10px 0 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            &:hover{
+              border: 1px #4d78ff solid;
+            }
+          }
+          .active{
+            border: 1px #4d78ff solid;
+          }
+        }
+      }
+      .dialog-footer{
+        width: 100%;
+        height: 45px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        background-color: #e6e7e7;
+        box-shadow: 0 -2px 3px #676767;
+        div{
+          height: 45px;
+          line-height: 45px;
+          flex: 1;
+          text-align: center;
+          border-right: 1px solid #ffffff;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+</style>
+<style lang="scss">
+  .suiteAdd{
+    .manage-dialog{
+      .el-dialog__header{
+        padding: 20px;
+        border-bottom: 1px solid #c3c3c3;
+      }
+      .el-dialog__body{
+        padding: 0 10px 10px 10px;
+      }
+    }
+    .el-dialog__body{
+      padding: 10px;
+    }
+    .el-tabs--border-card>.el-tabs__header{
+      display: flex;
+      justify-content: center;
+    }
+    .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active{
+      background-color: transparent;
+      border-right-color: transparent;
+      border-left-color: transparent;
+      border-bottom-color: #409EFF;
+    }
+    .el-tabs--border-card>.el-tabs__content{
+      height: 280px;
+      overflow-y: auto;
     }
   }
 </style>

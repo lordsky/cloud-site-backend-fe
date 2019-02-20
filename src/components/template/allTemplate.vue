@@ -38,7 +38,7 @@
               <!--<el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>-->
               <!--<el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>-->
               <!--<el-button type="text" v-if="scope.row.state == '上线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>-->
-              <!--<el-button type="text" v-if="scope.row.num == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>-->
+              <el-button type="text" v-if="scope.row.catNum == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -196,18 +196,13 @@
           this.listLoading = true;
 					//NProgress.start();
           let id = row.id;
-          setTimeout(() => {
-          this.listLoading = false;
-          }, 500);
-					// removeUser(para).then((res) => {
-					// 	this.listLoading = false;
-					// 	//NProgress.done();
-					// 	this.$message({
-					// 		message: '删除成功',
-					// 		type: 'success'
-					// 	});
-					// 	this.getUsers();
-					// });
+          this.$http.delete(this.$API.componentDel+row.id,{
+          },(res)=>{
+            if(res.data.data){
+              this.getComponList();
+              this.listLoading = false;
+            }
+          })
 				}).catch(() => {
 
 				});
