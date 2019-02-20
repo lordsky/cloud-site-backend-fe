@@ -40,7 +40,7 @@
       <div class="topside-right" :class="{'side-right-border':topDate == ''}">
         <div class="topside-right-list" :class="{'height_auto':topDate != ''}"  @mousemove="showTop = true" @mouseleave="showTop=false">
           <el-button type="primary" v-if="topDate == ''" @click="addComponent('top')">+添加组件</el-button>
-          <div v-if="topDate != ''" v-html="topDate" style="width: 100%">
+          <div v-if="topDate != ''" v-html="topDate" style="width: 100%" id="topDate">
             {{topDate}}
           </div>
           <div v-if="topDate != ''" :class="{'delItem':showTop}">
@@ -89,6 +89,7 @@
 </template>
 
 <script scoped>
+  import '@/assets/js/jquery';
     export default {
       name: "suiteAdd",
       data() {
@@ -259,6 +260,8 @@
                 console.log(res)
                 if(res.code === 200) {
                   this.addLoading = false;
+                  $("#silder").find("li").remove();
+                  this.topDate = $('#topDate').html()
                   window.localStorage.setItem('suiteHeater',this.topDate)
                   window.localStorage.setItem('suiteFooter',this.footerDate)
                   this.$router.push({
@@ -270,6 +273,7 @@
                   })
                 } else {
                   this.$message.error(res.msg)
+                  this.addLoading = false;
                 }
 
               })
