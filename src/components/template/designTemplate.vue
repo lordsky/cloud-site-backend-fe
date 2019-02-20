@@ -91,7 +91,7 @@
             type:'',//操作区域
             template:{},
             loading:false,
-            activeShow:'',
+            activeShow:0,
             delShow:null,
             topDate:'',//页头代码
             bannnerDate:'',//横幅代码
@@ -179,6 +179,7 @@
           }
           this.dialogVisibleManage = false
           this.dialogVisible = false
+          this.activeShow = 0
         },
         saveTemplate(){
           this.loading = true;

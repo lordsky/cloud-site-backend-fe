@@ -1,4 +1,5 @@
 <template>
+  <div>
   <el-form ref="suite" :model="suite" :rules="rules" label-width="90px" class="suiteAdd">
     <el-form-item label="套件标题:" prop="name">
       <el-input v-model="suite.name" placeholder="请输入套件标题，不超过12个字符" class="el-input-suite"></el-input>
@@ -58,8 +59,8 @@
             <!--{{footerDate}}-->
           <!--</div>-->
           <!--<div v-if="footerDate != ''" :class="{'delItem':showFooter}">-->
-            <!--<i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}"></i>-->
-            <!--<i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}"></i>-->
+            <!--<i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}" @click="addComponent('footer')"></i>-->
+            <!--<i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}" @click="delComponent('footer')"></i>-->
           <!--</div>-->
         <!--</div>-->
       <!--</div>-->
@@ -84,6 +85,7 @@
       <el-button type="primary" @click="onSubmit(suite.classification)" :loading="addLoading">下一步</el-button>
     </el-form-item>
   </el-form>
+  </div>
 </template>
 
 <script scoped>
@@ -97,9 +99,10 @@
           showFooter:false,
           dialogTemplate:false,
           componTitle:'',
-          activeShow:'',
+          activeShow:0,
           componentList:[],
           classifyList:[],
+          type:'',//操作区域
           suite: {
             name: '',
             classification: '',
@@ -130,6 +133,10 @@
         }
       },
       methods: {
+        //选择模版
+        btnType(i){
+          this.activeShow = i
+        },
         handleRemove(file, fileList) {
           this.$refs.upload.clearFiles()
           this.suite.imageUrl = ''
@@ -188,11 +195,35 @@
               this.componTitle = '页头'
               break;
             case 'footer':
-              this.getComponentList(index)
+              this.$api.apiCatType(1).then(res => {
+                if(res.msg === "success") {
+                  this.classifyList = res.data
+                  const index = this.classifyList.findIndex(d => d.catName === '页脚');
+                  let id = this.classifyList[index].id
+                  this.getComponentList(id)
+                } else {
+                  this.$message.error(res.msg)
+                }
+              })
               this.dialogTemplate = true
               this.componTitle = '页脚'
               break;
           }
+        },
+        //完成选择模版
+        completeDialog(type,index){
+          switch(type) {
+            case 'top':
+              this.topDate = this.componentList[index].segmentCode
+              console.log('顶部区')
+              break;
+            case 'footer':
+              this.footerDate = this.componentList[index].segmentCode
+              console.log('页脚区')
+              break;
+          }
+          this.dialogTemplate = false
+          this.activeShow = 0
         },
         //删除组件
         delComponent(type) {
@@ -256,10 +287,10 @@
     }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .suiteAdd{
     margin: 20px;
-    width: 90%;
+    /*width: 90%;*/
     .avatar-uploader .el-upload {
       border: 1px dashed #d9d9d9;
       border-radius: 6px;
