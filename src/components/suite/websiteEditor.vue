@@ -8,8 +8,8 @@
           <el-col :span="8">
             <div class="navigation">
             <div class="navigation_info" @click="dialogVisible=true"><i class="el-icon-document el-icon--left"></i>页面管理<i class="el-icon-arrow-down el-icon--right"></i></div>
-            <div class="navigation_info"><i class="el-icon-menu el-icon--left"></i>网站风格<i class="el-icon-arrow-down el-icon--right"></i></div>
-            <div class="navigation_info"><i class="el-icon-setting el-icon--left"></i>网站设置<i class="el-icon-arrow-down el-icon--right"></i></div>
+            <!--<div class="navigation_info"><i class="el-icon-menu el-icon&#45;&#45;left"></i>网站风格<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i></div>-->
+            <!--<div class="navigation_info"><i class="el-icon-setting el-icon&#45;&#45;left"></i>网站设置<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i></div>-->
             </div>
           </el-col>
           <el-col :span="10">
@@ -54,7 +54,7 @@
             </el-tree>
           </div>
           <span class="dialog-footer">
-            <el-button type="primary" @click="dialogVisible3=true">+添加新页面</el-button>
+            <el-button type="primary" @click="dialogVisible3=true" style="z-index: 1">+添加新页面</el-button>
           </span>
         </div>
         <!--页面管理弹框-->

@@ -34,15 +34,15 @@
           <!--</el-table-column>-->
           <!--<el-table-column prop="state" label="状态"  align="center">-->
           <!--</el-table-column>-->
-          <el-table-column label="操作" width="200" align="center">
-            <template slot-scope="scope">
-              <!--<el-button type="text">预览</el-button>-->
-              <!--<el-button type="text" v-if="scope.row.state == '下线'" @click="popSuite(scope.$index, scope.row)">上线</el-button>-->
-              <!--<el-button type="text" v-if="scope.row.state == '上线'" @click="offlineSuite(scope.$index, scope.row)">下线</el-button>-->
-              <el-button type="text" @click="editSuite(scope.$index, scope.row)">编辑</el-button>
-              <!--<el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>-->
-            </template>
-          </el-table-column>
+          <!--<el-table-column label="操作" width="200" align="center">-->
+            <!--<template slot-scope="scope">-->
+              <!--&lt;!&ndash;<el-button type="text">预览</el-button>&ndash;&gt;-->
+              <!--&lt;!&ndash;<el-button type="text" v-if="scope.row.state == '下线'" @click="popSuite(scope.$index, scope.row)">上线</el-button>&ndash;&gt;-->
+              <!--&lt;!&ndash;<el-button type="text" v-if="scope.row.state == '上线'" @click="offlineSuite(scope.$index, scope.row)">下线</el-button>&ndash;&gt;-->
+              <!--&lt;!&ndash;<el-button type="text" @click="editSuite(scope.$index, scope.row)">编辑</el-button>&ndash;&gt;-->
+              <!--&lt;!&ndash;<el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>&ndash;&gt;-->
+            <!--</template>-->
+          <!--</el-table-column>-->
         </el-table>
       </div>
       <div class="pagination">

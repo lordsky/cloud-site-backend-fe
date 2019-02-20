@@ -35,51 +35,51 @@
         <img width="100%" :src="suite.imageUrl" alt="">
       </el-dialog>
     </el-form-item>
-    <!--<div class="topside">-->
-      <!--<label>顶部区</label>-->
-      <!--<div class="topside-right" :class="{'side-right-border':topDate == ''}">-->
-        <!--<div class="topside-right-list" :class="{'height_auto':topDate != ''}"  @mousemove="showTop = true" @mouseleave="showTop=false">-->
-          <!--<el-button type="primary" v-if="topDate == ''" @click="addComponent('top')">+添加组件</el-button>-->
-          <!--<div v-if="topDate != ''" v-html="topDate" style="width: 100%">-->
-            <!--{{topDate}}-->
-          <!--</div>-->
-          <!--<div v-if="topDate != ''" :class="{'delItem':showTop}">-->
-            <!--<i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent('top')"></i>-->
-            <!--<i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="footerside">-->
-      <!--<label>页脚区</label>-->
-      <!--<div class="footerside-right" :class="{'side-right-border':footerDate == ''}">-->
-        <!--<div class="footerside-right-list" :class="{'height_auto':footerDate != ''}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">-->
-          <!--<el-button type="primary" v-if="footerDate == ''" @click="addComponent('footer')">+添加组件</el-button>-->
-          <!--<div v-if="footerDate != ''" v-html="footerDate" style="width: 100%">-->
-            <!--{{footerDate}}-->
-          <!--</div>-->
-          <!--<div v-if="footerDate != ''" :class="{'delItem':showFooter}">-->
-            <!--<i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}" @click="addComponent('footer')"></i>-->
-            <!--<i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}" @click="delComponent('footer')"></i>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--&lt;!&ndash;组件模版弹框&ndash;&gt;-->
-    <!--<el-dialog :title="componTitle" :visible.sync="dialogTemplate" width="80%" class="manage-dialog">-->
-      <!--<div class="compon-edit-list">-->
-        <!--<ul>-->
-          <!--<li v-for="(item,i) in componentList" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i" v-html="item.segmentCode">-->
-            <!--{{item.segmentCode}}-->
-          <!--</li>-->
-        <!--</ul>-->
-      <!--</div>-->
-      <!--<div class="dialog-footer">-->
-        <!--<div @click="dialogTemplate = false">取消</div>-->
-        <!--<div @click="completeDialog(type,activeShow)">完成</div>-->
-      <!--</div>-->
-    <!--</el-dialog>-->
-    <!--&lt;!&ndash;组件模版弹框&ndash;&gt;-->
+    <div class="topside">
+      <label>顶部区</label>
+      <div class="topside-right" :class="{'side-right-border':topDate == ''}">
+        <div class="topside-right-list" :class="{'height_auto':topDate != ''}"  @mousemove="showTop = true" @mouseleave="showTop=false">
+          <el-button type="primary" v-if="topDate == ''" @click="addComponent('top')">+添加组件</el-button>
+          <div v-if="topDate != ''" v-html="topDate" style="width: 100%">
+            {{topDate}}
+          </div>
+          <div v-if="topDate != ''" :class="{'delItem':showTop}">
+            <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent('top')"></i>
+            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footerside">
+      <label>页脚区</label>
+      <div class="footerside-right" :class="{'side-right-border':footerDate == ''}">
+        <div class="footerside-right-list" :class="{'height_auto':footerDate != ''}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">
+          <el-button type="primary" v-if="footerDate == ''" @click="addComponent('footer')">+添加组件</el-button>
+          <div v-if="footerDate != ''" v-html="footerDate" style="width: 100%">
+            {{footerDate}}
+          </div>
+          <div v-if="footerDate != ''" :class="{'delItem':showFooter}">
+            <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}" @click="addComponent('footer')"></i>
+            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}" @click="delComponent('footer')"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--组件模版弹框-->
+    <el-dialog :title="componTitle" :visible.sync="dialogTemplate" width="80%" class="manage-dialog">
+      <div class="compon-edit-list">
+        <ul>
+          <li v-for="(item,i) in componentList" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i" v-html="item.segmentCode">
+            {{item.segmentCode}}
+          </li>
+        </ul>
+      </div>
+      <div class="dialog-footer">
+        <div @click="dialogTemplate = false,componentList = ''">取消</div>
+        <div @click="completeDialog(type,activeShow)">完成</div>
+      </div>
+    </el-dialog>
+    <!--组件模版弹框-->
     <el-form-item>
       <el-button @click="back">返回</el-button>
       <el-button type="primary" @click="onSubmit(suite.classification)" :loading="addLoading">下一步</el-button>
@@ -187,12 +187,12 @@
                   const index = this.classifyList.findIndex(d => d.catName === '页头');
                   let id = this.classifyList[index].id
                   this.getComponentList(id)
+                  this.dialogTemplate = true
+                  this.componTitle = '页头'
                 } else {
                   this.$message.error(res.msg)
                 }
               })
-              this.dialogTemplate = true
-              this.componTitle = '页头'
               break;
             case 'footer':
               this.$api.apiCatType(1).then(res => {
@@ -201,12 +201,12 @@
                   const index = this.classifyList.findIndex(d => d.catName === '页脚');
                   let id = this.classifyList[index].id
                   this.getComponentList(id)
+                  this.dialogTemplate = true
+                  this.componTitle = '页脚'
                 } else {
                   this.$message.error(res.msg)
                 }
               })
-              this.dialogTemplate = true
-              this.componTitle = '页脚'
               break;
           }
         },
@@ -222,6 +222,7 @@
               console.log('页脚区')
               break;
           }
+          this.componentList = ''
           this.dialogTemplate = false
           this.activeShow = 0
         },
@@ -239,6 +240,13 @@
         //点击下一步保存套件信息并进入下一步
         onSubmit(index) {
           this.$refs.suite.validate((valid) => {
+            if(this.topDate == '' || this.footerDate == ''){
+              this.$message({
+                type: 'warning',
+                message: '请选择页头和页脚!'
+              });
+              return
+            }
             if (valid) {
               this.addLoading = true;
               this.$refs.upload.submit();
@@ -251,6 +259,8 @@
                 console.log(res)
                 if(res.code === 200) {
                   this.addLoading = false;
+                  window.localStorage.setItem('suiteHeater',this.topDate)
+                  window.localStorage.setItem('suiteFooter',this.footerDate)
                   this.$router.push({
                     path:'/websiteEditor',
                     query:{text:'网站编辑器'
@@ -291,41 +301,6 @@
   .suiteAdd{
     margin: 20px;
     /*width: 90%;*/
-    .avatar-uploader .el-upload {
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    .avatar-uploader .el-upload:hover {
-      border-color: #409EFF;
-    }
-    .avatar-uploader-icon {
-      font-size: 28px;
-      color: #8c939d;
-      width: 275px;
-      height: 148px;
-      line-height: 148px;
-      text-align: center;
-    }
-    .avatar {
-      width: 275px;
-      height: 148px;
-      display: block;
-    }
-    .el-input-suite{
-      width: 55%;
-    }
-    .el-select-suite{
-      width: 55%;
-    }
-    .el-upload--picture-card{
-      width: 275px;
-    }
-    .el-upload-list--picture-card .el-upload-list__item{
-      width: 275px;
-    }
     .footerside-right-list{
       position: absolute;
       width: 275px;
@@ -499,13 +474,48 @@
 </style>
 <style lang="scss">
   .suiteAdd{
-    .manage-dialog{
-      .el-dialog__header{
-        padding: 20px;
-        border-bottom: 1px solid #c3c3c3;
-      }
-      .el-dialog__body{
-        padding: 0 10px 10px 10px;
+    .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+      border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 275px;
+      height: 148px;
+      line-height: 148px;
+      text-align: center;
+    }
+    .avatar {
+      width: 275px;
+      height: 148px;
+      display: block;
+    }
+    .el-input-suite{
+      width: 55%;
+    }
+    .el-select-suite{
+      width: 55%;
+    }
+    .el-upload--picture-card{
+      width: 275px;
+    }
+    .el-upload-list--picture-card .el-upload-list__item{
+      width: 275px;
+    }
+
+    .el-dialog__header{
+      padding: 20px;
+
+      el-dialog__headerbtn{
+        position: absolute;
+        top: 0;
       }
     }
     .el-dialog__body{
