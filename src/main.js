@@ -10,10 +10,11 @@ import API from "./components/config/server";
 import store from './store'
 import NProgress from "nprogress"; // Progress 进度条
 import "nprogress/nprogress.css"; // Progress 进度条样式
-import Swiper from 'swiper';
-import 'swiper/dist/css/swiper.css'
 
-console.log(Swiper)
+import $ from 'jquery'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.min'
+
 import service from './components/config/service'
 Vue.prototype.$API = service
 Vue.use(ElementUI)

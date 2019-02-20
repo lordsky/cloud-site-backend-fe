@@ -402,6 +402,10 @@
     	   border-radius: 4px;
     	   z-index: 100;
     	   margin-right: 10px;
+    	   &:hover{
+    	   	 text-decoration: none;
+    	   	 color: white;
+    	   }
     	   input{
     	     position: absolute;
     	   	 left: 0;

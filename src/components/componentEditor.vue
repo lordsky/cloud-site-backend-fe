@@ -233,7 +233,6 @@
     	  align-items: center;
     }
     .delItem {
-      display: block;
       display: flex;
       
     }
