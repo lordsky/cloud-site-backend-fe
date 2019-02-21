@@ -72,7 +72,7 @@
       :total="10">
         </el-pagination>
       </div>
-       <div class="pictrue-page"v-show="listLabel==2">
+       <!--<div class="pictrue-page"v-show="listLabel==2">
       	<el-pagination
       @size-change="handleSizeChange"
       background
@@ -82,7 +82,7 @@
       layout="prev, pager, next, jumper"
       :total="10">
         </el-pagination>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>

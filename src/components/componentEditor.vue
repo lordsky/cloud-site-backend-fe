@@ -24,10 +24,7 @@
       <div class="el-dialog-componAdd">
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="选择组件分类：">
-            <el-select v-model="value" placeholder="请选择">
-              <el-option v-for="item in options" :key="item.id" :label="item.catName" :value="item.id">
-              </el-option>
-            </el-select>
+             <input type="text" :value="options.catName" disabled/>
           </el-form-item>
           <div class="el-dialog-componAdd-update">
             <span class="el-componAdd-update-title">上传文件：</span>
@@ -52,15 +49,15 @@
       return {
         delShow: null,
         dialogAdd: false,
-        value: '',
-        options: [],
+        
+        options: {},
         comItem: [],
         comList: {},
         textData: ''
       }
     },
     created() {
-      this.options.push(this.$route.query.msg)
+      this.options = this.$route.query.msg 
       this.update()
     },
     methods: {
@@ -78,7 +75,7 @@
         console.log(this.textData)
         formData.append('file', this.textData);
         formData.append('catExt', '11');
-        formData.append('catId', this.value);
+        formData.append('catId', this.options.id);
         this.$http.post(this.$API.componentAdd, formData, (res) => {
           console.log(res)
           this.update()
