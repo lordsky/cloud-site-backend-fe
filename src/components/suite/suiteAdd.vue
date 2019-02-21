@@ -336,6 +336,7 @@
       font-weight: 600;
       align-items: center;
       label{
+        white-space: nowrap;
         width: 80px;
       }
       .topside-right{
@@ -377,6 +378,7 @@
       font-weight: 600;
       align-items: center;
       label{
+        white-space: nowrap;
         width: 80px;
       }
       .footerside-right{
