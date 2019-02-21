@@ -9,6 +9,7 @@
 
 <script>
 	import {setNav} from '../config/sideConfig'
+	import {navHead,sideText} from '../config/sideConfig'
   export default {
     name: 'navHead',
     data() {
@@ -25,8 +26,18 @@
 	  },
 	},
 	created(){
-//		this.list = ['用户管理','个人资料']
-        this.list = ['模板管理','组件管理']
+       let site = window.location.hash
+    	   let url = site.split("/")[1]
+    	   this.getIndex(url)
+	},
+	methods:{
+		 getIndex(val){
+      	 for(var i =0;i<navHead.length;i++){
+	  	 	if(val==navHead[i].path){
+	  	 		this.list = navHead[i].text
+	  	 	}
+	  	 }
+      },
 	}
   }
 </script>
