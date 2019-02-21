@@ -257,20 +257,24 @@
         switch(this.dialogStu) {
           case 'addClass':
             //新增套件分类
-            this.$api.apiAddCat({
-              catExt: this.addCatRequest.catName,
-              catName: this.addCatRequest.catName,
-              catType:this.addCatRequest.catType
-            }).then(res => {
-              console.log(res)
-              if(res.code === 200) {
-                this.dialogVisible = false
-                this.getSuiteList()
-              } else {
-                this.$message.error(res.msg)
-              }
+            this.$refs.addCatRequest.validate((valid) => {
+              if (valid) {
+                this.$api.apiAddCat({
+                  catExt: this.addCatRequest.catName,
+                  catName: this.addCatRequest.catName,
+                  catType:this.addCatRequest.catType
+                }).then(res => {
+                  console.log(res)
+                  if(res.code === 200) {
+                    this.dialogVisible = false
+                    this.getSuiteList()
+                  } else {
+                    this.$message.error(res.msg)
+                  }
 
-            })
+                })
+              }
+            });
             console.log('新增分类')
             break;
           case 'edit':
