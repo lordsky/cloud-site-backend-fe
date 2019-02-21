@@ -32,7 +32,7 @@
             <template slot-scope="scope">
               <el-button type="text" @click="manageCompon(scope.row)">管理</el-button>
               <!--<el-button type="text" @click="editCompon(scope.row)">编辑</el-button>-->
-              <el-button type="text" @click="delCompon(scope.row)">删除</el-button>
+              <el-button type="text" @click="delCompon(scope.row)" v-show="scope.row.catNum>0">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -47,7 +47,7 @@
           <div class="el-componClass-item">
             <span class="warFater">组件类型：<i class="war-ico">*</i></span>
             <span :class="{'activeClass':classBtn==1}" @click="classBtn=1">基础组件</span>
-            <span :class="{'activeClass':classBtn==2}" @click="classBtn=2">其他组件</span>
+            <!--<span :class="{'activeClass':classBtn==2}" @click="classBtn=2">其他组件</span>-->
           </div>
         </el-form>
       </div>
@@ -103,7 +103,7 @@
           name: ''
         },
         validationText:'',
-        btnList: ['全部','基础组件', '其他组件'],
+        btnList: ['全部','基础组件'],
         tableData3: [],
         list:{},
         host:host,
@@ -372,7 +372,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
     th {
-      background: #add4ff;
+      background: #add4ff !important;
       color: white;
     }
   }

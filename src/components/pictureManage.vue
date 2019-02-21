@@ -45,12 +45,14 @@
           </el-upload>
           <i class="el-icon-warning picture-warning">上传视频支持MP4,wma等格式，不超过10M</i>
         </div>
-        <div class="picture-list-item" v-for="(x,i) in videoList" @mouseleave="itemShow = null" @mouseenter="itemShow = i" :key="i">
-        	  <img :src="x.filePath" @click="videoChoose(i,checkVideoShow[i],x)"/>
+        <div class="picture-list-item" v-for="(x,i) in videoList"  :key="i">
+        	  <video :src="x.filePath" controls="controls" @click="videoChoose(i,checkVideoShow[i],x)" style="width: 100%;height: 100%;">
+			您的浏览器不支持 video 标签。
+		  </video>
         	  <div class="picture-list-item-check">
         	    <el-checkbox v-model="checkVideoList[i]" v-show="checkVideoShow[i]" disabled></el-checkbox>
         	  </div>
-        	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
+        	  <div class="picture-list-item-hoverTop"  v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
         	  	<span class="el-icon-view"  @click="lookItem(x)"></span>
         	  	<!--<span class="el-icon-edit" @click="editItem"></span>-->
@@ -140,10 +142,10 @@
     	  },
     	  
     	  videoSuccess(file,fileList){
-    	  	console.log(fileList)
+    	  	   if(!this.videoUpload(fileList))return
         	   this.$http.post(this.$API.materialsUpload,{
         	   	filePath:fileList.response,
-        	   	materialsType2
+        	   	materialsType:2
         	   },(res)=>{
 	        	   	if(res.data.data){
 	        	   		this.getVideo()
@@ -259,7 +261,9 @@
         this.listLabel = key
       },
       imgSuccess(res, file) {
-        console.log(file)
+        console.log(this.imgUpload(file))
+        if(!this.imgUpload(file))return
+       
         if(file.status=='success'){
         	   this.$http.post(this.$API.materialsUpload,{
         	   	filePath:file.response,
@@ -273,29 +277,34 @@
       },
       //图片上传
       imgUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
+      	console.log(file.raw.type)
+        const imgType = file.raw.type === 'image/jpeg'||file.raw.type === 'image/png'||file.raw.type === 'image/gif';
+        const isLt = file.size / 1024 / 1024 < 10;
+        if (!imgType) {
+          this.$message.error('上传头像图片只能是 jpg,png,gif 格式!');
+          return false
         }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
+        if (!isLt) {
+          this.$message.error('上传图片大小不能超过 10MB!');
+          return false
         }
-        return isJPG && isLt2M;
+        return true
       },
       //视频上传
       videoUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
+        	console.log(file.raw.type)
+        const videoType = file.raw.type === 'video/mp4'||file.raw.type === 'video/wma';
+        const isLt = file.size / 1024 / 1024 < 10;
+        if (!videoType) {
+          this.$message.error('上传头像图片只能是 MP4,WMA 格式!');
+          return false
         }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
+        if (!isLt) {
+          this.$message.error('上传图片大小不能超过 10MB!');
+          return false
         }
-        return isJPG && isLt2M;
+        return true
+       
       },
      
       //图片选择
