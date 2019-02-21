@@ -145,6 +145,17 @@ const apiComponentList= (data) => {
   })
 }
 
+//查询组件（查看组件页面)通过catName
+const apiComponentByName= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/component/byName?catName=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -156,5 +167,6 @@ export default {
   apiTemplatePageList,
   apiPageList,
   apiAddPage,
-  apiComponentList
+  apiComponentList,
+  apiComponentByName
 }

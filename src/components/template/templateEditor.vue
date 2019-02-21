@@ -101,6 +101,7 @@
         this.$api.apiPageList(val).then(res => {
           if(res.msg === "success") {
             this.templateList = res.data
+            this.num = this.templateList.length
           } else {
             this.$message.error(res.msg)
           }

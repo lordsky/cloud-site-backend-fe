@@ -16,10 +16,9 @@
       <el-upload
         ref='upload'
         class="avatar-uploader"
-        action="http://six-pulse-nerve-gateway-dev.uworks.cc/common/upload"
+        :action="host.hostUrl+'/common/upload'"
         :show-file-list="false"
-        :on-change="handleChange"
-        :auto-upload="false">
+        :on-change="handleChange">
         <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
           <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
           <div v-if="suite.imageUrl" :class="{'delItem':showDel}">
@@ -89,11 +88,13 @@
 </template>
 
 <script scoped>
+  import host from '../config/host'
   import '@/assets/js/jquery';
     export default {
       name: "suiteAdd",
       data() {
         return {
+          host:host,
           topDate:'',
           footerDate:'',
           showTop:false,
@@ -163,13 +164,17 @@
           if(upload != true){
             return
           }
-          this.suite.imageUrl = URL.createObjectURL(file.raw);
+          if(file.response != undefined){
+            this.suite.imageUrl = file.response;
+          }else {
+            this.suite.imageUrl = URL.createObjectURL(file.raw);
+          }
           let oV1 =  document.getElementsByClassName('el-upload__input')
           oV1[0].disabled=true
         },
         //获取组件列表
         getComponentList(val){
-          this.$api.apiComponentList(val).then(res => {
+          this.$api.apiComponentByName(val).then(res => {
             if(res.msg === "success") {
               this.componentList = res.data
             } else {
@@ -182,32 +187,12 @@
           this.type = type
           switch(type) {
             case 'top':
-              this.$api.apiCatType(1).then(res => {
-                if(res.msg === "success") {
-                  this.classifyList = res.data
-                  const index = this.classifyList.findIndex(d => d.catName === '页头');
-                  let id = this.classifyList[index].id
-                  this.getComponentList(id)
-                  this.dialogTemplate = true
-                  this.componTitle = '页头'
-                } else {
-                  this.$message.error(res.msg)
-                }
-              })
+              this.getComponentList("页头")
+              this.dialogTemplate = true
               break;
             case 'footer':
-              this.$api.apiCatType(1).then(res => {
-                if(res.msg === "success") {
-                  this.classifyList = res.data
-                  const index = this.classifyList.findIndex(d => d.catName === '页脚');
-                  let id = this.classifyList[index].id
-                  this.getComponentList(id)
-                  this.dialogTemplate = true
-                  this.componTitle = '页脚'
-                } else {
-                  this.$message.error(res.msg)
-                }
-              })
+              this.getComponentList("页脚")
+              this.dialogTemplate = true
               break;
           }
         },
@@ -250,7 +235,7 @@
             }
             if (valid) {
               this.addLoading = true;
-              this.$refs.upload.submit();
+              // this.$refs.upload.submit();
               this.$api.apiAddTemplate({
                 name: this.suite.name,
                 catId: this.classification[index].id,
