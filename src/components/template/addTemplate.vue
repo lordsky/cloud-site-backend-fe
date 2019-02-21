@@ -3,14 +3,18 @@
     <p>新增模版</p>
     <div class="select-template">
       <p>①选择模版分类</p>
-      <el-form :inline="true" class="demo-form-inline" ref="template" :model="template">
+      <el-form :inline="true" class="demo-form-inline" ref="template" :model="template" v-if="pageId == 1">
         <el-form-item prop="templateId" :rules="[{required: true,message: '组件分类不能为空'}]">
-      <el-select v-model="template.templateId" placeholder="请选择模版分类" class="el-select">
-        <el-option v-for="(item,index) in templateTypeList" :key="item.id" :label="item.catName" :value="index">
-        </el-option>
-      </el-select>
+          <el-select v-model="template.templateId" placeholder="请选择模版分类" class="el-select">
+            <el-option v-for="(item,index) in templateTypeList" :key="item.id" :label="item.catName" :value="index">
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
+      <el-select v-model="catType.catName" placeholder="请选择模版分类" class="el-select" v-if="pageId == 2" disabled>
+        <el-option  :key="catType.id" :label="catType.catName" :value="catType.catName">
+        </el-option>
+      </el-select>
     </div>
     <div class="select-template">
       <p>②选择排版</p>
@@ -35,6 +39,8 @@
     name: 'addTemplate',
     data() {
       return {
+        catType:this.$route.query.catType,
+        pageId:this.$route.query.pageId,
         btnShow:'',
         delShow: null,
         dialogAdd: false,
@@ -87,6 +93,9 @@
       },
       //点击下一步进行模板页面设计
       toAddTemplate(index) {
+        if(this.pageId == 2){
+          index = this.catType.index
+        }
         this.loading = true;
         if(index === '' || index === null){
           this.$message({

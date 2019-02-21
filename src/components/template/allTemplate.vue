@@ -127,7 +127,7 @@
       addTemplate() {
         this.$router.push({
           path:'/addTemplate',
-          query:{text:'新增模版'}
+          query:{text:'新增模版',pageId:1}
         })
       },
       //  新模版件分类
@@ -240,7 +240,8 @@
       manageCompon(index, row) {
         this.$store.commit('saveTemplateData', row)
         this.$router.push({
-          path: '/templateEditor'
+          path: '/templateEditor',
+          query:{text:'新增模版',pageId:1,catIndex:index}
         })
       },
       //保存
@@ -248,20 +249,24 @@
         switch(this.dialogStu) {
           case 'addClass':
             //新增模板分类
-            API.apiAddCat({
-              catExt: this.addCatRequest.catName,
-              catName: this.addCatRequest.catName,
-              catType:this.addCatRequest.catType
-            }).then(res => {
-              console.log(res)
-              if(res.code === 200) {
-                this.dialogVisible = false
-                this.getComponList()
-              } else {
-                this.$message.error(res.msg)
-              }
+            this.$refs.addCatRequest.validate((valid) => {
+              if (valid) {
+                API.apiAddCat({
+                  catExt: this.addCatRequest.catName,
+                  catName: this.addCatRequest.catName,
+                  catType: this.addCatRequest.catType
+                }).then(res => {
+                  console.log(res)
+                  if (res.code === 200) {
+                    this.dialogVisible = false
+                    this.getComponList()
+                  } else {
+                    this.$message.error(res.msg)
+                  }
 
-            })
+                })
+              }
+            });
             break;
           case 'edit':
             console.log('编辑')

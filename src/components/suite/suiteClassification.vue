@@ -24,8 +24,8 @@
       <div class="suite-box">
         <el-table :data="templateList" border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
-          <el-table-column type="selection" width="55" align="center">
-          </el-table-column>
+          <!--<el-table-column type="selection" width="55" align="center">-->
+          <!--</el-table-column>-->
           <el-table-column prop="name" label="套件名称"  align="center">
           </el-table-column>
           <el-table-column prop="catId" label="套件分类"  align="center">
@@ -145,7 +145,12 @@
       addSuite() {
         this.$router.push({
           path:'/suiteAdd',
-          query:{text:'新增套件'}
+          query:{text:'新增套件',pageId:2
+            ,catType:{
+              catName:this.$route.query.data.catName,
+              id:this.$route.query.data.id,
+              index:this.$route.query.catIndex
+            }}
         })
       },
       //编辑

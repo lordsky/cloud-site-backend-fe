@@ -88,7 +88,12 @@
       addTemplate() {
         this.$router.push({
           path:'/addTemplate',
-          query:{text:'新增模版'}
+          query:{text:'新增模版',pageId:2
+            ,catType:{
+              catName:this.$store.state.templateData.catName,
+              id:this.$store.state.templateData.id,
+              index:this.$route.query.catIndex
+            }}
           })
       },
       //返回

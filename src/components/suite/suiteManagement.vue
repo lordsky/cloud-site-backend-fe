@@ -197,29 +197,24 @@
         this.editShow = false
       },
       //删除
-			handleDel: function (index, row) {
-				this.$confirm('确认删除该模块吗?', '提示', {
-					type: 'warning'
-				}).then(() => {
+      handleDel: function (index, row) {
+        this.$confirm('确认删除该模块吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
           this.listLoading = true;
-					//NProgress.start();
+          //NProgress.start();
           let id = row.id;
-          setTimeout(() => {
-          this.listLoading = false;
-          }, 500);
-					// removeUser(para).then((res) => {
-					// 	this.listLoading = false;
-					// 	//NProgress.done();
-					// 	this.$message({
-					// 		message: '删除成功',
-					// 		type: 'success'
-					// 	});
-					// 	this.getUsers();
-					// });
-				}).catch(() => {
+          this.$http.delete(this.$API.componentDel+row.id,{
+          },(res)=>{
+            if(res.data.data){
+              this.getSuiteList();
+              this.listLoading = false;
+            }
+          })
+        }).catch(() => {
 
-				});
-			},
+        });
+      },
       selsChange: function (sels) {
 				this.sels = sels;
 			},
@@ -254,7 +249,7 @@
         this.$store.commit('saveSuiteId', row.id)
         this.$router.push({
           path: '/suiteClassification',
-          query:{data:row}
+          query:{data:row,pageId:1,catIndex:index}
         })
       },
       //保存

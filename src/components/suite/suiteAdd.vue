@@ -4,10 +4,16 @@
     <el-form-item label="套件标题:" prop="name">
       <el-input v-model="suite.name" placeholder="请输入套件标题，不超过12个字符" class="el-input-suite"></el-input>
     </el-form-item>
-    <el-form-item label="套件分类:" prop="classification">
+    <el-form-item label="套件分类:" prop="classification" v-if="pageId == 1">
       <el-select v-model="suite.classification" placeholder="请选择套件分类" class="el-select-suite">
         <el-option :label="x.catName" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
       </el-select>
+    </el-form-item>
+    <el-form-item label="套件分类:" v-if="pageId == 2">
+    <el-select v-model="catType.catName" placeholder="请选择模版分类" class="el-select-suite" disabled>
+      <el-option  :key="catType.id" :label="catType.catName" :value="catType.catName">
+      </el-option>
+    </el-select>
     </el-form-item>
     <el-form-item label="套件介绍:" prop="introduce">
       <el-input type="textarea" v-model="suite.introduce" :rows="5" placeholder="请输入套件介绍，不超过40个字符"></el-input>
@@ -94,6 +100,8 @@
       name: "suiteAdd",
       data() {
         return {
+          catType:this.$route.query.catType,
+          pageId:this.$route.query.pageId,
           host:host,
           topDate:'',
           footerDate:'',
@@ -225,6 +233,9 @@
         },
         //点击下一步保存套件信息并进入下一步
         onSubmit(index) {
+          if(this.pageId == 2){
+            index = this.catType.index
+          }
           this.$refs.suite.validate((valid) => {
             if(this.topDate == '' || this.footerDate == ''){
               this.$message({
