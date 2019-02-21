@@ -39,21 +39,27 @@
     },
     watch:{
     	   $route(to,from){
-	  	 for(var i =0;i<navHead.length;i++){
-	  	 	if(to.name==navHead[i].path){
-	  	 		this.showItem = navHead[i].index
-	  	 	}
-	  	 }
+	  	 this.getIndex(to.name)
 	  },
     },
-    beforeDestroy(){
-//  	   alert('退出登录')
+    created(){
+    	   let site = window.location.hash
+    	   let url = site.split("/")[1]
+    	   this.getIndex(url)
     },
+    
     props:['switchLeft'],
     methods: {
     	//点击
       jump(key,index){
          this.page(sideText,key)
+      },
+      getIndex(val){
+      	 for(var i =0;i<navHead.length;i++){
+	  	 	if(val==navHead[i].path){
+	  	 		this.showItem = navHead[i].index
+	  	 	}
+	  	 }
       },
       //搜索路由
       page(val,key){
