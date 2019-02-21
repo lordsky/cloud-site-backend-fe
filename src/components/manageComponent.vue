@@ -32,7 +32,7 @@
             <template slot-scope="scope">
               <el-button type="text" @click="manageCompon(scope.row)">管理</el-button>
               <!--<el-button type="text" @click="editCompon(scope.row)">编辑</el-button>-->
-              <el-button type="text" @click="delCompon(scope.row)" v-show="scope.row.catNum>0">删除</el-button>
+              <el-button type="text" @click="delCompon(scope.row)" v-show="scope.row.catNum==0">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
