@@ -44,10 +44,10 @@
         </el-table>
       </div>
 
-      <div class="pagination">
-          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
-          </el-pagination>
-		  </div>
+      <!--<div class="pagination">-->
+          <!--<el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >-->
+          <!--</el-pagination>-->
+		  <!--</div>-->
    
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">

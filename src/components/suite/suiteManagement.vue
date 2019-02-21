@@ -40,10 +40,10 @@
         </el-table>
       </div>
 
-      <div class="pagination">
-          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
-          </el-pagination>
-		  </div>
+      <!--<div class="pagination">-->
+          <!--<el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >-->
+          <!--</el-pagination>-->
+		  <!--</div>-->
    
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-suiteClass" v-show="editShow">
@@ -167,7 +167,7 @@
       addSuite() {
         this.$router.push({
           path:'/suiteAdd',
-          query:{text:'新增套件'}
+          query:{text:'新增套件',pageId:1}
         })
       },
       //  新模版件分类
