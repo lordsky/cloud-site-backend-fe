@@ -11,7 +11,7 @@
         </p>
       <div class="template-edit-add">
         <div class="template-edit-add-btn" @click="addTemplate">
-          <i class="el-icon-circle-plus-outline"></i><span>新增组件</span>
+          <i class="el-icon-circle-plus-outline"></i><span>新增模版</span>
         </div>
       </div>
       <div class="template-edit-list">
@@ -21,7 +21,7 @@
             <div :class="{'delItem':delShow == i}">
             <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
             <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}" @click="preview(item)"></i>
-            <i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(i)"></i>
+            <!--<i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(i)"></i>-->
             </div>
             </li>
         </ul>

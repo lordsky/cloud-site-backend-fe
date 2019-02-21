@@ -48,7 +48,7 @@
         </ul></el-tab-pane>
         <el-tab-pane label="基础组件" name="basis" class="com-tab-pane">
           <ul>
-            <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)" v-if="x.id != 36 && x.id != 37">
+            <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)" v-if="x.catName != '页头' && x.catName != '页脚'">
               <div>
               <div><i class="compon-edit-ico el-icon-news"></i></div>
               <div>{{x.catName}}</div>

@@ -6,17 +6,17 @@
     </div>
     <el-col :span="24" class="toolbar">
       <el-form :inline="true" :model="filters">
-        <div>
-        <el-form-item label="关键字搜索:">
-          <el-input v-model="filters.name" placeholder="请输入套件名称" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="添加时间:">
-            <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-            </el-date-picker>
-          </el-form-item>
-          </div>
+        <!--<div>-->
+        <!--<el-form-item label="关键字搜索:">-->
+          <!--<el-input v-model="filters.name" placeholder="请输入套件名称" clearable></el-input>-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="添加时间:">-->
+            <!--<el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">-->
+            <!--</el-date-picker>-->
+          <!--</el-form-item>-->
+          <!--</div>-->
         <el-form-item>
-          <el-button type="primary" size="small" v-on:click="getUsers">查询</el-button>
+          <!--<el-button type="primary" size="small" v-on:click="getUsers">查询</el-button>-->
           <el-button type="primary" size="small" @click="addSuite">新增套件</el-button>
         </el-form-item>
       </el-form>

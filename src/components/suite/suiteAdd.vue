@@ -5,7 +5,7 @@
       <el-input v-model="suite.name" placeholder="请输入套件标题，不超过12个字符" class="el-input-suite"></el-input>
     </el-form-item>
     <el-form-item label="套件分类:" prop="classification">
-      <el-select v-model="suite.classification" placeholder="请选择模版分类" class="el-select-suite">
+      <el-select v-model="suite.classification" placeholder="请选择套件分类" class="el-select-suite">
         <el-option :label="x.catName" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
       </el-select>
     </el-form-item>

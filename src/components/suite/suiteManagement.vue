@@ -2,18 +2,18 @@
   <div class="suite">
    <el-col :span="24" class="toolbar">
 			<el-form :inline="true" :model="filters">
-        <div>
-				<el-form-item label="套件分类:">
-					<el-input v-model="filters.name" placeholder="请输入套件分类名称" clearable></el-input>
-				</el-form-item>
-        <el-form-item label="添加时间:">
-            <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-            </el-date-picker>
-          </el-form-item>
-          </div>
+        <!--<div>-->
+				<!--<el-form-item label="套件分类:">-->
+					<!--<el-input v-model="filters.name" placeholder="请输入套件分类名称" clearable></el-input>-->
+				<!--</el-form-item>-->
+        <!--<el-form-item label="添加时间:">-->
+            <!--<el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">-->
+            <!--</el-date-picker>-->
+          <!--</el-form-item>-->
+          <!--</div>-->
 				<el-form-item>
-					<el-button type="primary" size="small" v-on:click="getSuiteList">查询</el-button>
-          <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>
+					<!--<el-button type="primary" size="small" v-on:click="getSuiteList">查询</el-button>-->
+          <!--<el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>-->
           <el-button type="primary" size="small" @click="addSuite">新增套件</el-button>
           <el-button type="primary" size="small" @click="addComponClass">新增套件分类</el-button>
 				</el-form-item>
@@ -22,8 +22,8 @@
       <div class="suite-box">
         <el-table :data="suiteByType" border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
-          <el-table-column type="selection" width="55" align="center">
-          </el-table-column>
+          <!--<el-table-column type="selection" width="55" align="center">-->
+          <!--</el-table-column>-->
           <el-table-column prop="catName" label="套件分类"  align="center">
           </el-table-column>
           <!--<el-table-column prop="addTime" label="添加时间" align="center">-->
@@ -34,7 +34,7 @@
             <template slot-scope="scope">
               <el-button type="text" @click="manageSuite(scope.$index, scope.row)">管理</el-button>
               <!--<el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>-->
-              <!--<el-button type="text" v-if="scope.row.num == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>-->
+              <el-button type="text" v-if="scope.row.catNum == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -175,7 +175,7 @@
         this.clear()
         this.dialogVisible = true
         this.editShow = true
-        this.componTitle = '新增模版分类'
+        this.componTitle = '新增套件分类'
         this.dialogStu = 'addClass'
         this.dialogText = '不超过6个字符'
       },

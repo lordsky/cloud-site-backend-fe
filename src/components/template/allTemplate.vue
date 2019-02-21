@@ -2,18 +2,18 @@
   <div class="compent">
    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
-        <div>
-				<el-form-item label="模版分类:">
-					<el-input v-model="filters.name" placeholder="请输入模版分类名称" clearable></el-input>
-				</el-form-item>
-        <el-form-item label="添加时间:">
-            <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-            </el-date-picker>
-          </el-form-item>
-          </div>
+        <!--<div>-->
+				<!--<el-form-item label="模版分类:">-->
+					<!--<el-input v-model="filters.name" placeholder="请输入模版分类名称" clearable></el-input>-->
+				<!--</el-form-item>-->
+        <!--<el-form-item label="添加时间:">-->
+            <!--<el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">-->
+            <!--</el-date-picker>-->
+          <!--</el-form-item>-->
+          <!--</div>-->
 				<el-form-item>
-					<el-button type="primary" size="small" v-on:click="getComponList">查询</el-button>
-          <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>
+					<!--<el-button type="primary" size="small" v-on:click="getComponList">查询</el-button>-->
+          <!--<el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>-->
           <el-button type="primary" size="small" @click="addTemplate">新增模版</el-button>
           <el-button type="primary" size="small" @click="addComponClass">新增模版分类</el-button>
 				</el-form-item>
@@ -22,8 +22,8 @@
       <div class="compent-box">
         <el-table :data="templateTypeLsit"  border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
-          <el-table-column type="selection" width="55" align="center">
-          </el-table-column>
+          <!--<el-table-column type="selection" width="55" align="center">-->
+          <!--</el-table-column>-->
           <el-table-column prop="catName" label="模版分类"  align="center">
           </el-table-column>
           <!--<el-table-column prop="addTime" label="添加时间" align="center">-->
