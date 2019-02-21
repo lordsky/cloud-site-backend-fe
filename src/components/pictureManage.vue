@@ -48,11 +48,11 @@
         <div class="picture-list-item" v-for="(x,i) in videoList"  :key="i">
         	  <video :src="x.filePath" controls="controls" @click="videoChoose(i,checkVideoShow[i],x)" style="width: 100%;height: 100%;">
 			您的浏览器不支持 video 标签。
-			</video>
+		  </video>
         	  <div class="picture-list-item-check">
         	    <el-checkbox v-model="checkVideoList[i]" v-show="checkVideoShow[i]" disabled></el-checkbox>
         	  </div>
-        	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
+        	  <div class="picture-list-item-hoverTop"  v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
         	  	<span class="el-icon-view"  @click="lookItem(x)"></span>
         	  	<!--<span class="el-icon-edit" @click="editItem"></span>-->

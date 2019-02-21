@@ -13,7 +13,7 @@
       </div>
       <div class="compon-edit-list">
         <ul>
-          <li v-for="(x,i) in comItem"  :key="i" @mousemove="delShow = i" @mouseleave="delShow=null">
+          <li v-for="(x,i) in comItem"  :key="i" >
           	<div :class="{'delItem':delShow==i}" class="mask-compon"><i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i></div>
           	<div v-html="x.segmentCode"></div>
             </li>
