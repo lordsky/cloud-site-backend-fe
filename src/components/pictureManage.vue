@@ -61,7 +61,7 @@
         </div>
       </div>
        
-      <div class="pictrue-page"v-show="listLabel==1">
+      <!--<div class="pictrue-page" v-show="listLabel==1">
       	<el-pagination
       @size-change="handleSizeChange"
       background
@@ -71,7 +71,7 @@
       layout="prev, pager, next, jumper"
       :total="10">
         </el-pagination>
-      </div>
+      </div>-->
        <!--<div class="pictrue-page"v-show="listLabel==2">
       	<el-pagination
       @size-change="handleSizeChange"
@@ -140,7 +140,6 @@
     	  		}
     	  	})
     	  },
-    	  
     	  videoSuccess(file,fileList){
     	  	   if(!this.videoUpload(fileList))return
         	   this.$http.post(this.$API.materialsUpload,{
@@ -306,7 +305,6 @@
         return true
        
       },
-     
       //图片选择
       choose(key,stu,val){
       	if(stu){
@@ -404,11 +402,14 @@
   		.el-upload{
   		width: 100%;
   		height: 270px;
-  		display: flex;
-  		justify-content: center;
-  		align-items: center;
+  		display: flex ;
+  		justify-content: center ;
+  		align-items: center ;
   		.avatar-uploader-icon{
   			font-size: 40px;
+  			display: flex;
+  			justify-content: center ;
+  		    align-items: center ;
   		}
   	   }
   	   .picture-list-item-hoverTop{

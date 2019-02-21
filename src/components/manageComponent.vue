@@ -3,8 +3,8 @@
    
       <div class="compent-head">
         <div class="compent-head-type">
-          <span>组件类型:</span>
-          <div class="compent-head-btn" :class="{'active':btnShow==i}" @click="btnType(i)" v-for="(x,i) in btnList" :key="i">{{x}}</div>
+          <!--<span>组件类型:</span>
+          <div class="compent-head-btn" :class="{'active':btnShow==i}" @click="btnType(i)" v-for="(x,i) in btnList" :key="i">{{x}}</div>-->
         </div>
         <div class="compent-head-class">
           <span>组件分类:</span>
@@ -17,8 +17,8 @@
       </div>
       <div class="compent-box">
         <el-table :data="tableData3" border style="width: 100%;height: auto;" tooltip-effect="dark" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55" align="center">
-          </el-table-column>
+          <!--<el-table-column type="selection" width="55" align="center">
+          </el-table-column>-->
           <el-table-column prop="catName" label="组件分类"  align="center">
           </el-table-column>
           <el-table-column prop="catType" label="组件类型" align="center">
