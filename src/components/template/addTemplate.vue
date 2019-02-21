@@ -39,7 +39,7 @@
     name: 'addTemplate',
     data() {
       return {
-        catType:this.$route.query.catType,
+        catType:this.$store.state.catType,
         pageId:this.$route.query.pageId,
         btnShow:'',
         delShow: null,

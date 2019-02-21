@@ -86,14 +86,15 @@
       },
       //新增组件
       addTemplate() {
+        let row = {
+            catName:this.$store.state.templateData.catName,
+            id:this.$store.state.templateData.id,
+            index:this.$route.query.catIndex
+        }
+        this.$store.commit('saveCatType', row)
         this.$router.push({
           path:'/addTemplate',
-          query:{text:'新增模版',pageId:2
-            ,catType:{
-              catName:this.$store.state.templateData.catName,
-              id:this.$store.state.templateData.id,
-              index:this.$route.query.catIndex
-            }}
+          query:{text:'新增模版',pageId:2}
           })
       },
       //返回
