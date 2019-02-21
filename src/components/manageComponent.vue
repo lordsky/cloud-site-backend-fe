@@ -47,7 +47,7 @@
           <div class="el-componClass-item">
             <span class="warFater">组件类型：<i class="war-ico">*</i></span>
             <span :class="{'activeClass':classBtn==1}" @click="classBtn=1">基础组件</span>
-            <span :class="{'activeClass':classBtn==2}" @click="classBtn=2">其他组件</span>
+            <!--<span :class="{'activeClass':classBtn==2}" @click="classBtn=2">其他组件</span>-->
           </div>
         </el-form>
       </div>
@@ -103,7 +103,7 @@
           name: ''
         },
         validationText:'',
-        btnList: ['全部','基础组件', '其他组件'],
+        btnList: ['全部','基础组件'],
         tableData3: [],
         list:{},
         host:host,
