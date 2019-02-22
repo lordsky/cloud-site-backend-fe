@@ -355,6 +355,7 @@
           const children = parent.data.children || parent.data;
           const index = children.findIndex(d => d.id === this.data2.id);
           children[index].label = this.formCompon.name
+          $("#silder li").eq(index).html(this.formCompon.name);
         },
         //删除导航和页面
         remove(node, data) {
@@ -689,6 +690,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-evenly;
+                z-index: 100;
               }
               .template-edit-ico {
                 display: none;
