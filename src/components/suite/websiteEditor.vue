@@ -16,7 +16,7 @@
             <div class="header-right" id="aa">
               <span @click="saveWeb">保存</span>
               <span @click="preview">预览</span>
-              <span @click="dialogVisible4=true">退出</span>
+              <span @click="exit">退出</span>
             </div>
           </el-col>
         </el-col>
@@ -226,6 +226,7 @@
           dialogVisible3:false,//添加新页面弹框
           dialogVisible4:false,//退出弹框
           savePage:false,//是否已经保存
+          headerIndex:'',//导航下角标
           data1: [
             // {
             //   id: 1,
@@ -334,6 +335,15 @@
             this.webPageList.content = this.webPageAll[index].pageCode
           }
         },
+        exit(){
+          if(this.savePage  == true){
+            this.$router.push({
+              path:'/suiteClassification'
+            })
+          }else {
+            this.dialogVisible4 = true
+          }
+        },
         append(data) {
           const newChild = { id: id++, label: '关于我们', children: [] };
           if (!data.children) {
@@ -376,16 +386,8 @@
           })
         },
         saveWeb2(){
-          if(this.savePage == false){
-            this.saveWeb()
-            if(this.saveWeb() != false){
-              pageNum = 1
-              this.$router.push({
-                path:'/suiteClassification'
-              })
-            }
-          }else{
-            pageNum = 1
+          this.saveWeb()
+          if(this.savePage == true){
             this.$router.push({
               path:'/suiteClassification'
             })
@@ -411,73 +413,8 @@
         },
         //选择页面
         selectPage(data){
-          // if(pageNum == 1){
-          //   this.webPageList.header = '<div style="width:100%;height:6.25vw;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);display: flex;box-sizing: border-box;">\n' +
-          //     '\t\t\t<div style="display: flex;width: 100%;">\n' +
-          //     '\t\t\t<ul id="silder" style="display: flex;list-style: none;white-space: nowrap;padding: 0;;justify-content: center;align-items: center;width: 100%;margin: 0;">\n' +
-          //     '\t\t\t</ul>\n' +
-          //     '\t\t\t</div>\n' +
-          //     '\t\t</div>';
-          //   this.webPageList.footer = '<div style="width:100%;min-height: 15em;background:rgba(255,255,255,1);box-shadow:2px 0px 4px 2px rgba(0,0,0,0.05);display: flex;">\n' +
-          //     '\t\t\t<div style="display: flex;width: 100%;">\n' +
-          //     '\t\t\t\t<div style="margin-top: 5.8125vw;margin-left: 9.375vw;">\n' +
-          //     '\t\t\t\t\t<div style="font-size:18px;font-family:AppleSystemUIFont;color:rgba(74,144,226,1);cursor: pointer">MUC</div>\n' +
-          //     '\t\t\t\t\t<div style="margin-top: 3vw;font-size:14px;font-family:AppleSystemUIFont;color:rgba(157,175,189,1);white-space: nowrap;">\n' +
-          //     '\t\t\t\t\t\t<div>Copyright &#169 CMCC</div>\n' +
-          //     '\t\t\t\t\t\t<div>All rights reserved</div>\n' +
-          //     '\t\t\t\t\t</div>\n' +
-          //     '\t\t\t\t\t<div style="display: flex;margin-top: 1.5vw;">\n' +
-          //     '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
-          //     '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
-          //     '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
-          //     '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
-          //     '\t\t\t\t\t\t<div style="width: 1.25em;height: 1.25em;border-radius: 50%;background-color: #9DAFBD;margin-right: 1vw;"></div>\n' +
-          //     '\t\t\t\t\t</div>\n' +
-          //     '\t\t\t\t</div>\n' +
-          //     '\t\t\t\t<div style="margin: 5vw 0 5vw 10vw;">\n' +
-          //     '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">热门产品</div>\n' +
-          //     '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">特色产品</li>\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">2B 产品</li>\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">2C 产品</li>\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">解决方案</li>\n' +
-          //     '\t\t\t\t\t</ul>\n' +
-          //     '\t\t\t\t</div>\n' +
-          //     '\t\t\t\t<div style="margin: 5vw 0 5vw 14vw;">\n' +
-          //     '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">公司概况</div>\n' +
-          //     '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">关于我们</li>\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">人员招聘</li>\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">行业观点</li>\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">联系我们</li>\n' +
-          //     '\t\t\t\t\t</ul>\n' +
-          //     '\t\t\t\t</div>\n' +
-          //     '\t\t\t\t<div style="margin: 5vw 0 5vw 14vw;">\n' +
-          //     '\t\t\t\t\t<div style="font-size:14px;font-family:PingFangSC-Semibold;font-weight:600;color:rgba(157,175,189,1);">服务支持</div>\n' +
-          //     '\t\t\t\t\t<ul style="list-style: none;margin: 0;padding: 0;margin-top: 1.8vw;white-space: nowrap;">\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">客服中心</li>\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">在线帮助</li>\n' +
-          //     '\t\t\t\t\t\t<li style="font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin-top: .7vw;">FAQ</li>\n' +
-          //     '\t\t\t\t\t</ul>\n' +
-          //     '\t\t\t\t</div>\n' +
-          //     '\t\t\t</div>\n' +
-          //     '\t\t</div>';
-          //   pageNum++
-          // }
           this.dialogVisible3=false
           this.webPageList.content = data.pageCode
-          // this.webPageList.content = '<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;">\n' +
-          //   '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;margin-top: 5.1875vw;;">产品特色</div>\n' +
-          //   '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: 5px;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
-          //   '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: center;margin-top: 5.625vw;">\n' +
-          //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(238,242,244,1);border-radius:5px;margin-right: 1.875vw;text-align: center;">\n' +
-          //   '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;margin: 6.75vw auto 0 auto;">设计需求管理</div>\n' +
-          //   '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;margin: .5vw auto 0 auto;">对“大体验”设计相关需求，包括视觉设计、体验设计、工业设计，改进我们的产品体验而努力</div>\n' +
-          //   '\t\t\t\t</div>\n' +
-          //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;margin-right: 1.875vw;"></div>\n' +
-          //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;"></div>\n' +
-          //   '\t\t\t</div>\n' +
-          //   '\t\t</div>'
           const newChild = { id: id++, label: this.pageName, children: [] };
           // if (!this.data1.children) {
           //   this.$set(this.data1, '关于我们', []);
@@ -515,6 +452,13 @@
         },
       },
       mounted() {
+        // setTimeout(function () {
+        //   $("ul#silder").on("click","li",function(){      //点击顶部导航切换页面
+        //     this.headerIndex = $(this).index();
+        //     // this.webPageList.content = this.webPageAll[this.headerIndex].pageCode;
+        //     this.handleNodeClick()
+        //   });
+        // },100)
         this.templateId = this.$route.query.data.templateId
         this.$api.apiCatType(2).then(res => {
           if(res.msg === "success") {
@@ -527,6 +471,13 @@
         })
       }
     }
+  // $(document).ready(function(){
+  //   $("ul#silder").on("click","li",function(){      //点击顶部导航切换页面
+  //     this.headerIndex = $(this).index();
+  //     // this.webPageList.content = this.webPageAll[this.headerIndex].pageCode;
+  //     this.handleNodeClick()
+  //   });
+  // })
 </script>
 
 <style lang="scss">
@@ -670,7 +621,7 @@
               height: 250px;
               border: 1px #cccccc solid;
               list-style: none;
-              margin: 15px;
+              margin: .8vw;
               display: flex;
               align-items: center;
               justify-content: space-evenly;

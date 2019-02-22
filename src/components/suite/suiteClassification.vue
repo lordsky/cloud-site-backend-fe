@@ -147,9 +147,9 @@
           path:'/suiteAdd',
           query:{text:'新增套件',pageId:2
             ,catType:{
-              catName:this.$route.query.data.catName,
-              id:this.$route.query.data.id,
-              index:this.$route.query.catIndex
+              catName:this.$store.state.suiteData.data.catName,
+              id:this.$store.state.suiteData.data.id,
+              index:this.$store.state.suiteData.catIndex
             }}
         })
       },

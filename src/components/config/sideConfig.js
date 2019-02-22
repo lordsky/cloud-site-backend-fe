@@ -22,47 +22,47 @@ const navHead = [{
   {
     path: 'allTemplate',
     index: '2-2',
-    text: ['模板管理', '全部模版']
+    text: ['模板管理', '页面模版']
   },
   {
     path: 'templateEditor',
     index: '2-2',
-    text: ['模板管理', '全部模版']
+    text: ['模板管理', '页面模版']
   },
   {
     path: 'addTemplate',
     index: '2-2',
-    text: ['模板管理', '全部模版']
+    text: ['模板管理', '页面模版']
   },
   {
     path: 'designTemplate',
     index: '2-2',
-    text: ['模板管理', '全部模版']
+    text: ['模板管理', '页面模版']
   },
   {
     path: 'suiteManagement',
     index: '2-3',
-    text: ['模板管理', '套件管理']
+    text: ['模板管理', '模板套件']
   },
   {
     path: 'suiteClassification',
     index: '2-3',
-    text: ['模板管理', '套件管理']
+    text: ['模板管理', '模板套件']
   },
   {
     path: 'suiteAdd',
     index: '2-3',
-    text: ['模板管理', '套件管理']
+    text: ['模板管理', '模板套件']
   },
   {
     path: 'suiteEditor',
     index: '2-3',
-    text: ['模板管理', '套件管理']
+    text: ['模板管理', '模板套件']
   },
   {
     path: 'websiteEditor',
     index: '2-3',
-    text: ['模板管理', '套件管理']
+    text: ['模板管理', '模板套件']
   },
   {
     path: 'siteManage',
@@ -98,12 +98,12 @@ const sideText = [
         path: '/manageComponent'
       },
       {
-        name: '全部模板',
+        name: '页面模板',
         index: '2-2',
         path: '/allTemplate'
       },
       {
-        name: '套件管理',
+        name: '模板套件',
         index: '2-3',
         path: '/suiteManagement'
       }

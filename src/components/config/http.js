@@ -23,7 +23,7 @@ var instance = axios.create({
     baseURL:host.hostUrl,
 //  baseURL:'http://six-pulse-nerve-backend-dev.uworks.cc',
 //  withCredentials: true,
-    timeout: 100 * 15,
+    timeout: 1000 * 15,
     headers: {
         'Content-Type': 'application/json;charset=utf-8',
 //      "Accept":'application/json',

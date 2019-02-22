@@ -246,10 +246,14 @@
 			},
       //管理
       manageSuite(index, row) {
+        let suiteData = {
+          data:row,
+          catIndex:index
+        }
         this.$store.commit('saveSuiteId', row.id)
+        this.$store.commit('saveSuiteData', suiteData)
         this.$router.push({
-          path: '/suiteClassification',
-          query:{data:row,pageId:1,catIndex:index}
+          path: '/suiteClassification'
         })
       },
       //保存

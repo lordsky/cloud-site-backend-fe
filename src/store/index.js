@@ -11,7 +11,8 @@ const store = new Vuex.Store({
     sutieId:null,
     previewCode:null,
     templateData:null,
-    catType:null
+    catType:null,
+    suiteData:null
 	},
 	mutations: {
 		// save user data
@@ -33,6 +34,9 @@ const store = new Vuex.Store({
     },
     saveCatType(state, data){
       state.catType = data
+    },
+    saveSuiteData(state, data){
+      state.suiteData = data
     }
 	}
 })
