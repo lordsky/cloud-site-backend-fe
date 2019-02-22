@@ -360,12 +360,16 @@
         },
         //重命名导航名
         editorTitle(){
-          this.dialogVisible2=false
-          const parent = this.node.parent;
-          const children = parent.data.children || parent.data;
-          const index = children.findIndex(d => d.id === this.data2.id);
-          children[index].label = this.formCompon.name
-          $("#silder li").eq(index).html(this.formCompon.name);
+          this.$refs.formCompon.validate((valid) => {
+            if (valid) {
+              this.dialogVisible2=false
+              const parent = this.node.parent;
+              const children = parent.data.children || parent.data;
+              const index = children.findIndex(d => d.id === this.data2.id);
+              children[index].label = this.formCompon.name
+              $("#silder li").eq(index).html(this.formCompon.name);
+            }
+          });
         },
         //删除导航和页面
         remove(node, data) {
