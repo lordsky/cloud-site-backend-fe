@@ -176,7 +176,8 @@
               margin: 10px 30px 10px 0px;
               cursor: pointer;
               div{
-                border: 2px #181818 solid;
+                border: 2px #e6e7e7 solid;
+                box-shadow: 0 0px 5px #000000;
                 img{
                   width: 100%;
                 }
@@ -188,7 +189,7 @@
               }
               .active {
                 border-radius: 4px;
-                border: 2px #4451ff solid;
+                border: 3px #4451ff solid;
               }
             }
           }

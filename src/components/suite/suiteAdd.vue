@@ -429,7 +429,7 @@
     .manage-dialog{
       .compon-edit-list {
         margin: 10px 0 10px 0;
-        height: 400px;
+        height: 35vw;
         overflow-y: auto;
         padding-bottom: 45px;
         ul {
@@ -444,12 +444,12 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            &:hover{
-              border: 1px #4d78ff solid;
-            }
+            /*&:hover{*/
+              /*border: 1px #4d78ff solid;*/
+            /*}*/
           }
           .active{
-            border: 1px #4d78ff solid;
+            border: 3px #4d78ff solid;
           }
         }
       }
