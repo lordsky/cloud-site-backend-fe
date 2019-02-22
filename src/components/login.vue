@@ -8,7 +8,7 @@
       <div class="login-input">
         <el-form :model="data" status-icon :rules="rules2" ref="ruleForm2" class="demo-ruleForm">
           <el-form-item prop="phone">
-            <el-input v-model="data.phone" placeholder="请输入管理员账号"></el-input>
+            <el-input v-model="data.phone" placeholder="请输入管理员账号" ></el-input>
           </el-form-item>
           <el-form-item prop="pwd">
             <el-input type="password" v-model="data.pwd" placeholder="请输入密码"></el-input>
@@ -26,6 +26,16 @@
   export default {
     name: 'login',
     data() {
+    	const PHONE_REG = /^1[34578]\d{9}$/
+    	let validatePhone = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入手机号"));
+      } else if (!PHONE_REG.test(value)) {
+        callback(new Error("请输入正确的手机号!"));
+      } else {
+        callback();
+      }
+    }
       return {
         data: {
           phone: '',
@@ -33,8 +43,8 @@
         },
         rules2: {
           phone: [{
-            required: true,
-            message: '账号不能为空'
+            validator: validatePhone,
+            trigger: "blur" 
           }, ],
           pwd: [{
             required: true,

@@ -7,9 +7,9 @@
           <div class="compent-head-btn" :class="{'active':btnShow==i}" @click="btnType(i)" v-for="(x,i) in btnList" :key="i">{{x}}</div>-->
         </div>
         <div class="compent-head-class">
-          <span>组件分类:</span>
+          <!--<span>组件分类:</span>
           <el-input placeholder="请输入组件分类名称" v-model="queryText"></el-input>
-          <el-button type="primary" size="small" @click="queryList">查询</el-button>
+          <el-button type="primary" size="small" @click="queryList">查询</el-button>-->
           <!--<el-button type="primary" size="small">批量删除</el-button>-->
           <el-button type="primary" size="small" @click="addComponClass">新增组件分类</el-button>
           <el-button type="primary" size="small" @click="addComponent">新增组件</el-button>
@@ -42,7 +42,7 @@
       <div class="el-componClass" v-show="editShow">
         <el-form :inline="true" :model="formCompon" class="demo-form-inline" ref="formCompon">
           <el-form-item label="组件分类名称:" prop="name" :rules="[{required: true, message: '分类名称不能为空'}]">
-            <el-input v-model="formCompon.name" :placeholder="dialogText"></el-input>
+            <el-input v-model="formCompon.name" :placeholder="dialogText" maxlength="4" ></el-input>
           </el-form-item>
           <div class="el-componClass-item">
             <span class="warFater">组件类型：<i class="war-ico">*</i></span>
@@ -278,6 +278,7 @@
 	            	    console.log(res)
 	            	    if(res.data.data){
 	            	    	   this.dialogVisible = false
+	            	    	   this.refreshTable()
 	            	    	   this.$message({
 				          showClose: true,
 				          message: '添加成功',
