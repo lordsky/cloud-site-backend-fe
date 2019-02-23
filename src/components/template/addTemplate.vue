@@ -46,7 +46,7 @@
         dialogAdd: false,
         loading:false,
         template:{
-          templateId: '',
+          templateId: this.$store.state.templateData.index,
         },
         typographyId:0,
         // options: [{
@@ -119,7 +119,7 @@
             path: '/designTemplate',
             query:{
               text:'新增模版（设计模版)',
-              template:param,
+              templateId:this.template.templateId,
             }
           })
         }, 500);
