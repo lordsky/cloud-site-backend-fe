@@ -14,7 +14,7 @@
           </el-col>
           <el-col :span="10">
             <div class="header-right" id="aa">
-              <span @click="saveWeb">保存</span>
+              <span @click="saveWeb(1)">保存</span>
               <span @click="preview">预览</span>
               <span @click="exit">退出</span>
             </div>
@@ -103,7 +103,7 @@
           <div>是否保存您对套件的修改？</div>
           <span slot="footer" class="dialog-footer">
             <el-button type="primary" @click="notSave">不保存</el-button>
-            <el-button type="primary" @click="saveWeb2">保存</el-button>
+            <el-button type="primary" @click="saveWeb2(2)">保存</el-button>
           </span>
         </el-dialog>
         <!--退出弹框-->
@@ -281,7 +281,7 @@
           })
         },
         //保存页面
-        saveWeb(){
+        saveWeb(index){
           let headerHtml = $('#headerHtml').html()
           this.webPageList.header = headerHtml
           if(this.webPageAll.length == 0){
@@ -311,6 +311,11 @@
                     type: 'success'
                   });
                   this.savePage = true //已保存
+                  if(index == 2){
+                    this.$router.push({
+                      path:'/suiteClassification'
+                    })
+                  }
                 }
               } else {
                 this.$message.error(res.msg)
@@ -389,13 +394,8 @@
             path:'/suiteClassification'
           })
         },
-        saveWeb2(){
-          this.saveWeb()
-          if(this.savePage == true){
-            this.$router.push({
-              path:'/suiteClassification'
-            })
-          }
+        saveWeb2(index){
+          this.saveWeb(index)
         },
         //预览
         preview(){
