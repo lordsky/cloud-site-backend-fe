@@ -213,10 +213,7 @@
             if(res.code === 200) {
               this.$router.push({
                 path:'/templateEditor',
-                query:{data:{
-                    catName:this.pageName,
-                    id:this.templateId
-                  }}
+                query:{catIndex:this.$store.state.templateData.index}
               })
             } else {
               this.$message.error(res.msg)

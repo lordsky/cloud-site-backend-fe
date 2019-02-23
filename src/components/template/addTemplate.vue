@@ -110,7 +110,8 @@
           id : this.templateTypeList[index].id,
           typographyId : this.typographyId,
           catName:this.templateTypeList[index].catName,
-          catNum:this.templateTypeList[index].catNum
+          catNum:this.templateTypeList[index].catNum,
+          index:index
         }
         this.$store.commit('saveTemplateData', param)
         setTimeout(() => {
