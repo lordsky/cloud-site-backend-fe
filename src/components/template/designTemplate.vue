@@ -457,7 +457,7 @@
           height: 70px;
           border: 1px #cccccc solid;
           list-style: none;
-          margin: 10px;
+          margin: .46vw;
           display: flex;
           align-items: center;
           justify-content: center;
