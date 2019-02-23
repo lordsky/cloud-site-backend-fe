@@ -24,7 +24,8 @@
           class="avatar-uploader"
           :action="host.hostUrl+'/common/upload'"
           :show-file-list="false"
-          :on-change="handleChange">
+          :on-change="handleChange"
+          :before-upload="beforeUpLoad">
           <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
             <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
             <div v-if="suite.imageUrl" :class="{'delItem':showDel}">
@@ -95,6 +96,7 @@
 
 <script scoped>
   import host from '../config/host'
+  import fileUtil from '../config/fileUtil'
   import '@/assets/js/jquery';
   export default {
     name: "suiteAdd",
@@ -157,6 +159,27 @@
       },
       handleAvatarSuccess(res, file) {
         this.suite.imageUrl = URL.createObjectURL(file.raw);
+      },
+      beforeUpLoad(file) {
+        return new Promise((resolve) => {
+          fileUtil.getOrientation(file).then((orient) => {
+            if (orient && orient === 6) {
+              let reader = new FileReader()
+              let img = new Image()
+              reader.onload = (e) => {
+                img.src = e.target.result
+                img.onload = function () {
+                  const data = fileUtil.rotateImage(img, img.width, img.height)
+                  const newFile = fileUtil.dataURLtoFile(data, file.name)
+                  resolve(newFile)
+                }
+              }
+              reader.readAsDataURL(file)
+            } else {
+              resolve(file)
+            }
+          })
+        })
       },
       handleChange(file){
         const isType = file.raw.type === 'image/jpeg' || file.raw.type === 'image/png';

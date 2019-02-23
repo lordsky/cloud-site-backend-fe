@@ -125,6 +125,11 @@
       },
       //新增组件
       addTemplate() {
+        let param = {
+          index:'',
+          btnShow:0
+        }
+        this.$store.commit('saveTemplateData', param)
         this.$router.push({
           path:'/addTemplate',
           query:{text:'新增模版',pageId:1}
