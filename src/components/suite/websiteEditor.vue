@@ -116,6 +116,7 @@
   import WebPage from './webPage'
   let id = 1;
   let pageNum = 1
+  let headerIndex = 0
     export default {
       name: "websiteEditor",
       data(){
@@ -226,7 +227,7 @@
           dialogVisible3:false,//添加新页面弹框
           dialogVisible4:false,//退出弹框
           savePage:false,//是否已经保存
-          headerIndex:'',//导航下角标
+          // headerIndex:'',//导航下角标
           data1: [
             // {
             //   id: 1,
@@ -337,6 +338,7 @@
           const children = parent.data.children || parent.data;
           const index = children.findIndex(d => d.id === data.id);
           if(index != -1){
+            this.headerIndex = index
             this.webPageList.content = this.webPageAll[index].pageCode
           }
         },
@@ -456,13 +458,13 @@
         },
       },
       mounted() {
-        // setTimeout(function () {
-        //   $("ul#silder").on("click","li",function(){      //点击顶部导航切换页面
-        //     this.headerIndex = $(this).index();
-        //     // this.webPageList.content = this.webPageAll[this.headerIndex].pageCode;
-        //     this.handleNodeClick()
-        //   });
-        // },100)
+        setTimeout(function () {
+          $("ul#silder").on("click","li",function(){      //点击顶部导航切换页面
+            headerIndex = $(this).index();
+            // this.webPageList.content = this.webPageAll[this.headerIndex].pageCode;
+            // this.handleNodeClick()
+          });
+        },100)
         this.templateId = this.$route.query.data.templateId
         this.$api.apiCatType(2).then(res => {
           if(res.msg === "success") {
@@ -473,13 +475,18 @@
             this.$message.error(res.msg)
           }
         })
-      }
+      },
+      watch: {
+        'headerIndex': function(val) {
+          this.webPageList.content = this.webPageAll[val].pageCode;
+        }
+      },
     }
   // $(document).ready(function(){
   //   $("ul#silder").on("click","li",function(){      //点击顶部导航切换页面
   //     this.headerIndex = $(this).index();
   //     // this.webPageList.content = this.webPageAll[this.headerIndex].pageCode;
-  //     this.handleNodeClick()
+  //     // this.handleNodeClick()
   //   });
   // })
 </script>

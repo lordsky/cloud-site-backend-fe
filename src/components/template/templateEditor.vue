@@ -91,6 +91,10 @@
             id:this.$store.state.templateData.id,
             index:this.$route.query.catIndex
         }
+        let param = {
+          btnShow:0
+        }
+        // this.$store.commit('saveTemplateData', param)
         this.$store.commit('saveCatType', row)
         this.$router.push({
           path:'/addTemplate',

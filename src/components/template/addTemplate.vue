@@ -111,7 +111,8 @@
           typographyId : this.typographyId,
           catName:this.templateTypeList[index].catName,
           catNum:this.templateTypeList[index].catNum,
-          index:index
+          index:index,
+          btnShow:this.btnShow
         }
         this.$store.commit('saveTemplateData', param)
         setTimeout(() => {
@@ -136,6 +137,10 @@
       }
     },
     created() {
+      if(this.$store.state.templateData.btnShow != '' && this.$store.state.templateData.btnShow != undefined){
+        this.btnShow = this.$store.state.templateData.btnShow
+        this.typographyId = this.$store.state.templateData.btnShow
+      }
       this.getTemplateTypeList(2)
     }
   }
