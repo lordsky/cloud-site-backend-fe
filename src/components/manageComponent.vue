@@ -269,7 +269,8 @@
 	            break;
 	          case 'addCom':
 	            console.log('新增组件')
-	            console.log(this.formAdd.selectId)
+	            console.log(this.textData)
+	            if(this.textData.type!=='text/plain'){return this.$message.error('文件类型不对，请上传.txt文件格式')}
 	            let formData = new FormData();
     	            formData.append('file',this.textData);
     	            formData.append('catExt','11');
