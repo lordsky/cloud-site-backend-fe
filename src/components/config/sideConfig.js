@@ -32,7 +32,7 @@ const navHead = [{
   {
     path: 'addTemplate',
     index: '2-2',
-    text: ['模板管理', '页面模版']
+    text: ['模板管理', '页面模版','新增模板']
   },
   {
     path: 'designTemplate',
@@ -52,7 +52,7 @@ const navHead = [{
   {
     path: 'suiteAdd',
     index: '2-3',
-    text: ['模板管理', '模板套件']
+    text: ['模板管理', '模板套件', '新增套件']
   },
   {
     path: 'suiteEditor',
