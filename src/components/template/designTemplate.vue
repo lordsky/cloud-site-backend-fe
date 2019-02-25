@@ -211,9 +211,16 @@
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
+              let param = {
+                id : this.$store.state.templateData.id,
+                catName:this.$store.state.templateData.catName,
+                catNum:this.$store.state.templateData.catNum,
+                index:this.$store.state.templateData.index,
+              }
+              this.$store.commit('saveTemplateData', param)
               this.$router.push({
                 path:'/templateEditor',
-                query:{catIndex:this.$store.state.templateData.index}
+                query:{text:'新增模版',catIndex:this.$store.state.templateData.index}
               })
             } else {
               this.$message.error(res.msg)
