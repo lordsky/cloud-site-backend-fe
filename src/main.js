@@ -52,7 +52,7 @@ let USERINFO = (function(){
 })()
 Vue.prototype.$userInfo = USERINFO
 /* eslint-disable no-new */
-new Vue({
+window.app = new Vue({
   el: '#app',
   router,
   store,

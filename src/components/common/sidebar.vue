@@ -45,7 +45,8 @@
     created(){
     	   let site = window.location.hash
     	   let url = site.split("/")[1]
-    	   this.getIndex(url)
+         let arr = url.split("?")[0];
+    	   this.getIndex(arr)
     },
     
     props:['switchLeft'],
@@ -58,6 +59,7 @@
       	 for(var i =0;i<navHead.length;i++){
 	  	 	if(val==navHead[i].path){
 	  	 		this.showItem = navHead[i].index
+          return
 	  	 	}
 	  	 }
       },

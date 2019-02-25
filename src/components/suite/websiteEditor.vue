@@ -408,14 +408,14 @@
             content:this.webPageList.content,
             footer:this.webPageList.footer
           }
-          //window.open('/#/preview','_blank')
           window.localStorage.setItem('saveHeader',this.webPageList.header)
           window.localStorage.setItem('saveContent',this.webPageList.content)
           window.localStorage.setItem('saveFooter',this.webPageList.footer)
+          window.open('/#/preview','_blank')
           let routeData = this.$router.resolve({
             path:'/preview'
           })
-          window.open(routeData.href, '_blank');
+          // window.open(routeData.href, '_blank');
         },
         //选择页面
         selectPage(data){
@@ -458,13 +458,14 @@
         },
       },
       mounted() {
-        setTimeout(function () {
-          $("ul#silder").on("click","li",function(){      //点击顶部导航切换页面
-            headerIndex = $(this).index();
-            // this.webPageList.content = this.webPageAll[this.headerIndex].pageCode;
-            // this.handleNodeClick()
-          });
-        },100)
+        // setTimeout(function () {
+        //   $("ul").on("click","li",function(){      //点击顶部导航切换页面
+        //     headerIndex = $(this).index();
+        //     app.$store.commit('saveHeaderIndex',headerIndex)
+        //     // app.webPageList.content = app.webPageAll[headerIndex].pageCode;
+        //     // this.handleNodeClick()
+        //   });
+        // },100)
         this.templateId = this.$route.query.data.templateId
         this.$api.apiCatType(2).then(res => {
           if(res.msg === "success") {
@@ -477,17 +478,18 @@
         })
       },
       watch: {
-        'headerIndex': function(val) {
+        '$store.state.headerIndex': function(val) {
           this.webPageList.content = this.webPageAll[val].pageCode;
         }
       },
     }
   // $(document).ready(function(){
+  //   setTimeout(function () {
   //   $("ul#silder").on("click","li",function(){      //点击顶部导航切换页面
-  //     this.headerIndex = $(this).index();
-  //     // this.webPageList.content = this.webPageAll[this.headerIndex].pageCode;
-  //     // this.handleNodeClick()
+  //     headerIndex = $(this).index();
+  //     app.$store.commit('saveHeaderIndex',headerIndex)
   //   });
+  //   },100)
   // })
 </script>
 

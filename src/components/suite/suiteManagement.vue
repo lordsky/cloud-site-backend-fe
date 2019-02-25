@@ -166,8 +166,7 @@
       //新增组件
       addSuite() {
         this.$router.push({
-          path:'/suiteAdd',
-          query:{text:'新增套件',pageId:1}
+          path:'/suiteAdd'
         })
       },
       //  新模版件分类

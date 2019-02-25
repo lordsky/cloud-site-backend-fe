@@ -46,7 +46,7 @@
         dialogAdd: false,
         loading:false,
         template:{
-          templateId: this.$store.state.templateData.index,
+          templateId: '',
         },
         typographyId:0,
         // options: [{
@@ -137,10 +137,13 @@
       }
     },
     created() {
+      if(this.$route.query.pageId == 1 && this.$store.state.templateData != null){
+        this.template.templateId = this.$store.state.templateData.index
+      }
       if(this.$route.query.pageId == 2 && this.$store.state.templateData.btnShow == '' && this.$store.state.templateData.btnShow == undefined){
         this.btnShow = ''
         this.typographyId = 0
-      }else if(this.$store.state.templateData.btnShow != '' && this.$store.state.templateData.btnShow != undefined){
+      }else if(this.$route.query.pageId == 2 && this.$store.state.templateData.btnShow != '' && this.$store.state.templateData.btnShow != undefined){
           this.btnShow = this.$store.state.templateData.btnShow
           this.typographyId = this.$store.state.templateData.btnShow
       }

@@ -27,8 +27,9 @@
 	},
 	created(){
        let site = window.location.hash
-    	   let url = site.split("/")[1]
-    	   this.getIndex(url)
+       let url = site.split("/")[1]
+       let arr = url.split("?")[0];
+       this.getIndex(arr)
 	},
 	methods:{
 		 getIndex(val){
