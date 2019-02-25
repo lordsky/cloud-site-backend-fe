@@ -137,9 +137,12 @@
       }
     },
     created() {
-      if(this.$store.state.templateData.btnShow != '' && this.$store.state.templateData.btnShow != undefined){
-        this.btnShow = this.$store.state.templateData.btnShow
-        this.typographyId = this.$store.state.templateData.btnShow
+      if(this.$route.query.pageId == 2 && this.$store.state.templateData.btnShow == '' && this.$store.state.templateData.btnShow == undefined){
+        this.btnShow = ''
+        this.typographyId = 0
+      }else if(this.$store.state.templateData.btnShow != '' && this.$store.state.templateData.btnShow != undefined){
+          this.btnShow = this.$store.state.templateData.btnShow
+          this.typographyId = this.$store.state.templateData.btnShow
       }
       this.getTemplateTypeList(2)
     }
