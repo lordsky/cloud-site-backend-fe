@@ -466,8 +466,8 @@
   	   	right: 0px;
   	   	z-index: 10;
   	   	.el-checkbox__inner{
-  	   		background-color:#1afa29;
-  	   		border-color: #1afa29;
+  	   		/*background-color:#1afa29 ;
+  	   		border-color: #1afa29;*/
   	   		width: 40px !important;
   	   		height: 40px !important;
   	   		border-radius: 50%;

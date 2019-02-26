@@ -118,13 +118,13 @@
    } 
  }
   .sidebar-logo{
-  	background: url(../../assets/logo.jpeg) no-repeat;
-  	background-size: cover;
- 	background-position-y: -35px;
+  	background: url(../../assets/logo.png) no-repeat;
+  	background-size: 100% 100%;
     width: 100%;
     height: 100%;
     display: block;
     animation: aa 1s ease;
+    background-color: white;
   }
   @keyframes aa{
   	from{opacity: 0;}

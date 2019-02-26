@@ -14,7 +14,7 @@
             <el-input type="password" v-model="data.pwd" placeholder="请输入密码"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="login">立即登陆</el-button>
+            <el-button type="primary" @click="login">立即登录</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -87,7 +87,8 @@
       width: 100%;
       height: 150px;
       margin: 20px auto;
-      background: url(../../static/logo.8b56fd6.jpeg) no-repeat center center;
+      background: url(../assets/logo.png) no-repeat;
+      background-size: cover;
     }
     .login-title {
       width: 280px;

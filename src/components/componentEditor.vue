@@ -72,6 +72,7 @@
     	  },
       saveCompon() {
         if(this.value === '' || this.textData === '') return
+        if(this.textData.type!=='text/plain'){return this.$message.error('文件类型不对，请上传.txt文件格式')}
         let formData = new FormData();
         console.log(this.textData)
         formData.append('file', this.textData);
