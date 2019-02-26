@@ -117,6 +117,7 @@
   let id = 1;
   let pageNum = 1
   let headerIndex = 0
+  let pageIndex = 1
     export default {
       name: "websiteEditor",
       data(){
@@ -209,39 +210,45 @@
               type: 'warning'
             });
             return false
+          }else{
+            this.$message({
+              message: '保存成功',
+              type: 'success'
+            });
+            this.savePage = true //已保存
           }
-          //上次页头代码
-          this.saveHeaderPage()
-          //上传页脚代码
-          this.saveFooterPage()
+          // //上次页头代码
+          // this.saveHeaderPage()
+          // //上传页脚代码
+          // this.saveFooterPage()
           //上传内容代码
-          for(let i=0;i<this.webPageAll.length;i++){
-            this.$api.apiAddTemplatePage({
-              pageName: this.webPageAll[i].pageName,
-              templateId: this.templateId,
-              pageCode:this.webPageList.header + this.webPageAll[i].pageCode + this.webPageList.footer,
-              pageAlias:''
-            }).then(res => {
-              console.log(res)
-              if(res.code === 200) {
-                if(i<this.webPageAll.length){
-                  this.$message({
-                    message: '保存成功',
-                    type: 'success'
-                  });
-                  this.savePage = true //已保存
-                  if(index == 2){
-                    this.$router.push({
-                      path:'/suiteClassification'
-                    })
-                  }
-                }
-              } else {
-                this.$message.error(res.msg)
-              }
-
-            })
-          }
+          // for(let i=0;i<this.webPageAll.length;i++){
+          //   this.$api.apiAddTemplatePage({
+          //     pageName: this.webPageAll[i].pageName,
+          //     templateId: this.templateId,
+          //     pageCode:this.webPageList.header + this.webPageAll[i].pageCode + this.webPageList.footer,
+          //     pageAlias:''
+          //   }).then(res => {
+          //     console.log(res)
+          //     if(res.code === 200) {
+          //       if(i<this.webPageAll.length){
+          //         this.$message({
+          //           message: '保存成功',
+          //           type: 'success'
+          //         });
+          //         this.savePage = true //已保存
+          //         if(index == 2){
+          //           this.$router.push({
+          //             path:'/suiteClassification'
+          //           })
+          //         }
+          //       }
+          //     } else {
+          //       this.$message.error(res.msg)
+          //     }
+          //
+          //   })
+          // }
           return true
         },
         //切换不同分类页面列表
@@ -261,13 +268,16 @@
           }
         },
         exit(){
-          if(this.savePage  == true){
-            this.$router.push({
-              path:'/suiteClassification'
-            })
-          }else {
-            this.dialogVisible4 = true
-          }
+          this.$router.push({
+            path:'/suiteClassification'
+          })
+          // if(this.savePage  == true){
+          //   this.$router.push({
+          //     path:'/suiteClassification'
+          //   })
+          // }else {
+          //   this.dialogVisible4 = true
+          // }
         },
         append(data) {
           const newChild = { id: id++, label: '关于我们', children: [] };
@@ -287,13 +297,27 @@
         editorTitle(){
           this.$refs.formCompon.validate((valid) => {
             if (valid) {
-              this.dialogVisible2=false
               const parent = this.node.parent;
               const children = parent.data.children || parent.data;
               const index = children.findIndex(d => d.id === this.data2.id);
-              children[index].label = this.formCompon.name
-              this.webPageAll[index].pageName = this.formCompon.name
-              $("#silder li").eq(index).html(this.formCompon.name);
+              this.$api.apiUpdateTemplatePage({
+                pageName: this.formCompon.name,
+                id: this.data2.id,
+              }).then(res => {
+                console.log(res)
+                if(res.code === 200) {
+                  this.dialogVisible2=false
+                  children[index].label = this.formCompon.name
+                  this.webPageAll[index].pageName = this.formCompon.name
+                  $("#silder li").eq(index).html(this.formCompon.name);
+                  this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                  });
+                } else {
+                  this.$message.error(res.msg)
+                }
+              })
             }
           });
         },
@@ -302,10 +326,20 @@
           const parent = node.parent;
           const children = parent.data.children || parent.data;
           const index = children.findIndex(d => d.id === data.id);
-          children.splice(index, 1);
-          this.webPageAll.splice(index,1)
-          this.webPageList.content = this.webPageAll[0].pageCode
-          $("#"+data.id).remove()
+          this.$api.apiDelTemplatePage(data.id).then(res => {
+            if(res.msg === "success") {
+              children.splice(index, 1);
+              this.webPageAll.splice(index,1)
+              this.webPageList.content = this.webPageAll[0].pageCode
+              $("#"+data.id).remove()
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
         },
         addPage(){
           this.dialogVisible3=false
@@ -340,19 +374,47 @@
         selectPage(data){
           this.dialogVisible3=false
           this.webPageList.content = data.pageCode
-          const newChild = { id: id++, label: this.pageName, children: [] };
-          // if (!this.data1.children) {
-          //   this.$set(this.data1, '关于我们', []);
-          // }
-          this.data1.push(newChild);
-          $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;font-size:14px;font-weight:400;color:rgba(2,111,194,1);cursor: pointer">'+this.pageName+'</li>')
+          if(pageNum == 1){
+            //上次页头代码
+            this.saveHeaderPage()
+            //上传页脚代码
+            this.saveFooterPage()
+            pageNum++
+          }
           //this.webPageAll.push(this.webPageList.content)
+          for(let i=0;i<this.webPageAll.length;i++){
+            if(this.webPageAll[i].pageAlias == data.catExt){
+              data.catExt = data.catExt + '-' + pageIndex
+              pageIndex++
+            }
+          }
           this.webPageAll.push({
             pageName:this.pageName,
             templateId:this.templateId,
             pageCode:this.webPageList.content,
-            pageAlias:''})
-          console.log(this.webPageAll)
+            pageAlias:data.catExt})
+          this.$api.apiAddTemplatePage({
+            pageName: this.pageName,
+            templateId: this.templateId,
+            pageCode:data.pageCode,
+            pageAlias:data.catExt
+          }).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              const newChild = { id: res.data.id, label: this.pageName, children: [] };
+              // if (!this.data1.children) {
+              //   this.$set(this.data1, '关于我们', []);
+              // }
+              this.data1.push(newChild);
+              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;font-size:14px;font-weight:400;color:rgba(2,111,194,1);cursor: pointer">'+this.pageName+'</li>')
+                this.$message({
+                  message: '添加成功',
+                  type: 'success'
+                });
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
         },
         //获取模版分类列表
         getComponList() {
@@ -377,14 +439,15 @@
         },
       },
       mounted() {
-        // setTimeout(function () {
-        //   $("ul").on("click","li",function(){      //点击顶部导航切换页面
-        //     headerIndex = $(this).index();
-        //     app.$store.commit('saveHeaderIndex',headerIndex)
-        //     // app.webPageList.content = app.webPageAll[headerIndex].pageCode;
-        //     // this.handleNodeClick()
-        //   });
-        // },100)
+        setTimeout(function () {
+          $("ul").on("click","li",function(){      //点击顶部导航切换页面
+            headerIndex = $(this).index();
+            app.$store.commit('saveHeaderIndex',headerIndex)
+            // app.webPageList.content = app.webPageAll[headerIndex].pageCode;
+            // this.handleNodeClick()
+          });
+        },100)
+        pageNum = 1
         this.templateId = this.$route.query.data.templateId
         this.$api.apiCatType(2).then(res => {
           if(res.msg === "success") {

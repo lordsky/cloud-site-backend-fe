@@ -156,6 +156,28 @@ const apiComponentByName= (data) => {
   })
 }
 
+//删除模板页面
+const apiDelTemplatePage= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/template/page/delete?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//编辑模板页面
+const apiUpdateTemplatePage = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post('backend/template/page/update',data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -168,5 +190,7 @@ export default {
   apiPageList,
   apiAddPage,
   apiComponentList,
-  apiComponentByName
+  apiComponentByName,
+  apiDelTemplatePage,
+  apiUpdateTemplatePage
 }
