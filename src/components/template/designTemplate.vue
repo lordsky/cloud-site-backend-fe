@@ -111,6 +111,7 @@
             typographyId:null,
             componentList:[],//组件数组
             templateId:0,//模板分类id
+            catExt:'',//模板姓名
             pageName:'',//模板姓名
             pageCode:'',//页面代码拼接
             basisList:[],//组件分类
@@ -205,7 +206,7 @@
             return
           }
           this.$api.apiAddPage({
-            catExt: this.pageName,
+            catExt: this.catExt,
             catId: this.templateId,
             pageCode:this.pageCode,
           }).then(res => {
@@ -326,6 +327,7 @@
         this.getBasisList()
         this.typographyId = this.$store.state.templateData.typographyId
         this.pageName = this.$store.state.templateData.catName
+        this.catExt = this.$store.state.templateData.catExt
         this.templateId = this.$store.state.templateData.id
       }
     }

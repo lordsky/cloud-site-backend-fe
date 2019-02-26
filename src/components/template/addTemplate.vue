@@ -111,6 +111,7 @@
           typographyId : this.typographyId,
           catName:this.templateTypeList[index].catName,
           catNum:this.templateTypeList[index].catNum,
+          catExt:this.templateTypeList[index].catExt,
           index:index,
           btnShow:this.btnShow
         }
