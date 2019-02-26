@@ -51,9 +51,14 @@
    
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">
-        <el-form :inline="true" :model="addCatRequest" class="demo-form-inline" ref="addCatRequest">
-          <el-form-item label="模版分类名称:" prop="catName" :rules="[{required: true, message: '分类名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
+        <el-form :inline="true" :model="addCatRequest" :rules="rules2" class="demo-form-inline" label-width="120px" ref="addCatRequest">
+          <el-form-item label="模版分类名称:" prop="catName">
             <el-input v-model="addCatRequest.catName" :placeholder="dialogText"></el-input>
+          </el-form-item>
+          <el-form-item label="网页别名:" prop="catExt">
+            <el-input v-model="addCatRequest.catExt" placeholder="请输入网页别名">
+              <template slot="append">.html</template>
+            </el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -70,7 +75,27 @@
   export default {
     name: 'allTemplate',
     data() {
+      const re=/^[a-zA-Z]+$/;
+      let validateEnglish = (rule, value, callback) => {
+        if (value === "") {
+          callback(new Error("网页别名不能为空"));
+        } else if (!re.test(value)) {
+          callback(new Error("不能输入英文以外的字符!"));
+        } else {
+          callback();
+        }
+      }
       return {
+        rules2: {
+          catName: [
+            {required: true, message: '分类名称不能为空'},
+            { max: 6, message: '不能超过6字符', trigger: 'blur' }
+          ],
+          catExt: [
+            { validator: validateEnglish, trigger: 'blur' },
+            { max: 20, message: '不能超过20字符', trigger: 'blur' }
+          ]
+        },
         filters: {
 					name: ''
         },
@@ -257,7 +282,7 @@
             this.$refs.addCatRequest.validate((valid) => {
               if (valid) {
                 API.apiAddCat({
-                  catExt: this.addCatRequest.catName,
+                  catExt: this.addCatRequest.catExt,
                   catName: this.addCatRequest.catName,
                   catType: this.addCatRequest.catType
                 }).then(res => {
