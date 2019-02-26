@@ -60,7 +60,7 @@
         suite: {
           name: '套件名称1',
           classification: '企业官网',
-          imageUrl: require('../../assets/logo.jpeg'),
+          imageUrl: require('../../assets/logo.png'),
           introduce: '这是一个企业官网的套件'
         },
         filters: {
