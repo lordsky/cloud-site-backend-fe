@@ -107,13 +107,13 @@
       }
       table{
         width: 90%;
-        height: 220px;
+        /*height: 220px;*/
         //border: 2px #242dff dashed;
         border-collapse: collapse;
         td{
-          width: 50%;
-          height: 110px;
-          text-align: center;
+          /*width: 100%;*/
+          height: 126px;
+          /*text-align: center;*/
           overflow: hidden;
           //border: 2px #242dff dashed
           .formatside-right-list{
