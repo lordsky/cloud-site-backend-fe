@@ -290,6 +290,7 @@
                 this.topDate = $('#topDate').html()
                 window.localStorage.setItem('suiteHeater',this.topDate)
                 window.localStorage.setItem('suiteFooter',this.footerDate)
+                this.$store.commit('saveSuiteId', this.classification[index].id)
                 this.$router.push({
                   path:'/websiteEditor',
                   query:{text:'网站编辑器'

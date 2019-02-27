@@ -29,7 +29,7 @@
           <div class="el-dialog-componAdd-update">
             <span class="el-componAdd-update-title">上传文件：</span>
             <a href="javascript:void(0);" class="upload-text">选择文件<input name="file" type="file" ref="file" @change="uploadText"></a>
-            <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件'}}</span>
+            <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件(.txt格式文件)'}}</span>
           </div>
         </el-form>
       </div>
