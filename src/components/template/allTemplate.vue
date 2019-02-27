@@ -271,7 +271,7 @@
         this.$store.commit('saveTemplateData', row)
         this.$router.push({
           path: '/templateEditor',
-          query:{text:'新增模版',pageId:1,catIndex:index}
+          query:{text:row.catName,pageId:1,catIndex:index}
         })
       },
       //保存

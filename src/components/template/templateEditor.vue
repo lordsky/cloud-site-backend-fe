@@ -119,6 +119,12 @@
       }
     },
     mounted() {
+      if(this.$store.state.templateData == null || this.$store.state.templateData == ''){
+        this.$router.push({
+          path:'/allTemplate'
+        })
+        return
+      }
       this.text = this.$store.state.templateData.catName
       this.num = this.$store.state.templateData.catNum
       this.getPageList(this.$store.state.templateData.id)

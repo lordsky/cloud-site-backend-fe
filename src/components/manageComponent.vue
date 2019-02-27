@@ -173,7 +173,7 @@
       manageCompon(res) {
       	this.$router.push({
 		          path: '/componentEditor',
-		          query:{text:'导航',msg:res}
+		          query:{text:res.catName,msg:res}
 		        })
       	
       },

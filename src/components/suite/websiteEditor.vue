@@ -470,6 +470,12 @@
         },
       },
       mounted() {
+        if(this.$store.state.sutieId == null || this.$store.state.sutieId == ''){
+          this.$router.push({
+            path: '/suiteManagement'
+          })
+          return
+        }
         setTimeout(function () {
           $("ul").on("click","li",function(){      //点击顶部导航切换页面
             headerIndex = $(this).index();
