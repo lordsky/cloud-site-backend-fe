@@ -119,6 +119,12 @@
       }
     },
     mounted() {
+      if(this.$store.state.templateData == null || this.$store.state.templateData == ''){
+        this.$router.push({
+          path:'/allTemplate'
+        })
+        return
+      }
       this.text = this.$store.state.templateData.catName
       this.num = this.$store.state.templateData.catNum
       this.getPageList(this.$store.state.templateData.id)
@@ -195,9 +201,6 @@
             background: rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
-            -moz-justify-content: space-evenly;
-            -ms-justify-content:space-evenly;
-            -o-justify-content:space-evenly;
             justify-content: space-evenly;
             z-index: 9999;
           }
@@ -206,6 +209,7 @@
             font-size: 30px;
             color: #ffffff;
             cursor: pointer;
+            margin: 0 auto;
           }
           .icoShow {
             display: block;

@@ -470,6 +470,12 @@
         },
       },
       mounted() {
+        if(this.$store.state.sutieId == null || this.$store.state.sutieId == ''){
+          this.$router.push({
+            path: '/suiteManagement'
+          })
+          return
+        }
         setTimeout(function () {
           $("ul").on("click","li",function(){      //点击顶部导航切换页面
             headerIndex = $(this).index();
@@ -666,9 +672,6 @@
                 background: rgba(0, 0, 0, 0.3);
                 display: flex;
                 align-items: center;
-                -moz-justify-content: space-evenly;
-                -ms-justify-content:space-evenly;
-                -o-justify-content:space-evenly;
                 justify-content: space-evenly;
                 z-index: 100;
               }
@@ -677,6 +680,7 @@
                 font-size: 30px;
                 color: #ffffff;
                 cursor: pointer;
+                margin: 0 auto;
               }
               .icoShow {
                 display: block;

@@ -304,6 +304,12 @@
       },
     },
 		mounted() {
+      if(this.$store.state.sutieId == null || this.$store.state.sutieId == ''){
+        this.$router.push({
+          path: '/suiteManagement'
+        })
+        return
+      }
       //获取套件分类列表
       this.$api.apiCatType(3).then(res => {
         if(res.msg === "success") {

@@ -56,7 +56,7 @@
             <el-input v-model="addCatRequest.catName" :placeholder="dialogText"></el-input>
           </el-form-item>
           <el-form-item label="网页别名:" prop="catExt">
-            <el-input v-model="addCatRequest.catExt" placeholder="请输入网页别名">
+            <el-input v-model="addCatRequest.catExt" placeholder="请输入网页英文名">
               <template slot="append">.html</template>
             </el-input>
           </el-form-item>
@@ -270,7 +270,7 @@
         this.$store.commit('saveTemplateData', row)
         this.$router.push({
           path: '/templateEditor',
-          query:{text:'新增模版',pageId:1,catIndex:index}
+          query:{text:row.catName,pageId:1,catIndex:index}
         })
       },
       //保存

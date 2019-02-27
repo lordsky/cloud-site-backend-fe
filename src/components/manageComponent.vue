@@ -64,8 +64,8 @@
             <span class="addCom-title warFater">组件类型：<i class="war-ico">*</i></span>
             	 <a href="javascript:void(0);" class="upload-text">选择文件
            	 <input name="file" type="file" ref="file" @change="uploadText"></a>
-             <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件'}}</span>
-           
+             <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件(.txt格式文件)'}}</span>
+            <!--<span>(.txt格式文件)</span>-->
           </div>
         </el-form>
       </div>
@@ -136,6 +136,8 @@
       resetForm() {
         this.$refs['formCompon'].resetFields();
         this.$refs['formAdd'].resetFields();
+        this.textData = ''
+        // this.textData.name='未选择文件(.txt格式文件)'
       },
       //组件类型
       btnType(i) {
@@ -171,7 +173,7 @@
       manageCompon(res) {
       	this.$router.push({
 		          path: '/componentEditor',
-		          query:{text:'导航',msg:res}
+		          query:{text:res.catName,msg:res}
 		        })
       	
       },
@@ -421,7 +423,7 @@
  	font-size: 13px;
  	font-weight: 300;
  	line-height: 30px;
- 	width: 100px;
+ 	/*width: 100px;*/
  	overflow: hidden;
  	text-overflow : ellipsis; 
  }
