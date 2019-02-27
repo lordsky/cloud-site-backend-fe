@@ -58,12 +58,6 @@
       }
     },
     created() {
-      if(this.$route.query.msg == null || this.$route.query.msg == '[object Object]'){
-        this.$router.push({
-          path: '/manageComponent'
-        })
-        return
-      }
       this.options = this.$route.query.msg 
       this.update()
     },
