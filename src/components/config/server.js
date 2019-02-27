@@ -178,6 +178,17 @@ const apiUpdateTemplatePage = (data) => {
   })
 }
 
+//编辑模板套件
+const apiUpdateTemplateComponent = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post('backend/template/component/update',data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -192,5 +203,6 @@ export default {
   apiComponentList,
   apiComponentByName,
   apiDelTemplatePage,
-  apiUpdateTemplatePage
+  apiUpdateTemplatePage,
+  apiUpdateTemplateComponent
 }
