@@ -147,6 +147,7 @@
           dialogVisible4:false,//退出弹框
           savePage:false,//是否已经保存
           // headerIndex:'',//导航下角标
+          headerId:'',//新增页头返回id
           data1: [
             // {
             //   id: 1,
@@ -181,6 +182,11 @@
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
+              this.headerId = res.data
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              });
             } else {
               this.$message.error(res.msg)
             }
@@ -310,10 +316,22 @@
                   children[index].label = this.formCompon.name
                   this.webPageAll[index].pageName = this.formCompon.name
                   $("#silder li").eq(index).html(this.formCompon.name);
-                  this.$message({
-                    message: '修改成功',
-                    type: 'success'
-                  });
+                  let headerHtml = $('#headerHtml').html()
+                  this.webPageList.header = headerHtml
+                  this.$api.apiUpdateTemplateComponent({
+                    componentCode: this.webPageList.header,
+                    id: this.headerId,
+                  }).then(res => {
+                    console.log(res)
+                    if(res.code === 200) {
+                      this.$message({
+                        message: '修改成功',
+                        type: 'success'
+                      });
+                    } else {
+                      this.$message.error(res.msg)
+                    }
+                  })
                 } else {
                   this.$message.error(res.msg)
                 }
@@ -374,13 +392,6 @@
         selectPage(data){
           this.dialogVisible3=false
           this.webPageList.content = data.pageCode
-          if(pageNum == 1){
-            //上次页头代码
-            this.saveHeaderPage()
-            //上传页脚代码
-            this.saveFooterPage()
-            pageNum++
-          }
           //this.webPageAll.push(this.webPageList.content)
           for(let i=0;i<this.webPageAll.length;i++){
             if(this.webPageAll[i].pageAlias == data.catExt){
@@ -407,10 +418,30 @@
               // }
               this.data1.push(newChild);
               $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;font-size:14px;font-weight:400;color:rgba(2,111,194,1);cursor: pointer">'+this.pageName+'</li>')
-                this.$message({
-                  message: '添加成功',
-                  type: 'success'
-                });
+              let headerHtml = $('#headerHtml').html()
+              this.webPageList.header = headerHtml
+              if(pageNum == 1){
+                //上次页头代码
+                this.saveHeaderPage()
+                //上传页脚代码
+                this.saveFooterPage()
+                pageNum++
+              }else {
+                this.$api.apiUpdateTemplateComponent({
+                  componentCode: this.webPageList.header,
+                  id: this.headerId,
+                }).then(res => {
+                  console.log(res)
+                  if(res.code === 200) {
+                    this.$message({
+                      message: '添加成功',
+                      type: 'success'
+                    });
+                  } else {
+                    this.$message.error(res.msg)
+                  }
+                })
+              }
             } else {
               this.$message.error(res.msg)
             }
@@ -446,7 +477,7 @@
             // app.webPageList.content = app.webPageAll[headerIndex].pageCode;
             // this.handleNodeClick()
           });
-        },100)
+        },0)
         pageNum = 1
         this.templateId = this.$route.query.data.templateId
         this.$api.apiCatType(2).then(res => {
@@ -635,6 +666,9 @@
                 background: rgba(0, 0, 0, 0.3);
                 display: flex;
                 align-items: center;
+                -moz-justify-content: space-evenly;
+                -ms-justify-content:space-evenly;
+                -o-justify-content:space-evenly;
                 justify-content: space-evenly;
                 z-index: 100;
               }

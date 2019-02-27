@@ -195,6 +195,9 @@
             background: rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
+            -moz-justify-content: space-evenly;
+            -ms-justify-content:space-evenly;
+            -o-justify-content:space-evenly;
             justify-content: space-evenly;
             z-index: 9999;
           }
