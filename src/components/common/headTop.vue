@@ -5,7 +5,7 @@
       <!--<span class="head-user-ico"></span>-->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link">
-        	<span class="head-right-user">{{user.username}}</span>
+        	<span class="head-right-user">{{user.phone}}</span>
         <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">

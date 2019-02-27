@@ -55,17 +55,24 @@
     },
     methods: {
       //登录
-      login() { 
-        if(this.data.phone && this.data.pwd) { 
-        	  this.$http.post(this.$API.login,this.data,(res)=>{
+      login() {
+      	this.$refs['ruleForm2'].validate((valid) => {
+      		if (valid) {
+             if(this.data.phone && this.data.pwd) { 
+        	      this.$http.post(this.$API.login,this.data,(res)=>{
         	  	        if(res.data.code==200){
         	  	        	    localStorage.setItem('cloudUser',JSON.stringify(res.data.data))
         	  	        	    this.$router.push({
 				          path: '/manageComponent'
 				        })
         	  	        }
-        	  })
-        }
+		        	  })
+		         }
+            } else {
+            console.log('error submit!!');
+            return false;
+          }
+      	})
       }
     }
   }
