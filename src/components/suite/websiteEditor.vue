@@ -183,10 +183,8 @@
             console.log(res)
             if(res.code === 200) {
               this.headerId = res.data
-              this.$message({
-                message: '添加成功',
-                type: 'success'
-              });
+              //上传页脚代码
+              this.saveFooterPage()
             } else {
               this.$message.error(res.msg)
             }
@@ -201,6 +199,11 @@
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
+              pageNum++
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              });
             } else {
               this.$message.error(res.msg)
             }
@@ -423,9 +426,6 @@
               if(pageNum == 1){
                 //上次页头代码
                 this.saveHeaderPage()
-                //上传页脚代码
-                this.saveFooterPage()
-                pageNum++
               }else {
                 this.$api.apiUpdateTemplateComponent({
                   componentCode: this.webPageList.header,
