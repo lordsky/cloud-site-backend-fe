@@ -119,7 +119,8 @@
           catName: '',
           catType:2
         },
-        templateTypeLsit: []
+        templateTypeLsit: [],
+        date:[]
       }
     },
     watch: {
@@ -321,6 +322,7 @@
         API.apiCatType(2).then(res => {
           if(res.msg === "success") {
             this.templateTypeLsit = res.data
+            console.log('sss',this.templateTypeLsit)
           } else {
             this.$message.error(res.msg)
           }

@@ -71,6 +71,7 @@
           </div>
         </div>
       </div>
+      <buttom onclick="ceshi()">测试按钮</buttom>
       <!--组件模版弹框-->
       <el-dialog :title="componTitle" :visible.sync="dialogTemplate" width="80%" class="manage-dialog">
         <div class="compon-edit-list">
@@ -330,6 +331,9 @@
     created() {
       this.getSuiteTypeList(3)
     }
+  }
+  function ceshi() {
+    console.log('测试一下')
   }
 </script>
 
