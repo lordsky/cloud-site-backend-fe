@@ -177,7 +177,7 @@
         saveHeaderPage : async function(){
           this.$api.apiAddTemplateComponent({
             componentCat: 1,
-            componentCode: this.webPageList.header,
+            componentCode: $('#headerHtml').html(),
             templateId:this.templateId,
           }).then(res => {
             console.log(res)
@@ -209,10 +209,26 @@
             }
           })
         },
+        updateHeaderPage : async function(){
+          this.$api.apiUpdateTemplateComponent({
+            componentCode: $('#headerHtml').html(),
+            id: this.headerId,
+          }).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              });
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        },
         //保存页面
         saveWeb(index){
-          let headerHtml = $('#headerHtml').html()
-          this.webPageList.header = headerHtml
+          // let headerHtml = $('#headerHtml').html()
+          // this.webPageList.header = headerHtml
           if(this.webPageAll.length == 0){
             this.$message({
               message: '请先添加页面',
@@ -319,10 +335,10 @@
                   children[index].label = this.formCompon.name
                   this.webPageAll[index].pageName = this.formCompon.name
                   $("#silder li").eq(index).html(this.formCompon.name);
-                  let headerHtml = $('#headerHtml').html()
-                  this.webPageList.header = headerHtml
+                  // let headerHtml = $('#headerHtml').html()
+                  // this.webPageList.header = $('#headerHtml').html()
                   this.$api.apiUpdateTemplateComponent({
-                    componentCode: this.webPageList.header,
+                    componentCode: $('#headerHtml').html(),
                     id: this.headerId,
                   }).then(res => {
                     console.log(res)
@@ -421,26 +437,13 @@
               // }
               this.data1.push(newChild);
               $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;font-size:14px;font-weight:400;color:rgba(2,111,194,1);cursor: pointer">'+this.pageName+'</li>')
-              let headerHtml = $('#headerHtml').html()
-              this.webPageList.header = headerHtml
+              // let headerHtml = $('#headerHtml').html()
+              // this.webPageList.header = headerHtml
               if(pageNum == 1){
                 //上次页头代码
                 this.saveHeaderPage()
               }else {
-                this.$api.apiUpdateTemplateComponent({
-                  componentCode: this.webPageList.header,
-                  id: this.headerId,
-                }).then(res => {
-                  console.log(res)
-                  if(res.code === 200) {
-                    this.$message({
-                      message: '添加成功',
-                      type: 'success'
-                    });
-                  } else {
-                    this.$message.error(res.msg)
-                  }
-                })
+                this.updateHeaderPage()
               }
             } else {
               this.$message.error(res.msg)
