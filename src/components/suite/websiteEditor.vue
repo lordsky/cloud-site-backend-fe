@@ -501,7 +501,10 @@
       },
       watch: {
         '$store.state.headerIndex': function(val) {
-          this.webPageList.content = this.webPageAll[val].pageCode;
+          if(val != null){
+            this.webPageList.content = this.webPageAll[val].pageCode;
+          }
+          this.$store.commit('saveHeaderIndex',null)
         }
       },
     }
