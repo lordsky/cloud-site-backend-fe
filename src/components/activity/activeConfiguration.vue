@@ -1,52 +1,57 @@
 <template>
   <div class="compent">
-   <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-			<el-form :inline="true" :model="filters">
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+      <el-form :inline="true" :model="filters">
         <div>
-				<el-form-item label="模版分类:">
-					<el-input v-model="filters.name" placeholder="请输入模版分类名称" clearable></el-input>
-				</el-form-item>
-        <el-form-item label="添加时间:">
-            <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-            </el-date-picker>
+          <el-form-item label="活动名称:">
+          <el-input v-model="filters.name" placeholder="请输入关键字" clearable></el-input>
           </el-form-item>
-          </div>
-				<el-form-item>
-					<el-button type="primary" size="small" v-on:click="getComponList">查询</el-button>
-          <!--<el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>-->
-          <el-button type="primary" size="small" @click="addTemplate">新增模版</el-button>
-          <el-button type="primary" size="small" @click="addComponClass">新增模版分类</el-button>
-				</el-form-item>
-			</el-form>
-		</el-col>
-      <div class="compent-box">
-        <el-table :data="templateTypeLsit"  border style="width: 100%" tooltip-effect="dark"
-        v-loading="listLoading" @selection-change="selsChange">
-          <!--<el-table-column type="selection" width="55" align="center">-->
-          <!--</el-table-column>-->
-          <el-table-column prop="catName" label="模版分类"  align="center">
-          </el-table-column>
-          <el-table-column prop="addTime" label="添加时间" align="center">
-          </el-table-column>
-          <el-table-column prop="catNum" label="模版个数"  align="center">
-          </el-table-column>
-          <!--<el-table-column prop="state" label="状态"  align="center">-->
-          <!--</el-table-column>-->
-          <el-table-column label="操作" width="200" align="center">
-            <template slot-scope="scope">
-              <el-button type="text" @click="manageCompon(scope.$index, scope.row)">管理</el-button>
-              <el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>
-              <el-button type="text" v-if="scope.row.catNum == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
+          <el-form-item label="发布时间:">
+          <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+          </el-date-picker>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select v-model="activeState" placeholder="请选择套件分类" class="el-select-banner">
+              <el-option :label="x.catName" :value="i" v-for="(x,i) in templateTypeLsit" :key="i"></el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <el-form-item>
+          <el-button type="primary" size="small" v-on:click="getComponList">查询</el-button>
+          <el-button type="primary" size="small" >清空</el-button>
+          <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >批量删除</el-button>
+          <el-button type="primary" size="small" @click="addTemplate">新增活动</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+    <div class="compent-box">
+      <el-table :data="templateTypeLsit"  border style="width: 100%" tooltip-effect="dark"
+                v-loading="listLoading" @selection-change="selsChange">
+        <el-table-column type="selection" width="55" align="center">
+        </el-table-column>
+        <el-table-column prop="catName" label="活动名称"  align="center">
+        </el-table-column>
+        <el-table-column prop="addTime" label="活动时间" align="center">
+        </el-table-column>
+        <el-table-column prop="state" label="状态"  align="center">
+        </el-table-column>
+        <el-table-column label="操作" width="200" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>
+            <el-button type="text" v-if="scope.row.state == '上线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
+            <el-button type="text" @click="manageCompon(scope.$index, scope.row)">查看</el-button>
+            <el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>
+            <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
-      <div class="pagination">
-          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
-          </el-pagination>
-		  </div>
-   
+    <!--<div class="pagination">-->
+    <!--<el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >-->
+    <!--</el-pagination>-->
+    <!--</div>-->
+
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">
         <el-form :inline="true" :model="addCatRequest" :rules="rules2" class="demo-form-inline" label-width="120px" ref="addCatRequest">
@@ -71,7 +76,7 @@
 <script>
   import API from '../config/server';
   export default {
-    name: 'allTemplate',
+    name: 'activeConfiguration',
     data() {
       const re=/^[a-zA-Z]+$/;
       let validateEnglish = (rule, value, callback) => {
@@ -95,14 +100,15 @@
           ]
         },
         filters: {
-					name: ''
+          name: ''
         },
+        activeState:'',//状态
         total: 0,
-				page: 1,
-				pageSize:10,
-				listLoading: false,
-				sels: [],//列表选中列
-        timeData: [],//new Date(), new Date().setFullYear(new Date().getFullYear()+1)
+        page: 1,
+        pageSize:10,
+        listLoading: false,
+        sels: [],//列表选中列
+        timeData: [new Date(), new Date().setFullYear(new Date().getFullYear()+1)],
         btnShow: '',
         componTitle: '',
         classBtn: 1,
@@ -113,12 +119,13 @@
         addShow: false,
         value: '',
         addCatRequest: {
-          id: '',
           catExt: '',
           catName: '',
           catType:2
         },
-        templateTypeLsit: [],
+        templateTypeLsit: [{
+          catName:'全部'
+        }],
         date:[]
       }
     },
@@ -133,7 +140,7 @@
       }
     },
     components: {
-      
+
     },
     methods: {
       //重置验证
@@ -174,9 +181,7 @@
         // this.clear()
         this.dialogVisible = true
         this.editShow = true
-        this.addCatRequest.id = row.id
-        this.addCatRequest.catName = row.catName;
-        this.addCatRequest.catExt = row.catExt;
+        this.addCatRequest.catName = row.name;
         this.componTitle = '编辑组件分类'
         this.dialogStu = 'edit'
         //this.dialogText = '导航'
@@ -221,12 +226,12 @@
         });
       },
       //删除
-			handleDel: function (index, row) {
-				this.$confirm('确认删除该模块吗?', '提示', {
-					type: 'warning'
-				}).then(() => {
+      handleDel: function (index, row) {
+        this.$confirm('确认删除该模块吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
           this.listLoading = true;
-					//NProgress.start();
+          //NProgress.start();
           let id = row.id;
           this.$http.delete(this.$API.componentDel+row.id,{
           },(res)=>{
@@ -235,39 +240,39 @@
               this.listLoading = false;
             }
           })
-				}).catch(() => {
+        }).catch(() => {
 
-				});
-			},
+        });
+      },
       selsChange: function (sels) {
-				this.sels = sels;
-			},
-			//批量删除
-			batchRemove: function () {
-				var ids = this.sels.map(item => item.id).toString();
-				this.$confirm('确认删除选中记录吗？', '提示', {
-					type: 'warning'
-				}).then(() => {
+        this.sels = sels;
+      },
+      //批量删除
+      batchRemove: function () {
+        var ids = this.sels.map(item => item.id).toString();
+        this.$confirm('确认删除选中记录吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
           this.listLoading = true;
-					//NProgress.start();
+          //NProgress.start();
           let para = { ids: ids };
           setTimeout(() => {
-          this.listLoading = false;
+            this.listLoading = false;
           }, 500);
-					//NProgress.start();
-					// batchRemoveUser(para).then((res) => {
-					// 	this.listLoading = false;
-					// 	//NProgress.done();
-					// 	this.$message({
-					// 		message: '删除成功',
-					// 		type: 'success'
-					// 	});
-					// 	this.getUsers();
-					// });
-				}).catch(() => {
+          //NProgress.start();
+          // batchRemoveUser(para).then((res) => {
+          // 	this.listLoading = false;
+          // 	//NProgress.done();
+          // 	this.$message({
+          // 		message: '删除成功',
+          // 		type: 'success'
+          // 	});
+          // 	this.getUsers();
+          // });
+        }).catch(() => {
 
-				});
-			},
+        });
+      },
       //管理
       manageCompon(index, row) {
         this.$store.commit('saveTemplateData', row)
@@ -301,49 +306,29 @@
             });
             break;
           case 'edit':
-            //编辑模板分类
-            this.$refs.addCatRequest.validate((valid) => {
-              if (valid) {
-                API.apiUpdateCat({
-                  id:this.addCatRequest.id,
-                  catExt: this.addCatRequest.catExt,
-                  catName: this.addCatRequest.catName,
-                  catType: this.addCatRequest.catType
-                }).then(res => {
-                  console.log(res)
-                  if (res.code === 200) {
-                    this.dialogVisible = false
-                    this.getComponList()
-                  } else {
-                    this.$message.error(res.msg)
-                  }
-
-                })
-              }
-            });
+            console.log('编辑')
             break;
           case 'del':
             console.log('删除')
             break;
           case 'pop':
-          console.log('上线')
-          break;
+            console.log('上线')
+            break;
         }
       },
       //获取模版分类列表
-			getComponList() {
-				console.log('获取列表')
+      getComponList() {
+        console.log('获取列表')
         let para = {
-          catType:2,
-          pageNum: this.page,
+          page: this.page,
           pageSize: this.pageSize,
-          catName: this.filters.name,
-          startDate:this.timeData == null ? '' : this.timeData[0] != undefined ? this.$http.getLocalTime(this.timeData[0]) : '',
-          endDate:this.timeData == null ? '' : this.timeData[1] != undefined ? this.$http.getLocalTime(this.timeData[1]) : ''
+          name: this.filters.name,
+          startTime:this.timeData[0],
+          endTime:this.timeData[1]
         };
-        API.apiCatType(para).then(res => {
+        API.apiCatType(2).then(res => {
           if(res.msg === "success") {
-            this.templateTypeLsit = res.data.content
+            this.templateTypeLsit = this.templateTypeLsit.concat(res.data)
             console.log('sss',this.templateTypeLsit)
           } else {
             this.$message.error(res.msg)
@@ -351,24 +336,24 @@
         })
       },
       //当前页码
-			handleCurrentChange(val) {
-				this.page = val;
-				this.getComponList();
-			},
-			//当前条数
-			handleSizeChange(val) {
-				this.pageSize = val;
-				this.getComponList();
-			},
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getComponList();
+      },
+      //当前条数
+      handleSizeChange(val) {
+        this.pageSize = val;
+        this.getComponList();
+      },
     },
-		mounted() {
-			this.getComponList();
-		}
+    mounted() {
+      this.getComponList();
+    }
   }
 </script>
 
 <style lang="scss" scoped>
-    .compent-head {
+  .compent-head {
     margin-top: 10px;
     .compent-head-class {
       align-items: center;
@@ -395,7 +380,7 @@
       }
     }
   }
-  
+
   .el-componClassBtn {
     display: flex;
     justify-content: center;
@@ -405,7 +390,7 @@
     justify-content: center;
     margin-bottom: 10px;
   }
-  
+
   .compent-box {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -417,6 +402,6 @@
       color: white;
     }
   }
-  
+
 
 </style>

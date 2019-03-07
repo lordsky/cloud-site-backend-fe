@@ -1,94 +1,82 @@
 <template>
   <div>
-    <el-form ref="suite" :model="suite" :rules="rules" label-width="100px" class="suiteAdd">
-      <el-form-item label="套件标题:" prop="name">
-        <el-input v-model="suite.name" placeholder="请输入套件标题，不超过12个字符" class="el-input-suite"></el-input>
+    <el-form ref="banner" :model="banner" :rules="rules" label-width="100px" class="bannerAdd">
+      <el-form-item label="banner名称:" prop="name">
+        <el-input v-model="banner.name" placeholder="请输入套件标题，不超过12个字符" class="el-input-banner"></el-input>
       </el-form-item>
-      <el-form-item label="套件分类:" prop="classification" v-if="pageId != 2">
-        <el-select v-model="suite.classification" placeholder="请选择套件分类" class="el-select-suite">
+      <el-form-item label="banner位置:" prop="classification" v-if="pageId != 2">
+        <el-select v-model="banner.classification" placeholder="请选择套件分类" class="el-select-banner">
           <el-option :label="x.catName" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="套件分类:" v-if="pageId == 2">
-        <el-select v-model="catType.catName" placeholder="请选择模版分类" class="el-select-suite" disabled>
+      <el-form-item label="banner位置:" v-if="pageId == 2">
+        <el-select v-model="catType.catName" placeholder="请选择模版分类" class="el-select-banner" disabled>
           <el-option  :key="catType.id" :label="catType.catName" :value="catType.catName">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="套件介绍:" prop="introduce">
-        <el-input type="textarea" v-model="suite.introduce" :rows="5" placeholder="请输入套件介绍，不超过40个字符"></el-input>
+      <el-form-item label="banner链接:" prop="bannerLink">
+        <el-radio-group v-model="bannerLink">
+          <el-radio :label="1">活动链接</el-radio>
+          <el-radio :label="2">外部链接</el-radio>
+          <el-radio :label="3">无</el-radio>
+        </el-radio-group>
+        <div v-if="bannerLink == 1">
+          <el-select v-model="banner.classification" placeholder="请选择套件分类" class="el-select-banner">
+            <el-option :label="x.catName" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
+          </el-select>
+          <div>注：选择活动链接，点击banner时将跳转到活动详情页</div>
+        </div>
+        <div v-if="bannerLink == 2">
+          <el-input v-model="banner.name" placeholder="请输入外部链接地址" class="el-input-banner"></el-input>
+        </div>
       </el-form-item>
-      <el-form-item label="上传背景图:">
-        <el-upload
-          ref='upload'
-          class="avatar-uploader"
-          :action="host.hostUrl+'/common/upload'"
-          :show-file-list="false"
-          :on-change="handleChange"
-          :before-upload="beforeUpLoad">
-          <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
-            <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
-            <div v-if="suite.imageUrl" :class="{'delItem':showDel}">
-              <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible=true"></i>
-              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
-            </div>
+      <el-form-item label="banner图片:">
+        <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
+          <!--<img v-if="banner.imageUrl" :src="banner.imageUrl" class="avatar">-->
+          <div v-if="banner.imageUrl" :class="{'delItem':showDel}">
+            <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible=true"></i>
+            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
           </div>
-          <img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          <div class="el-upload__tip" slot="tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
-        </el-upload>
+        </div>
+        <img v-if="banner.imageUrl" :src="banner.imageUrl" class="avatar">
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        <div class="el-upload__tip" slot="tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
         <el-dialog :visible.sync="dialogVisible">
-          <img width="100%" :src="suite.imageUrl" alt="">
+          <img width="100%" :src="banner.imageUrl" alt="">
         </el-dialog>
       </el-form-item>
-      <div class="topside">
-        <label>顶部区</label>
-        <div class="topside-right" :class="{'side-right-border':topDate == ''}">
-          <div class="topside-right-list" :class="{'height_auto':topDate != ''}"  @mousemove="showTop = true" @mouseleave="showTop=false">
-            <el-button type="primary" v-if="topDate == ''" @click="addComponent('top')">+添加组件</el-button>
-            <div v-if="topDate != ''" v-html="topDate" style="width: 100%" id="topDate">
-              {{topDate}}
-            </div>
-            <div v-if="topDate != ''" :class="{'delItem':showTop}">
-              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent('top')"></i>
-              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>
-            </div>
-          </div>
+      <el-form-item label="状态:" prop="bannerLink">
+        <el-radio-group v-model="bannerState">
+          <el-radio :label="1">上线</el-radio>
+          <el-radio :label="2">下线</el-radio>
+        </el-radio-group>
+        <div v-show="bannerState == 1">
+          <el-date-picker
+            v-model="banner.onlineDate"
+            type="datetime"
+            placeholder="请选择下线日期"
+            default-time="12:00:00">
+          </el-date-picker>
+          <span class="clearDate" @click="clearDate">重置</span>
         </div>
-      </div>
-      <div class="footerside">
-        <label>页脚区</label>
-        <div class="footerside-right" :class="{'side-right-border':footerDate == ''}">
-          <div class="footerside-right-list" :class="{'height_auto':footerDate != ''}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">
-            <el-button type="primary" v-if="footerDate == ''" @click="addComponent('footer')">+添加组件</el-button>
-            <div v-if="footerDate != ''" v-html="footerDate" style="width: 100%">
-              {{footerDate}}
-            </div>
-            <div v-if="footerDate != ''" :class="{'delItem':showFooter}">
-              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}" @click="addComponent('footer')"></i>
-              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}" @click="delComponent('footer')"></i>
-            </div>
-          </div>
+        <div v-show="bannerState == 2">
+          <el-date-picker
+            v-model="banner.offlineStartDate"
+            type="datetimerange"
+            align="right"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="['12:00:00', '08:00:00']">
+          </el-date-picker>
+          <span class="clearDate" @click="clearDate">重置</span>
         </div>
-      </div>
-      <!--组件模版弹框-->
-      <el-dialog :title="componTitle" :visible.sync="dialogTemplate" width="80%" class="manage-dialog">
-        <div class="compon-edit-list">
-          <ul>
-            <li v-for="(item,i) in componentList" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i" v-html="item.segmentCode">
-              {{item.segmentCode}}
-            </li>
-          </ul>
-        </div>
-        <div class="dialog-footer">
-          <div @click="dialogTemplate = false,componentList = ''">取消</div>
-          <div @click="completeDialog(type,activeShow)">完成</div>
-        </div>
-      </el-dialog>
-      <!--组件模版弹框-->
+      </el-form-item>
       <el-form-item>
+        <div style="text-align: center">
         <el-button @click="back">返回</el-button>
-        <el-button type="primary" @click="onSubmit(suite.classification)" :loading="addLoading">下一步</el-button>
+        <el-button type="primary" @click="onSubmit(banner.classification)" :loading="addLoading">保存</el-button>
+        </div>
       </el-form-item>
     </el-form>
   </div>
@@ -99,9 +87,11 @@
   import fileUtil from '../config/fileUtil'
   import '@/assets/js/jquery';
   export default {
-    name: "suiteAdd",
+    name: "bannerAdd",
     data() {
       return {
+        bannerLink: 1,
+        bannerState:1,
         catType:this.$route.query.catType,
         pageId:this.$route.query.pageId,
         host:host,
@@ -115,11 +105,15 @@
         componentList:[],
         classifyList:[],
         type:'',//操作区域
-        suite: {
+        banner: {
           name: '',
           classification: '',
           imageUrl: '',
-          introduce: ''
+          introduce: '',
+          onlineDate:'',
+          offlineStartDate:'',
+          offlineEndDate:'',
+
         },
         classification:[
           // {name:'企业官网'},
@@ -145,20 +139,24 @@
       }
     },
     methods: {
+      clearDate(){
+        this.banner.onlineDate = ''
+        this.banner.offlineStartDate = ''
+      },
       //选择模版
       btnType(i){
         this.activeShow = i
       },
       handleRemove(file, fileList) {
         this.$refs.upload.clearFiles()
-        this.suite.imageUrl = ''
+        this.banner.imageUrl = ''
         setTimeout(() => {
           let oV1 =  document.getElementsByClassName('el-upload__input')
           oV1[0].disabled=false
         }, 100);
       },
       handleAvatarSuccess(res, file) {
-        this.suite.imageUrl = URL.createObjectURL(file.raw);
+        this.banner.imageUrl = URL.createObjectURL(file.raw);
       },
       beforeUpLoad(file) {
         return new Promise((resolve) => {
@@ -196,9 +194,9 @@
           return
         }
         if(file.response != undefined){
-          this.suite.imageUrl = file.response;
+          this.banner.imageUrl = file.response;
         }else {
-          this.suite.imageUrl = URL.createObjectURL(file.raw);
+          this.banner.imageUrl = URL.createObjectURL(file.raw);
         }
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true
@@ -259,8 +257,8 @@
         if(this.pageId == 2){
           index = this.catType.index
         }
-        this.$refs.suite.validate((valid) => {
-          if(this.suite.imageUrl == ''){
+        this.$refs.banner.validate((valid) => {
+          if(this.banner.imageUrl == ''){
             this.$message({
               type: 'warning',
               message: '请选择上传背景图片!'
@@ -278,18 +276,18 @@
             this.addLoading = true;
             // this.$refs.upload.submit();
             this.$api.apiAddTemplate({
-              name: this.suite.name,
+              name: this.banner.name,
               catId: this.classification[index].id,
-              description:this.suite.introduce,
-              thumb:this.suite.imageUrl
+              description:this.banner.introduce,
+              thumb:this.banner.imageUrl
             }).then(res => {
               console.log(res)
               if(res.code === 200) {
                 this.addLoading = false;
                 $("#silder").find("li").remove();
                 this.topDate = $('#topDate').html()
-                window.localStorage.setItem('suiteHeater',this.topDate)
-                window.localStorage.setItem('suiteFooter',this.footerDate)
+                window.localStorage.setItem('bannerHeater',this.topDate)
+                window.localStorage.setItem('bannerFooter',this.footerDate)
                 this.$store.commit('saveSuiteId', this.classification[index].id)
                 this.$router.push({
                   path:'/websiteEditor',
@@ -318,9 +316,9 @@
       },
       //获取模板分类
       getSuiteTypeList(val){
-        this.$api.apiByCatType(val).then(res => {
+        this.$api.apiCatType(val).then(res => {
           if(res.msg === "success") {
-            this.classification = res.data.content
+            this.classification = res.data
           } else {
             this.$message.error(res.msg)
           }
@@ -334,7 +332,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .suiteAdd{
+  .bannerAdd{
     margin: 20px;
     /*width: 90%;*/
     .footerside-right-list{
@@ -345,6 +343,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      border: 1px dashed;
+      border-radius: 10px;
+      cursor: pointer;
+      &:hover{
+        border: 1px dashed #409eff;
+      }
       .compon-edit-ico {
         display: none;
         font-size: 30px;
@@ -365,153 +369,10 @@
         justify-content:space-evenly;
       }
     }
-    .topside{
-      display: flex;
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: 600;
-      align-items: center;
-      label{
-        white-space: nowrap;
-        width: 80px;
-      }
-      .topside-right{
-        width: 100%;
-        .topside-right-list{
-          width: 100%;
-          position: relative;
-          height: 60px;
-          list-style: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-        }
-        .height_auto{
-          height: auto;
-        }
-        img{
-          width: 100%;
-          border: 1px solid #cccccc;
-        }
-        .compon-edit-ico {
-          display: none;
-          font-size: 30px;
-          color: #ffffff;
-          margin-right: 30px;
-          cursor: pointer;
-        }
-        .icoShow {
-          display: block;
-        }
-      }
-    }
-    .footerside{
-      display: flex;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      font-size: 18px;
-      font-weight: 600;
-      align-items: center;
-      label{
-        white-space: nowrap;
-        width: 80px;
-      }
-      .footerside-right{
-        width: 100%;
-        .footerside-right-list{
-          width: 100%;
-          position: relative;
-          height: 82px;
-          list-style: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-        }
-        .height_auto{
-          height: auto;
-        }
-        img{
-          width: 100%;
-          border: 1px solid #cccccc;
-        }
-        .compon-edit-ico {
-          display: none;
-          font-size: 30px;
-          color: #ffffff;
-          margin-right: 30px;
-          cursor: pointer;
-        }
-        .icoShow {
-          display: block;
-        }
-      }
-    }
-    .side-right-border{
-      border: 2px #4d78ff dashed;
-    }
-    .delItem {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      background: rgba(0, 0, 0, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .manage-dialog{
-      .compon-edit-list {
-        margin: 10px 0 10px 0;
-        height: 35vw;
-        overflow-y: auto;
-        padding-bottom: 45px;
-        ul {
-          width: 95%;
-          margin: 0 auto;
-          li {
-            height: auto;
-            border: 1px #cccccc solid;
-            list-style: none;
-            margin: 10px 0 10px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            /*&:hover{*/
-            /*border: 1px #4d78ff solid;*/
-            /*}*/
-          }
-          .active{
-            border: 3px #4d78ff solid;
-          }
-        }
-      }
-      .dialog-footer{
-        width: 100%;
-        height: 45px;
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        display: flex;
-        background-color: #e6e7e7;
-        box-shadow: 0 -2px 3px #676767;
-        div{
-          height: 45px;
-          line-height: 45px;
-          flex: 1;
-          text-align: center;
-          border-right: 1px solid #ffffff;
-          cursor: pointer;
-        }
-      }
-    }
   }
 </style>
 <style lang="scss">
-  .suiteAdd{
+  .bannerAdd{
     .avatar-uploader .el-upload {
       border: 1px dashed #d9d9d9;
       border-radius: 6px;
@@ -535,10 +396,10 @@
       height: 148px;
       display: block;
     }
-    .el-input-suite{
+    .el-input-banner{
       width: 55%;
     }
-    .el-select-suite{
+    .el-select-banner{
       width: 55%;
     }
     .el-upload--picture-card{

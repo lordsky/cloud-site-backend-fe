@@ -21,7 +21,8 @@
             <div :class="{'delItem':delShow == i}">
             <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
             <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}" @click="preview(item)"></i>
-            <!--<i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(i)"></i>-->
+              <i class="el-icon-download template-edit-ico" :class="{'icoShow':delShow==i}"></i>
+            <i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(item.id)"></i>
             </div>
             </li>
         </ul>
@@ -68,11 +69,15 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.selectVal.splice(index,1)
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          this.$api.apiDelPage(index).then(res=>{
+            if(res.code === 200){
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.getPageList(this.$store.state.templateData.id)
+            }
+          })
         }).catch(() => {
         });
       },
@@ -202,7 +207,7 @@
             display: flex;
             align-items: center;
             justify-content: space-evenly;
-            z-index: 9999;
+            z-index: 200;
           }
           .template-edit-ico {
             display: none;

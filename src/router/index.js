@@ -19,6 +19,9 @@ import SiteManage from '@/components/siteManage'//站点管理
 import Preview from '@/components/suite/preview'//预览套件设计页面
 import PreviewTemplate from '@/components/suite/previewTemplate'//预览模板查询页面
 import PictureManage from '@/components/pictureManage'//素材库
+import Banner from '@/components/activity/banner'//banner管理
+import BannerAdd from '@/components/activity/bannerAdd'//banner新增
+import ActiveConfiguration from '@/components/activity/activeConfiguration'//活动配置
 
 Vue.use(Router)
 
@@ -118,6 +121,21 @@ export default new Router({
       path: '/pictureManage',
       name: 'pictureManage',
       component: PictureManage
+     },
+     {
+      path: '/banner',
+      name: 'banner',
+      component: Banner
+     },
+     {
+      path: '/bannerAdd',
+      name: 'bannerAdd',
+      component: BannerAdd
+     },
+     {
+      path: '/activeConfiguration',
+      name: 'activeConfiguration',
+      component: ActiveConfiguration
      }
       ]
     }]

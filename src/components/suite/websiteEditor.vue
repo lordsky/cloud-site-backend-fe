@@ -155,12 +155,7 @@
             // }
             ],
           classifyList: [],
-          pagetList:[
-            // {url: require('../../assets/img/template3.png')},
-            // {url: require('../../assets/img/template.png')},
-            // {url: require('../../assets/img/template3.png')},
-            // {url: require('../../assets/img/template3.png')}
-          ],
+          pagetList:[],
           data2:[],
           node:[],
           defaultProps: {
@@ -483,15 +478,13 @@
           $("ul").on("click","li",function(){      //点击顶部导航切换页面
             headerIndex = $(this).index();
             app.$store.commit('saveHeaderIndex',headerIndex)
-            // app.webPageList.content = app.webPageAll[headerIndex].pageCode;
-            // this.handleNodeClick()
           });
         },0)
         pageNum = 1
         this.templateId = this.$route.query.data.templateId
-        this.$api.apiCatType(2).then(res => {
+        this.$api.apiByCatType(2).then(res => {
           if(res.msg === "success") {
-            this.classifyList = res.data
+            this.classifyList = res.data.content
             this.pageName = this.classifyList[0].catName
             this.getPageList(this.classifyList[0].id)
           } else {
@@ -508,14 +501,6 @@
         }
       },
     }
-  // $(document).ready(function(){
-  //   setTimeout(function () {
-  //   $("ul#silder").on("click","li",function(){      //点击顶部导航切换页面
-  //     headerIndex = $(this).index();
-  //     app.$store.commit('saveHeaderIndex',headerIndex)
-  //   });
-  //   },100)
-  // })
 </script>
 
 <style lang="scss">

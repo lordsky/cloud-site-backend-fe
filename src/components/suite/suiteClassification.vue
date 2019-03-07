@@ -6,17 +6,17 @@
     </div>
     <el-col :span="24" class="toolbar">
       <el-form :inline="true" :model="filters">
-        <!--<div>-->
-        <!--<el-form-item label="关键字搜索:">-->
-          <!--<el-input v-model="filters.name" placeholder="请输入套件名称" clearable></el-input>-->
-        <!--</el-form-item>-->
-        <!--<el-form-item label="添加时间:">-->
-            <!--<el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">-->
-            <!--</el-date-picker>-->
-          <!--</el-form-item>-->
-          <!--</div>-->
+        <div>
+        <el-form-item label="关键字搜索:">
+          <el-input v-model="filters.name" placeholder="请输入套件名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="添加时间:">
+            <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+            </el-date-picker>
+          </el-form-item>
+          </div>
         <el-form-item>
-          <!--<el-button type="primary" size="small" v-on:click="getUsers">查询</el-button>-->
+          <el-button type="primary" size="small" v-on:click="getUsers">查询</el-button>
           <el-button type="primary" size="small" @click="addSuite">新增套件</el-button>
         </el-form-item>
       </el-form>
@@ -24,31 +24,31 @@
       <div class="suite-box">
         <el-table :data="templateList" border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
-          <!--<el-table-column type="selection" width="55" align="center">-->
-          <!--</el-table-column>-->
+          <el-table-column type="selection" width="55" align="center">
+          </el-table-column>
           <el-table-column prop="name" label="套件名称"  align="center">
           </el-table-column>
           <el-table-column prop="catId" label="套件分类"  align="center">
           </el-table-column>
-          <!--<el-table-column prop="addTime" label="添加时间" align="center">-->
-          <!--</el-table-column>-->
-          <!--<el-table-column prop="state" label="状态"  align="center">-->
-          <!--</el-table-column>-->
-          <!--<el-table-column label="操作" width="200" align="center">-->
-            <!--<template slot-scope="scope">-->
-              <!--&lt;!&ndash;<el-button type="text">预览</el-button>&ndash;&gt;-->
-              <!--&lt;!&ndash;<el-button type="text" v-if="scope.row.state == '下线'" @click="popSuite(scope.$index, scope.row)">上线</el-button>&ndash;&gt;-->
-              <!--&lt;!&ndash;<el-button type="text" v-if="scope.row.state == '上线'" @click="offlineSuite(scope.$index, scope.row)">下线</el-button>&ndash;&gt;-->
-              <!--&lt;!&ndash;<el-button type="text" @click="editSuite(scope.$index, scope.row)">编辑</el-button>&ndash;&gt;-->
-              <!--&lt;!&ndash;<el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>&ndash;&gt;-->
-            <!--</template>-->
-          <!--</el-table-column>-->
+          <el-table-column prop="addTime" label="添加时间" align="center">
+          </el-table-column>
+          <el-table-column prop="state" label="状态"  align="center">
+          </el-table-column>
+          <el-table-column label="操作" width="200" align="center">
+            <template slot-scope="scope">
+              <el-button type="text">预览</el-button>
+              <el-button type="text" v-if="scope.row.state == '下线'" @click="popSuite(scope.$index, scope.row)">上线</el-button>
+              <el-button type="text" v-if="scope.row.state == '上线'" @click="offlineSuite(scope.$index, scope.row)">下线</el-button>
+              <el-button type="text" @click="editSuite(scope.$index, scope.row)">编辑</el-button>
+              <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
-      <!--<div class="pagination">-->
-          <!--<el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >-->
-          <!--</el-pagination>-->
-		  <!--</div>-->
+      <div class="pagination">
+          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
+          </el-pagination>
+		  </div>
   </div>
 </template>
 
@@ -77,58 +77,7 @@
         classBtn: 1,
         value: '',
         suiteByType:[],
-        templateList: [
-        //   {
-        //   id:1,
-        //   addTime: '2016-05-03',
-        //   cname:'套件名称1',
-        //   name: '企业官网',
-        //   num: '0',
-        //   state:'下线'
-        // }, {
-        //   id:2,
-        //   addTime: '2016-05-02',
-        //   cname:'套件名称2',
-        //   name: '在线商城',
-        //   num: '5',
-        //   state:'上线'
-        // }, {
-        //   id:3,
-        //   addTime: '2016-05-04',
-        //   cname:'套件名称3',
-        //   name: '外贸站',
-        //   num: '3',
-        //   state:'上线'
-        // }, {
-        //   id:4,
-        //   addTime: '2016-05-01',
-        //   cname:'套件名称4',
-        //   name: '工作室',
-        //   num: '6',
-        //   state:'下线'
-        // }, {
-        //   id:5,
-        //   addTime: '2016-05-08',
-        //   cname:'套件名称5',
-        //   name: '协会组织',
-        //   num: '6',
-        //   state:'下线'
-        // }, {
-        //   id:6,
-        //   addTime: '2016-05-06',
-        //   cname:'套件名称6',
-        //   name: '个人网站',
-        //   num: '2',
-        //   state:'下线'
-        // }, {
-        //   id:7,
-        //   addTime: '2016-05-07',
-        //   cname:'套件名称7',
-        //   name: '学校官网',
-        //   num: '3',
-        //   state:'下线'
-        // }
-        ]
+        templateList: []
       }
     },
     watch: {
@@ -311,7 +260,7 @@
         return
       }
       //获取套件分类列表
-      this.$api.apiCatType(3).then(res => {
+      this.$api.apiByCatType(3).then(res => {
         if(res.msg === "success") {
           this.suiteByType = res.data
           this.getSuiteList(this.$store.state.sutieId);

@@ -35,10 +35,21 @@ const apiAddCat = (data) => {
   })
 }
 
+//查询分类列表（只传catType的时候用这个)
+const apiByCatType = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/findCatByType?catType=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 //查询分类
 const apiCatType = (data) => {
   return new Promise((resolve, reject)=>{
-    instance.get(`backend/findCatByType?catType=${data}`).then((res)=> {
+    instance.get(`backend/findCatByType?catType=${data.catType}&catName=${data.catName}&pageNum=${data.pageNum}&pageSize=${data.pageSize}&startDate=${data.startDate}&endDate=${data.endDate}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -167,6 +178,17 @@ const apiDelTemplatePage= (data) => {
   })
 }
 
+//删除页面模板
+const apiDelPage= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/page/delete?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 //编辑模板页面
 const apiUpdateTemplatePage = (data) => {
   return new Promise((resolve, reject)=>{
@@ -189,6 +211,28 @@ const apiUpdateTemplateComponent = (data) => {
   })
 }
 
+//编辑页面模板
+const apiUpdatePage = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post('backend/page/update',data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//编辑组件页面套件分类
+const apiUpdateCat = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post('backend/updateCat',data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -204,5 +248,9 @@ export default {
   apiComponentByName,
   apiDelTemplatePage,
   apiUpdateTemplatePage,
-  apiUpdateTemplateComponent
+  apiUpdateTemplateComponent,
+  apiUpdatePage,
+  apiUpdateCat,
+  apiDelPage,
+  apiByCatType
 }

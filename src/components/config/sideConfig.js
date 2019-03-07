@@ -74,6 +74,21 @@ const navHead = [{
     index: '4',
     text: ['素材库']
   },
+  {
+    path: 'banner',
+    index: '5-1',
+    text: ['活动管理','banner管理']
+  },
+  {
+    path: 'bannerAdd',
+    index: '5-1',
+    text: ['活动管理','banner管理','新增banner']
+  },
+  {
+    path: 'activeConfiguration',
+    index: '5-2',
+    text: ['活动管理','活动配置']
+  }
 ]
 //侧边栏信息
 const sideText = [
@@ -122,6 +137,24 @@ const sideText = [
     ico: 'el-icon-picture-outline',
     path: '/pictureManage',
     list: []
+  },
+  {
+    title: '活动管理',
+    index: '5',
+    ico: 'el-icon-menu',
+    // path: '/banner',
+    list: [
+      {
+        name: 'banner管理',
+        index: '5-1',
+        path: '/banner'
+      },
+      {
+        name: '活动配置',
+        index: '5-2',
+        path: '/activeConfiguration'
+      }
+    ]
   },
 ]
 

@@ -314,9 +314,9 @@
         },
         //获取组件分类
         getBasisList() {
-          this.$api.apiCatType(1).then(res => {
+          this.$api.apiByCatType(1).then(res => {
             if(res.msg === "success") {
-              this.basisList = res.data
+              this.basisList = res.data.content
             } else {
               this.$message.error(res.msg)
             }
