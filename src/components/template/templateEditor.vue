@@ -19,9 +19,11 @@
           <li v-for="(item,i) in templateList" @mousemove="delShow = i" @mouseleave="delShow=null">
             <div v-html="item.pageCode">{{item.pageCode}}</div>
             <div :class="{'delItem':delShow == i}">
+            <div v-if="item.onlineStatus == 0 && delShow!=i" :class="{'delItem2': delShow!=i}" style="text-align: center;color: white;font-size: 24px">已下线</div>
             <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
             <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}" @click="preview(item)"></i>
-              <i class="el-icon-download template-edit-ico" :class="{'icoShow':delShow==i}"></i>
+            <i v-if="item.onlineStatus == 1" class="el-icon-download template-edit-ico" :class="{'icoShow':delShow==i}" @click="offlineSuite(item.id)"></i>
+            <i v-if="item.onlineStatus == 0" class="el-icon-upload2 template-edit-ico" :class="{'icoShow':delShow==i}" @click="popSuite(item.id)"></i>
             <i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(item.id)"></i>
             </div>
             </li>
@@ -41,24 +43,7 @@
         value: '',
         text:'',//模板分类名称
         num:0,//模板个数
-        templateList:[
-          // {pageCode:'<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;">\n' +
-          //     '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;margin-top: 5.1875vw;;">产品特色</div>\n' +
-          //     '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: 5px;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
-          //     '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: center;margin-top: 5.625vw;">\n' +
-          //     '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(238,242,244,1);border-radius:5px;margin-right: 1.875vw;text-align: center;">\n' +
-          //     '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;margin: 6.75vw auto 0 auto;">设计需求管理</div>\n' +
-          //     '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;margin: .5vw auto 0 auto;">对“大体验”设计相关需求，包括视觉设计、体验设计、工业设计，改进我们的产品体验而努力</div>\n' +
-          //     '\t\t\t\t</div>\n' +
-          //     '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;margin-right: 1.875vw;"></div>\n' +
-          //     '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;"></div>\n' +
-          //     '\t\t\t</div>\n' +
-          //     '\t\t</div>'},
-          // {url: require('../../assets/img/template3.png')},
-          // {url: require('../../assets/img/template.png')},
-          // {url: require('../../assets/img/template3.png')},
-          // {url: require('../../assets/img/template3.png')}
-        ]
+        templateList:[]
       }
     },
     methods: {
@@ -88,6 +73,48 @@
           path:'/previewTemplate'
         })
         window.open(routeData.href, '_blank');
+      },
+      //上线
+      popSuite(id) {
+        this.$confirm('确认上线该套件吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.$api.apiOnlineOperate({
+            catType: 2,
+            id:id,
+            operateType:1
+          }).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getPageList(this.$store.state.templateData.id)
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
+      },
+      //下线
+      offlineSuite(id) {
+        this.$confirm('确认下线该套件吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.$api.apiOnlineOperate({
+            catType: 2,
+            id:id,
+            operateType:0
+          }).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getPageList(this.$store.state.templateData.id)
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
       },
       //新增组件
       addTemplate() {
@@ -208,6 +235,20 @@
             align-items: center;
             justify-content: space-evenly;
             z-index: 200;
+            box-sizing: border-box;
+          }
+          .delItem2 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            z-index: 100;
+            box-sizing: border-box;
           }
           .template-edit-ico {
             display: none;

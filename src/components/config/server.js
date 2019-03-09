@@ -60,7 +60,7 @@ const apiCatType = (data) => {
 //查询模板套件
 const apiTemplateList= (data) => {
   return new Promise((resolve, reject)=>{
-    instance.get(`backend/template/list?catId=${data}`).then((res)=> {
+    instance.post('backend/template/list',data).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -189,6 +189,17 @@ const apiDelPage= (data) => {
   })
 }
 
+//删除套件模板
+const apiDelTemplate= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.delete(`backend/template/delete?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 //编辑模板页面
 const apiUpdateTemplatePage = (data) => {
   return new Promise((resolve, reject)=>{
@@ -276,5 +287,6 @@ export default {
   apiDelPage,
   apiByCatType,
   apiOnlineOperate,
-  apiUpdateTemplate
+  apiUpdateTemplate,
+  apiDelTemplate
 }

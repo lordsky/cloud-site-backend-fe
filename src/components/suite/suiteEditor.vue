@@ -16,10 +16,10 @@
       <el-upload
         ref='upload'
         class="avatar-uploader"
-        action="https://jsonplaceholder.typicode.com/posts/"
+        :action="host.hostUrl+'/common/upload'"
         :show-file-list="false"
         :on-change="handleChange"
-        :auto-upload="false">
+        :before-upload="beforeUpLoad">
         <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
           <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
           <div v-if="suite.thumb" :class="{'delItem':showDel}">
@@ -44,7 +44,7 @@
         <!--<div class="el-upload__tip" slot="tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>-->
       <!--</el-upload>-->
       <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="suite.imageUrl" alt="">
+        <img width="100%" :src="suite.thumb" alt="">
       </el-dialog>
     </el-form-item>
     <el-form-item>
@@ -56,12 +56,16 @@
   </div>
 </template>
 
-<script>
+<script scoped>
+  import host from '../config/host'
+  import fileUtil from '../config/fileUtil'
+  import '@/assets/js/jquery';
   export default {
     name: "suiteEditor",
     data() {
       return {
         aaa:'',
+        host:host,
         suite: {},
         classification:[],
         rules:{
@@ -85,11 +89,32 @@
     methods: {
       handleRemove(file, fileList) {
         this.$refs.upload.clearFiles()
-        this.suite.imageUrl = ''
+        this.suite.thumb = ''
         setTimeout(() => {
           let oV1 =  document.getElementsByClassName('el-upload__input')
           oV1[0].disabled=false
         }, 100);
+      },
+      beforeUpLoad(file) {
+        return new Promise((resolve) => {
+          fileUtil.getOrientation(file).then((orient) => {
+            if (orient && orient === 6) {
+              let reader = new FileReader()
+              let img = new Image()
+              reader.onload = (e) => {
+                img.src = e.target.result
+                img.onload = function () {
+                  const data = fileUtil.rotateImage(img, img.width, img.height)
+                  const newFile = fileUtil.dataURLtoFile(data, file.name)
+                  resolve(newFile)
+                }
+              }
+              reader.readAsDataURL(file)
+            } else {
+              resolve(file)
+            }
+          })
+        })
       },
       handleChange(file){
         const isType = file.raw.type === 'image/jpeg' || file.raw.type === 'image/png';
@@ -105,13 +130,17 @@
         if(upload != true){
           return
         }
-        this.suite.imageUrl = URL.createObjectURL(file.raw);
+        if(file.response != undefined){
+          this.suite.thumb = file.response;
+        }else {
+          this.suite.thumb = URL.createObjectURL(file.raw);
+        }
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true
       },
-      onSubmit() {
+      onSubmit : async function() {
         this.$refs.suite.validate((valid) => {
-          if(this.suite.imageUrl == ''){
+          if(this.suite.thumb == ''){
             this.$message({
               type: 'warning',
               message: '请选择上传背景图片!'
@@ -122,40 +151,34 @@
             const index = this.classification.findIndex(d => d.catName === this.suite.catId);
             let id = this.classification[index].id
             console.log(id)
-            this.$router.push({
-              path: '/websiteUpdate',
-              query:{text:'网站编辑器'
-                ,data:{
-                templateId:this.suite.id,//带参新增套件id
-                },pageId:2}
+            this.$api.apiUpdateTemplate({
+              name: this.suite.name,
+              catId: id,
+              id:this.suite.id,
+              description:this.suite.description,
+              thumb:this.suite.thumb
+            }).then(res => {
+              console.log(res)
+              if(res.code === 200) {
+                this.editorLoading = false;
+                this.$router.push({
+                  path: '/websiteUpdate',
+                  query:{text:'网站编辑器'
+                    ,data:{
+                      templateId:this.suite.id,//带参新增套件id
+                    },pageId:2}
+                })
+              } else {
+                this.$message.error(res.msg)
+                this.editorLoading = false;
+              }
             })
-            // this.$refs.upload.submit();
-            // this.$api.apiUpdateTemplate({
-            //   name: this.suite.name,
-            //   catId: id,
-            //   id:this.suite.id,
-            //   description:this.suite.description,
-            //   thumb:this.suite.thumb
-            // }).then(res => {
-            //   console.log(res)
-            //   if(res.code === 200) {
-            //     this.$router.push({
-            //       path: '/websiteUpdate',
-            //       query:{text:'网站编辑器'
-            //         ,data:{
-            //           templateId:this.suite.id,//带参新增套件id
-            //         },pageId:2}
-            //     })
-            //   } else {
-            //     this.$message.error(res.msg)
-            //   }
-            // })
           }
         });
       },
       suiteSave(){
         this.$refs.suite.validate((valid) => {
-          if(this.suite.imageUrl == ''){
+          if(this.suite.thumb == ''){
             this.$message({
               type: 'warning',
               message: '请选择上传背景图片!'
@@ -203,7 +226,7 @@
       })
       let oV1 =  document.getElementsByClassName('el-upload__input')
       this.suite = this.$route.query.suite
-      if(this.$route.query.suite.imageUrl != ''|| this.$route.query.suite.imageUrl != null){
+      if(this.$route.query.suite.thumb != ''|| this.$route.query.suite.thumb != null){
         oV1[0].disabled = true
       }
     }
