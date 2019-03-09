@@ -41,8 +41,14 @@
       </div>
 
       <div class="pagination">
-          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
-          </el-pagination>
+        <el-pagination
+          background
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
+          :page-size="pageSize"
+          layout="prev, pager, next, jumper"
+          :total="pageAll">
+        </el-pagination>
 		  </div>
    
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
@@ -69,6 +75,7 @@
         filters: {
 					name: ''
         },
+        pageAll:0,
         total: 0,
 				page: 1,
 				pageSize:10,
@@ -210,7 +217,8 @@
         this.$store.commit('saveSuiteId', row.id)
         this.$store.commit('saveSuiteData', suiteData)
         this.$router.push({
-          path: '/suiteClassification'
+          path: '/suiteClassification',
+          query:{text:row.catName}
         })
       },
       //保存
@@ -281,6 +289,7 @@
         this.$api.apiCatType(para).then(res => {
           if(res.msg === "success") {
             this.suiteByType = res.data.content
+            this.pageAll = res.data.totalElements
           } else {
             this.$message.error(res.msg)
           }

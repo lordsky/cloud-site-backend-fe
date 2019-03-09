@@ -43,8 +43,14 @@
       </div>
 
       <div class="pagination">
-          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
-          </el-pagination>
+        <el-pagination
+          background
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
+          :page-size="pageSize"
+          layout="prev, pager, next, jumper"
+          :total="pageAll">
+        </el-pagination>
 		  </div>
    
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
@@ -97,6 +103,7 @@
         filters: {
 					name: ''
         },
+        pageAll:0,
         total: 0,
 				page: 1,
 				pageSize:10,
@@ -343,6 +350,7 @@
         API.apiCatType(para).then(res => {
           if(res.msg === "success") {
             this.templateTypeLsit = res.data.content
+            this.pageAll = res.data.totalElements
             console.log('sss',this.templateTypeLsit)
           } else {
             this.$message.error(res.msg)

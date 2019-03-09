@@ -16,7 +16,8 @@
           </el-form-item>
           </div>
         <el-form-item>
-          <el-button type="primary" size="small" v-on:click="getUsers">查询</el-button>
+          <el-button type="primary" size="small" v-on:click="getSuiteList">查询</el-button>
+          <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >批量删除</el-button>
           <el-button type="primary" size="small" @click="addSuite">新增套件</el-button>
         </el-form-item>
       </el-form>
@@ -49,8 +50,14 @@
         </el-table>
       </div>
       <div class="pagination">
-          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
-          </el-pagination>
+        <el-pagination
+          background
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
+          :page-size="pageSize"
+          layout="prev, pager, next, jumper"
+          :total="pageAll">
+        </el-pagination>
 		  </div>
   </div>
 </template>
@@ -69,6 +76,7 @@
         filters: {
 					name: ''
         },
+        pageAll:0,
         total: 0,
 				page: 1,
 				pageSize:10,
@@ -172,21 +180,15 @@
 				this.$confirm('确认删除该套件吗?', '提示', {
 					type: 'warning'
 				}).then(() => {
-          this.listLoading = true;
-					//NProgress.start();
-          let id = row.id;
-          setTimeout(() => {
-          this.listLoading = false;
-          }, 500);
-					// removeUser(para).then((res) => {
-					// 	this.listLoading = false;
-					// 	//NProgress.done();
-					// 	this.$message({
-					// 		message: '删除成功',
-					// 		type: 'success'
-					// 	});
-					// 	this.getUsers();
-					// });
+          this.$api.apiDelTemplate(row.id).then(res=>{
+            if(res.code === 200){
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.getSuiteList(this.$store.state.sutieId);
+            }
+          })
 				}).catch(() => {
 
 				});
@@ -196,29 +198,27 @@
 			},
 			//批量删除
 			batchRemove: function () {
-				var ids = this.sels.map(item => item.id).toString();
-				this.$confirm('确认删除选中记录吗？', '提示', {
-					type: 'warning'
-				}).then(() => {
-          this.listLoading = true;
-					//NProgress.start();
-          let para = { ids: ids };
-          setTimeout(() => {
-          this.listLoading = false;
-          }, 500);
-					//NProgress.start();
-					// batchRemoveUser(para).then((res) => {
-					// 	this.listLoading = false;
-					// 	//NProgress.done();
-					// 	this.$message({
-					// 		message: '删除成功',
-					// 		type: 'success'
-					// 	});
-					// 	this.getUsers();
-					// });
-				}).catch(() => {
-
-				});
+				let ids = this.sels.map(item => item.id);
+				console.log(ids)
+        for (let id of ids) {
+          this.$api.apiDelTemplate(id).then(res=>{
+            if(res.code === 200){
+              this.getSuiteList(this.$store.state.sutieId);
+            }
+          })
+        }
+				// this.$confirm('确认删除选中记录吗？', '提示', {
+				// 	type: 'warning'
+				// }).then(() => {
+        //   this.listLoading = true;
+				// 	//NProgress.start();
+        //   let para = { ids: ids };
+        //   setTimeout(() => {
+        //   this.listLoading = false;
+        //   }, 500);
+				// }).catch(() => {
+        //
+				// });
 			},
       //管理
       manageCompon(index, row) {
@@ -239,25 +239,27 @@
       //当前页码
 			handleCurrentChange(val) {
 				this.page = val;
-				this.getUsers();
+				this.getSuiteList();
 			},
 			//当前条数
 			handleSizeChange(val) {
 				this.pageSize = val;
-				this.getUsers();
+				this.getSuiteList();
 			},
       //获取套件列表
-      getSuiteList(val) {
+      getSuiteList() {
         let para = {
-          page: this.page,
+          pageNum: this.page,
           pageSize: this.pageSize,
-          name: this.filters.name,
-          startTime:this.timeData[0],
-          endTime:this.timeData[1]
+          catId:this.$store.state.sutieId,
+          key: this.filters.name,
+          startDate:this.timeData == null ? '' : this.timeData[0] != undefined ? this.$http.getLocalTime(this.timeData[0]) : '',
+          endDate:this.timeData == null ? '' : this.timeData[1] != undefined ? this.$http.getLocalTime(this.timeData[1]) : ''
         };
-        this.$api.apiTemplateList(val).then(res => {
+        this.$api.apiTemplateList(para).then(res => {
           if(res.msg === "success") {
-            this.templateList = res.data
+            this.templateList = res.data.content
+            this.pageAll = res.data.totalElements
             let x = null
             for(let j = 0;j<this.suiteByType.length;j++){
               const index = this.templateList.findIndex(d => d.catId === this.suiteByType[j].id);
@@ -286,7 +288,7 @@
       this.$api.apiByCatType(3).then(res => {
         if(res.msg === "success") {
           this.suiteByType = res.data.content
-          this.getSuiteList(this.$store.state.sutieId);
+          this.getSuiteList();
         } else {
           this.$message.error(res.msg)
         }
