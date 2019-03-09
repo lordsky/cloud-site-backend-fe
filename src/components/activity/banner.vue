@@ -62,10 +62,8 @@
 
 <script>
   import Sortable from 'sortablejs'
-  import TemplateEditor from "../template/templateEditor";
     export default {
         name: "banner",
-      components: {TemplateEditor},
       data() {
         return {
           activeShow:0,

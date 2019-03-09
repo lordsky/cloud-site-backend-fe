@@ -3,27 +3,27 @@
    
       <div class="compent-head">
         <div class="compent-head-type">
-          <!--<span>组件类型:</span>
-          <div class="compent-head-btn" :class="{'active':btnShow==i}" @click="btnType(i)" v-for="(x,i) in btnList" :key="i">{{x}}</div>-->
+       <span>组件类型:</span>
+          <div class="compent-head-btn" :class="{'active':btnShow==i}" @click="btnType(i)" v-for="(x,i) in btnList" :key="i">{{x}}</div>
         </div>
         <div class="compent-head-class">
-          <!--<span>组件分类:</span>
+          <span>组件分类:</span>
           <el-input placeholder="请输入组件分类名称" v-model="queryText"></el-input>
-          <el-button type="primary" size="small" @click="queryList">查询</el-button>-->
-          <!--<el-button type="primary" size="small">批量删除</el-button>-->
+          <el-button type="primary" size="small" @click="queryList">查询</el-button>
+          <el-button type="primary" size="small" @click="deleteAll">批量删除</el-button>
           <el-button type="primary" size="small" @click="addComponClass">新增组件分类</el-button>
           <el-button type="primary" size="small" @click="addComponent">新增组件</el-button>
         </div>
       </div>
       <div class="compent-box">
         <el-table :data="tableData3" border style="width: 100%;height: auto;" tooltip-effect="dark" @selection-change="handleSelectionChange">
-          <!--<el-table-column type="selection" width="55" align="center">
-          </el-table-column>-->
+          <el-table-column type="selection" width="55" align="center">
+          </el-table-column>
           <el-table-column prop="catName" label="组件分类"  align="center">
           </el-table-column>
-          <el-table-column prop="catType" label="组件类型" align="center">
+          <el-table-column prop="catExt" label="组件类型" align="center">
           	 <template slot-scope="scope">
-          	 	<span>{{scope.row.catType==1?'基础组件':'其他组件'}}</span>
+          	 	<span>{{scope.row.catExt==1?'基础组件':'其他组件'}}</span>
           	 </template>
           </el-table-column>
           <el-table-column prop="catNum" label="组件个数"  align="center">
@@ -31,13 +31,21 @@
           <el-table-column prop="date" label="操作" width="180" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="manageCompon(scope.row)">管理</el-button>
-              <!--<el-button type="text" @click="editCompon(scope.row)">编辑</el-button>-->
+              <el-button type="text" @click="editCompon(scope.row)">编辑</el-button>
               <el-button type="text" @click="delCompon(scope.row)" v-show="scope.row.catNum==0">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-   
+   <div class="paging">
+   	<el-pagination
+   	  background
+      @current-change="handleCurrentChange"
+      :page-size="pageSize"
+      layout="prev, pager, next, jumper"
+      :total="pageAll">
+    </el-pagination>
+   </div>
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">
         <el-form :inline="true" :model="formCompon" class="demo-form-inline" ref="formCompon">
@@ -47,7 +55,7 @@
           <div class="el-componClass-item">
             <span class="warFater">组件类型：<i class="war-ico">*</i></span>
             <span :class="{'activeClass':classBtn==1}" @click="classBtn=1">基础组件</span>
-            <!--<span :class="{'activeClass':classBtn==2}" @click="classBtn=2">其他组件</span>-->
+            <span :class="{'activeClass':classBtn==2}" @click="classBtn=2">其他组件</span>
           </div>
         </el-form>
       </div>
@@ -103,13 +111,17 @@
           name: ''
         },
         validationText:'',
-        btnList: ['全部','基础组件'],
+        btnList: ['全部','基础组件','其他组件'],
         tableData3: [],
         list:{},
         host:host,
         textData:{},
         queryText:'',
-        copyTable:{}
+        copyTable:{},
+        delList:[],
+        pageNum:1,
+        pageSize:8,
+        pageAll:0,
       }
     },
     watch: {
@@ -126,11 +138,26 @@
       
     },
     methods: {
-    	 
+    	//分页
+    handleCurrentChange(val) {
+        this.pageNum = val
+        this.queryList()
+      },
+    	//批量删除
+    	 deleteAll(){
+    	 	if(this.delList){
+    	 		this.$http.delete(this.$API.componentDel+this.delList,{
+			        },(res)=>{
+			        	   if(res.data.data){
+			        	   	  this.refreshTable()
+			        	   }
+			        })
+    	 	}
+    	 },
     	  uploadText(e){
     	  	var file = e.target.files[0] 
     	  	this.textData = file
-    	  	console.log(this.textData.name)
+    	  	
     	  },
       //重置验证
       resetForm() {
@@ -156,6 +183,7 @@
         this.editShow = true
         this.addShow = false
         this.componTitle = '编辑组件分类'
+        this.validationText = 'formCompon'
         this.dialogStu = 'edit'
         this.dialogText = res.catName
         this.list = res
@@ -175,11 +203,14 @@
 		          path: '/componentEditor',
 		          query:{text:res.catName,msg:res}
 		        })
-      	
       },
       //check 选择
       handleSelectionChange(res) {
-        console.log(res)
+      	let arr = []
+      	for(let i =0;i<res.length;i++){
+      		arr.push(res[i].id)
+      	}
+      	this.delList = arr
       },
       //新增组件分类
       addComponClass() {
@@ -205,37 +236,37 @@
       },
       //查询
       queryList(){
-      	if(this.queryText=='')return   this.$message.error('请输入组件名称');
-      	let list =  this.tableData3
-      	let array = []
-      	for (let i =0;i<list.length;i++){
-      		if(this.queryText===list[i].catName){
-      			array.push(list[i])
-      			this.tableData3 = array
-      			return
-      		}
+      	var type = ''
+      	if(this.componentType!==0){
+      		type = this.componentType
       	}
-      	this.$message({
-          message: '抱歉，没有找到该组件',
-          type: 'warning'
-        });
-        this.tableData3 = this.copyTable
+      	this.$http.get(this.$API.queryCompon+'?catType=1&catName='+this.queryText+'&catExt='+type+'&pageNum='+this.pageNum+'&pageSize='+this.pageSize,res=>{
+      		if(res.data.data.content.length>0){
+      			this.tableData3=res.data.data.content
+      			this.pageAll = res.data.data.totalElements
+      		}else{
+      			this.$message({
+		          message: '抱歉，没有查询到该组件分类',
+		          type: 'warning'
+		        });
+      		}
+      	})
       },
       //刷新
       refreshTable: async function(){
       	var a = []
       	var b = []
-         a = await this.getQueryCompon(1)
-//       b = await this.getQueryCompon(2)
-//       var c = a.concat(b);
+         a = await this.getQueryCompon()
          this.tableData3 = a
          this.copyTable = a
       },
-      getQueryCompon : function (type) {
+      getQueryCompon : function () {
       	return new Promise (resolve =>{
-      		this.$http.get(this.$API.queryCompon+'?catType='+type,(res)=>{
+      		this.$http.get(this.$API.queryCompon+'?catType=1&pageNum='+this.pageNum+'&pageSize='+this.pageSize,(res)=>{
+      			console.log(res)
 	    	   	  if(res.data.code === 200){
-	    	   	  	resolve(res.data.data)
+	    	   	  	resolve(res.data.data.content)
+	    	   	  	this.pageAll = res.data.data.totalElements
 	    	   	  }
     	  		})
       	})
@@ -246,8 +277,7 @@
         	   this.$http.delete(this.$API.componentDel+this.list.id,{
 			        },(res)=>{
 			        	   if(res.data.data){
-			        	   	  this.refreshTable()
-	            	   	      this.dialogVisible = false
+			        	   	  this.refreshList('删除成功')
 			        	   }
 			        })
         	   return
@@ -258,14 +288,13 @@
 	          case 'addClass':
 	            console.log('新增分类')
 	            this.$http.post(this.$API.componentAddClass,{
-	            	 catExt:'',
+	            	 catExt:this.classBtn,
 	            	 catName:this.formCompon.name,
 	            	 catType:1,
 	            },(res)=>{
 	            	   console.log(res)
 	            	   if(res.data.data){
-	            	   	  this.refreshTable()
-	            	   	  this.dialogVisible = false
+	            	   	  this.refreshList('添加成功')
 	            	   }
 	            })
 	            break;
@@ -275,13 +304,12 @@
 	            if(this.textData.type!=='text/plain'){return this.$message.error('文件类型不对，请上传.txt文件格式')}
 	            let formData = new FormData();
     	            formData.append('file',this.textData);
-    	            formData.append('catExt','11');
+    	            formData.append('catExt','1');
     	            formData.append('catId',this.formAdd.selectId);
 	            this.$http.post(this.$API.componentAdd,formData,(res)=>{
 	            	    console.log(res)
 	            	    if(res.data.data){
 	            	    	   this.dialogVisible = false
-	            	    	   this.refreshTable()
 	            	    	   this.$message({
 				          showClose: true,
 				          message: '添加成功',
@@ -292,6 +320,15 @@
 	            break;
 	          case 'edit':
 	            console.log('编辑')
+	            this.$http.post(this.$API.setComponent,{
+	            	  "catExt": this.classBtn,
+				  "catName": this.formCompon.name,
+				  "catType": 1,
+				  "id": this.list.id
+	            },(res)=>{
+	            	   this.refreshList('修改成功')
+	            })
+	            
 	            break;
 	        }
          } else {
@@ -299,6 +336,15 @@
             return false;
           }
         });
+      },
+      refreshList(res){
+      	   this.dialogVisible = false
+	    	   this.refreshTable()
+	    	   this.$message({
+	          showClose: true,
+	          message: res,
+	          type: 'success'
+	        });
       }
     }
   }
@@ -426,5 +472,8 @@
  	/*width: 100px;*/
  	overflow: hidden;
  	text-overflow : ellipsis; 
+ }
+ .paging{
+ 	margin: 20px 0 50px 0;
  }
 </style>
