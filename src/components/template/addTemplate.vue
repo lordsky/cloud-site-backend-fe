@@ -128,9 +128,9 @@
       },
       //获取模板分类
       getTemplateTypeList(val){
-        this.$api.apiCatType(val).then(res => {
+        this.$api.apiByCatType(val).then(res => {
           if(res.msg === "success") {
-            this.templateTypeList = res.data
+            this.templateTypeList = res.data.content
           } else {
             this.$message.error(res.msg)
           }

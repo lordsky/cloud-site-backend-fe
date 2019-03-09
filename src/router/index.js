@@ -15,10 +15,14 @@ import SuiteAdd from '@/components/suite/suiteAdd'//套件管理-新增套件
 import SuiteEditor from '@/components/suite/suiteEditor'//套件管理-编辑套件
 import SuiteClassification from '@/components/suite/suiteClassification'//套件管理
 import WebsiteEditor from '@/components/suite/websiteEditor'//套件管理--网站编辑器
+import WebsiteUpdate from '@/components/suite/websiteUpdate'//套件管理--网站编辑器
 import SiteManage from '@/components/siteManage'//站点管理
 import Preview from '@/components/suite/preview'//预览套件设计页面
 import PreviewTemplate from '@/components/suite/previewTemplate'//预览模板查询页面
 import PictureManage from '@/components/pictureManage'//素材库
+import Banner from '@/components/activity/banner'//banner管理
+import BannerAdd from '@/components/activity/bannerAdd'//banner新增
+import ActiveConfiguration from '@/components/activity/activeConfiguration'//活动配置
 
 Vue.use(Router)
 
@@ -109,6 +113,11 @@ export default new Router({
       name: 'websiteEditor',
       component: WebsiteEditor
      },
+     {
+      path: '/websiteUpdate',
+      name: 'websiteUpdate',
+      component: WebsiteUpdate
+     },
 		 {
 		  path: '/siteManage',
 		  name: 'siteManage',
@@ -118,6 +127,21 @@ export default new Router({
       path: '/pictureManage',
       name: 'pictureManage',
       component: PictureManage
+     },
+     {
+      path: '/banner',
+      name: 'banner',
+      component: Banner
+     },
+     {
+      path: '/bannerAdd',
+      name: 'bannerAdd',
+      component: BannerAdd
+     },
+     {
+      path: '/activeConfiguration',
+      name: 'activeConfiguration',
+      component: ActiveConfiguration
      }
       ]
     }]

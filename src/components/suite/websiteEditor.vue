@@ -155,12 +155,7 @@
             // }
             ],
           classifyList: [],
-          pagetList:[
-            // {url: require('../../assets/img/template3.png')},
-            // {url: require('../../assets/img/template.png')},
-            // {url: require('../../assets/img/template3.png')},
-            // {url: require('../../assets/img/template3.png')}
-          ],
+          pagetList:[],
           data2:[],
           node:[],
           defaultProps: {
@@ -369,10 +364,20 @@
               this.webPageAll.splice(index,1)
               this.webPageList.content = this.webPageAll[0].pageCode
               $("#"+data.id).remove()
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              });
+              this.$api.apiUpdateTemplateComponent({
+                componentCode: $('#headerHtml').html(),
+                id: this.headerId,
+              }).then(res => {
+                console.log(res)
+                if(res.code === 200) {
+                  this.$message({
+                    message: '删除成功',
+                    type: 'success'
+                  });
+                } else {
+                  this.$message.error(res.msg)
+                }
+              })
             } else {
               this.$message.error(res.msg)
             }
@@ -390,23 +395,23 @@
           this.saveWeb(index)
         },
         //预览
-        preview(){
-          let headerHtml = $('#headerHtml').html()
-          this.webPageList.header = headerHtml
-          let segment = {
-            header:this.webPageList.header,
-            content:this.webPageList.content,
-            footer:this.webPageList.footer
-          }
-          window.localStorage.setItem('saveHeader',this.webPageList.header)
-          window.localStorage.setItem('saveContent',this.webPageList.content)
-          window.localStorage.setItem('saveFooter',this.webPageList.footer)
-          window.open('/#/preview','_blank')
-          let routeData = this.$router.resolve({
-            path:'/preview'
-          })
-          // window.open(routeData.href, '_blank');
-        },
+        // preview(){
+        //   let headerHtml = $('#headerHtml').html()
+        //   this.webPageList.header = headerHtml
+        //   let segment = {
+        //     header:this.webPageList.header,
+        //     content:this.webPageList.content,
+        //     footer:this.webPageList.footer
+        //   }
+        //   window.localStorage.setItem('saveHeader',this.webPageList.header)
+        //   window.localStorage.setItem('saveContent',this.webPageList.content)
+        //   window.localStorage.setItem('saveFooter',this.webPageList.footer)
+        //   window.open('/#/preview','_blank')
+        //   let routeData = this.$router.resolve({
+        //     path:'/preview'
+        //   })
+        //   // window.open(routeData.href, '_blank');
+        // },
         //选择页面
         selectPage(data){
           this.dialogVisible3=false
@@ -483,15 +488,13 @@
           $("ul").on("click","li",function(){      //点击顶部导航切换页面
             headerIndex = $(this).index();
             app.$store.commit('saveHeaderIndex',headerIndex)
-            // app.webPageList.content = app.webPageAll[headerIndex].pageCode;
-            // this.handleNodeClick()
           });
         },0)
         pageNum = 1
         this.templateId = this.$route.query.data.templateId
-        this.$api.apiCatType(2).then(res => {
+        this.$api.apiByCatType(2).then(res => {
           if(res.msg === "success") {
-            this.classifyList = res.data
+            this.classifyList = res.data.content
             this.pageName = this.classifyList[0].catName
             this.getPageList(this.classifyList[0].id)
           } else {
@@ -508,14 +511,6 @@
         }
       },
     }
-  // $(document).ready(function(){
-  //   setTimeout(function () {
-  //   $("ul#silder").on("click","li",function(){      //点击顶部导航切换页面
-  //     headerIndex = $(this).index();
-  //     app.$store.commit('saveHeaderIndex',headerIndex)
-  //   });
-  //   },100)
-  // })
 </script>
 
 <style lang="scss">

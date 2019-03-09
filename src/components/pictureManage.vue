@@ -16,7 +16,6 @@
       <div class="picture-list" v-show="listLabel==1">
         <div class="picture-list-item update" >
           <el-upload class="avatar-uploader" :action="host.hostUrl+'/common/upload'"  :on-success="imgSuccess">
-            <!--<img v-if="imageUrl" :src="imageUrl" class="avatar">-->
             <i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传图片支持jpg,png,gif等格式，不超过10M</i>
@@ -466,8 +465,8 @@
   	   	right: 0px;
   	   	z-index: 10;
   	   	.el-checkbox__inner{
-  	   		/*background-color:#1afa29 ;
-  	   		border-color: #1afa29;*/
+  	   		background-color:#1afa29  !important;
+  	   		border-color: #1afa29 !important;
   	   		width: 40px !important;
   	   		height: 40px !important;
   	   		border-radius: 50%;
@@ -477,6 +476,7 @@
   	   		&:after{
   	   			position: static;
   	   			border: 3px white solid;
+  	   			border-color: white !important;
   	   			height: 15px;
   	   			width: 7px;
   	   			border-left: 0;

@@ -13,8 +13,8 @@
       </div>
       <div class="compon-edit-list">
         <ul>
-          <li v-for="(x,i) in comItem"  :key="i" >
-          	<div :class="{'delItem':delShow==i}" class="mask-compon"><i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i></div>
+          <li v-for="(x,i) in comItem"  :key="i" @mouseleave="delShow = ''" @mouseover="delShow=i">
+          	<div :class="{'delItem':delShow==i}" class="mask-compon" ><i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i></div>
           	<div v-html="x.segmentCode"></div>
             </li>
         </ul>
@@ -76,7 +76,7 @@
         let formData = new FormData();
         console.log(this.textData)
         formData.append('file', this.textData);
-        formData.append('catExt', '11');
+        formData.append('catExt', '1');
         formData.append('catId', this.options.id);
         this.$http.post(this.$API.componentAdd, formData, (res) => {
           console.log(res)
@@ -104,7 +104,9 @@
           type: 'warning'
         }).then(() => {
         	  console.log(val)
-        	  this.$http.delete(this.$API.componentDel+val.id,{},(res)=>{
+        	  this.$http.post(this.$API.delItems,{
+        	  	id:val.id
+        	  },(res)=>{
         	  	 console.log(res)
         	  	 if(res.data.data){
         	  	 	this.$message({
@@ -140,6 +142,12 @@
       button {
         font-size: 16px;
       }
+    }
+    .demo-form-inline{
+    	  input{
+    	  	padding: 10px 0 10px 0;
+    	  	font-size: 15px;
+    	  }
     }
     .compon-edit-box {
       p {

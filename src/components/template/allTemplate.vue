@@ -2,17 +2,17 @@
   <div class="compent">
    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
-        <!--<div>-->
-				<!--<el-form-item label="模版分类:">-->
-					<!--<el-input v-model="filters.name" placeholder="请输入模版分类名称" clearable></el-input>-->
-				<!--</el-form-item>-->
-        <!--<el-form-item label="添加时间:">-->
-            <!--<el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">-->
-            <!--</el-date-picker>-->
-          <!--</el-form-item>-->
-          <!--</div>-->
+        <div>
+				<el-form-item label="模版分类:">
+					<el-input v-model="filters.name" placeholder="请输入模版分类名称" clearable></el-input>
+				</el-form-item>
+        <el-form-item label="添加时间:">
+            <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+            </el-date-picker>
+          </el-form-item>
+          </div>
 				<el-form-item>
-					<!--<el-button type="primary" size="small" v-on:click="getComponList">查询</el-button>-->
+					<el-button type="primary" size="small" v-on:click="getComponList">查询</el-button>
           <!--<el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>-->
           <el-button type="primary" size="small" @click="addTemplate">新增模版</el-button>
           <el-button type="primary" size="small" @click="addComponClass">新增模版分类</el-button>
@@ -26,8 +26,8 @@
           <!--</el-table-column>-->
           <el-table-column prop="catName" label="模版分类"  align="center">
           </el-table-column>
-          <!--<el-table-column prop="addTime" label="添加时间" align="center">-->
-          <!--</el-table-column>-->
+          <el-table-column prop="addTime" label="添加时间" align="center">
+          </el-table-column>
           <el-table-column prop="catNum" label="模版个数"  align="center">
           </el-table-column>
           <!--<el-table-column prop="state" label="状态"  align="center">-->
@@ -35,19 +35,17 @@
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="manageCompon(scope.$index, scope.row)">管理</el-button>
-              <!--<el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>-->
-              <!--<el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>-->
-              <!--<el-button type="text" v-if="scope.row.state == '上线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>-->
+              <el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>
               <el-button type="text" v-if="scope.row.catNum == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
 
-      <!--<div class="pagination">-->
-          <!--<el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >-->
-          <!--</el-pagination>-->
-		  <!--</div>-->
+      <div class="pagination">
+          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
+          </el-pagination>
+		  </div>
    
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">
@@ -104,7 +102,7 @@
 				pageSize:10,
 				listLoading: false,
 				sels: [],//列表选中列
-        timeData: [new Date(), new Date().setFullYear(new Date().getFullYear()+1)],
+        timeData: [],//new Date(), new Date().setFullYear(new Date().getFullYear()+1)
         btnShow: '',
         componTitle: '',
         classBtn: 1,
@@ -115,6 +113,7 @@
         addShow: false,
         value: '',
         addCatRequest: {
+          id: '',
           catExt: '',
           catName: '',
           catType:2
@@ -174,7 +173,9 @@
         // this.clear()
         this.dialogVisible = true
         this.editShow = true
-        this.addCatRequest.catName = row.name;
+        this.addCatRequest.id = row.id
+        this.addCatRequest.catName = row.catName;
+        this.addCatRequest.catExt = row.catExt;
         this.componTitle = '编辑组件分类'
         this.dialogStu = 'edit'
         //this.dialogText = '导航'
@@ -299,7 +300,26 @@
             });
             break;
           case 'edit':
-            console.log('编辑')
+            //编辑模板分类
+            this.$refs.addCatRequest.validate((valid) => {
+              if (valid) {
+                API.apiUpdateCat({
+                  id:this.addCatRequest.id,
+                  catExt: this.addCatRequest.catExt,
+                  catName: this.addCatRequest.catName,
+                  catType: this.addCatRequest.catType
+                }).then(res => {
+                  console.log(res)
+                  if (res.code === 200) {
+                    this.dialogVisible = false
+                    this.getComponList()
+                  } else {
+                    this.$message.error(res.msg)
+                  }
+
+                })
+              }
+            });
             break;
           case 'del':
             console.log('删除')
@@ -313,15 +333,16 @@
 			getComponList() {
 				console.log('获取列表')
         let para = {
-          page: this.page,
+          catType:2,
+          pageNum: this.page,
           pageSize: this.pageSize,
-          name: this.filters.name,
-          startTime:this.timeData[0],
-          endTime:this.timeData[1]
+          catName: this.filters.name,
+          startDate:this.timeData == null ? '' : this.timeData[0] != undefined ? this.$http.getLocalTime(this.timeData[0]) : '',
+          endDate:this.timeData == null ? '' : this.timeData[1] != undefined ? this.$http.getLocalTime(this.timeData[1]) : ''
         };
-        API.apiCatType(2).then(res => {
+        API.apiCatType(para).then(res => {
           if(res.msg === "success") {
-            this.templateTypeLsit = res.data
+            this.templateTypeLsit = res.data.content
             console.log('sss',this.templateTypeLsit)
           } else {
             this.$message.error(res.msg)

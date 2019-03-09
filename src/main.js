@@ -12,8 +12,8 @@ import NProgress from "nprogress"; // Progress 进度条
 import "nprogress/nprogress.css"; // Progress 进度条样式
 
 import $ from 'jquery'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min'
+import './assets/css/swiper.css'
 
 import service from './components/config/service'
 Vue.prototype.$API = service

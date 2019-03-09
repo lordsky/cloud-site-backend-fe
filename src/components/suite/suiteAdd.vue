@@ -318,9 +318,9 @@
       },
       //获取模板分类
       getSuiteTypeList(val){
-        this.$api.apiCatType(val).then(res => {
+        this.$api.apiByCatType(val).then(res => {
           if(res.msg === "success") {
-            this.classification = res.data
+            this.classification = res.data.content
           } else {
             this.$message.error(res.msg)
           }

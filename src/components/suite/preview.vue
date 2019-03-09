@@ -1,36 +1,180 @@
 <template>
-  <div class="preview">
-    <div v-html="preview.header">{{preview.header}}</div>
-    <div v-html="preview.content" class="content2">{{preview.content}}</div>
-    <div v-html="preview.footer" class="footer">{{preview.footer}}</div>
+  <div class="preview2">
+    <div class="title-wrap">
+      {{curTitle}}
+    </div>
+    <div class="manage-wrap">
+      <el-dropdown @command="changePage" v-if="pageList.length > 0">
+        <span class="el-dropdown-link">
+          <i class="el-icon-document"></i>页面管理<i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item v-for="(item,index) of pageList" :key="index" :command="index">{{item.pageName}}</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
+    <div class="header-wrap">
+      <div class="handle-wrap">
+        <div class="btn" @click="exitPreview"><i class="el-icon-circle-close"></i> 退出预览模式</div>
+      </div>
+    </div>
+    <div class="content-wrap">
+      <div class="content"  v-html="curPage">
+        {{curPage}}
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
-    export default {
-      name: "preview",
-      data() {
-        return {
-          preview:{
-            header: window.localStorage.getItem('saveHeader'),
-            content:window.localStorage.getItem('saveContent'),
-            footer:window.localStorage.getItem('saveFooter')
+<script scoped>
+  export default {
+    data() {
+      var self = this
+      var NavSwitch = function(){
+        var navBtn = document.querySelectorAll('#silder li')
+        for(let i = 0;i<navBtn.length;i++){
+          navBtn[i].onclick = ()=>{
+            self.curPage = self.curPageTop + self.pageList[i].pageCode + self.curPageBottom
+            setTimeout(()=>{
+              NavSwitch()
+            },100)
           }
         }
       }
-    }
+      return {
+        curId: "",
+        curTitle: "",
+        pageList: [],
+        curPage:'',
+        curPageTop: '',
+        curPageConetent: "<div style='height: 300px;'></div>",
+        curPageBottom:'',
+        useShow:true,
+        NavSwitch:NavSwitch,
+      };
+    },
+    methods: {
+      exitPreview() {
+        window.history.go(-1)
+      },
+      changePage(command) {
+        this.curPageConetent = this.pageList[command].pageCode
+        this.curPage = this.curPageTop + this.curPageConetent + this.curPageBottom
+        setTimeout(()=>{
+          this.NavSwitch()
+        },10)
+      },
+      // get template page code
+      getTemplatePage : async function(statu) {
+        var  getPage
+        var  getList
+        let key = this.$route.query.id
+        getPage = this.$api.apiTemplatePageList
+        getList = this.$api.apiTemplateComponentList
+
+        let getContent = getPage(key).then(res => {
+          this.pageList = res.data;
+          if(res.data.length > 0) {
+            this.curPageConetent = res.data[0].pageCode
+          }
+        });
+
+        let getHeaderFooter = getList(key).then(res => {
+          if(res.data.length > 0) {
+            this.curPageTop = res.data[0].componentCode
+            this.curPageBottom = res.data[1].componentCode
+          }
+        });
+        await Promise.all([getContent, getHeaderFooter]).then(res => {
+          this.curPage = this.curPageTop + this.curPageConetent + this.curPageBottom
+        })
+        await this.NavSwitch()
+      }
+    },
+    created() {
+      this.curId = this.$route.query.id;
+      this.curTitle = this.$route.query.title;
+      this.getTemplatePage()
+    },
+  };
 </script>
 
+
+<style type="text/css" scoped>
+  @import "../../assets/swiper.css";
+</style>
 <style lang="scss" scoped>
-  .preview{
+  .preview2 {
     width: 100%;
-    height: 100vh;
-    position: relative;
-    .content2{
-      margin-top: 10px;
+    min-height: 100vh;
+    height:auto;
+    background-color: #f2f2f2;
+    padding: 0 28px;
+    .title-wrap {
+      float: left;
+      line-height: 62px;
+      font-size: 18px;
     }
-    .footer{
-      margin-top: 10px;
+    .manage-wrap {
+      float: left;
+      line-height: 62px;
+      font-size: 16px;
+      margin-left: 30px;
+    }
+    .header-wrap {
+      width: 100%;
+      height: 62px;
+      line-height: 62px;
+      font-weight: 200;
+      .handle-wrap {
+        float: right;
+        font-size: 12px;
+        .btn {
+          display: inline-block;
+          height: 28px;
+          padding: 0 20px;
+          margin-left: 20px;
+          line-height: 28px;
+          text-align: center;
+          background-color: #4a6def;
+          border-color: #4a6def;
+          border-radius: 2px;
+          color: #fff;
+          cursor: pointer;
+        }
+      }
+    }
+    .content-wrap {
+      position: relative;
+      width: 100%;
+      height: 90vh;
+      padding: 0 0 20px;
+      .content {
+        width: 100%;
+        height: 100%;
+        overflow: scroll;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 5px;
+        background-color: #fff;
+        display: inline;
+      }
+      .selected-wrap {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 200px;
+        height: 200px;
+        background-color: #fff;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 5px;
+        .page-list {
+          list-style: none;
+          padding: 20px;
+          .page-item {
+            line-height: 30px;
+            color: #999;
+            cursor: pointer;
+          }
+        }
+      }
     }
   }
 </style>

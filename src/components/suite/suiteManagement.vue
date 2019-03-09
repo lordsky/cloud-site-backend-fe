@@ -2,17 +2,17 @@
   <div class="suite">
    <el-col :span="24" class="toolbar">
 			<el-form :inline="true" :model="filters">
-        <!--<div>-->
-				<!--<el-form-item label="套件分类:">-->
-					<!--<el-input v-model="filters.name" placeholder="请输入套件分类名称" clearable></el-input>-->
-				<!--</el-form-item>-->
-        <!--<el-form-item label="添加时间:">-->
-            <!--<el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">-->
-            <!--</el-date-picker>-->
-          <!--</el-form-item>-->
-          <!--</div>-->
+        <div>
+				<el-form-item label="套件分类:">
+					<el-input v-model="filters.name" placeholder="请输入套件分类名称" clearable></el-input>
+				</el-form-item>
+        <el-form-item label="添加时间:">
+            <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+            </el-date-picker>
+          </el-form-item>
+          </div>
 				<el-form-item>
-					<!--<el-button type="primary" size="small" v-on:click="getSuiteList">查询</el-button>-->
+					<el-button type="primary" size="small" v-on:click="getSuiteList">查询</el-button>
           <!--<el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>-->
           <el-button type="primary" size="small" @click="addSuite">新增套件</el-button>
           <el-button type="primary" size="small" @click="addComponClass">新增套件分类</el-button>
@@ -26,24 +26,24 @@
           <!--</el-table-column>-->
           <el-table-column prop="catName" label="套件分类"  align="center">
           </el-table-column>
-          <!--<el-table-column prop="addTime" label="添加时间" align="center">-->
-          <!--</el-table-column>-->
+          <el-table-column prop="addTime" label="添加时间" align="center">
+          </el-table-column>
           <el-table-column prop="catNum" label="套件个数"  align="center">
           </el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="manageSuite(scope.$index, scope.row)">管理</el-button>
-              <!--<el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>-->
+              <el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>
               <el-button type="text" v-if="scope.row.catNum == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
 
-      <!--<div class="pagination">-->
-          <!--<el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >-->
-          <!--</el-pagination>-->
-		  <!--</div>-->
+      <div class="pagination">
+          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
+          </el-pagination>
+		  </div>
    
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-suiteClass" v-show="editShow">
@@ -74,7 +74,7 @@
 				pageSize:10,
 				listLoading: false,
 				sels: [],//列表选中列
-        timeData: [new Date(), new Date().setFullYear(new Date().getFullYear()+1)],
+        timeData: [],
         formAdd: {
           selectText: ''
         },
@@ -88,55 +88,12 @@
         addShow: false,
         value: '',
         addCatRequest: {
+          id:'',
           catExt: '',
           catName: '',
           catType:3
         },
-        suiteByType: [
-        //   {
-        //   id:1,
-        //   addTime: '2016-05-03',
-        //   catName: '企业官网',
-        //   num: '0',
-        //   state:'下线'
-        // }, {
-        //   id:2,
-        //   addTime: '2016-05-02',
-        //   catName: '在线商城',
-        //   num: '5',
-        //   state:'下线'
-        // }, {
-        //   id:3,
-        //   addTime: '2016-05-04',
-        //   catName: '外贸站',
-        //   num: '3',
-        //   state:'下线'
-        // }, {
-        //   id:4,
-        //   addTime: '2016-05-01',
-        //   catName: '工作室',
-        //   num: '6',
-        //   state:'下线'
-        // }, {
-        //   id:5,
-        //   addTime: '2016-05-08',
-        //   catName: '协会组织',
-        //   num: '6',
-        //   state:'下线'
-        // }, {
-        //   id:6,
-        //   addTime: '2016-05-06',
-        //   catName: '个人网站',
-        //   num: '2',
-        //   state:'下线'
-        // }, {
-        //   id:7,
-        //   addTime: '2016-05-07',
-        //   catName: '学校官网',
-        //   num: '3',
-        //   state:'下线'
-        // }
-        ]
+        suiteByType: []
       }
     },
     watch: {
@@ -183,7 +140,8 @@
         // this.clear()
         this.dialogVisible = true
         this.editShow = true
-        this.addCatRequest.catName = row.name;
+        this.addCatRequest.id = row.id
+        this.addCatRequest.catName = row.catName;
         this.componTitle = '编辑组件分类'
         this.dialogStu = 'edit'
         //this.dialogText = '导航'
@@ -281,7 +239,25 @@
             console.log('新增分类')
             break;
           case 'edit':
-            console.log('编辑')
+            //编辑模板分类
+            this.$refs.addCatRequest.validate((valid) => {
+              if (valid) {
+                this.$api.apiUpdateCat({
+                  id:this.addCatRequest.id,
+                  catName: this.addCatRequest.catName,
+                  catType: this.addCatRequest.catType
+                }).then(res => {
+                  console.log(res)
+                  if (res.code === 200) {
+                    this.dialogVisible = false
+                    this.getSuiteList()
+                  } else {
+                    this.$message.error(res.msg)
+                  }
+
+                })
+              }
+            });
             break;
           case 'del':
             console.log('删除')
@@ -295,15 +271,16 @@
       getSuiteList() {
         console.log('获取列表')
         let para = {
-          page: this.page,
+          catType:3,
+          pageNum: this.page,
           pageSize: this.pageSize,
-          name: this.filters.name,
-          startTime:this.timeData[0],
-          endTime:this.timeData[1]
+          catName: this.filters.name,
+          startDate:this.timeData == null ? '' : this.timeData[0] != undefined ? this.$http.getLocalTime(this.timeData[0]) : '',
+          endDate:this.timeData == null ? '' : this.timeData[1] != undefined ? this.$http.getLocalTime(this.timeData[1]) : ''
         };
-        this.$api.apiCatType(3).then(res => {
+        this.$api.apiCatType(para).then(res => {
           if(res.msg === "success") {
-            this.suiteByType = res.data
+            this.suiteByType = res.data.content
           } else {
             this.$message.error(res.msg)
           }

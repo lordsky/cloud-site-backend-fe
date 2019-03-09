@@ -65,6 +65,11 @@ const navHead = [{
     text: ['模板管理', '模板套件']
   },
   {
+    path: 'websiteUpdate',
+    index: '2-3',
+    text: ['模板管理', '模板套件']
+  },
+  {
     path: 'siteManage',
     index: '3',
     text: ['站点管理']
@@ -74,20 +79,35 @@ const navHead = [{
     index: '4',
     text: ['素材库']
   },
+  {
+    path: 'banner',
+    index: '5-1',
+    text: ['活动管理','banner管理']
+  },
+  {
+    path: 'bannerAdd',
+    index: '5-1',
+    text: ['活动管理','banner管理','新增banner']
+  },
+  {
+    path: 'activeConfiguration',
+    index: '5-2',
+    text: ['活动管理','活动配置']
+  }
 ]
 //侧边栏信息
 const sideText = [
-// {
-//  title: '用户管理',
-//  index: '1',
-//  ico: 'el-icon-tickets',
-//  list: [{
-//      name: '个人资料',
-//      index: '1-1',
-//      path: '/userData'
-//    },
-//  ]
-//},
+   {
+    title: '用户管理',
+    index: '1',
+    ico: 'el-icon-tickets',
+    list: [{
+        name: '个人资料',
+        index: '1-1',
+        path: '/userData'
+      },
+    ]
+},
   {
     title: '模板管理',
     index: '2',
@@ -109,19 +129,37 @@ const sideText = [
       }
     ]
   },
-//{
-//  title: '站点管理',
-//  index: '3',
-//  ico: 'el-icon-setting',
-//  path: '/siteManage',
-//  list: []
-//},
+{
+    title: '站点管理',
+    index: '3',
+    ico: 'el-icon-setting',
+    path: '/siteManage',
+    list: []
+},
   {
     title: '素材库',
     index: '4',
     ico: 'el-icon-picture-outline',
     path: '/pictureManage',
     list: []
+  },
+  {
+    title: '活动管理',
+    index: '5',
+    ico: 'el-icon-menu',
+    // path: '/banner',
+    list: [
+      {
+        name: 'banner管理',
+        index: '5-1',
+        path: '/banner'
+      },
+      {
+        name: '活动配置',
+        index: '5-2',
+        path: '/activeConfiguration'
+      }
+    ]
   },
 ]
 
