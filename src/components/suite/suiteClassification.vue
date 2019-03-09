@@ -32,13 +32,16 @@
           </el-table-column>
           <el-table-column prop="addTime" label="添加时间" align="center">
           </el-table-column>
-          <el-table-column prop="state" label="状态"  align="center">
+          <el-table-column label="状态"  align="center">
+            <template slot-scope="scope">
+              {{scope.row.onlineStatus == 1 ? '上线':'下线'}}
+            </template>
           </el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
-              <el-button type="text">预览</el-button>
-              <el-button type="text" v-if="scope.row.state == '下线'" @click="popSuite(scope.$index, scope.row)">上线</el-button>
-              <el-button type="text" v-if="scope.row.state == '上线'" @click="offlineSuite(scope.$index, scope.row)">下线</el-button>
+              <el-button type="text" @click="previewSuite(scope.$index, scope.row)">预览</el-button>
+              <el-button type="text" v-if="scope.row.onlineStatus == 0" @click="popSuite(scope.$index, scope.row)">上线</el-button>
+              <el-button type="text" v-if="scope.row.onlineStatus == 1" @click="offlineSuite(scope.$index, scope.row)">下线</el-button>
               <el-button type="text" @click="editSuite(scope.$index, scope.row)">编辑</el-button>
               <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>
             </template>
@@ -58,10 +61,10 @@
     data() {
       return {
         suite: {
-          name: '套件名称1',
-          classification: '企业官网',
-          imageUrl: require('../../assets/logo.png'),
-          introduce: '这是一个企业官网的套件'
+          name: '',
+          classification: '',
+          imageUrl: '',
+          introduce: ''
         },
         filters: {
 					name: ''
@@ -71,7 +74,7 @@
 				pageSize:10,
 				listLoading: false,
 				sels: [],//列表选中列
-        timeData: [new Date(), new Date().setFullYear(new Date().getFullYear()+1)],
+        timeData: [],
         btnShow: '',
         componTitle: '',
         classBtn: 1,
@@ -102,13 +105,23 @@
             }}
         })
       },
+      //预览套件页面
+      previewSuite(index,row){
+        this.$router.push({
+          path:'/preview',
+          query:{
+            id:row.id,
+            title:row.name
+          }
+        })
+      },
       //编辑
       editSuite(index, row) {
         this.$router.push({
           path:'/suiteEditor',
           query:{
             text:'编辑套件',
-            suite:this.suite,
+            suite:row,
           }
         })
       },
@@ -117,13 +130,18 @@
         this.$confirm('确认上线该套件吗?', '提示', {
           type: 'warning'
         }).then(() => {
-          this.listLoading = true;
-          //NProgress.start();
-          let id = row.id;
-          this.tableData3[index].state = '上线'
-          setTimeout(() => {
-            this.listLoading = false;
-          }, 500);
+          this.$api.apiOnlineOperate({
+            catType: 3,
+            id:row.id,
+            operateType:1
+          }).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getSuiteList(this.$store.state.sutieId);
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
         }).catch(() => {
 
         });
@@ -133,13 +151,18 @@
         this.$confirm('确认下线该套件吗?', '提示', {
           type: 'warning'
         }).then(() => {
-          this.listLoading = true;
-          //NProgress.start();
-          let id = row.id;
-          this.tableData3[index].state = '下线'
-          setTimeout(() => {
-            this.listLoading = false;
-          }, 500);
+          this.$api.apiOnlineOperate({
+            catType: 3,
+            id:row.id,
+            operateType:0
+          }).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getSuiteList(this.$store.state.sutieId);
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
         }).catch(() => {
 
         });
@@ -262,7 +285,7 @@
       //获取套件分类列表
       this.$api.apiByCatType(3).then(res => {
         if(res.msg === "success") {
-          this.suiteByType = res.data
+          this.suiteByType = res.data.content
           this.getSuiteList(this.$store.state.sutieId);
         } else {
           this.$message.error(res.msg)
@@ -273,7 +296,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .suiteClass{
       .toolbar{
         padding-bottom: 0px;

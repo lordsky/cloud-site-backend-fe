@@ -65,6 +65,11 @@ const navHead = [{
     text: ['模板管理', '模板套件']
   },
   {
+    path: 'websiteUpdate',
+    index: '2-3',
+    text: ['模板管理', '模板套件']
+  },
+  {
     path: 'siteManage',
     index: '3',
     text: ['站点管理']

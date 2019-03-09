@@ -1,15 +1,16 @@
 <template>
+  <div>
   <el-form ref="suite" :model="suite" :rules="rules" label-width="90px" class="suiteEditor">
     <el-form-item label="套件标题:" prop="name">
       <el-input v-model="suite.name" placeholder="请输入套件标题，不超过12个字符" class="el-input-suite"></el-input>
     </el-form-item>
-    <el-form-item label="套件分类:" prop="classification">
-      <el-select v-model="suite.classification" placeholder="请选择模版分类" class="el-select-suite">
-        <el-option :label="x.name" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
+    <el-form-item label="套件分类:" prop="catId">
+      <el-select v-model="suite.catId" placeholder="请选择模版分类" class="el-select-suite" disabled>
+        <el-option :label="x.catName" :value="x.id" v-for="(x,i) in classification" :key="i"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="套件介绍:" prop="introduce">
-      <el-input type="textarea" v-model="suite.introduce" :rows="5" placeholder="请输入套件介绍，不超过40个字符"></el-input>
+    <el-form-item label="套件介绍:" prop="description">
+      <el-input type="textarea" v-model="suite.description" :rows="5" placeholder="请输入套件介绍，不超过40个字符"></el-input>
     </el-form-item>
     <el-form-item label="上传背景图:">
       <el-upload
@@ -21,12 +22,12 @@
         :auto-upload="false">
         <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
           <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
-          <div v-if="suite.imageUrl" :class="{'delItem':showDel}">
+          <div v-if="suite.thumb" :class="{'delItem':showDel}">
             <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible=true"></i>
             <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
           </div>
         </div>
-        <img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">
+        <img v-if="suite.thumb" :src="suite.thumb" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         <div class="el-upload__tip" slot="tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
       </el-upload>
@@ -52,6 +53,7 @@
       <el-button type="primary" @click="suiteSave" :loading="editorLoading">保存</el-button>
     </el-form-item>
   </el-form>
+  </div>
 </template>
 
 <script>
@@ -59,22 +61,18 @@
     name: "suiteEditor",
     data() {
       return {
+        aaa:'',
         suite: {},
-        classification:[
-          {name:'企业官网'},
-          {name:'在线商城'},
-          {name:'外贸站'},
-          {name:'工作室'},
-        ],
+        classification:[],
         rules:{
           name: [
             { required: true, message: '请输入套件标题', trigger: 'blur' },
             { max: 12, message: '不超过12个字符', trigger: 'blur' }
           ],
-          classification: [
+          catId: [
             { required: true, message: '请选择套件分类', trigger: 'change' }
           ],
-          introduce: [
+          description: [
             { max: 40,message: '不超过40个字符', trigger: 'change' }
           ],
         },
@@ -113,38 +111,81 @@
       },
       onSubmit() {
         this.$refs.suite.validate((valid) => {
+          if(this.suite.imageUrl == ''){
+            this.$message({
+              type: 'warning',
+              message: '请选择上传背景图片!'
+            });
+            return
+          }
           if (valid) {
+            const index = this.classification.findIndex(d => d.catName === this.suite.catId);
+            let id = this.classification[index].id
+            console.log(id)
             this.$router.push({
-              path:'/websiteEditor',
+              path: '/websiteUpdate',
               query:{text:'网站编辑器'
                 ,data:{
-                  templateId:2,
-                }}
+                templateId:this.suite.id,//带参新增套件id
+                },pageId:2}
             })
-            // this.$confirm('确认提交吗？', '提示', {}).then(() => {
-            //   this.addLoading = true;
-            //   let para = Object.assign({}, this.suite);
-            //   addUser(para).then((res) => {
-            //     this.addLoading = false;
-            //     this.$message({
-            //       message: '提交成功',
-            //       type: 'success'
-            //     });
-            //   });
-            // });
+            // this.$refs.upload.submit();
+            // this.$api.apiUpdateTemplate({
+            //   name: this.suite.name,
+            //   catId: id,
+            //   id:this.suite.id,
+            //   description:this.suite.description,
+            //   thumb:this.suite.thumb
+            // }).then(res => {
+            //   console.log(res)
+            //   if(res.code === 200) {
+            //     this.$router.push({
+            //       path: '/websiteUpdate',
+            //       query:{text:'网站编辑器'
+            //         ,data:{
+            //           templateId:this.suite.id,//带参新增套件id
+            //         },pageId:2}
+            //     })
+            //   } else {
+            //     this.$message.error(res.msg)
+            //   }
+            // })
           }
         });
       },
       suiteSave(){
         this.$refs.suite.validate((valid) => {
+          if(this.suite.imageUrl == ''){
+            this.$message({
+              type: 'warning',
+              message: '请选择上传背景图片!'
+            });
+            return
+          }
           if (valid) {
+            const index = this.classification.findIndex(d => d.catName === this.suite.catId);
+            let id = this.classification[index].id
+            console.log(id)
+            console.log(this.suite.id)
             this.editorLoading = true;
-            setTimeout(() => {
-              this.editorLoading = false;
-              this.$router.push({
-                path: '/suiteClassification'
-              })
-            }, 500);
+            // this.$refs.upload.submit();
+            this.$api.apiUpdateTemplate({
+              name: this.suite.name,
+              catId: id,
+              id:this.suite.id,
+              description:this.suite.description,
+              thumb:this.suite.thumb
+            }).then(res => {
+              console.log(res)
+              if(res.code === 200) {
+                this.editorLoading = false;
+                this.$router.go(-1)
+              } else {
+                this.$message.error(res.msg)
+                this.editorLoading = false;
+              }
+
+            })
           }
         });
       },
@@ -153,6 +194,13 @@
       }
     },
     mounted() {
+      this.$api.apiByCatType(3).then(res => {
+        if(res.msg === "success") {
+          this.classification = res.data.content
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
       let oV1 =  document.getElementsByClassName('el-upload__input')
       this.suite = this.$route.query.suite
       if(this.$route.query.suite.imageUrl != ''|| this.$route.query.suite.imageUrl != null){

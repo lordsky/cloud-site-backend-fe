@@ -233,6 +233,28 @@ const apiUpdateCat = (data) => {
   })
 }
 
+//页面套件上下线
+const apiOnlineOperate = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post('backend/template/onlineOperate',data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//修改套件模板
+const apiUpdateTemplate = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post('backend/template/update',data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -252,5 +274,7 @@ export default {
   apiUpdatePage,
   apiUpdateCat,
   apiDelPage,
-  apiByCatType
+  apiByCatType,
+  apiOnlineOperate,
+  apiUpdateTemplate
 }

@@ -30,7 +30,7 @@
           <web-page v-show="webPageList.content != ''" :webPageList="webPageList"></web-page>
         </el-col>
         <!--页面管理弹框-->
-        <div class="dialog" style="width: 340px;margin-top: 10vh;" v-if="dialogVisible==true">
+        <div class="dialog" style="width: 340px;margin-top: 10vh;z-index: 500" v-if="dialogVisible==true">
           <div class="el-dialog__header">
             <span class="el-dialog__title">页面管理</span>
             <button type="button" class="el-dialog__headerbtn" @click="dialogVisible=false">
@@ -122,6 +122,11 @@
       name: "websiteEditor",
       data(){
         return{
+          pageList: [],
+          curPage:'',
+          curPageTop: '',
+          curPageConetent: "<div style='height: 300px;'></div>",
+          curPageBottom:'',
           templateId:'',
           webPageAll:[],
           webPageList:{
@@ -332,6 +337,7 @@
                   $("#silder li").eq(index).html(this.formCompon.name);
                   // let headerHtml = $('#headerHtml').html()
                   // this.webPageList.header = $('#headerHtml').html()
+                  console.log(this.headerId)
                   this.$api.apiUpdateTemplateComponent({
                     componentCode: $('#headerHtml').html(),
                     id: this.headerId,
@@ -476,6 +482,36 @@
             }
           })
         },
+        //获取页面
+        getPage : async function() {
+          let key = this.$route.query.data.templateId
+          let getContent = this.$api.apiTemplatePageList(key).then(res => {
+            this.pageList = res.data;
+            if(res.data.length > 0) {
+              this.webPageList.content = res.data[0].pageCode
+              this.webPageAll = res.data
+              for (let i = 0;i<res.data.length;i++){
+                const newChild = { id: res.data[i].id, label: res.data[i].pageName, children: [] };
+                // if (!this.data1.children) {
+                //   this.$set(this.data1, '关于我们', []);
+                // }
+                this.data1.push(newChild);
+              }
+            }
+          });
+          let getHeaderFooter = this.$api.apiTemplateComponentList(key).then(res => {
+            if(res.data.length > 0) {
+              this.webPageList.header = res.data[0].componentCode
+              this.webPageList.footer = res.data[1].componentCode
+              this.headerId = res.data[0].id
+              pageNum++
+            }
+          });
+
+          await Promise.all([getContent, getHeaderFooter]).then(res => {
+            console.log(res)
+          })
+        },
       },
       mounted() {
         if(this.$store.state.sutieId == null || this.$store.state.sutieId == ''){
@@ -484,12 +520,6 @@
           })
           return
         }
-        setTimeout(function () {
-          $("ul").on("click","li",function(){      //点击顶部导航切换页面
-            headerIndex = $(this).index();
-            app.$store.commit('saveHeaderIndex',headerIndex)
-          });
-        },0)
         pageNum = 1
         this.templateId = this.$route.query.data.templateId
         this.$api.apiByCatType(2).then(res => {
@@ -501,6 +531,13 @@
             this.$message.error(res.msg)
           }
         })
+        this.getPage()
+        setTimeout(function () {
+          $("ul").on("click","li",function(){      //点击顶部导航切换页面
+            headerIndex = $(this).index();
+            app.$store.commit('saveHeaderIndex',headerIndex)
+          });
+        },2000)
       },
       watch: {
         '$store.state.headerIndex': function(val) {
