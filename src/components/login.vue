@@ -63,7 +63,7 @@
         	  	        if(res.data.code==200){
         	  	        	    localStorage.setItem('cloudUser',JSON.stringify(res.data.data))
         	  	        	    this.$router.push({
-				          path: '/manageComponent'
+				          path: '/userData'
 				        })
         	  	        }
 		        	  })

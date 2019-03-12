@@ -5,15 +5,17 @@
       <el-button type="text" @click="backCompon">返回</el-button>
     </div>
     <div class="compon-edit-box">
-      <p>组件个数 ：{{comItem.length}}</p>
+      <p>组件个数 ：{{comItem.length}}<div class="compon-edit-seek">
+      	<span>查询组件：</span><el-input type="text" placeholder="输入组件名称" v-model="queryItem"/><el-button type="primary"
+      size="small"@click="queryComponent">查询</el-button></div></p>
       <div class="compon-edit-add">
         <div class="compon-edit-add-btn" @click="addCompon">
           <i class="el-icon-circle-plus-outline"></i><span>新增组件</span>
         </div>
       </div>
       <div class="compon-edit-list">
-        <ul>
-          <li v-for="(x,i) in comItem"  :key="i" @mouseleave="delShow = ''" @mouseover="delShow=i">
+        <ul class="compon-edit-box">
+          <li v-for="(x,i) in comItem"  :key="i" @mouseleave="delShow = ''" @mouseover="delShow=i" class="compon-edit-item">
           	<div :class="{'delItem':delShow==i}" class="mask-compon" ><i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i></div>
           	<div v-html="x.segmentCode"></div>
             </li>
@@ -26,6 +28,10 @@
           <el-form-item label="选择组件分类：">
              <input type="text" :value="options.catName" disabled/>
           </el-form-item>
+           <div class="el-dialog-componAdd-update">
+            <span class="el-componAdd-update-title">组件名字：</span>
+            	<el-input type="text" class="addCom_input" v-model="componentName"  placeholder="请输入组件名称"/>
+           </div>
           <div class="el-dialog-componAdd-update">
             <span class="el-componAdd-update-title">上传文件：</span>
             <a href="javascript:void(0);" class="upload-text">选择文件<input name="file" type="file" ref="file" @change="uploadText"></a>
@@ -54,7 +60,9 @@
         options: {},
         comItem: [],
         comList: {},
-        textData: ''
+        textData: '',
+        componentName:'',
+        queryItem:''
       }
     },
     created() {
@@ -62,7 +70,27 @@
       this.update()
     },
     methods: {
+    	//查询组件
+    	queryComponent(){
+    		if(!this.queryItem){
+    			this.$message.error('请输入组件名称')
+    			return
+    		}
+    		this.$http.get(this.$API.componentList+'?catId='+this.$route.query.msg.id+'&name='+this.queryItem,(res)=>{
+      		console.log(res)
+      		if(res.data.code==200){
+      			if(res.data.data.length==0){
+      				this.$message({
+		              type: 'warning',
+		              message: '没有搜索到该组件!'
+		          });
+      			}
+      			this.comItem = res.data.data
+      		}
+      	})
+    	},
     	  update(){
+    	  	console.log(this.$route.query.msg)
     	  	this.$http.get(this.$API.componentList+'?catId='+this.$route.query.msg.id,(res)=>{
       		console.log(res)
       		if(res.data.code==200){
@@ -103,9 +131,10 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-        	  console.log(val)
-        	  this.$http.post(this.$API.delItems,{
-        	  	id:val.id
+        	  this.$http.delete(this.$API.delItems,{
+        	  	params:{
+        	  		id:val.id
+        	  	}
         	  },(res)=>{
         	  	 console.log(res)
         	  	 if(res.data.data){
@@ -115,6 +144,7 @@
 		          });
         	  	 }
         	  })
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -178,11 +208,10 @@
     .compon-edit-list {
       border: 1px #ccc solid;
       margin: 10px 0 10px 0;
-      ul {
+      .compon-edit-box {
         width: 95%;
         margin: 0 auto;
-        li {
-          /*height: 65px;*/
+        .compon-edit-item{
           border: 1px #cccccc solid;
           list-style: none;
           margin: 10px 0 10px 0;
@@ -204,10 +233,15 @@
     .el-dialog-componAdd-btn {
       display: flex;
       justify-content: center;
+      margin-top: 20px;
     }
     .el-dialog-componAdd-update {
-      height: 60px;
-      display: flex;
+       display: flex;
+       align-items: center;
+       height: 55px;
+      .addCom_input{
+    	   width: 171px;
+      }
       .upload-demo {
         display: flex;
         ul {
@@ -242,6 +276,18 @@
     .delItem {
       display: flex;
       
+    }
+    .compon-edit-seek{
+    	   display: flex;
+    	   align-items: center;
+    	   width: 450px;
+    	   span{
+    	   	 width: 120px;
+    	   }
+    	   
+    	   button{
+    	   	 margin-left: 10px;
+    	   }
     }
   }
 </style>

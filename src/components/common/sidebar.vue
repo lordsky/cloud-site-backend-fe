@@ -32,7 +32,7 @@
     name: 'sidebar',
     data() {
       return {
-         showItem:'2-1',
+         showItem:'1-1',
          one:true,
          sideText:sideText
       }
@@ -45,7 +45,7 @@
     created(){
     	   let site = window.location.hash
     	   let url = site.split("/")[1]
-         let arr = url.split("?")[0];
+       let arr = url.split("?")[0];
     	   this.getIndex(arr)
     },
     

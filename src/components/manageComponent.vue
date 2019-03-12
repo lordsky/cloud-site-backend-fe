@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="compent-box">
-        <el-table :data="tableData3" border style="width: 100%;height: auto;" tooltip-effect="dark" @selection-change="handleSelectionChange">
+        <el-table :data="tableData3" border style="width: 100%;height: auto;" tooltip-effect="dark" @selection-change="handleSelectionChange"ref="multipleTable">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
           <el-table-column prop="catName" label="组件分类"  align="center">
@@ -69,11 +69,14 @@
             </el-select>
           </el-form-item>
           <div class="addCom">
+            <span class="addCom-title warFater">组件名称：<i class="war-ico">*</i></span>
+            	<el-input type="text" class="addCom_input" v-model="componentName" placeholder="请输入组件名称" />
+          </div>
+           <div class="addCom">
             <span class="addCom-title warFater">组件类型：<i class="war-ico">*</i></span>
             	 <a href="javascript:void(0);" class="upload-text">选择文件
            	 <input name="file" type="file" ref="file" @change="uploadText"></a>
              <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件(.txt格式文件)'}}</span>
-            <!--<span>(.txt格式文件)</span>-->
           </div>
         </el-form>
       </div>
@@ -122,6 +125,7 @@
         pageNum:1,
         pageSize:8,
         pageAll:0,
+        componentName:''
       }
     },
     watch: {
@@ -141,7 +145,7 @@
     	//分页
     handleCurrentChange(val) {
         this.pageNum = val
-        this.queryList()
+        this.queryList('query')
       },
     	//批量删除
     	 deleteAll(){
@@ -207,6 +211,17 @@
       },
       //check 选择
       handleSelectionChange(res) {
+      	for(let i =0;i<res.length;i++){
+      		if(res[i].catNum>0){
+      			this.$message({
+		          message: '请先删除组件分类下的组件',
+		          type: 'warning'
+		        });
+		        this.$refs.multipleTable.clearSelection();
+		        return
+      		}
+      	}
+      	
       	let arr = []
       	for(let i =0;i<res.length;i++){
       		arr.push(res[i].id)
@@ -236,12 +251,16 @@
         this.dialogStu = 'addCom'
       },
       //查询
-      queryList(){
+      queryList(res){
       	var type = ''
+      	let url = this.$API.queryCompon+'?catType=1&catName='+this.queryText+'&catExt='+type
       	if(this.componentType!==0){
       		type = this.componentType
       	}
-      	this.$http.get(this.$API.queryCompon+'?catType=1&catName='+this.queryText+'&catExt='+type+'&pageNum='+this.pageNum+'&pageSize='+this.pageSize,res=>{
+      	if(res){
+      		url = this.$API.queryCompon+'?catType=1&catName='+this.queryText+'&catExt='+type+'&pageNum='+this.pageNum+'&pageSize='+this.pageSize
+      	}
+      	this.$http.get(url,res=>{
       		if(res.data.data.content.length>0){
       			this.tableData3=res.data.data.content
       			this.pageAll = res.data.data.totalElements
@@ -306,19 +325,16 @@
 	            console.log('新增组件')
 	            console.log(this.textData)
 	            if(this.textData.type!=='text/plain'){return this.$message.error('文件类型不对，请上传.txt文件格式')}
+	            if(!this.componentName){return this.$message.error('请输入组件名称')}
 	            let formData = new FormData();
     	            formData.append('file',this.textData);
     	            formData.append('catExt','1');
+    	             formData.append('name',this.componentName);
     	            formData.append('catId',this.formAdd.selectId);
 	            this.$http.post(this.$API.componentAdd,formData,(res)=>{
 	            	    console.log(res)
 	            	    if(res.data.data){
-	            	    	   this.dialogVisible = false
-	            	    	   this.$message({
-				          showClose: true,
-				          message: '添加成功',
-				          type: 'success'
-				        });
+	            	    	   this.refreshList('添加成功')
 	            	    }
 	            },{"Content-Type":"multipart/form-data"})
 	            break;
@@ -389,7 +405,12 @@
   }
   .addCom {
     display: flex;
-    height: 60px;
+    align-items: center;
+    height: 55px;
+    .addCom_input{
+    	  height: 35px;
+    	  width: 190px;
+    }
     .upload-demo {
       display: flex;
       ul {
@@ -420,6 +441,7 @@
   .el-componClassBtn {
     display: flex;
     justify-content: center;
+    margin-top: 20px;
   }
   
   .compent-box {

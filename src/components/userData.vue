@@ -12,7 +12,7 @@
           </el-form>
           <el-form :inline="true" class="user-time">
             <el-form-item label="注册时间:">
-              <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+              <el-date-picker v-model="fromUser.timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
           </el-form>
@@ -21,34 +21,34 @@
           <div class="user-head-stu">
             <el-form :inline="true">
               <el-form-item label="状态:">
-                <el-select v-model="value" placeholder="请选择">
-                  <el-option v-for="item in tableData3" :key="item.data" :label="item.data" :value="item.name">
+                <el-select v-model="fromUser.state" placeholder="请选择">
+                  <el-option v-for="item in listState" :key="item.label" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
             </el-form>
           </div>
           <div class="user-head-right-btn">
-            <el-button type="primary" size="medium">查询</el-button>
-            <el-button size="medium">清空</el-button>
+            <el-button type="primary" size="medium" @click="queryUser">查询</el-button>
+            <el-button size="medium" @click="clear">清空</el-button>
           </div>
         </div>
       </div>
       <div class="user-table">
         <el-table :data="tableData3" height="50" border style="width: 100%">
-          <el-table-column prop="date" label="用户ID" width="180" align="center">
+          <el-table-column prop="id" label="用户ID" width="180" align="center">
           </el-table-column>
-          <el-table-column prop="name" label="用户账号" width="180" align="center">
+          <el-table-column prop="account" label="用户账号" width="180" align="center">
           </el-table-column>
-          <el-table-column prop="address" label="用户昵称" align="center">
+          <el-table-column prop="name" label="用户昵称" align="center">
           </el-table-column>
-          <el-table-column prop="address" label="注册时间" align="center">
+          <el-table-column prop="starTime" label="注册时间" align="center">
           </el-table-column>
-          <el-table-column prop="address" label="备注" align="center">
+          <el-table-column prop="note" label="备注" align="center">
           </el-table-column>
           <el-table-column prop="address" label="操作" align="center" width="180">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="lookUser">查看</el-button>
+              <el-button type="text" size="small" @click="lookUser(scope.row)">查看</el-button>
               <el-button type="text" size="small" @click="disableUser">禁用</el-button>
             </template>
           </el-table-column>
@@ -72,31 +72,80 @@
 </template>
 
 <script>
+	import {instance} from './config/http'
   export default {
     name: 'userData',
     data() {
       return {
-        timeData: '',
         stu: 1,
-        value:'',
         fromUser: {
           account: '',
           name: '',
-          state: ''
+          state: '',
+          timeData:''
         },
-        tableData3: []
+        tableData3: [
+          {
+          	id:'1',
+          	account:'1323266881',
+          	name:'张三',
+          	starTime:'2019-3-12',
+          	note:'暂无'
+          },
+          {
+          	id:'2',
+          	account:'1873266881',
+          	name:'李四',
+          	starTime:'2019-3-12',
+          	note:'暂无'
+          },
+          {
+          	id:'3',
+          	account:'1543266381',
+          	name:'小明',
+          	starTime:'2019-3-12',
+          	note:'暂无'
+          },
+          {
+          	id:'4',
+          	account:'1343266881',
+          	name:'小红',
+          	starTime:'2019-3-12',
+          	note:'暂无'
+          }
+        ],
+        listState:[
+           {
+          value: '1',
+          label: '启用'
+        },
+        {
+          value: '2',
+          label: '未启用'
+        }
+        ]
       }
     },
     
     methods: {
+    	clear(){
+    		this.fromUser = {}
+    	},
+    	 queryUser(){
+    	 	console.log(this.fromUser)
+    	 },
       //用户信息
-      lookUser() {
-        this.$router.push({
-          name: 'userInfo',
-          params:{
-          id:'123'
-        }
-        })
+      lookUser(res) {
+      	 this.$message({
+            type: 'warning',
+            message: '该功能开发中!'
+          });
+//      this.$router.push({
+//        name: 'userInfo',
+//        params:{
+//          data:res
+//        }
+//      })
       },
       disableUser(){
       	this.$confirm('是否禁用该用户?', '提示', {
@@ -106,23 +155,28 @@
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            message: '禁用成功!'
           });
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '取消禁用'
           });          
         });
       },
       getUserList(){
-      	this.$http.post(this.$API.userList,{
-      	},(res)=>{
-      		console.log(res)
-      	})
+//    	this.$http.get(this.$API.userList,(res)=>{
+//    		console.log(res)
+//    	})
+//      instance.get(this.$API.userList,{
+//      }).then(res=>{
+//      	   console.log(res)
+//      })
       }
     },
-    
+    created(){
+    	  this.getUserList()
+    },
     components: {
     }
   }

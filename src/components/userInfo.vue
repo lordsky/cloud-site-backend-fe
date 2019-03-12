@@ -13,15 +13,15 @@
         <table border="1" cellspacing="0" cellpadding="0">
           <tr>
             <td class="gray">头像</td>
-            <td><span class="grayIco"></span></td>
+            <td><img src="" alt="" class="grayIco"/></td>
             <td class="gray">手机号</td>
-            <td>188888</td>
+            <td>{{list.account}}</td>
           </tr>
           <tr>
             <td class="gray">用户昵称</td>
-            <td></td>
+            <td>{{list.name}}</td>
             <td class="gray">注册时间</td>
-            <td></td>
+            <td>{{list.starTime}}</td>
           </tr>
           <tr>
             <td class="gray">用户名称</td>
@@ -45,7 +45,7 @@
             <div class="site-item-btn">
               <div class="site-item-btns">
                 <div>
-                  <el-button type="" round>查看</el-button>
+                  <el-button type="" round @click="jump">查看</el-button>
                 </div>
               </div>
               <div class="site-item-btns">
@@ -63,7 +63,7 @@
       <span slot="footer" class="dialog-footer">
     <el-button @click="diaShow = false" size="small">取 消</el-button>
     <el-button type="primary" @click="diaShow = false" size="small">确 定</el-button>
-  </span>
+     </span>
     </el-dialog>
 
   </div>
@@ -75,7 +75,8 @@
     data() {
       return {
          diaShow:false,
-         dialogText:''
+         dialogText:'',
+         list:{}
       }
     },
     methods: {
@@ -92,10 +93,14 @@
       resetPass(){
       	this.diaShow = true
       	this.dialogText = '确定要重置密码吗？'
+      },
+      jump(){
+      	
       }
     },
     created(){
-    	   var id = this.$route.params.id
+    	    this.list = this.$route.params.data
+    	   console.log(this.$route.params.data)
     }
   }
 </script>
@@ -137,7 +142,6 @@
         background: #cccccc;
       }
       .grayIco{
-      	display: block;
       	width: 50px;
       	height: 50px;
       	border-radius: 50%;
