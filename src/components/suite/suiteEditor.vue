@@ -219,7 +219,7 @@
     mounted() {
       this.$api.apiByCatType(3).then(res => {
         if(res.msg === "success") {
-          this.classification = res.data.content
+          this.classification = res.data
         } else {
           this.$message.error(res.msg)
         }

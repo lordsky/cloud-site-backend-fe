@@ -524,7 +524,7 @@
         this.templateId = this.$route.query.data.templateId
         this.$api.apiByCatType(2).then(res => {
           if(res.msg === "success") {
-            this.classifyList = res.data.content
+            this.classifyList = res.data
             this.pageName = this.classifyList[0].catName
             this.getPageList(this.classifyList[0].id)
           } else {

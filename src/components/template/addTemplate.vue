@@ -130,7 +130,7 @@
       getTemplateTypeList(val){
         this.$api.apiByCatType(val).then(res => {
           if(res.msg === "success") {
-            this.templateTypeList = res.data.content
+            this.templateTypeList = res.data
           } else {
             this.$message.error(res.msg)
           }

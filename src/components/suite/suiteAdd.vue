@@ -320,7 +320,7 @@
       getSuiteTypeList(val){
         this.$api.apiByCatType(val).then(res => {
           if(res.msg === "success") {
-            this.classification = res.data.content
+            this.classification = res.data
           } else {
             this.$message.error(res.msg)
           }
