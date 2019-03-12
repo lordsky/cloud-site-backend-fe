@@ -4,6 +4,9 @@
     <div class="design-template">
       <p>③设计模版</p>
     </div>
+    <div style="display: flex;margin-top: 20px;font-size: 18px;font-weight: 600;align-items: center;"><label style="width: 100px">模板名称</label>
+    <div style="width:50%"><el-input v-model="name" placeholder="请输入模板名称"></el-input></div>
+    </div>
     <!--<div class="topside">-->
       <!--<label>顶部区</label>-->
       <!--<div class="topside-right" :class="{'side-right-border':topDate == ''}">-->
@@ -42,13 +45,11 @@
       <el-button type="primary" @click="saveTemplate" :loading="loading">保存</el-button>
     </div>
     <!--添加组件弹框-->
-    <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="340px">
+    <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="40vw">
       <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-        <el-tab-pane label="常用组件" name="used" class="com-tab-pane"><ul>
-        </ul></el-tab-pane>
         <el-tab-pane label="基础组件" name="basis" class="com-tab-pane">
           <ul>
-            <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)" v-if="x.catName != '页头' && x.catName != '页脚'">
+            <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)" v-if="x.catName != '页头' && x.catName != '页脚'&& x.catExt == 1">
               <div>
               <div><i class="compon-edit-ico el-icon-news"></i></div>
               <div>{{x.catName}}</div>
@@ -57,6 +58,12 @@
           </ul>
         </el-tab-pane>
         <el-tab-pane label="其他组件" name="other" class="com-tab-pane"><ul>
+          <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)" v-if="x.catName != '页头' && x.catName != '页脚'&& x.catExt == 2">
+            <div>
+              <div><i class="compon-edit-ico el-icon-news"></i></div>
+              <div>{{x.catName}}</div>
+            </div>
+          </li>
         </ul></el-tab-pane>
       </el-tabs>
     </el-dialog>
@@ -86,6 +93,7 @@
         name: "designTemplate",
       data() {
           return {
+            name:'',
             html1:'',
             html2:'',
             type:'',//操作区域
@@ -185,10 +193,19 @@
         saveTemplate(){
           this.loading = true;
           this.pageCode = this.bannnerDate + this.formatDate + this.formatDate2 + this.formatDate3
+          if(this.name == '' ){
+            this.$message({
+              type: 'warning',
+              message: '模板名称不能为空!'
+            });
+            this.loading = false;
+            return
+          }
           if(this.pageCode == ''){
             this.pageCode = "<div style='min-height: 20vw;width: 100%'></div>"
           }
           this.$api.apiAddPage({
+            name:this.name,
             catExt: this.catExt,
             catId: this.templateId,
             pageCode:this.pageCode,
@@ -445,8 +462,8 @@
         display: flex;
         flex-wrap: wrap;
         li{
-          width: 70px;
-          height: 70px;
+          width: 10vw;
+          height: 10vw;
           border: 1px #cccccc solid;
           list-style: none;
           margin: .4vw;
@@ -540,7 +557,7 @@
       border-bottom-color: #409EFF;
     }
     .el-tabs--border-card>.el-tabs__content{
-      height: 280px;
+      height: 400px;
       overflow-y: auto;
     }
   }

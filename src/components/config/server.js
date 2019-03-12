@@ -82,7 +82,7 @@ const apiTemplateList= (data) => {
 //查询模板
 const apiPageList= (data) => {
   return new Promise((resolve, reject)=>{
-    instance.get(`backend/page/list?catId=${data}`).then((res)=> {
+    instance.get(`backend/page/list?catId=${data.catId}&name=${data.name}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)

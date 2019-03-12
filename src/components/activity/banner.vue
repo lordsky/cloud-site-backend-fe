@@ -154,8 +154,7 @@
         cursor: pointer;
         padding: 15px 30px;
         &:hover{
-          background-color: #4149ff;
-          color: #fdfff8;
+          transform: translateX(10px);
         }
       }
       .banner-left-show{

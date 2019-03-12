@@ -20,7 +20,7 @@
           <el-button type="primary" size="small" v-on:click="getComponList">查询</el-button>
           <el-button type="primary" size="small" >清空</el-button>
           <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >批量删除</el-button>
-          <el-button type="primary" size="small" @click="addTemplate">新增活动</el-button>
+          <el-button type="primary" size="small" @click="activeAdd">新增活动</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -29,9 +29,9 @@
                 v-loading="listLoading" @selection-change="selsChange">
         <el-table-column type="selection" width="55" align="center">
         </el-table-column>
-        <el-table-column prop="catName" label="活动名称"  align="center">
+        <el-table-column prop="activeName" label="活动名称"  align="center">
         </el-table-column>
-        <el-table-column prop="addTime" label="活动时间" align="center">
+        <el-table-column prop="activeTime" label="活动时间" align="center">
         </el-table-column>
         <el-table-column prop="state" label="状态"  align="center">
         </el-table-column>
@@ -47,10 +47,10 @@
       </el-table>
     </div>
 
-    <!--<div class="pagination">-->
-    <!--<el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >-->
-    <!--</el-pagination>-->
-    <!--</div>-->
+    <div class="pagination">
+    <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
+    </el-pagination>
+    </div>
 
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">
@@ -124,8 +124,30 @@
           catType:2
         },
         templateTypeLsit: [{
-          catName:'全部'
-        }],
+          activeName:'促销活动1年度大促3C产品全场9折',
+          activeTime:'2018-01-01 16:00  ~  2019-01-01 18:00',
+          state:'在线'
+        },
+          {
+            activeName:'促销活动1年度大促3C产品全场9折',
+            activeTime:'2018-01-01 16:00  ~  2019-01-01 18:00',
+            state:'在线'
+          },
+          {
+            activeName:'促销活动1年度大促3C产品全场9折',
+            activeTime:'2018-01-01 16:00  ~  2019-01-01 18:00',
+            state:'在线'
+          },
+          {
+            activeName:'促销活动1年度大促3C产品全场9折',
+            activeTime:'2018-01-01 16:00  ~  2019-01-01 18:00',
+            state:'在线'
+          },
+          {
+            activeName:'促销活动1年度大促3C产品全场9折',
+            activeTime:'2018-01-01 16:00  ~  2019-01-01 18:00',
+            state:'在线'
+          }],
         date:[]
       }
     },
@@ -155,16 +177,11 @@
       clear() {
         this.addCatRequest.catName = ''
       },
-      //新增组件
-      addTemplate() {
-        let param = {
-          index:'',
-          btnShow:0
-        }
-        this.$store.commit('saveTemplateData', param)
+      //新增活动
+      bannerAdd(){
         this.$router.push({
-          path:'/addTemplate',
-          query:{text:'新增模版',pageId:1}
+          path:'/activeAdd',
+          query:{text:'新增活动',pageId:1}
         })
       },
       //  新模版件分类
