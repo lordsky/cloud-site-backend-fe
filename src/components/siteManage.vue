@@ -35,10 +35,13 @@
         <el-table-column prop="address" label="发布时间" align="center">
         </el-table-column>
         <el-table-column prop="address" label="状态" width="180" align="center">
+        	<template slot-scope="scope">
+        		<span>未发布</span>
+        	 </template>
         </el-table-column>
         <el-table-column prop="date" label="操作" align="center" width="180">
           <template slot-scope="scope">
-            <el-button type="text">查看</el-button>
+            <el-button type="text" @click="a(scope.row)">查看</el-button>
             <el-button type="text" @click="open">启用</el-button>
           </template>
         </el-table-column>
@@ -60,37 +63,33 @@
           state: ''
         },
         tableData3: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+          date: 'www.baidu.com',
+          name: '张三',
+          address: '2019-3-12'
         }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+          date: 'www.baidu.com',
+          name: '李四',
+          address: '2019-3-12'
         }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+           date: 'www.baidu.com',
+          name: '王五',
+          address: '2019-3-12'
         }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+           date: 'www.baidu.com',
+          name: '小明',
+          address: '2019-3-12'
         }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+           date: 'www.baidu.com',
+          name: '小红',
+          address: '2019-3-12'
         }]
       }
     },
     methods: {
+    	  a(res){
+    	  	console.log(res)
+    	  	window.open("http://"+res.date)
+    	  },
       //全选按钮
       handleSelectionChange() {
 

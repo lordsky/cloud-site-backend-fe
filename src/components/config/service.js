@@ -3,6 +3,13 @@ const API = {
 	//登录
 	login:'backend/adminLogin',
 	/*
+	 * 用户信息 
+	 */
+	userList:'backend/showUserList',
+   
+	
+	
+	/*
 	 * 组件 component
 	 */
 	//新增组件
@@ -14,7 +21,7 @@ const API = {
 	//新增组件分类
     componentAddClass:'backend/addCat',
     //删除组件分类
-    componentDel:'backend/delCat/',
+    componentDel:'backend/delCat',
     //修改组件分类
     setComponent:'backend/updateCat',
    //删除组件

@@ -146,10 +146,11 @@
     	//批量删除
     	 deleteAll(){
     	 	if(this.delList){
-    	 		this.$http.delete(this.$API.componentDel+this.delList,{
+    	 		this.$http.post(this.$API.componentDel,{
+    	 			   catIds:this.delList
 			        },(res)=>{
 			        	   if(res.data.data){
-			        	   	  this.refreshTable()
+			        	   	  this.refreshTable('删除成功')
 			        	   }
 			        })
     	 	}
@@ -273,8 +274,11 @@
       },
       //保存
       saveCompon() {
+      	 let a = []
+      	 a.push(this.list.id)
       	 if(this.dialogStu=='del'){
-        	   this.$http.delete(this.$API.componentDel+this.list.id,{
+        	   this.$http.post(this.$API.componentDel,{
+        	   		    catIds:a
 			        },(res)=>{
 			        	   if(res.data.data){
 			        	   	  this.refreshList('删除成功')

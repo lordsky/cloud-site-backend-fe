@@ -259,8 +259,8 @@
         this.listLabel = key
       },
       imgSuccess(res, file) {
-        console.log(this.imgUpload(file))
-        if(!this.imgUpload(file))return
+//      console.log(this.imgUpload(file))
+//      if(!this.imgUpload(file))return
        
         if(file.status=='success'){
         	   this.$http.post(this.$API.materialsUpload,{
