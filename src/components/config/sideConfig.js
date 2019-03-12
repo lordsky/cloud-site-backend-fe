@@ -148,24 +148,24 @@ const sideText = [
     path: '/pictureManage',
     list: []
   },
-{
- title: '活动管理',
- index: '5',
- ico: 'el-icon-menu',
- // path: '/banner',
- list: [
-   {
-     name: 'banner管理',
-     index: '5-1',
-     path: '/banner'
-   },
-   {
-     name: '活动配置',
-     index: '5-2',
-     path: '/activeConfiguration'
-   }
- ]
-},
+// {
+//  title: '活动管理',
+//  index: '5',
+//  ico: 'el-icon-menu',
+//  // path: '/banner',
+//  list: [
+//    {
+//      name: 'banner管理',
+//      index: '5-1',
+//      path: '/banner'
+//    },
+//    {
+//      name: '活动配置',
+//      index: '5-2',
+//      path: '/activeConfiguration'
+//    }
+//  ]
+// },
 ]
 
 function setNav(router, val) {
