@@ -287,7 +287,7 @@
       //获取套件分类列表
       this.$api.apiByCatType(3).then(res => {
         if(res.msg === "success") {
-          this.suiteByType = res.data.content
+          this.suiteByType = res.data
           this.getSuiteList();
         } else {
           this.$message.error(res.msg)

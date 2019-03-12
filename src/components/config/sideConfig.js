@@ -93,6 +93,11 @@ const navHead = [{
     path: 'activeConfiguration',
     index: '5-2',
     text: ['活动管理','活动配置']
+  },
+  {
+    path: 'activeAdd',
+    index: '5-2',
+    text: ['活动管理','活动配置','新增活动']
   }
 ]
 //侧边栏信息
@@ -143,7 +148,7 @@ const sideText = [
     path: '/pictureManage',
     list: []
   },
-//{
+// {
 //  title: '活动管理',
 //  index: '5',
 //  ico: 'el-icon-menu',
@@ -160,7 +165,7 @@ const sideText = [
 //      path: '/activeConfiguration'
 //    }
 //  ]
-//},
+// },
 ]
 
 function setNav(router, val) {

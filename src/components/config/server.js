@@ -38,7 +38,18 @@ const apiAddCat = (data) => {
 //查询分类列表（只传catType的时候用这个)
 const apiByCatType = (data) => {
   return new Promise((resolve, reject)=>{
-    instance.get(`backend/findCatByType?catType=${data}`).then((res)=> {
+    instance.get(`backend/findCatByTypeNoPage?catType=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//查询分类列表（查询所有分类 不分页)
+const apiBySizeCatType = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/findCatByType?catType=${data.catType}&pageSize=${data.pageSize}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -71,7 +82,7 @@ const apiTemplateList= (data) => {
 //查询模板
 const apiPageList= (data) => {
   return new Promise((resolve, reject)=>{
-    instance.get(`backend/page/list?catId=${data}`).then((res)=> {
+    instance.get(`backend/page/list?catId=${data.catId}&name=${data.name}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -288,5 +299,6 @@ export default {
   apiByCatType,
   apiOnlineOperate,
   apiUpdateTemplate,
-  apiDelTemplate
+  apiDelTemplate,
+  apiBySizeCatType
 }

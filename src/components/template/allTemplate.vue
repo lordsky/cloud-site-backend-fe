@@ -13,7 +13,7 @@
           </div>
 				<el-form-item>
 					<el-button type="primary" size="small" v-on:click="getComponList">查询</el-button>
-          <!--<el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >删除</el-button>-->
+          <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >批量删除</el-button>
           <el-button type="primary" size="small" @click="addTemplate">新增模版</el-button>
           <el-button type="primary" size="small" @click="addComponClass">新增模版分类</el-button>
 				</el-form-item>
@@ -22,8 +22,8 @@
       <div class="compent-box">
         <el-table :data="templateTypeLsit"  border style="width: 100%" tooltip-effect="dark"
         v-loading="listLoading" @selection-change="selsChange">
-          <!--<el-table-column type="selection" width="55" align="center">-->
-          <!--</el-table-column>-->
+          <el-table-column type="selection" width="55" align="center">
+          </el-table-column>
           <el-table-column prop="catName" label="模版分类"  align="center">
           </el-table-column>
           <el-table-column prop="addTime" label="添加时间" align="center">
@@ -233,10 +233,12 @@
 				}).then(() => {
           this.listLoading = true;
 					//NProgress.start();
-          let id = row.id;
-          this.$http.delete(this.$API.componentDel+row.id,{
+          let a = []
+          a.push(row.id)
+          this.$http.post(this.$API.componentDel,{
+            catIds:a
           },(res)=>{
-            if(res.data.data){
+            if(res.data.code ===200){
               this.getComponList();
               this.listLoading = false;
             }
@@ -250,26 +252,33 @@
 			},
 			//批量删除
 			batchRemove: function () {
-				var ids = this.sels.map(item => item.id).toString();
+				let ids = this.sels.map(item => item.id);
 				this.$confirm('确认删除选中记录吗？', '提示', {
 					type: 'warning'
 				}).then(() => {
-          this.listLoading = true;
-					//NProgress.start();
-          let para = { ids: ids };
-          setTimeout(() => {
-          this.listLoading = false;
-          }, 500);
-					//NProgress.start();
-					// batchRemoveUser(para).then((res) => {
-					// 	this.listLoading = false;
-					// 	//NProgress.done();
-					// 	this.$message({
-					// 		message: '删除成功',
-					// 		type: 'success'
-					// 	});
-					// 	this.getUsers();
-					// });
+          console.log(ids)
+          for (let id of ids) {
+            this.$api.apiPageList(id).then(res => {
+              if(res.data.length !== 0){
+                this.$message({
+                  type: 'warning',
+                  message: '存在模板个数不为0，不能删除!'
+                })
+                return
+              }else {
+                let a = []
+                a.push(id)
+                this.$http.post(this.$API.componentDel,{
+                  catIds:a
+                },(res)=>{
+                  if(res.data.code ===200){
+                    this.getComponList();
+                    this.listLoading = false;
+                  }
+                })
+              }
+            })
+          }
 				}).catch(() => {
 
 				});

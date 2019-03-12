@@ -102,8 +102,10 @@
       font-size: 18px;
       font-weight: 600;
       align-items: center;
+      overflow: hidden;
       label{
         width: 80px;
+        white-space: nowrap;
       }
       table{
         width: 90%;

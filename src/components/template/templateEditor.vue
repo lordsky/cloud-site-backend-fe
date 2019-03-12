@@ -9,6 +9,10 @@
         <span>模版分类 ：{{text}}</span>
         <span>模版个数 ：{{num}}</span>
         </p>
+      <div style="display: flex;align-items: center;margin-bottom: 20px;margin-top: 20px">
+        <div style="display: flex;align-items: center;margin-right: 30px"><label style="white-space: nowrap;margin-right: 20px">模板名称:</label><el-input v-model="name" placeholder="请输入模板名称" clearable></el-input></div>
+        <el-button type="primary" size="small" v-on:click="getPageList">查询</el-button>
+      </div>
       <div class="template-edit-add">
         <div class="template-edit-add-btn" @click="addTemplate">
           <i class="el-icon-circle-plus-outline"></i><span>新增模版</span>
@@ -18,6 +22,7 @@
         <ul>
           <li v-for="(item,i) in templateList" @mousemove="delShow = i" @mouseleave="delShow=null">
             <div v-html="item.pageCode">{{item.pageCode}}</div>
+            <div class="delItem3">{{item.name}}</div>
             <div :class="{'delItem':delShow == i}">
             <div v-if="item.onlineStatus == 0 && delShow!=i" :class="{'delItem2': delShow!=i}" style="text-align: center;color: white;font-size: 24px">已下线</div>
             <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
@@ -38,6 +43,7 @@
     name: 'templateEditor',
     data() {
       return {
+        name:'',
         delShow: null,
         dialogAdd: false,
         value: '',
@@ -60,7 +66,7 @@
                 type: 'success',
                 message: '删除成功!'
               });
-              this.getPageList(this.$store.state.templateData.id)
+              this.getPageList()
             }
           })
         }).catch(() => {
@@ -86,7 +92,7 @@
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
-              this.getPageList(this.$store.state.templateData.id)
+              this.getPageList()
             } else {
               this.$message.error(res.msg)
             }
@@ -107,7 +113,7 @@
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
-              this.getPageList(this.$store.state.templateData.id)
+              this.getPageList()
             } else {
               this.$message.error(res.msg)
             }
@@ -139,8 +145,12 @@
           path:'/allTemplate'
         })
       },
-      getPageList(val){
-        this.$api.apiPageList(val).then(res => {
+      getPageList(){
+        let parm = {
+          catId:this.$store.state.templateData.id,
+          name:this.name
+        }
+        this.$api.apiPageList(parm).then(res => {
           if(res.msg === "success") {
             this.templateList = res.data
             this.num = this.templateList.length
@@ -159,7 +169,7 @@
       }
       this.text = this.$store.state.templateData.catName
       this.num = this.$store.state.templateData.catNum
-      this.getPageList(this.$store.state.templateData.id)
+      this.getPageList()
     }
   }
 </script>
@@ -249,6 +259,21 @@
             justify-content: space-evenly;
             z-index: 100;
             box-sizing: border-box;
+          }
+          .delItem3 {
+            position: absolute;
+            width: 100%;
+            height: 80px;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            z-index: 100;
+            box-sizing: border-box;
+            color: white;
+            font-size: 20px;
           }
           .template-edit-ico {
             display: none;

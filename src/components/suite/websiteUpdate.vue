@@ -89,6 +89,7 @@
                 <li v-for="(item,i) in pagetList" @mousemove="delShow = i" @mouseleave="delShow=null">
                   <!--<img :src="item.url">-->
                   <div v-html="item.pageCode">{{item.pageCode}}</div>
+                  <div class="delItem3">{{item.name}}</div>
                   <div :class="{'delItem':delShow == i}">
                     <span class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage(item)">选择</span>
                   </div>
@@ -474,7 +475,11 @@
         },
         //获取模板页面列表
         getPageList(val){
-          this.$api.apiPageList(val).then(res => {
+          let parm = {
+            catId:val,
+            name:''
+          }
+          this.$api.apiPageList(parm).then(res => {
             if(res.msg === "success") {
               this.pagetList = res.data
             } else {
@@ -524,7 +529,7 @@
         this.templateId = this.$route.query.data.templateId
         this.$api.apiByCatType(2).then(res => {
           if(res.msg === "success") {
-            this.classifyList = res.data.content
+            this.classifyList = res.data
             this.pageName = this.classifyList[0].catName
             this.getPageList(this.classifyList[0].id)
           } else {
@@ -712,6 +717,21 @@
                 align-items: center;
                 justify-content: space-evenly;
                 z-index: 100;
+              }
+              .delItem3 {
+                position: absolute;
+                width: 100%;
+                height: 60px;
+                bottom: 0;
+                left: 0;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: space-evenly;
+                z-index: 9999;
+                box-sizing: border-box;
+                color: white;
+                font-size: 18px;
               }
               .template-edit-ico {
                 display: none;

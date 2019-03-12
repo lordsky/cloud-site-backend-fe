@@ -4,6 +4,9 @@
     <div class="design-template">
       <p>③设计模版</p>
     </div>
+    <div style="display: flex;margin-top: 20px;font-size: 18px;font-weight: 600;align-items: center;"><label style="width: 100px">模板名称</label>
+    <div style="width:50%"><el-input v-model="name" placeholder="请输入模板名称"></el-input></div>
+    </div>
     <!--<div class="topside">-->
       <!--<label>顶部区</label>-->
       <!--<div class="topside-right" :class="{'side-right-border':topDate == ''}">-->
@@ -42,13 +45,11 @@
       <el-button type="primary" @click="saveTemplate" :loading="loading">保存</el-button>
     </div>
     <!--添加组件弹框-->
-    <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="340px">
+    <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="40vw">
       <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-        <el-tab-pane label="常用组件" name="used" class="com-tab-pane"><ul>
-        </ul></el-tab-pane>
         <el-tab-pane label="基础组件" name="basis" class="com-tab-pane">
           <ul>
-            <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)" v-if="x.catName != '页头' && x.catName != '页脚'">
+            <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)" v-if="x.catName != '页头' && x.catName != '页脚'&& x.catExt == 1">
               <div>
               <div><i class="compon-edit-ico el-icon-news"></i></div>
               <div>{{x.catName}}</div>
@@ -57,6 +58,12 @@
           </ul>
         </el-tab-pane>
         <el-tab-pane label="其他组件" name="other" class="com-tab-pane"><ul>
+          <li v-for="(x,i) in basisList" :key="i" @click="openManage(x,i)" v-if="x.catName != '页头' && x.catName != '页脚'&& x.catExt == 2">
+            <div>
+              <div><i class="compon-edit-ico el-icon-news"></i></div>
+              <div>{{x.catName}}</div>
+            </div>
+          </li>
         </ul></el-tab-pane>
       </el-tabs>
     </el-dialog>
@@ -86,6 +93,7 @@
         name: "designTemplate",
       data() {
           return {
+            name:'',
             html1:'',
             html2:'',
             type:'',//操作区域
@@ -185,27 +193,19 @@
         saveTemplate(){
           this.loading = true;
           this.pageCode = this.bannnerDate + this.formatDate + this.formatDate2 + this.formatDate3
-          // this.pageCode = '<div style="width:100%;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);padding: 5.1875vw 0;">\n' +
-          //   '\t\t\t<div style="width:85%;font-size:54px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);margin: 0 auto;text-align: center;margin-top: 5.1875vw;;">产品特色</div>\n' +
-          //   '\t\t\t<div style="width:34.6875vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);margin: 0 auto;text-align: center;margin-top: 5px;">对“大体验”设计相关需求，小到一个ico、banner设计，大到一套VI、UI视觉系统，改进我们的产品体验而努力…</div>\n' +
-          //   '\t\t\t<div style="width: 100%;display: flex;align-items: center;justify-content: center;margin-top: 5.625vw;">\n' +
-          //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(238,242,244,1);border-radius:5px;margin-right: 1.875vw;text-align: center;">\n' +
-          //   '\t\t\t\t\t<div style="width:14.5vw;font-size:18px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(2,111,194,1);text-align: center;margin-top: 1.875vw;margin: 6.75vw auto 0 auto;">设计需求管理</div>\n' +
-          //   '\t\t\t\t\t<div style="width:14.5vw;font-size:14px;font-family:PingFangSC-Regular;font-weight:400;color:rgba(157,175,189,1);text-align: center;margin-top: .5vw;overflow:hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;margin: .5vw auto 0 auto;">对“大体验”设计相关需求，包括视觉设计、体验设计、工业设计，改进我们的产品体验而努力</div>\n' +
-          //   '\t\t\t\t</div>\n' +
-          //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;margin-right: 1.875vw;"></div>\n' +
-          //   '\t\t\t\t<div style="width:22.5625vw;height:18.75vw;background:rgba(209,219,227,1);border-radius:5px;"></div>\n' +
-          //   '\t\t\t</div>\n' +
-          //   '\t\t</div>'
-          if(this.pageCode == ''){
+          if(this.name == '' ){
             this.$message({
               type: 'warning',
-              message: '请选择组件!'
+              message: '模板名称不能为空!'
             });
             this.loading = false;
             return
           }
+          if(this.pageCode == ''){
+            this.pageCode = "<div style='min-height: 20vw;width: 100%'></div>"
+          }
           this.$api.apiAddPage({
+            name:this.name,
             catExt: this.catExt,
             catId: this.templateId,
             pageCode:this.pageCode,
@@ -316,7 +316,7 @@
         getBasisList() {
           this.$api.apiByCatType(1).then(res => {
             if(res.msg === "success") {
-              this.basisList = res.data.content
+              this.basisList = res.data
             } else {
               this.$message.error(res.msg)
             }
@@ -462,11 +462,11 @@
         display: flex;
         flex-wrap: wrap;
         li{
-          width: 70px;
-          height: 70px;
+          width: 10vw;
+          height: 10vw;
           border: 1px #cccccc solid;
           list-style: none;
-          margin: .46vw;
+          margin: .4vw;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -500,6 +500,7 @@
           align-items: center;
           justify-content: center;
           cursor: pointer;
+          overflow: hidden;
           /*&:hover{*/
             /*border: 3px #4d78ff solid;*/
           /*}*/
@@ -556,7 +557,7 @@
       border-bottom-color: #409EFF;
     }
     .el-tabs--border-card>.el-tabs__content{
-      height: 280px;
+      height: 400px;
       overflow-y: auto;
     }
   }
