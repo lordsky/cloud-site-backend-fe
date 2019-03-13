@@ -15,7 +15,7 @@
       </div>
       <div class="compon-edit-list">
         <ul class="compon-edit-box">
-          <li v-for="(x,i) in comItem"  :key="i" @mouseleave="delShow = ''" @mouseover="delShow=i" class="compon-edit-item">
+          <li v-for="(x,i) in comItem"  :key="i" @mouseleave="delShow = ''"  class="compon-edit-item">
           	<!--<div :class="{'delItem':delShow==i}" class="mask-compon" ><i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i></div>-->
           	<div v-html="x.segmentCode"></div>
             </li>
