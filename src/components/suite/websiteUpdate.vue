@@ -96,6 +96,7 @@
                 </li>
               </ul>
             </div>
+            <div style="clear: both"></div>
           </div>
         </el-dialog>
         <!--添加页面弹框-->

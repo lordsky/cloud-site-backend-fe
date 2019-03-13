@@ -645,6 +645,7 @@
         .template-edit-list {
           width: 100%;
           margin: 10px 0 10px 0;
+          min-height: 500px;
           max-height: 550px;
           overflow-y: auto;
           ul {
@@ -710,9 +711,6 @@
           }
         }
       }
-    }
-    .el-dialog {
-      height: 500px;
     }
   }
 
