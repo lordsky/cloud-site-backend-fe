@@ -432,24 +432,24 @@
             }
           }
           this.webPageAll.push({
-            pageName:this.pageName,
+            pageName:data.name,
             templateId:this.templateId,
             pageCode:this.webPageList.content,
             pageAlias:data.catExt})
           this.$api.apiAddTemplatePage({
-            pageName: this.pageName,
+            pageName: data.name,
             templateId: this.templateId,
             pageCode:data.pageCode,
             pageAlias:data.catExt
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
-              const newChild = { id: res.data.id, label: this.pageName, children: [] };
+              const newChild = { id: res.data.id, label: data.name, children: [] };
               // if (!this.data1.children) {
               //   this.$set(this.data1, '关于我们', []);
               // }
               this.data1.push(newChild);
-              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;font-size:14px;font-weight:400;color:rgba(2,111,194,1);cursor: pointer">'+this.pageName+'</li>')
+              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="#"style="text-decoration: none;color: #000000 ;">'+data.name+'</a></li>')
               // let headerHtml = $('#headerHtml').html()
               // this.webPageList.header = headerHtml
               if(pageNum == 1){

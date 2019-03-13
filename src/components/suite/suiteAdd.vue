@@ -413,6 +413,7 @@
       font-size: 18px;
       font-weight: 600;
       align-items: center;
+      overflow: hidden;
       label{
         white-space: nowrap;
         width: 80px;
@@ -480,6 +481,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            overflow: hidden;
             /*&:hover{*/
             /*border: 1px #4d78ff solid;*/
             /*}*/
