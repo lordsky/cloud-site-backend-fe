@@ -12,7 +12,7 @@
           </el-form>
           <el-form :inline="true" class="user-time">
             <el-form-item label="注册时间:">
-              <el-date-picker v-model="fromUser.timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+              <el-date-picker v-model="fromUser.timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" >
               </el-date-picker>
             </el-form-item>
           </el-form>
@@ -35,7 +35,7 @@
         </div>
       </div>
       <div class="user-table">
-        <el-table :data="tableData3" height="50" border style="width: 100%">
+        <el-table :data="tableData"  border style="width: 100%;height: auto;">
           <el-table-column prop="id" label="用户ID" width="180" align="center">
           </el-table-column>
           <el-table-column prop="account" label="用户账号" width="180" align="center">
@@ -44,7 +44,10 @@
           </el-table-column>
           <el-table-column prop="starTime" label="注册时间" align="center">
           </el-table-column>
-          <el-table-column prop="note" label="备注" align="center">
+          <el-table-column prop="status" label="状态" align="center">
+          	<template slot-scope = "scope">
+          		<span>{{scope.row.status==1?'启用':'未启用'}}</span>
+          	</template>
           </el-table-column>
           <el-table-column prop="address" label="操作" align="center" width="180">
             <template slot-scope="scope">
@@ -66,63 +69,31 @@
       :total="100">
     </el-pagination>-->
       </div>
-   
   </div>
-
 </template>
 
 <script>
-	import {instance} from './config/http'
+	
   export default {
     name: 'userData',
     data() {
       return {
-        stu: 1,
         fromUser: {
           account: '',
           name: '',
           state: '',
           timeData:''
         },
-        tableData3: [
-          {
-          	id:'1',
-          	account:'1323266881',
-          	name:'张三',
-          	starTime:'2019-3-12',
-          	note:'暂无'
-          },
-          {
-          	id:'2',
-          	account:'1873266881',
-          	name:'李四',
-          	starTime:'2019-3-12',
-          	note:'暂无'
-          },
-          {
-          	id:'3',
-          	account:'1543266381',
-          	name:'小明',
-          	starTime:'2019-3-12',
-          	note:'暂无'
-          },
-          {
-          	id:'4',
-          	account:'1343266881',
-          	name:'小红',
-          	starTime:'2019-3-12',
-          	note:'暂无'
-          }
-        ],
+        tableData: [],
         listState:[
-           {
-          value: '1',
-          label: '启用'
-        },
-        {
-          value: '2',
-          label: '未启用'
-        }
+            {
+	          value: '1',
+	          label: '启用'
+	        },
+	        {
+	          value: '2',
+	          label: '未启用'
+	        }
         ]
       }
     },
@@ -132,7 +103,7 @@
     		this.fromUser = {}
     	},
     	 queryUser(){
-    	 	console.log(this.fromUser)
+    	 	this.getUserList(true)
     	 },
       //用户信息
       lookUser(res) {
@@ -164,14 +135,28 @@
           });          
         });
       },
-      getUserList(){
-//    	this.$http.get(this.$API.userList,(res)=>{
-//    		console.log(res)
-//    	})
-//      instance.get(this.$API.userList,{
-//      }).then(res=>{
-//      	   console.log(res)
-//      })
+      getUserList(state){
+      	let timeStatr = ''
+      	let timeEnd = ''
+      	let account = this.fromUser.account?this.fromUser.account:''
+      	let status = this.fromUser.state?this.fromUser.state:''
+      	let url = ''
+      	if(this.fromUser.timeData){
+      		timeStatr = this.$http.getLocalTime(this.fromUser.timeData[0])
+      		timeEnd = this.$http.getLocalTime(this.fromUser.timeData[1])
+      	}
+      	if(state==true){
+      		url = this.$API.userList+'?account='+account+'&status='+status+'&start='+timeStatr+'&end='+timeEnd
+      	}else{
+      		url = this.$API.userList
+      	}
+      	this.$http.get(url,(res)=>{
+      		console.log(res)
+      		if(res.data.code===200){
+      			this.tableData = res.data.data
+      			
+      		}
+      	})
       }
     },
     created(){
@@ -182,7 +167,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" >
   .userData {
     margin-top: 10px;
   }
@@ -190,11 +175,8 @@
   .user-table {
     margin-top: 30px;
     margin-bottom: 30px;
-    .el-table {
-      height: auto !important;
-    }
     th {
-      background: #add4ff;
+      background: #add4ff !important;
       color: white;
     }
   }
