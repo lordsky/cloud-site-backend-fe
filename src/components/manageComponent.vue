@@ -1,56 +1,50 @@
 <template>
   <div class="compent">
-   
-      <div class="compent-head">
-        <div class="compent-head-type">
-       <span>组件类型:</span>
-          <div class="compent-head-btn" :class="{'active':btnShow==i}" @click="btnType(i)" v-for="(x,i) in btnList" :key="i">{{x}}</div>
-        </div>
-        <div class="compent-head-class">
-          <span>组件分类:</span>
-          <el-input placeholder="请输入组件分类名称" v-model="queryText"></el-input>
-          <el-button type="primary" size="small" @click="queryList">查询</el-button>
-          <el-button type="primary" size="small" @click="deleteAll">批量删除</el-button>
-          <el-button type="primary" size="small" @click="addComponClass">新增组件分类</el-button>
-          <el-button type="primary" size="small" @click="addComponent">新增组件</el-button>
-        </div>
+    <div class="compent-head">
+      <div class="compent-head-type">
+        <span>组件类型:</span>
+        <div class="compent-head-btn" :class="{'active':btnShow==i}" @click="btnType(i)" v-for="(x,i) in btnList" :key="i">{{x}}</div>
       </div>
-      <div class="compent-box">
-        <el-table :data="tableData3" border style="width: 100%;height: auto;" tooltip-effect="dark" @selection-change="handleSelectionChange"ref="multipleTable">
-          <el-table-column type="selection" width="55" align="center">
-          </el-table-column>
-          <el-table-column prop="catName" label="组件分类"  align="center">
-          </el-table-column>
-          <el-table-column prop="catExt" label="组件类型" align="center">
-          	 <template slot-scope="scope">
-          	 	<span>{{scope.row.catExt==1?'基础组件':'其他组件'}}</span>
-          	 </template>
-          </el-table-column>
-          <el-table-column prop="catNum" label="组件个数"  align="center">
-          </el-table-column>
-          <el-table-column prop="date" label="操作" width="180" align="center">
-            <template slot-scope="scope">
-              <el-button type="text" @click="manageCompon(scope.row)">管理</el-button>
-              <el-button type="text" @click="editCompon(scope.row)">编辑</el-button>
-              <el-button type="text" @click="delCompon(scope.row)" v-show="scope.row.catNum==0">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+      <div class="compent-head-class">
+        <span>组件分类:</span>
+        <el-input placeholder="请输入组件分类名称" v-model="queryText"></el-input>
+        <el-button type="primary" size="small" @click="queryList">查询</el-button>
+        <el-button type="primary" size="small" @click="deleteAll">批量删除</el-button>
+        <el-button type="primary" size="small" @click="addComponClass">新增组件分类</el-button>
+        <el-button type="primary" size="small" @click="addComponent">新增组件</el-button>
       </div>
-   <div class="paging">
-   	<el-pagination
-   	  background
-      @current-change="handleCurrentChange"
-      :page-size="pageSize"
-      layout="prev, pager, next, jumper"
-      :total="pageAll">
-    </el-pagination>
-   </div>
+    </div>
+    <div class="compent-box">
+      <el-table :data="tableData3" border style="width: 100%;height: auto;" tooltip-effect="dark" @selection-change="handleSelectionChange" ref="multipleTable">
+        <el-table-column type="selection" width="55" align="center">
+        </el-table-column>
+        <el-table-column prop="catName" label="组件分类" align="center">
+        </el-table-column>
+        <el-table-column prop="catExt" label="组件类型" align="center">
+          <template slot-scope="scope">
+            <span>{{scope.row.catExt==1?'基础组件':'其他组件'}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="catNum" label="组件个数" align="center">
+        </el-table-column>
+        <el-table-column prop="date" label="操作" width="180" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" @click="manageCompon(scope.row)">管理</el-button>
+            <el-button type="text" @click="editCompon(scope.row)">编辑</el-button>
+            <el-button type="text" @click="delCompon(scope.row)" v-show="scope.row.catNum==0">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="paging">
+      <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize" layout="prev, pager, next, jumper" :total="pageAll">
+      </el-pagination>
+    </div>
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
       <div class="el-componClass" v-show="editShow">
         <el-form :inline="true" :model="formCompon" class="demo-form-inline" ref="formCompon">
           <el-form-item label="组件分类名称:" prop="name" :rules="[{required: true, message: '分类名称不能为空'}]">
-            <el-input v-model="formCompon.name" :placeholder="dialogText" maxlength="4" ></el-input>
+            <el-input v-model="formCompon.name" :placeholder="dialogText" maxlength="4"></el-input>
           </el-form-item>
           <div class="el-componClass-item">
             <span class="warFater">组件类型：<i class="war-ico">*</i></span>
@@ -70,13 +64,13 @@
           </el-form-item>
           <div class="addCom">
             <span class="addCom-title warFater">组件名称：<i class="war-ico">*</i></span>
-            	<el-input type="text" class="addCom_input" v-model="componentName" placeholder="请输入组件名称" />
+            <el-input type="text" class="addCom_input" v-model="componentName" placeholder="请输入组件名称" />
           </div>
-           <div class="addCom">
+          <div class="addCom">
             <span class="addCom-title warFater">组件类型：<i class="war-ico">*</i></span>
-            	 <a href="javascript:void(0);" class="upload-text">选择文件
-           	 <input name="file" type="file" ref="file" @change="uploadText"></a>
-             <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件(.txt格式文件)'}}</span>
+            <a href="javascript:void(0);" class="upload-text">选择文件
+              <input name="file" type="file" ref="file" @change="uploadText"></a>
+            <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件(.txt格式文件)'}}</span>
           </div>
         </el-form>
       </div>
@@ -101,8 +95,8 @@
         },
         btnShow: '',
         componTitle: '',
-        classBtn: 1,//组件类型
-        componentType:0,
+        classBtn: 1, //组件类型
+        componentType: 0,
         dialogVisible: false,
         dialogStu: '',
         dialogText: '',
@@ -113,19 +107,20 @@
         formCompon: {
           name: ''
         },
-        validationText:'',
-        btnList: ['全部','基础组件','其他组件'],
+        validationText: '',
+        btnList: ['全部', '基础组件', '其他组件'],
         tableData3: [],
-        list:{},
-        host:host,
-        textData:{},
-        queryText:'',
-        copyTable:{},
-        delList:[],
-        pageNum:1,
-        pageSize:8,
-        pageAll:0,
-        componentName:''
+        list: {},
+        host: host,
+        textData: {},
+        queryText: '',
+        copyTable: {},
+        delList: [],
+        pageNum: 1,
+        pageSize: 8,
+        pageAll: 0,
+        componentName: '',
+        currentPage: 0
       }
     },
     watch: {
@@ -133,37 +128,38 @@
         if(!val) {
           this.resetForm()
         }
-      }
+      },
     },
-    created(){
-    	   this.refreshTable()
+    created() {
+      this.refreshTable()
     },
     components: {
-      
+
     },
     methods: {
-    	//分页
-    handleCurrentChange(val) {
+      //分页
+      handleCurrentChange(val) {
         this.pageNum = val
-        this.queryList('query')
+        this.queryList(true)
       },
-    	//批量删除
-    	 deleteAll(){
-    	 	if(this.delList){
-    	 		this.$http.post(this.$API.componentDel,{
-    	 			   catIds:this.delList
-			        },(res)=>{
-			        	   if(res.data.data){
-			        	   	  this.refreshTable('删除成功')
-			        	   }
-			        })
-    	 	}
-    	 },
-    	  uploadText(e){
-    	  	var file = e.target.files[0] 
-    	  	this.textData = file
-    	  	
-    	  },
+
+      //批量删除
+      deleteAll() {
+        if(this.delList) {
+          this.$http.post(this.$API.componentDel, {
+            catIds: this.delList
+          }, (res) => {
+            if(res.data.data) {
+              this.refreshTable('删除成功')
+            }
+          })
+        }
+      },
+      uploadText(e) {
+        var file = e.target.files[0]
+        this.textData = file
+
+      },
       //重置验证
       resetForm() {
         this.$refs['formCompon'].resetFields();
@@ -204,29 +200,32 @@
       },
       //管理
       manageCompon(res) {
-      	this.$router.push({
-		          path: '/componentEditor',
-		          query:{text:res.catName,msg:res}
-		        })
+        this.$router.push({
+          path: '/componentEditor',
+          query: {
+            text: res.catName,
+            id: res.id
+          }
+        })
       },
       //check 选择
       handleSelectionChange(res) {
-      	for(let i =0;i<res.length;i++){
-      		if(res[i].catNum>0){
-      			this.$message({
-		          message: '请先删除组件分类下的组件',
-		          type: 'warning'
-		        });
-		        this.$refs.multipleTable.clearSelection();
-		        return
-      		}
-      	}
-      	
-      	let arr = []
-      	for(let i =0;i<res.length;i++){
-      		arr.push(res[i].id)
-      	}
-      	this.delList = arr
+        for(let i = 0; i < res.length; i++) {
+          if(res[i].catNum > 0) {
+            this.$message({
+              message: '请先删除组件分类下的组件',
+              type: 'warning'
+            });
+            this.$refs.multipleTable.clearSelection();
+            return
+          }
+        }
+
+        let arr = []
+        for(let i = 0; i < res.length; i++) {
+          arr.push(res[i].id)
+        }
+        this.delList = arr
       },
       //新增组件分类
       addComponClass() {
@@ -238,7 +237,7 @@
         this.dialogStu = 'addClass'
         this.validationText = 'formCompon'
         this.dialogText = '不超过4个字符'
-        
+
       },
       //新增组件
       addComponent() {
@@ -251,127 +250,139 @@
         this.dialogStu = 'addCom'
       },
       //查询
-      queryList(res){
-      	var type = ''
-      	let url = this.$API.queryCompon+'?catType=1&catName='+this.queryText+'&catExt='+type
-      	if(this.componentType!==0){
-      		type = this.componentType
-      	}
-      	if(res){
-      		url = this.$API.queryCompon+'?catType=1&catName='+this.queryText+'&catExt='+type+'&pageNum='+this.pageNum+'&pageSize='+this.pageSize
-      	}
-      	this.$http.get(url,res=>{
-      		if(res.data.data.content.length>0){
-      			this.tableData3=res.data.data.content
-      			this.pageAll = res.data.data.totalElements
-      		}else{
-      			this.$message({
-		          message: '抱歉，没有查询到该组件分类',
-		          type: 'warning'
-		        });
-      		}
-      	})
+      queryList(res) {
+        var type = ''
+        let url = ''
+        if(this.componentType !== 0) {
+          type = this.componentType
+        }
+        if(res === true) {
+          console.log('分页')
+          url = this.$API.queryCompon + '?catType=1' + '&pageNum=' + this.pageNum + '&pageSize=' + this.pageSize
+        } else {
+          console.log('查询')
+          url = this.$API.queryCompon + '?catType=1&catName=' + this.queryText + '&catExt=' + type + '&pageNum=1' + '&pageSize=8'
+          this.currentPage = 1
+        }
+        this.$http.get(url, res => {
+          if(res.data.data.content.length > 0) {
+            this.tableData3 = res.data.data.content
+            this.pageAll = res.data.data.totalElements
+            this.currentPage = 0
+          } else {
+            this.$message({
+              message: '抱歉，没有查询到该组件分类',
+              type: 'warning'
+            });
+          }
+        })
       },
       //刷新
-      refreshTable: async function(){
-      	var a = []
-      	var b = []
-         a = await this.getQueryCompon()
-         this.tableData3 = a
-         this.copyTable = a
+      refreshTable: async function() {
+        var a = []
+        var b = []
+        a = await this.getQueryCompon()
+        this.tableData3 = a
+        this.copyTable = a
       },
-      getQueryCompon : function () {
-      	return new Promise (resolve =>{
-      		this.$http.get(this.$API.queryCompon+'?catType=1&pageNum='+this.pageNum+'&pageSize='+this.pageSize,(res)=>{
-      			console.log(res)
-	    	   	  if(res.data.code === 200){
-	    	   	  	resolve(res.data.data.content)
-	    	   	  	this.pageAll = res.data.data.totalElements
-	    	   	  }
-    	  		})
-      	})
+      getQueryCompon: function() {
+        return new Promise(resolve => {
+          this.$http.get(this.$API.queryCompon + '?catType=1&pageNum=' + this.pageNum + '&pageSize=' + this.pageSize, (res) => {
+            console.log(res)
+            if(res.data.code === 200) {
+              resolve(res.data.data.content)
+              this.pageAll = res.data.data.totalElements
+            }
+          })
+        })
       },
       //保存
       saveCompon() {
-      	 let a = []
-      	 a.push(this.list.id)
-      	 if(this.dialogStu=='del'){
-        	   this.$http.post(this.$API.componentDel,{
-        	   		    catIds:a
-			        },(res)=>{
-			        	   if(res.data.data){
-			        	   	  this.refreshList('删除成功')
-			        	   }
-			        })
-        	   return
-           }
-      	this.$refs[this.validationText].validate((valid) => {
-          if (valid) {
-	        switch(this.dialogStu) {
-	          case 'addClass':
-	            console.log('新增分类')
-	            this.$http.post(this.$API.componentAddClass,{
-	            	 catExt:this.classBtn,
-	            	 catName:this.formCompon.name,
-	            	 catType:1,
-	            },(res)=>{
-	            	   console.log(res)
-	            	   if(res.data.data){
-	            	   	  this.refreshList('添加成功')
-	            	   }
-	            })
-	            break;
-	          case 'addCom':
-	            console.log('新增组件')
-	            console.log(this.textData)
-	            if(this.textData.type!=='text/plain'){return this.$message.error('文件类型不对，请上传.txt文件格式')}
-	            if(!this.componentName){return this.$message.error('请输入组件名称')}
-	            let formData = new FormData();
-    	            formData.append('file',this.textData);
-    	            formData.append('catExt','1');
-    	             formData.append('name',this.componentName);
-    	            formData.append('catId',this.formAdd.selectId);
-	            this.$http.post(this.$API.componentAdd,formData,(res)=>{
-	            	    console.log(res)
-	            	    if(res.data.data){
-	            	    	   this.refreshList('添加成功')
-	            	    }
-	            },{"Content-Type":"multipart/form-data"})
-	            break;
-	          case 'edit':
-	            console.log('编辑')
-	            this.$http.post(this.$API.setComponent,{
-	            	  "catExt": this.classBtn,
-				  "catName": this.formCompon.name,
-				  "catType": 1,
-				  "id": this.list.id
-	            },(res)=>{
-	            	   this.refreshList('修改成功')
-	            })
-	            
-	            break;
-	        }
-         } else {
+        let a = []
+        a.push(this.list.id)
+        if(this.dialogStu == 'del') {
+          this.$http.post(this.$API.componentDel, {
+            catIds: a
+          }, (res) => {
+            if(res.data.data) {
+              this.refreshList('删除成功')
+            }
+          })
+          return
+        }
+        this.$refs[this.validationText].validate((valid) => {
+          if(valid) {
+            switch(this.dialogStu) {
+              case 'addClass':
+                console.log('新增分类')
+                this.$http.post(this.$API.componentAddClass, {
+                  catExt: this.classBtn,
+                  catName: this.formCompon.name,
+                  catType: 1,
+                }, (res) => {
+                  console.log(res)
+                  if(res.data.code===200) {
+                    this.refreshList('添加成功')
+                  }
+                })
+                break;
+              case 'addCom':
+                console.log('新增组件')
+                console.log(this.textData)
+                if(this.textData.type !== 'text/plain') {
+                  return this.$message.error('文件类型不对，请上传.txt文件格式')
+                }
+                if(!this.componentName) {
+                  return this.$message.error('请输入组件名称')
+                }
+                let formData = new FormData();
+                formData.append('file', this.textData);
+                formData.append('catExt', '1');
+                formData.append('name', this.componentName);
+                formData.append('catId', this.formAdd.selectId);
+                this.$http.post(this.$API.componentAdd, formData, (res) => {
+                  console.log(res)
+                  if(res.data.data) {
+                    this.refreshList('添加成功')
+                  }
+                }, {
+                  "Content-Type": "multipart/form-data"
+                })
+                break;
+              case 'edit':
+                console.log('编辑')
+                this.$http.post(this.$API.setComponent, {
+                  "catExt": this.classBtn,
+                  "catName": this.formCompon.name,
+                  "catType": 1,
+                  "id": this.list.id
+                }, (res) => {
+                  this.refreshList('修改成功')
+                })
+
+                break;
+            }
+          } else {
             console.log('error submit!!');
             return false;
           }
         });
       },
-      refreshList(res){
-      	   this.dialogVisible = false
-	    	   this.refreshTable()
-	    	   this.$message({
-	          showClose: true,
-	          message: res,
-	          type: 'success'
-	        });
+      refreshList(res) {
+        this.dialogVisible = false
+        this.refreshTable()
+        this.$message({
+          showClose: true,
+          message: res,
+          type: 'success'
+        });
       }
     }
   }
 </script>
 
 <style lang="less">
-    .compent-head {
+  .compent-head {
     margin-top: 10px;
     .compent-head-class {
       align-items: center;
@@ -398,18 +409,20 @@
       }
     }
   }
-  .compent{
-  	.el-upload-list{
-  	width: 100px;
-   }
+  
+  .compent {
+    .el-upload-list {
+      width: 100px;
+    }
   }
+  
   .addCom {
     display: flex;
     align-items: center;
     height: 55px;
-    .addCom_input{
-    	  height: 35px;
-    	  width: 190px;
+    .addCom_input {
+      height: 35px;
+      width: 190px;
     }
     .upload-demo {
       display: flex;
@@ -465,41 +478,44 @@
       left: 25px;
     }
   }
-.upload-text{
-    	   text-decoration: none;
-    	   display: inline-block;
-    	   width: 100px;
-    	   height: 30px;
-    	   position: relative;
-    	   text-align: center;
-    	   line-height: 30px;
-    	   background: #00b3ee;
-    	   color: white;
-    	   border-radius: 4px;
-    	   z-index: 100;
-    	   margin-right: 10px;
-    	   &:hover{
-    	   	 text-decoration: none;
-    	   	 color: white;
-    	   }
-    	   input{
-    	     position: absolute;
-    	   	 left: 0;
-    	   	 color: black;
-    	   	 width: 100px;
-    	   	 height: 30px;
-    	   	 opacity: 0;
-    	   }
+  
+  .upload-text {
+    text-decoration: none;
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    position: relative;
+    text-align: center;
+    line-height: 30px;
+    background: #00b3ee;
+    color: white;
+    border-radius: 4px;
+    z-index: 100;
+    margin-right: 10px;
+    &:hover {
+      text-decoration: none;
+      color: white;
     }
- .upload-prompt{
- 	font-size: 13px;
- 	font-weight: 300;
- 	line-height: 30px;
- 	/*width: 100px;*/
- 	overflow: hidden;
- 	text-overflow : ellipsis; 
- }
- .paging{
- 	margin: 20px 0 50px 0;
- }
+    input {
+      position: absolute;
+      left: 0;
+      color: black;
+      width: 100px;
+      height: 30px;
+      opacity: 0;
+    }
+  }
+  
+  .upload-prompt {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 30px;
+    /*width: 100px;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .paging {
+    margin: 20px 0 50px 0;
+  }
 </style>

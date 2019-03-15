@@ -10,7 +10,6 @@ hostConfig.hostUrl = 'http://six-pulse-nerve-gateway-test.uworks.cc';
 } else if (domain.indexOf("dev") >= 0) {
 hostConfig.hostUrl = 'http://six-pulse-nerve-gateway-dev.uworks.cc';
 }else{
-hostConfig.hostUrl = 'http://six-pulse-nerve-gateway-test.uworks.cc';
-
+hostConfig.hostUrl = 'http://six-pulse-nerve-gateway-dev.uworks.cc';
 }
 export default hostConfig

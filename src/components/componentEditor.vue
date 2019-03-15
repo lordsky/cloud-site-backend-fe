@@ -5,9 +5,13 @@
       <el-button type="text" @click="backCompon">返回</el-button>
     </div>
     <div class="compon-edit-box">
-      <p>组件个数 ：{{comItem.length}}<div class="compon-edit-seek">
-      	<span>查询组件：</span><el-input type="text" placeholder="输入组件名称" v-model="queryItem"/><el-button type="primary"
-      size="small"@click="queryComponent">查询</el-button></div></p>
+      <p>组件个数 ：{{comItem.length}}
+        <div class="compon-edit-seek">
+          <span>查询组件：</span>
+          <el-input type="text" placeholder="输入组件名称" v-model="queryItem" />
+          <el-button type="primary" size="small" @click="queryComponent">查询</el-button>
+        </div>
+      </p>
       <div class="compon-edit-add">
         <div class="compon-edit-add-btn" @click="addCompon">
           <i class="el-icon-circle-plus-outline"></i><span>新增组件</span>
@@ -15,10 +19,13 @@
       </div>
       <div class="compon-edit-list">
         <ul class="compon-edit-box">
-          <li v-for="(x,i) in comItem"  :key="i" @mouseleave="delShow = ''"  class="compon-edit-item">
-          	<!--<div :class="{'delItem':delShow==i}" class="mask-compon" ><i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i></div>-->
-          	<div v-html="x.segmentCode"></div>
-            </li>
+          <li v-for="(x,i) in comItem" :key="i" @mouseleave="delShow = null" @mousemove="delShow = i" class="compon-edit-item">
+            <p class="compon-name">组件名称:{{x.name}}</p>
+            <div :class="{'delItem':delShow==i}" class="mask-compon">
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i>
+            </div>
+            <div v-html="x.segmentCode"></div>
+          </li>
         </ul>
       </div>
     </div>
@@ -26,12 +33,12 @@
       <div class="el-dialog-componAdd">
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="选择组件分类：">
-             <input type="text" :value="options.catName" disabled/>
+            <input type="text" :value="options.catName" disabled/>
           </el-form-item>
-           <div class="el-dialog-componAdd-update">
+          <div class="el-dialog-componAdd-update">
             <span class="el-componAdd-update-title">组件名字：</span>
-            	<el-input type="text" class="addCom_input" v-model="componentName"  placeholder="请输入组件名称"/>
-           </div>
+            <el-input type="text" class="addCom_input" v-model="componentName" placeholder="请输入组件名称" />
+          </div>
           <div class="el-dialog-componAdd-update">
             <span class="el-componAdd-update-title">上传文件：</span>
             <a href="javascript:void(0);" class="upload-text">选择文件<input name="file" type="file" ref="file" @change="uploadText"></a>
@@ -49,72 +56,74 @@
 </template>
 
 <script>
-  
   export default {
     name: 'componentEditor',
     data() {
       return {
         delShow: null,
         dialogAdd: false,
-        
+
         options: {},
         comItem: [],
         comList: {},
         textData: '',
-        componentName:'',
-        queryItem:''
+        componentName: '',
+        queryItem: ''
       }
     },
     created() {
-      this.options = this.$route.query.msg 
-      this.update()
+      this.options.id = this.$route.query.id
+      this.options.catName = this.$route.query.text
+           this.update()
     },
     methods: {
-    	//查询组件
-    	queryComponent(){
-    		if(!this.queryItem){
-    			this.$message.error('请输入组件名称')
-    			return
-    		}
-    		this.$http.get(this.$API.componentList+'?catId='+this.$route.query.msg.id+'&name='+this.queryItem,(res)=>{
-      		console.log(res)
-      		if(res.data.code==200){
-      			if(res.data.data.length==0){
-      				this.$message({
-		              type: 'warning',
-		              message: '没有搜索到该组件!'
-		          });
-      			}
-      			this.comItem = res.data.data
-      		}
-      	})
-    	},
-    	  update(){
-    	  	console.log(this.$route.query.msg)
-    	  	this.$http.get(this.$API.componentList+'?catId='+this.$route.query.msg.id,(res)=>{
-      		console.log(res)
-      		if(res.data.code==200){
-      			this.comItem = res.data.data
-      		}
-      	})
-    	  },
+      //查询组件
+      queryComponent() {
+        if(!this.queryItem) {
+          this.$message.error('请输入组件名称')
+          return
+        }
+        this.$http.get(this.$API.componentList + '?catId=' + this.$route.query.msg.id + '&name=' + this.queryItem, (res) => {
+          console.log(res)
+          if(res.data.code == 200) {
+            if(res.data.data.length == 0) {
+              this.$message({
+                type: 'warning',
+                message: '没有搜索到该组件!'
+              });
+            }
+            this.comItem = res.data.data
+          }
+        })
+      },
+      update() {
+        this.$http.get(this.$API.componentList + '?catId=' + this.options.id, (res) => {
+          console.log(res)
+          if(res.data.code == 200) {
+            this.comItem = res.data.data
+          }
+        })
+      },
       saveCompon() {
         if(this.value === '' || this.textData === '') return
-        if(this.textData.type!=='text/plain'){return this.$message.error('文件类型不对，请上传.txt文件格式')}
+        if(this.textData.type !== 'text/plain') {
+          return this.$message.error('文件类型不对，请上传.txt文件格式')
+        }
         let formData = new FormData();
         console.log(this.textData)
         formData.append('file', this.textData);
         formData.append('catExt', '1');
+        formData.append('name', this.componentName);
         formData.append('catId', this.options.id);
         this.$http.post(this.$API.componentAdd, formData, (res) => {
           console.log(res)
           this.update()
           this.dialogAdd = false
-          if(res.data.data){
-          	this.$message({
-		            type: 'success',
-		            message: '添加成功!'
-		          });
+          if(res.data.data) {
+            this.$message({
+              type: 'success',
+              message: '添加成功!'
+            });
           }
         }, {
           "Content-Type": "multipart/form-data"
@@ -131,19 +140,19 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-        	  this.$http.delete(this.$API.delItems,{
-        	  	params:{
-        	  		id:val.id
-        	  	}
-        	  },(res)=>{
-        	  	 console.log(res)
-        	  	 if(res.data.data){
-        	  	 	this.$message({
-		            type: 'success',
-		            message: '删除成功!'
-		          });
-        	  	 }
-        	  })
+          this.$http.delete(this.$API.delItems, {
+            params: {
+              componentId: val.id
+            }
+          }, (res) => {
+            this.update()
+            if(res.data.data) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+            }
+          })
 
         }).catch(() => {
           this.$message({
@@ -173,11 +182,11 @@
         font-size: 16px;
       }
     }
-    .demo-form-inline{
-    	  input{
-    	  	padding: 10px 0 10px 0;
-    	  	font-size: 15px;
-    	  }
+    .demo-form-inline {
+      input {
+        padding: 10px 0 10px 0;
+        font-size: 15px;
+      }
     }
     .compon-edit-box {
       p {
@@ -211,7 +220,7 @@
       .compon-edit-box {
         width: 95%;
         margin: 0 auto;
-        .compon-edit-item{
+        .compon-edit-item {
           border: 1px #cccccc solid;
           list-style: none;
           margin: 10px 0 10px 0;
@@ -229,18 +238,17 @@
         }
       }
     }
-    
     .el-dialog-componAdd-btn {
       display: flex;
       justify-content: center;
       margin-top: 20px;
     }
     .el-dialog-componAdd-update {
-       display: flex;
-       align-items: center;
-       height: 55px;
-      .addCom_input{
-    	   width: 171px;
+      display: flex;
+      align-items: center;
+      height: 55px;
+      .addCom_input {
+        width: 171px;
       }
       .upload-demo {
         display: flex;
@@ -262,32 +270,33 @@
       height: 60px;
       font-size: 18px;
     }
-    .mask-compon{
-    	  position: absolute;
-    	  top: 0;
-    	  width: 100%;
-    	  height: 100%;
-    	  background: rgba(0,0,0,0.3);
-    	  z-index: 100;
-    	  display: none;
-    	  justify-content: center;
-    	  align-items: center;
+    .mask-compon {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      display: none;
+      justify-content: center;
+      align-items: center;
     }
     .delItem {
       display: flex;
-      
     }
-    .compon-edit-seek{
-    	   display: flex;
-    	   align-items: center;
-    	   width: 450px;
-    	   span{
-    	   	 width: 120px;
-    	   }
-    	   
-    	   button{
-    	   	 margin-left: 10px;
-    	   }
+    .compon-edit-seek {
+      display: flex;
+      align-items: center;
+      width: 450px;
+      span {
+        width: 120px;
+      }
+      button {
+        margin-left: 10px;
+      }
+    }
+    .compon-name {
+      color: black;
     }
   }
 </style>

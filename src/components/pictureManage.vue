@@ -15,7 +15,7 @@
       </div>
       <div class="picture-list" v-show="listLabel==1">
         <div class="picture-list-item update" >
-          <el-upload class="avatar-uploader" :action="host.hostUrl+'/common/upload'"  :on-success="imgSuccess">
+          <el-upload class="avatar-uploader" :action="host.hostUrl+'/common/upload'"  :on-success="imgSuccess" >
             <i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传图片支持jpg,png,gif等格式，不超过10M</i>
