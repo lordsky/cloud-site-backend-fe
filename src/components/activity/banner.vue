@@ -48,6 +48,10 @@
             </el-table>
           </div>
         </div>
+        <div class="pagination">
+          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
+          </el-pagination>
+        </div>
       </el-col>
     </el-row>
     <!--<pre style="text-align: left">-->
@@ -66,6 +70,8 @@
         name: "banner",
       data() {
         return {
+          page:1,
+          pageSize:10,
           activeShow:0,
           filters: {
             name: ''
@@ -125,6 +131,16 @@
         editBanner(index,row){
 
         },
+        //当前页码
+        handleCurrentChange(val) {
+          this.page = val;
+          this.getComponList();
+        },
+        //当前条数
+        handleSizeChange(val) {
+          this.pageSize = val;
+          this.getComponList();
+        },
         //行拖拽
         rowDrop() {
           const tbody = document.querySelector('.el-table__body-wrapper tbody')
@@ -153,6 +169,7 @@
       div{
         cursor: pointer;
         padding: 15px 30px;
+        cursor: pointer;
         &:hover{
           transform: translateX(10px);
         }
@@ -165,6 +182,11 @@
     .toolbar{
       margin-bottom: 10px;
       text-align: right;
+    }
+    .pagination{
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
     }
   }
   .bannner-box {

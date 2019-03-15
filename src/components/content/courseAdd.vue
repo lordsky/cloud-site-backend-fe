@@ -1,33 +1,77 @@
 <template>
   <div>
-    <el-form ref="active" :model="active" :rules="rules" label-width="100px" class="activeAdd">
-      <el-form-item label="活动名称:" prop="name">
-        <el-input v-model="active.name" placeholder="请输入套件标题，不超过12个字符" class="el-input-active"></el-input>
+    <el-form ref="course" :model="course" :rules="rules" label-width="100px" class="courseAdd">
+      <el-form-item label="教程标题:" prop="name">
+        <el-input v-model="course.name" placeholder="请输入教程标题" class="el-input-course"></el-input>
       </el-form-item>
-      <el-form-item label="状态:" prop="activeState">
-        <el-radio-group v-model="activeState">
-          <el-radio :label="1">上线</el-radio>
-          <el-radio :label="2">下线</el-radio>
+      <el-form-item label="教程介绍:" prop="introduce">
+        <el-input type="textarea" v-model="course.introduce" :rows="5" placeholder="请输入教程介绍，不超过40个字符"></el-input>
+      </el-form-item>
+      <el-form-item label="教程封面:">
+        <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
+          <!--<img v-if="banner.imageUrl" :src="banner.imageUrl" class="avatar">-->
+          <div v-if="course.imageUrl" :class="{'delItem':showDel}">
+            <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible=true"></i>
+            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
+          </div>
+        </div>
+        <img v-if="course.imageUrl" :src="course.imageUrl" class="avatar">
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        <div class="el-upload__tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
+        <el-dialog :visible.sync="dialogVisible">
+          <img width="100%" :src="course.imageUrl" alt="">
+        </el-dialog>
+      </el-form-item>
+      <el-form-item label="教程目录:" prop="classification" v-if="pageId != 2">
+        <el-select v-model="course.classification" placeholder="请选择套件分类" class="el-select-course">
+          <el-option :label="x.name" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
+        </el-select>
+        <el-select v-model="course.classification" placeholder="请选择套件分类" class="el-select-course">
+          <el-option :label="x.name" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="教程类型:" prop="courseState">
+        <el-radio-group v-model="courseState">
+          <el-radio :label="1">常见教程</el-radio>
+          <el-radio :label="2">视频教程</el-radio>
+          <el-radio :label="3">图文教程</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="活动时间:" prop="activeTime">
-        <el-date-picker
-          v-model="active.offlineStartDate"
-          type="datetimerange"
-          align="right"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="['12:00:00', '08:00:00']">
-        </el-date-picker>
-        <span class="clearDate" @click="clearDate">重置</span>
+      <el-form-item label="教程内容" prop="courseDescribe" v-if="courseState==1">
+        <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" @change="onEditorChange($event)"></quill-editor>
       </el-form-item>
-      <el-form-item label="活动描述" prop="activeDescribe">
+      <el-form-item label="视频介绍" prop="courseDescribe" v-if="courseState==2">
+        <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" @change="onEditorChange($event)"></quill-editor>
+      </el-form-item>
+      <el-form-item label="视频上传" prop="courseDescribe" v-if="courseState==2">
+        <el-upload
+          ref='upload'
+          class="avatar-uploader"
+          :action="host.hostUrl+'/common/upload'"
+          :show-file-list="false"
+          :on-change="handleChange"
+          :before-upload="beforeUpLoad">
+          <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
+            <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
+            <div v-if="course.imageUrl" :class="{'delItem':showDel}">
+              <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible=true"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
+            </div>
+          </div>
+          <!--<img v-if="course.imageUrl" :src="course.imageUrl" class="avatar">-->
+          <video v-if="course.imageUrl" :src="course.imageUrl" controls="controls" class="avatar">您的浏览器不支持 video 标签。
+          </video>
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <div class="el-upload__tip" slot="tip">上传视频支持MP4,wma等格式，不超过10M</div>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="教程内容" prop="courseDescribe" v-if="courseState==3">
         <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" @change="onEditorChange($event)"></quill-editor>
       </el-form-item>
       <el-form-item>
         <div style="text-align: center">
           <el-button @click="back">返回</el-button>
-          <el-button type="primary" @click="onSubmit(active.classification)" :loading="addLoading">保存</el-button>
+          <el-button type="primary" @click="onSubmit(course.classification)" :loading="addLoading">保存</el-button>
         </div>
       </el-form-item>
     </el-form>
@@ -43,7 +87,7 @@
   import { quillEditor } from 'vue-quill-editor'
   import '@/assets/js/jquery';
   export default {
-    name: "activeAdd",
+    name: "courseAdd",
     data() {
       return {
         content: '',
@@ -56,8 +100,8 @@
           //   ]
           // }
         },
-        activeLink: 1,
-        activeState:1,
+        courseLink: 1,
+        courseState:1,
         catType:this.$route.query.catType,
         pageId:this.$route.query.pageId,
         host:host,
@@ -67,11 +111,11 @@
         showFooter:false,
         dialogTemplate:false,
         componTitle:'',
-        activeShow:0,
+        courseShow:0,
         componentList:[],
         classifyList:[],
         type:'',//操作区域
-        active: {
+        course: {
           name: '',
           classification: '',
           imageUrl: '',
@@ -79,13 +123,14 @@
           onlineDate:'',
           offlineStartDate:'',
           offlineEndDate:'',
+          video:''
 
         },
         classification:[
-          // {name:'企业官网'},
-          // {name:'在线商城'},
-          // {name:'外贸站'},
-          // {name:'工作室'},
+          {name:'企业官网'},
+          {name:'在线商城'},
+          {name:'外贸站'},
+          {name:'工作室'},
         ],
         rules:{
           name: [
@@ -112,23 +157,23 @@
         this.content = html
       },
       clearDate(){
-        this.active.onlineDate = ''
-        this.active.offlineStartDate = ''
+        this.course.onlineDate = ''
+        this.course.offlineStartDate = ''
       },
       //选择模版
       btnType(i){
-        this.activeShow = i
+        this.courseShow = i
       },
       handleRemove(file, fileList) {
         this.$refs.upload.clearFiles()
-        this.active.imageUrl = ''
+        this.course.imageUrl = ''
         setTimeout(() => {
           let oV1 =  document.getElementsByClassName('el-upload__input')
           oV1[0].disabled=false
         }, 100);
       },
       handleAvatarSuccess(res, file) {
-        this.active.imageUrl = URL.createObjectURL(file.raw);
+        this.course.imageUrl = URL.createObjectURL(file.raw);
       },
       beforeUpLoad(file) {
         return new Promise((resolve) => {
@@ -166,9 +211,9 @@
           return
         }
         if(file.response != undefined){
-          this.active.imageUrl = file.response;
+          this.course.imageUrl = file.response;
         }else {
-          this.active.imageUrl = URL.createObjectURL(file.raw);
+          this.course.imageUrl = URL.createObjectURL(file.raw);
         }
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true
@@ -211,7 +256,7 @@
         }
         this.componentList = ''
         this.dialogTemplate = false
-        this.activeShow = 0
+        this.courseShow = 0
       },
       //删除组件
       delComponent(type) {
@@ -229,8 +274,8 @@
         if(this.pageId == 2){
           index = this.catType.index
         }
-        this.$refs.active.validate((valid) => {
-          if(this.active.imageUrl == ''){
+        this.$refs.course.validate((valid) => {
+          if(this.course.imageUrl == ''){
             this.$message({
               type: 'warning',
               message: '请选择上传背景图片!'
@@ -248,18 +293,18 @@
             this.addLoading = true;
             // this.$refs.upload.submit();
             this.$api.apiAddTemplate({
-              name: this.active.name,
+              name: this.course.name,
               catId: this.classification[index].id,
-              description:this.active.introduce,
-              thumb:this.active.imageUrl
+              description:this.course.introduce,
+              thumb:this.course.imageUrl
             }).then(res => {
               console.log(res)
               if(res.code === 200) {
                 this.addLoading = false;
                 $("#silder").find("li").remove();
                 this.topDate = $('#topDate').html()
-                window.localStorage.setItem('activeHeater',this.topDate)
-                window.localStorage.setItem('activeFooter',this.footerDate)
+                window.localStorage.setItem('courseHeater',this.topDate)
+                window.localStorage.setItem('courseFooter',this.footerDate)
                 this.$store.commit('saveSuiteId', this.classification[index].id)
                 this.$router.push({
                   path:'/websiteEditor',
@@ -298,13 +343,13 @@
       }
     },
     created() {
-      this.getSuiteTypeList(3)
+      // this.getSuiteTypeList(3)
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .activeAdd{
+  .courseAdd{
     margin: 20px;
     .ql-editor{
       min-height: 500px;
@@ -347,7 +392,7 @@
   }
 </style>
 <style lang="scss">
-  .activeAdd{
+  .courseAdd{
     .ql-editor{
       min-height: 500px;
     }
@@ -374,11 +419,11 @@
       height: 148px;
       display: block;
     }
-    .el-input-active{
+    .el-input-course{
       width: 55%;
     }
-    .el-select-active{
-      width: 55%;
+    .el-select-course{
+      width: 40%;
     }
     .el-upload--picture-card{
       width: 275px;
@@ -402,7 +447,7 @@
       display: flex;
       justify-content: center;
     }
-    .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active{
+    .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-course{
       background-color: transparent;
       border-right-color: transparent;
       border-left-color: transparent;

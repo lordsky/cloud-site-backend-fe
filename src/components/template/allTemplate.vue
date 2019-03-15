@@ -20,7 +20,7 @@
 			</el-form>
 		</el-col>
       <div class="compent-box">
-        <el-table :data="templateTypeLsit"  border style="width: 100%" tooltip-effect="dark"
+        <el-table :data="templateTypeLsit"  border style="width: 100%" tooltip-effect="dark" ref="multipleTable"
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
@@ -248,6 +248,16 @@
 				});
 			},
       selsChange: function (sels) {
+        for(let i = 0; i < sels.length; i++) {
+          if(sels[i].catNum > 0) {
+            this.$message({
+              message: '请先删除页面分类下的组件',
+              type: 'warning'
+            });
+            this.$refs.multipleTable.clearSelection();
+            return
+          }
+        }
 				this.sels = sels;
 			},
 			//批量删除
@@ -257,28 +267,14 @@
 					type: 'warning'
 				}).then(() => {
           console.log(ids)
-          for (let id of ids) {
-            this.$api.apiPageList(id).then(res => {
-              if(res.data.length !== 0){
-                this.$message({
-                  type: 'warning',
-                  message: '存在模板个数不为0，不能删除!'
-                })
-                return
-              }else {
-                let a = []
-                a.push(id)
-                this.$http.post(this.$API.componentDel,{
-                  catIds:a
-                },(res)=>{
-                  if(res.data.code ===200){
-                    this.getComponList();
-                    this.listLoading = false;
-                  }
-                })
-              }
-            })
-          }
+          this.$http.post(this.$API.componentDel,{
+            catIds:ids
+          },(res)=>{
+            if(res.data.code ===200){
+              this.getComponList();
+              this.listLoading = false;
+            }
+          })
 				}).catch(() => {
 
 				});

@@ -98,6 +98,41 @@ const navHead = [{
     path: 'activeAdd',
     index: '5-2',
     text: ['活动管理','活动配置','新增活动']
+  },
+  {
+    path: 'courseManagement',
+    index: '6-1',
+    text: ['内容管理','教程管理']
+  },
+  {
+    path: 'courseAdd',
+    index: '6-1',
+    text: ['内容管理','教程管理','新增教程']
+  },
+  {
+    path: 'caseManagement',
+    index: '6-2',
+    text: ['内容管理','案例管理']
+  },
+  {
+    path: 'caseAdd',
+    index: '6-2',
+    text: ['内容管理','教程管理','新增案例']
+  },
+  {
+    path: 'operationLog',
+    index: '7-1',
+    text: ['系统设置','操作日志']
+  },
+  {
+    path: 'backup',
+    index: '7-2',
+    text: ['系统设置','数据备份']
+  },
+  {
+    path: 'informationSet',
+    index: '7-3',
+    text: ['系统设置','平台基本信息设置']
   }
 ]
 //侧边栏信息
@@ -137,7 +172,7 @@ const sideText = [
 {
     title: '站点管理',
     index: '3',
-    ico: 'el-icon-setting',
+    ico: 'el-icon-sort',
     path: '/siteManage',
     list: []
 },
@@ -148,24 +183,65 @@ const sideText = [
     path: '/pictureManage',
     list: []
   },
-// {
-//  title: '活动管理',
-//  index: '5',
-//  ico: 'el-icon-menu',
-//  // path: '/banner',
-//  list: [
-//    {
-//      name: 'banner管理',
-//      index: '5-1',
-//      path: '/banner'
-//    },
-//    {
-//      name: '活动配置',
-//      index: '5-2',
-//      path: '/activeConfiguration'
-//    }
-//  ]
-// },
+  // {
+  //  title: '活动管理',
+  //  index: '5',
+  //  ico: 'el-icon-menu',
+  //  // path: '/banner',
+  //  list: [
+  //    {
+  //      name: 'banner管理',
+  //      index: '5-1',
+  //      path: '/banner'
+  //    },
+  //    {
+  //      name: '活动配置',
+  //      index: '5-2',
+  //      path: '/activeConfiguration'
+  //    }
+  //  ]
+  // },
+  // {
+  //   title: '内容管理',
+  //   index: '6',
+  //   ico: 'el-icon-document',
+  //   // path: '/banner',
+  //   list: [
+  //     {
+  //       name: '教程管理',
+  //       index: '6-1',
+  //       path: '/courseManagement'
+  //     },
+  //     {
+  //       name: '案例配置',
+  //       index: '6-2',
+  //       path: '/caseManagement'
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: '系统设置',
+  //   index: '7',
+  //   ico: 'el-icon-setting',
+  //   // path: '/banner',
+  //   list: [
+  //     {
+  //       name: '操作日志',
+  //       index: '7-1',
+  //       path: '/operationLog'
+  //     },
+  //     {
+  //       name: '数据备份',
+  //       index: '7-2',
+  //       path: '/backup'
+  //     },
+  //     {
+  //       name: '平台基本信息设置',
+  //       index: '7-3',
+  //       path: '/informationSet'
+  //     }
+  //   ]
+  // }
 ]
 
 function setNav(router, val) {

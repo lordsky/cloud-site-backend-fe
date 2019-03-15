@@ -20,7 +20,7 @@
 			</el-form>
 		</el-col>
       <div class="suite-box">
-        <el-table :data="suiteByType" border style="width: 100%" tooltip-effect="dark"
+        <el-table :data="suiteByType" border style="width: 100%" tooltip-effect="dark" ref="multipleTable"
         v-loading="listLoading" @selection-change="selsChange">
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
@@ -181,6 +181,16 @@
         });
       },
       selsChange: function (sels) {
+        for(let i = 0; i < sels.length; i++) {
+          if(sels[i].catNum > 0) {
+            this.$message({
+              message: '请先删除套件分类下的组件',
+              type: 'warning'
+            });
+            this.$refs.multipleTable.clearSelection();
+            return
+          }
+        }
 				this.sels = sels;
 			},
 			//批量删除
@@ -189,36 +199,14 @@
 				this.$confirm('确认删除选中记录吗？', '提示', {
 					type: 'warning'
 				}).then(() => {
-          for (let id of ids) {
-            let para = {
-              pageNum: 0,
-              pageSize: 0,
-              catId:id,
-              key: '',
-              startDate:'',
-              endDate:''
-            };
-          this.$api.apiTemplateList(para).then(res => {
-            if (res.data.content.length !== 0) {
-              this.$message({
-                type: 'warning',
-                message: '存在套件个数不为0，不能删除!'
-              })
-              return
-            } else {
-              let a = []
-              a.push(id)
-              this.$http.post(this.$API.componentDel, {
-                catIds: a
-              }, (res) => {
-                if (res.data.code === 200) {
-                  this.getSuiteList();
-                  this.listLoading = false;
-                }
-              })
+          this.$http.post(this.$API.componentDel, {
+            catIds: ids
+          }, (res) => {
+            if (res.data.code === 200) {
+              this.getSuiteList();
+              this.listLoading = false;
             }
           })
-        }
 				}).catch(() => {
 
 				});

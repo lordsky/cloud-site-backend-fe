@@ -91,11 +91,18 @@
         await this.NavSwitch()
       }
     },
-    created() {
+    mounted(){
       this.curId = this.$route.query.id;
       this.curTitle = this.$route.query.title;
       this.getTemplatePage()
-    },
+      setTimeout(function () {
+        $(".question").on("click",".question1",function(){
+          $(this.children[0]).fadeToggle()
+          $(this.children[1]).fadeToggle()
+          $(this.children[2]).fadeToggle()
+        })
+      },0)
+    }
   };
 </script>
 

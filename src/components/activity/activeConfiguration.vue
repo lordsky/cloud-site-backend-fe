@@ -108,7 +108,7 @@
         pageSize:10,
         listLoading: false,
         sels: [],//列表选中列
-        timeData: [new Date(), new Date().setFullYear(new Date().getFullYear()+1)],
+        timeData: [],
         btnShow: '',
         componTitle: '',
         classBtn: 1,
@@ -178,10 +178,10 @@
         this.addCatRequest.catName = ''
       },
       //新增活动
-      bannerAdd(){
+      activeAdd(){
         this.$router.push({
           path:'/activeAdd',
-          query:{text:'新增活动',pageId:1}
+          query:{text:'活动新增',pageId:1}
         })
       },
       //  新模版件分类

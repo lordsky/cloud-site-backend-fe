@@ -41,7 +41,7 @@
         </div>
         <img v-if="banner.imageUrl" :src="banner.imageUrl" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        <div class="el-upload__tip" slot="tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
+        <div class="el-upload__tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
         <el-dialog :visible.sync="dialogVisible">
           <img width="100%" :src="banner.imageUrl" alt="">
         </el-dialog>
