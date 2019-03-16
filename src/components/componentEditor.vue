@@ -9,7 +9,7 @@
         <div class="compon-edit-seek">
           <span>查询组件：</span>
           <el-input type="text" placeholder="输入组件名称" v-model="queryItem" />
-          <el-button type="primary" size="small" @click="queryComponent">查询</el-button>
+          <el-button type="primary" size="small" @click="queryComponent" :disabled="!this.queryItem">查询</el-button>
         </div>
       </p>
       <div class="compon-edit-add">
@@ -79,11 +79,7 @@
     methods: {
       //查询组件
       queryComponent() {
-        if(!this.queryItem) {
-          this.$message.error('请输入组件名称')
-          return
-        }
-        this.$http.get(this.$API.componentList + '?catId=' + this.$route.query.msg.id + '&name=' + this.queryItem, (res) => {
+        this.$http.get(this.$API.componentList + '?catId=' + this.options.id + '&name=' + this.queryItem, (res) => {
           console.log(res)
           if(res.data.code == 200) {
             if(res.data.data.length == 0) {

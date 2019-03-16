@@ -11,7 +11,7 @@
             <el-input v-model="data.phone" placeholder="请输入管理员账号" ></el-input>
           </el-form-item>
           <el-form-item prop="pwd">
-            <el-input type="password" v-model="data.pwd" placeholder="请输入密码"></el-input>
+            <el-input type="password" v-model="data.pwd" placeholder="请输入密码" @keyup.enter.native="login"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="login">立即登录</el-button>
@@ -53,6 +53,9 @@
         }
       }
     },
+    computed:{
+    	 
+    },
     methods: {
       //登录
       login() {
@@ -73,6 +76,9 @@
             return false;
           }
       	})
+      },
+      a(){
+      	console.log('1')
       }
     }
   }

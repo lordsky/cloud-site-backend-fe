@@ -11,5 +11,7 @@ hostConfig.hostUrl = 'http://six-pulse-nerve-gateway-test.uworks.cc';
 hostConfig.hostUrl = 'http://six-pulse-nerve-gateway-dev.uworks.cc';
 }else{
 hostConfig.hostUrl = 'http://six-pulse-nerve-gateway-dev.uworks.cc';
+//hostConfig.hostUrl = 'http://192.168.4.31:8872';
+
 }
 export default hostConfig

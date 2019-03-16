@@ -73,7 +73,6 @@
 </template>
 
 <script>
-	
   export default {
     name: 'userData',
     data() {
@@ -136,26 +135,27 @@
         });
       },
       getUserList(state){
+      	let obj = {}
       	let timeStatr = ''
       	let timeEnd = ''
-      	let account = this.fromUser.account?this.fromUser.account:''
-      	let status = this.fromUser.state?this.fromUser.state:''
-      	let url = ''
-      	if(this.fromUser.timeData){
+      	let status = this.fromUser.state
+      	let account = this.fromUser.account
+      	let url = this.$API.userList
+        if(this.fromUser.timeData){
       		timeStatr = this.$http.getLocalTime(this.fromUser.timeData[0])
       		timeEnd = this.$http.getLocalTime(this.fromUser.timeData[1])
+      		obj.timeStatr = timeStatr
+      		obj.timeEnd = timeEnd
       	}
-      	if(state==true){
-      		url = this.$API.userList+'?account='+account+'&status='+status+'&start='+timeStatr+'&end='+timeEnd
-      	}else{
-      		url = this.$API.userList
-      	}
+        status?obj.status = status : ''
+        account?obj.account = account : ''
       	this.$http.get(url,(res)=>{
       		console.log(res)
       		if(res.data.code===200){
       			this.tableData = res.data.data
-      			
       		}
+      	},{
+      		params:obj
       	})
       }
     },
@@ -171,7 +171,6 @@
   .userData {
     margin-top: 10px;
   }
-  
   .user-table {
     margin-top: 30px;
     margin-bottom: 30px;

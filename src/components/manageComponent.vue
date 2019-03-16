@@ -9,7 +9,7 @@
         <span>组件分类:</span>
         <el-input placeholder="请输入组件分类名称" v-model="queryText"></el-input>
         <el-button type="primary" size="small" @click="queryList">查询</el-button>
-        <el-button type="primary" size="small" @click="deleteAll">批量删除</el-button>
+        <el-button type="primary" size="small" @click="deleteAll" :disabled="this.delList.length===0">批量删除</el-button>
         <el-button type="primary" size="small" @click="addComponClass">新增组件分类</el-button>
         <el-button type="primary" size="small" @click="addComponent">新增组件</el-button>
       </div>
@@ -85,7 +85,6 @@
 <script>
   import host from './config/host'
   import { Message } from 'element-ui';
-
   export default {
     name: 'manageComponent',
     data() {
@@ -120,7 +119,7 @@
         pageSize: 8,
         pageAll: 0,
         componentName: '',
-        currentPage: 0
+        currentPage: 0,
       }
     },
     watch: {
@@ -133,9 +132,7 @@
     created() {
       this.refreshTable()
     },
-    components: {
-
-    },
+    
     methods: {
       //分页
       handleCurrentChange(val) {
@@ -145,7 +142,6 @@
 
       //批量删除
       deleteAll() {
-        if(this.delList) {
           this.$http.post(this.$API.componentDel, {
             catIds: this.delList
           }, (res) => {
@@ -153,7 +149,6 @@
               this.refreshTable('删除成功')
             }
           })
-        }
       },
       uploadText(e) {
         var file = e.target.files[0]

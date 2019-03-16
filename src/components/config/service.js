@@ -7,8 +7,6 @@ const API = {
 	 */
 	userList:'backend/showUserList',
    
-	
-	
 	/*
 	 * 组件 component
 	 */

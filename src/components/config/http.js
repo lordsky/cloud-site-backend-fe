@@ -82,9 +82,9 @@ const http = {
 		    loadingInstance.close();
 		})
 	},
-	get:function(url,success){
+	get:function(url,success,data){
 		let loadingInstance = Loading.service(options);
-		instance.get(url).then((res)=>{
+		instance.get(url,data).then((res)=>{
 			loadingInstance.close();
 			success(res)
 		}).catch((e)=>{
