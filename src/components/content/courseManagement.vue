@@ -401,7 +401,9 @@
       },
       //管理course
       managecourse(index,row){
-
+        this.$router.push({
+          path:'/courseList'
+        })
       },
       //编辑course
       editcourse(index,row){

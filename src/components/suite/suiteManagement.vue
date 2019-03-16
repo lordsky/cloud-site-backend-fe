@@ -149,7 +149,7 @@
         this.editShow = true
         this.addCatRequest.id = row.id
         this.addCatRequest.catName = row.catName;
-        this.componTitle = '编辑组件分类'
+        this.componTitle = '编辑套件分类'
         this.dialogStu = 'edit'
         //this.dialogText = '导航'
       },

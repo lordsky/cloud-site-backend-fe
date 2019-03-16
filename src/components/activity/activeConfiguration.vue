@@ -290,12 +290,10 @@
 
         });
       },
-      //管理
+      //查看
       manageCompon(index, row) {
-        this.$store.commit('saveTemplateData', row)
         this.$router.push({
-          path: '/templateEditor',
-          query:{text:row.catName,pageId:1,catIndex:index}
+          path: '/activeItems'
         })
       },
       //保存
@@ -364,7 +362,7 @@
       },
     },
     mounted() {
-      this.getComponList();
+      // this.getComponList();
     }
   }
 </script>

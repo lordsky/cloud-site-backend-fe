@@ -171,7 +171,7 @@
         this.clear()
         this.dialogVisible = true
         this.editShow = true
-        this.componTitle = '新增模版分类'
+        this.componTitle = '新增模板分类'
         this.dialogStu = 'addClass'
         this.dialogText = '不超过6个字符'
       },
@@ -183,7 +183,7 @@
         this.addCatRequest.id = row.id
         this.addCatRequest.catName = row.catName;
         this.addCatRequest.catExt = row.catExt;
-        this.componTitle = '编辑组件分类'
+        this.componTitle = '编辑模板分类'
         this.dialogStu = 'edit'
         //this.dialogText = '导航'
       },

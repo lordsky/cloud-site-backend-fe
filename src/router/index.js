@@ -25,8 +25,10 @@ import Banner from '@/components/activity/banner'//banner管理
 import BannerAdd from '@/components/activity/bannerAdd'//banner新增
 import ActiveConfiguration from '@/components/activity/activeConfiguration'//活动配置
 import ActiveAdd from '@/components/activity/activeAdd'//活动新增
+import ActiveItems from '@/components/activity/activeItems'//活动详情
 import CourseManagement from '@/components/content/courseManagement'//教程管理
 import CourseAdd from '@/components/content/courseAdd'//教程新增
+import CourseList from '@/components/content/courseList'//教程新增
 import CaseManagement from '@/components/content/caseManagement'//案例管理
 import CaseAdd from '@/components/content/caseAdd'//案例新增
 import OperationLog from '@/components/system/operationLog'//操作日志
@@ -167,6 +169,11 @@ export default new Router({
         component: ActiveAdd
       },
       {
+        path: '/activeItems',
+        name: 'activeItems',
+        component: ActiveItems
+      },
+      {
         path: '/courseManagement',
         name: 'courseManagement',
         component: CourseManagement
@@ -175,6 +182,11 @@ export default new Router({
         path: '/courseAdd',
         name: 'courseAdd',
         component: CourseAdd
+      },
+      {
+        path: '/courseList',
+        name: 'courseList',
+        component: CourseList
       },
       {
         path: '/caseManagement',

@@ -102,6 +102,11 @@ const navHead = [{
     text: ['活动管理','活动配置','新增活动']
   },
   {
+    path: 'activeItems',
+    index: '5-2',
+    text: ['活动管理','活动配置','活动详情']
+  },
+  {
     path: 'courseManagement',
     index: '6-1',
     text: ['内容管理','教程管理']
@@ -120,6 +125,11 @@ const navHead = [{
     path: 'caseAdd',
     index: '6-2',
     text: ['内容管理','教程管理','新增案例']
+  },
+  {
+    path: 'courseList',
+    index: '6-1',
+    text: ['内容管理','教程管理','教程详情']
   },
   {
     path: 'operationLog',
