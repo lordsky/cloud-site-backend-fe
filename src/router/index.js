@@ -2,10 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/login'//登录
 import Management from '@/components/management'//管理首页
-import UserData from '@/components/userData'//用户管理
-import UserInfo from '@/components/userInfo'//用户信息
-import ManageComponent from '@/components/manageComponent'//模板管理
-import ComponentEditor from '@/components/componentEditor'//组件管理
+import UserData from '@/components/user/userData'//用户管理
+import UserInfo from '@/components/user/userInfo'//用户信息
+import PasswordChange from '@/components/user/passwordChange'//密码修改
+import ManageComponent from '@/components/component/manageComponent'//模板管理
+import ComponentEditor from '@/components/component/componentEditor'//组件管理
 import AllTemplate from '@/components/template/allTemplate'//全部模版
 import TemplateEditor from '@/components/template/templateEditor'//模版管理
 import AddTemplate from '@/components/template/addTemplate'//新增模版
@@ -16,10 +17,10 @@ import SuiteEditor from '@/components/suite/suiteEditor'//套件管理-编辑套
 import SuiteClassification from '@/components/suite/suiteClassification'//套件管理
 import WebsiteEditor from '@/components/suite/websiteEditor'//套件管理--网站编辑器
 import WebsiteUpdate from '@/components/suite/websiteUpdate'//套件管理--网站编辑器
-import SiteManage from '@/components/siteManage'//站点管理
+import SiteManage from '@/components/siteManage/siteManage'//站点管理
 import Preview from '@/components/suite/preview'//预览套件设计页面
 import PreviewTemplate from '@/components/suite/previewTemplate'//预览模板查询页面
-import PictureManage from '@/components/pictureManage'//素材库
+import PictureManage from '@/components/materialManage/pictureManage'//素材库
 import Banner from '@/components/activity/banner'//banner管理
 import BannerAdd from '@/components/activity/bannerAdd'//banner新增
 import ActiveConfiguration from '@/components/activity/activeConfiguration'//活动配置
@@ -31,6 +32,10 @@ import CaseAdd from '@/components/content/caseAdd'//案例新增
 import OperationLog from '@/components/system/operationLog'//操作日志
 import Backup from '@/components/system/backup'//操作日志
 import InformationSet from '@/components/system/informationSet'//操作日志
+import WorkersManage from '@/components/rightsManage/workersManage'//员工管理
+import RoleManage from '@/components/rightsManage/roleManage'//角色管理
+
+
 
 Vue.use(Router)
 
@@ -60,6 +65,11 @@ export default new Router({
 		  path: '/userData',
 		  name: 'userData',
 		  component: UserData,
+		 },
+		 {
+		  path: '/passwordChange',
+		  name: 'passwordChange',
+		  component: PasswordChange,
 		 },
 		 {
 		  path: '/userInfo',
@@ -190,7 +200,22 @@ export default new Router({
         path: '/informationSet',
         name: 'informationSet',
         component: InformationSet
-      }
+      },
+      {
+        path: '/backup',
+        name: 'backup',
+        component: Backup
+      },
+      {
+        path: '/workersManage',
+        name: 'workersManage',
+        component: WorkersManage
+      },
+      {
+        path: '/roleManage',
+        name: 'roleManage',
+        component: RoleManage
+      },
       ]
     }]
 

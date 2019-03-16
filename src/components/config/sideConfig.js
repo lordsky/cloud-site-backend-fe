@@ -69,16 +69,18 @@ const navHead = [{
     index: '2-3',
     text: ['模板管理', '模板套件']
   },
+  
   {
     path: 'siteManage',
     index: '3',
     text: ['站点管理']
   },
   {
-    path: 'pictureManage',
-    index: '4',
-    text: ['素材库']
+    path: 'passwordChange',
+    index: '4-1',
+    text: ['安全设置','登陆密码设置']
   },
+  
   {
     path: 'banner',
     index: '5-1',
@@ -133,7 +135,22 @@ const navHead = [{
     path: 'informationSet',
     index: '7-3',
     text: ['系统设置','平台基本信息设置']
-  }
+  },
+  {
+    path: 'workersManage',
+    index: '8-1',
+    text: ['权限管理','员工管理']
+  },
+  {
+    path: 'roleManage',
+    index: '8-2',
+    text: ['权限管理','角色管理']
+  },
+  {
+    path: 'pictureManage',
+    index: '9',
+    text: ['素材库']
+  },
 ]
 //侧边栏信息
 const sideText = [
@@ -172,17 +189,21 @@ const sideText = [
 {
     title: '站点管理',
     index: '3',
-    ico: 'el-icon-sort',
+    ico: 'el-icon-share',
     path: '/siteManage',
     list: []
 },
-  {
-    title: '素材库',
-    index: '4',
-    ico: 'el-icon-picture-outline',
-    path: '/pictureManage',
-    list: []
-  },
+// {
+//  title: '安全设置',
+//  index: '4',
+//  ico: 'el-icon-view',
+//  list: [{
+//      name: '登陆密码设置',
+//      index: '4-1',
+//      path: '/passwordChange'
+//    },
+//  ]
+//},
   // {
   //  title: '活动管理',
   //  index: '5',
@@ -242,6 +263,29 @@ const sideText = [
   //     }
   //   ]
   // }
+//{
+//  title: '权限管理',
+//  index: '8',
+//  ico: 'el-icon-refresh',
+//  list: [{
+//      name: '员工管理',
+//      index: '8-1',
+//      path: '/workersManage'
+//    },
+//    {
+//      name: '角色管理',
+//      index: '8-2',
+//      path: '/roleManage'
+//    },
+//  ]
+//},
+  {
+    title: '素材库',
+    index: '9',
+    ico: 'el-icon-picture-outline',
+    path: '/pictureManage',
+    list: []
+  },
 ]
 
 function setNav(router, val) {
