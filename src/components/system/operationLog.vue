@@ -128,8 +128,8 @@
   }
 </script>
 
-<style lang="scss" scoped>
-  .operation-head {
+<style lang="scss">
+  .operation {
     margin-top: 10px;
     .operation-head-class {
       align-items: center;
@@ -155,29 +155,27 @@
         background: #409eff;
       }
     }
-  }
-
-  .el-componClassBtn {
-    display: flex;
-    justify-content: center;
-  }
-  .pagination{
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-  }
-
-  .operation-box {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    .el-table {
-      height: auto !important;
+    .el-componClassBtn {
+      display: flex;
+      justify-content: center;
     }
-    th {
-      background: #add4ff;
-      color: white;
+    .pagination{
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .operation-box {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      .el-table {
+        height: auto !important;
+      }
+      th {
+        background: #add4ff;
+        color: white;
+      }
     }
   }
-
 
 </style>

@@ -1,14 +1,14 @@
 <template>
-  <div class="compent">
+  <div class="active">
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <div>
           <el-form-item label="活动名称:">
-          <el-input v-model="filters.name" placeholder="请输入关键字" clearable></el-input>
+            <el-input v-model="filters.name" placeholder="请输入关键字" clearable></el-input>
           </el-form-item>
           <el-form-item label="发布时间:">
-          <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
+            <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+            </el-date-picker>
           </el-form-item>
           <el-form-item label="状态">
             <el-select v-model="activeState" placeholder="请选择套件分类" class="el-select-banner">
@@ -24,7 +24,7 @@
         </el-form-item>
       </el-form>
     </el-col>
-    <div class="compent-box">
+    <div class="active-box">
       <el-table :data="templateTypeLsit"  border style="width: 100%" tooltip-effect="dark"
                 v-loading="listLoading" @selection-change="selsChange">
         <el-table-column type="selection" width="55" align="center">
@@ -48,8 +48,8 @@
     </div>
 
     <div class="pagination">
-    <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
-    </el-pagination>
+      <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
+      </el-pagination>
     </div>
 
     <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
@@ -367,10 +367,10 @@
   }
 </script>
 
-<style lang="scss" scoped>
-  .compent-head {
+<style lang="scss">
+  .active {
     margin-top: 10px;
-    .compent-head-class {
+    .active-head-class {
       align-items: center;
       display: flex;
       .el-input {
@@ -378,11 +378,11 @@
         margin: 0 10px 0 10px;
       }
     }
-    .compent-head-type {
+    .active-head-type {
       display: flex;
       align-items: center;
       margin-bottom: 10px;
-      .compent-head-btn {
+      .active-head-btn {
         padding: 5px 12px 5px 12px;
         font-size: 14px;
         margin-left: 10px;
@@ -394,29 +394,30 @@
         background: #409eff;
       }
     }
+    .el-componClassBtn {
+      display: flex;
+      justify-content: center;
+    }
+    .pagination{
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .active-box {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      .el-table {
+        height: auto !important;
+      }
+      th {
+        background: #add4ff;
+        color: white;
+      }
+    }
   }
 
-  .el-componClassBtn {
-    display: flex;
-    justify-content: center;
-  }
-  .pagination{
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-  }
 
-  .compent-box {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    .el-table {
-      height: auto !important;
-    }
-    th {
-      background: #add4ff;
-      color: white;
-    }
-  }
 
 
 </style>

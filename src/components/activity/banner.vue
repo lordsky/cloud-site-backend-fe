@@ -156,7 +156,7 @@
     }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .banner {
     margin-top: 10px;
     /*display: flex;*/
@@ -190,20 +190,20 @@
       justify-content: center;
       margin-bottom: 10px;
     }
-  }
-  .bannner-box {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    .el-table {
-      height: auto !important;
+    .bannner-box {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      .el-table {
+        height: auto !important;
+      }
+      th {
+        background: #add4ff;
+        color: white;
+      }
     }
-    th {
-      background: #add4ff;
-      color: white;
+    .drag{
+      font-size: 24px;
+      cursor: pointer;
     }
-  }
-  .drag{
-    font-size: 24px;
-    cursor: pointer;
   }
 </style>

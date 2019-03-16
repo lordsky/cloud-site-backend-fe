@@ -408,7 +408,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .case {
     margin-top: 10px;
     /*display: flex;*/
@@ -434,17 +434,6 @@
       display: flex;
       justify-content: center;
       margin-bottom: 10px;
-    }
-  }
-  .bannner-box {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    .el-table {
-      height: auto !important;
-    }
-    th {
-      background: #add4ff;
-      color: white;
     }
   }
   .drag{
@@ -481,6 +470,17 @@
 </style>
 <style lang="scss">
   .case{
+    .bannner-box {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      .el-table {
+        height: auto !important;
+      }
+      th {
+        background: #add4ff;
+        color: white;
+      }
+    }
     .el-tree-node__content{
       height: 40px;
     }

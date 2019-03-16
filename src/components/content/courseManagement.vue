@@ -450,21 +450,10 @@
       justify-content: center;
       margin-bottom: 10px;
     }
-  }
-  .bannner-box {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    .el-table {
-      height: auto !important;
+    .drag{
+      font-size: 24px;
+      cursor: pointer;
     }
-    th {
-      background: #add4ff;
-      color: white;
-    }
-  }
-  .drag{
-    font-size: 24px;
-    cursor: pointer;
   }
   /*顶部按钮*/
   .slot-tree .slot-t-top{
@@ -496,6 +485,17 @@
 </style>
 <style lang="scss">
   .course{
+    .bannner-box {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      .el-table {
+        height: auto !important;
+      }
+      th {
+        background: #add4ff;
+        color: white;
+      }
+    }
     .el-tree-node__content{
       height: 40px;
     }
