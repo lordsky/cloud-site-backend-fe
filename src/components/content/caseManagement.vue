@@ -41,6 +41,7 @@
             :filter-node-method="filterNode"
             @node-contextmenu='rihgtClick'
             accordion
+            :highlight-current="true"
           >
             <span class="slot-t-node" slot-scope="{ node, data }">
               <span v-show="!node.isEdit">
@@ -484,16 +485,20 @@
       height: 40px;
     }
     .el-tree-node:focus>.el-tree-node__content {
-      background-color: #4d78ff;
+      background-color: #409EFF;
       color: white;
     }
     .el-tree-node__content:hover {
-      background-color: #4d78ff;
+      background-color: #409EFF;
       color: white;
     }
     .el-dialog--center .el-dialog__body {
       text-align: initial;
       padding: 0 20px;
+    }
+    .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+      background-color: #409EFF;
+      color: white;
     }
   }
 </style>

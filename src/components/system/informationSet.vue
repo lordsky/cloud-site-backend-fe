@@ -43,6 +43,31 @@
                 </div>
               </el-tab-pane>
               <el-tab-pane label="LOGO" name="LOGO">
+                <div style="overflow: hidden;display: flex">
+                  <label style="font-size: 20px">logo:</label>
+                  <div style="margin-left: 20px">
+                  <el-upload
+                    ref='upload'
+                    class="avatar-uploader"
+                    :action="host.hostUrl+'/common/upload'"
+                    :show-file-list="false"
+                    :on-change="handleChange"
+                    :before-upload="beforeUpLoad"
+                    :auto-upload="false">
+                    <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
+                      <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
+                      <div v-if="imageUrl" :class="{'delItem':showDel}">
+                        <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible3=true"></i>
+                        <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
+                      </div>
+                    </div>
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    <div class="el-upload__tip" slot="tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
+                  </el-upload>
+                    <el-button style="position: absolute;left: 350px;bottom: 30px" size="small" type="primary">重新上传</el-button>
+                  </div>
+                </div>
               </el-tab-pane>
               <el-tab-pane label="底部(友情链接)" name="footerUrl">
                 <el-table :data="tableData2"  style="width: 100%" tooltip-effect="dark" row-key="id"
@@ -68,7 +93,7 @@
                 <div style="margin-top: 20px">
                   <el-button type="primary" >全选</el-button>
                   <el-button type="primary" :disabled="this.sels.length===0">批量删除</el-button>
-                  <el-button type="primary" @click="dialogUrl('add')">新增链接</el-button>
+                  <el-button type="primary" @click="dialogUrl('add')" :disabled="tableData2.length>=6">新增链接</el-button>
                 </div>
               </el-tab-pane>
             </el-tabs>
@@ -93,16 +118,18 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="500px" center :show-close="false" :close-on-click-modal="false">
       <el-form :inline="true" :model="formCompon2" class="demo-form-inline" ref="formCompon2">
         <el-form-item label="友链名称:" prop="name" :rules="[{required: true, message: '友链名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
-        <el-input v-model="formCompon2.name"></el-input>
+        <el-input v-model="formCompon2.name" placeholder="请输入友链名称"></el-input>
       </el-form-item>
         <el-form-item label="友链链接:" prop="url" :rules="[{required: true, message: '友链链接不能为空'}]">
-          <el-input v-model="formCompon2.url" width="100%"></el-input>
+          <el-input v-model="formCompon2.url" placeholder="请输入友链链接"></el-input>
         </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
+        <el-form-item>
+          <div class="dialog-footer" style="width: 100%;margin-left: 50%">
         <el-button @click="resetForm">取消</el-button>
         <el-button type="primary" @click="dialogVisible=false">确定</el-button>
-      </span>
+      </div>
+        </el-form-item>
+      </el-form>
     </el-dialog>
     <!--修改页面名称弹框-->
   </div>
@@ -110,10 +137,15 @@
 
 <script>
   import Sortable from 'sortablejs'
+  import host from '../config/host'
+  import fileUtil from '../config/fileUtil'
   export default {
     name: "information",
     data() {
       return {
+        host:host,
+        imageUrl:'',
+        showDel:false,
         dialogTitle:'',
         radio:'显示',
         formCompon:{
@@ -125,6 +157,7 @@
         },
         dialogVisible:false,
         dialogVisible2:false,
+        dialogVisible3:false,
         page:1,
         pageSize:10,
         activeShow:0,
@@ -209,6 +242,7 @@
       //清空查询
       resetForm(){
         this.dialogVisible = false
+        this.$refs['formCompon2'].resetFields();
       },
       editName(data){
         this.dialogVisible2 = true
@@ -273,6 +307,49 @@
         this.pageSize = val;
         this.getComponList();
       },
+      beforeUpLoad(file) {
+        return new Promise((resolve) => {
+          fileUtil.getOrientation(file).then((orient) => {
+            if (orient && orient === 6) {
+              let reader = new FileReader()
+              let img = new Image()
+              reader.onload = (e) => {
+                img.src = e.target.result
+                img.onload = function () {
+                  const data = fileUtil.rotateImage(img, img.width, img.height)
+                  const newFile = fileUtil.dataURLtoFile(data, file.name)
+                  resolve(newFile)
+                }
+              }
+              reader.readAsDataURL(file)
+            } else {
+              resolve(file)
+            }
+          })
+        })
+      },
+      handleChange(file){
+        const isType = file.raw.type === 'image/jpeg' || file.raw.type === 'image/png';
+        const isLt10M = file.size / 1024 / 1024 < 10;
+
+        if (!isType) {
+          this.$message.error('上传背景图片只能是 JPG、PNG 格式!');
+        }
+        if (!isLt10M) {
+          this.$message.error('上传背景图片大小不能超过 10MB!');
+        }
+        let upload = isType && isLt10M
+        if(upload != true){
+          return
+        }
+        if(file.response != undefined){
+          this.suite.imageUrl = file.response;
+        }else {
+          this.suite.imageUrl = URL.createObjectURL(file.raw);
+        }
+        let oV1 =  document.getElementsByClassName('el-upload__input')
+        oV1[0].disabled=true
+      },
       //行拖拽
       rowDrop() {
         const tbody = document.querySelector('.table .el-table__body-wrapper tbody')
@@ -309,16 +386,18 @@
       box-shadow: 0 0 10px #cccccc;
       margin-right: 20px;
       white-space: nowrap;
+      padding: 30px;
       div{
         cursor: pointer;
-        padding: 15px 30px;
+        padding: 12px 30px;
         cursor: pointer;
         &:hover{
-          transform: translateX(10px);
+          background-color: #409EFF;
+          color: white;
         }
       }
       .information-left-show{
-        background-color: #3c7bff;
+        background-color: #409EFF;
         color: white;
       }
     }
@@ -354,6 +433,29 @@
 </style>
 <style lang="scss">
   .information{
+    .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+      border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 275px;
+      height: 148px;
+      line-height: 148px;
+      text-align: center;
+    }
+    .avatar {
+      width: 275px;
+      height: 148px;
+      display: block;
+    }
     .el-dialog--center .el-dialog__body {
       text-align: initial;
       padding: 0 20px;

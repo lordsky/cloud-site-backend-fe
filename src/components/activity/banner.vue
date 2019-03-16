@@ -166,16 +166,18 @@
       box-shadow: 0 0 10px #cccccc;
       margin-right: 20px;
       white-space: nowrap;
+      padding: 30px;
       div{
         cursor: pointer;
-        padding: 15px 30px;
+        padding: 12px 30px;
         cursor: pointer;
         &:hover{
-          transform: translateX(10px);
+          background-color: #409EFF;
+          color: white;
         }
       }
       .banner-left-show{
-        background-color: #3c7bff;
+        background-color: #409EFF;
         color: white;
       }
     }
