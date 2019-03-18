@@ -332,13 +332,17 @@
         let menu = document.querySelector("#rightClickMenu");
         /* 菜单定位基于鼠标点击位置 */
         if(event.clientX>300){
-          menu.style.left = (event.clientX - 250)/16 + "vw";
-        }else if(event.clientX>500){
-          menu.style.left = (event.clientX - 300)/16 + "vw";
+          menu.style.left = event.clientX / 16 - 15 + "vw";
         }else{
-          menu.style.left = (event.clientX - 100)/16 + "vw";
+          menu.style.left = event.clientX/16 - 5 + "vw";
         }
-        menu.style.top = (event.clientY - 200)/16 + "vw";
+        if(event.clientX>400){
+          menu.style.left = event.clientX /16 - 20 + "vw";
+        }
+        if(event.clientX>500){
+          menu.style.left = event.clientX /16 - 25 + "vw";
+        }
+        menu.style.top = event.clientY / 16 - 6 + "vh";
         menu.style.position = "absolute"; // 为新创建的DIV指定绝对定位
         menu.style.width = 100 + "px";
         // menu.style.backgroundColor = '#646464';
@@ -420,7 +424,7 @@
       white-space: nowrap;
       div{
         cursor: pointer;
-        padding: 15px 30px;
+        padding: 15px 10px;
       }
       .case-left-show{
         background-color: #3c7bff;
