@@ -2,7 +2,7 @@
   <div class="course-header">
     <div class="main_title">
      <span>{{titleList.title}}</span>
-     <p v-if="titleList.list"><span>发布日期：2019.1.1</span><span>浏览次数：123123</span></p>
+     <p><span>发布日期：2019.1.1</span><span>浏览次数：123123</span></p>
     </div>
     <div class="main__input">
       <el-input placeholder="请输入您的问题,例如：绑定域名"></el-input><i class="el-icon-search seek"></i>

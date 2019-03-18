@@ -27,8 +27,8 @@
             <div v-if="item.onlineStatus == 0 && delShow!=i" :class="{'delItem2': delShow!=i}" style="text-align: center;color: white;font-size: 24px">已下线</div>
             <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
             <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}" @click="preview(item)"></i>
-            <i v-if="item.onlineStatus == 1" class="el-icon-download template-edit-ico" :class="{'icoShow':delShow==i}" @click="offlineSuite(item.id)"></i>
-            <i v-if="item.onlineStatus == 0" class="el-icon-upload2 template-edit-ico" :class="{'icoShow':delShow==i}" @click="popSuite(item.id)"></i>
+            <span v-if="item.onlineStatus == 1" class="iconfont icon-arrow-bottom template-edit-ico" :class="{'icoShow':delShow==i}" @click="offlineSuite(item.id)"></span>
+            <span v-if="item.onlineStatus == 0" class="iconfont icon-arrow-top template-edit-ico" :class="{'icoShow':delShow==i}" @click="popSuite(item.id)"></span>
             <i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(item.id)"></i>
             </div>
             </li>
@@ -55,7 +55,7 @@
     methods: {
       //删除组件
       delComponent(index) {
-        this.$confirm('是否删除该组件?', '提示', {
+        this.$confirm('是否删除该模板?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -82,7 +82,7 @@
       },
       //上线
       popSuite(id) {
-        this.$confirm('确认上线该套件吗?', '提示', {
+        this.$confirm('确认上线该模板吗?', '提示', {
           type: 'warning'
         }).then(() => {
           this.$api.apiOnlineOperate({
@@ -103,7 +103,7 @@
       },
       //下线
       offlineSuite(id) {
-        this.$confirm('确认下线该套件吗?', '提示', {
+        this.$confirm('确认下线该模板吗?', '提示', {
           type: 'warning'
         }).then(() => {
           this.$api.apiOnlineOperate({

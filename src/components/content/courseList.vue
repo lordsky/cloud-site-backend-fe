@@ -4,20 +4,20 @@
       <div class="main-content">
       	<div class="main-content-left">
       		<CourseSeek :titleList="titleList"></CourseSeek>
-      		<div class="main-content-left-list" v-if="listShow">
-      			<div class="main-content-left-item" v-for="x in 2">
-      				<img src="@/assets/img/5.jpg" alt="" />
-      				<div class="main-content-left-item-text">
-      				   <div class="main-content-left-item-text-title">
-      				   	<p>我已经有一个域名了，如何绑定到云建站？（视频教程）</p>
-      				   	<span>发布日期：2018.12.13</span><span>分类：云建站素材 邮箱和域名</span>
-      				   </div>
-      				   <p class="main-content-left-item-text__detail">那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮。</p>
-      				   <span class="main-content-left-item-text__btn" @click="jumpDetail">阅读正文&gt;</span>
-      				</div>
-      			</div>
-      		</div>
-      		<CourseItem v-else/>
+      		<!--<div class="main-content-left-list" v-if="listShow">-->
+      			<!--<div class="main-content-left-item" v-for="x in 2">-->
+      				<!--<img src="@/assets/img/5.jpg" alt="" />-->
+      				<!--<div class="main-content-left-item-text">-->
+      				   <!--<div class="main-content-left-item-text-title">-->
+      				   	<!--<p>我已经有一个域名了，如何绑定到云建站？（视频教程）</p>-->
+      				   	<!--<span>发布日期：2018.12.13</span><span>分类：云建站素材 邮箱和域名</span>-->
+      				   <!--</div>-->
+      				   <!--<p class="main-content-left-item-text__detail">那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮。</p>-->
+      				   <!--<span class="main-content-left-item-text__btn" @click="jumpDetail">阅读正文&gt;</span>-->
+      				<!--</div>-->
+      			<!--</div>-->
+      		<!--</div>-->
+      		<CourseItem/>
       	</div>
       	<div class="main-content-right">
       	 <div class="main-right-tutorial">
@@ -38,24 +38,24 @@
       	   	  </ul>
       	   </div>
       	   </div>
-      	   <div class="main-right-hot">
-      	   <div class="main-content-right-head">
-      	   	 <i class="el-icon-menu"></i><span>热门分类</span>
-      	   </div>
-      	   <div class="main-content-right-class">
-      	   	  <ul class="main-content-list" v-for="(x,i) in 3" :key="i">
-      	   	  	<li @click="isItemShow = i" >基础组件(视频教程)
-      	   	  		<i :class="isItemShow==i?'el-icon-arrow-down':'el-icon-arrow-right'"></i>
-      	   	  	</li>
-      	   	  	<ul class="main-content-item" :class="{'show':isItemShow==i}">
-      	   	  			<li>网站管理</li>
-      	   	  			<li>网站备案</li>
-      	   	  			<li>邮箱和域名</li>
-      	   	  			<li>SEO搜索引擎优化</li>
-      	   	   </ul>
-      	   	  </ul>
-      	   </div>
-      	   </div>
+      	   <!--<div class="main-right-hot">-->
+      	   <!--<div class="main-content-right-head">-->
+      	   	 <!--<i class="el-icon-menu"></i><span>热门分类</span>-->
+      	   <!--</div>-->
+      	   <!--<div class="main-content-right-class">-->
+      	   	  <!--<ul class="main-content-list" v-for="(x,i) in 3" :key="i">-->
+      	   	  	<!--<li @click="isItemShow = i" >基础组件(视频教程)-->
+      	   	  		<!--<i :class="isItemShow==i?'el-icon-arrow-down':'el-icon-arrow-right'"></i>-->
+      	   	  	<!--</li>-->
+      	   	  	<!--<ul class="main-content-item" :class="{'show':isItemShow==i}">-->
+      	   	  			<!--<li>网站管理</li>-->
+      	   	  			<!--<li>网站备案</li>-->
+      	   	  			<!--<li>邮箱和域名</li>-->
+      	   	  			<!--<li>SEO搜索引擎优化</li>-->
+      	   	   <!--</ul>-->
+      	   	  <!--</ul>-->
+      	   <!--</div>-->
+      	   <!--</div>-->
       	</div>
       	
       </div>
@@ -71,7 +71,7 @@
     data() {
       return {
         textList: ['教程中心', '教程列表'],
-        titleList:{title:'建站列表'},
+        titleList:{title:'我已经有一个域名了，如何绑定到云建站？（视频教程）'},
         listShow:true,
         isItemShow:0,
         classText:''

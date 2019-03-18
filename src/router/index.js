@@ -28,7 +28,7 @@ import ActiveAdd from '@/components/activity/activeAdd'//活动新增
 import ActiveItems from '@/components/activity/activeItems'//活动详情
 import CourseManagement from '@/components/content/courseManagement'//教程管理
 import CourseAdd from '@/components/content/courseAdd'//教程新增
-import CourseList from '@/components/content/courseList'//教程新增
+import CourseList from '@/components/content/courseList'//教程详情
 import CaseManagement from '@/components/content/caseManagement'//案例管理
 import CaseAdd from '@/components/content/caseAdd'//案例新增
 import OperationLog from '@/components/system/operationLog'//操作日志

@@ -158,49 +158,6 @@
       handleAvatarSuccess(res, file) {
         this.banner.imageUrl = URL.createObjectURL(file.raw);
       },
-      beforeUpLoad(file) {
-        return new Promise((resolve) => {
-          fileUtil.getOrientation(file).then((orient) => {
-            if (orient && orient === 6) {
-              let reader = new FileReader()
-              let img = new Image()
-              reader.onload = (e) => {
-                img.src = e.target.result
-                img.onload = function () {
-                  const data = fileUtil.rotateImage(img, img.width, img.height)
-                  const newFile = fileUtil.dataURLtoFile(data, file.name)
-                  resolve(newFile)
-                }
-              }
-              reader.readAsDataURL(file)
-            } else {
-              resolve(file)
-            }
-          })
-        })
-      },
-      handleChange(file){
-        const isType = file.raw.type === 'image/jpeg' || file.raw.type === 'image/png';
-        const isLt10M = file.size / 1024 / 1024 < 10;
-
-        if (!isType) {
-          this.$message.error('上传背景图片只能是 JPG、PNG 格式!');
-        }
-        if (!isLt10M) {
-          this.$message.error('上传背景图片大小不能超过 10MB!');
-        }
-        let upload = isType && isLt10M
-        if(upload != true){
-          return
-        }
-        if(file.response != undefined){
-          this.banner.imageUrl = file.response;
-        }else {
-          this.banner.imageUrl = URL.createObjectURL(file.raw);
-        }
-        let oV1 =  document.getElementsByClassName('el-upload__input')
-        oV1[0].disabled=true
-      },
       //获取组件列表
       getComponentList(val){
         this.$api.apiComponentByName(val).then(res => {
@@ -326,7 +283,7 @@
       }
     },
     created() {
-      this.getSuiteTypeList(3)
+      // this.getSuiteTypeList(3)
     }
   }
 </script>
