@@ -9,21 +9,22 @@
     	background-color="#001529" 
     	text-color="#a5acb3" 
     	active-text-color="#ecf1f5">
-      <el-submenu :index="item.index" v-for="(item,i) in sideText" :key="i" v-if="item.list.length>0" >
+      <el-submenu :index="item.index" v-for="(item,i) in sideText" :key="i" v-if="item.list.length>0&& !item.state" >
         <template slot="title">
           <i :class="item.ico"></i>
           <span slot="title">{{item.title}}</span>
         </template>
-        <el-menu-item-group v-for="(x,i) in item.list" :key="i">
+        <el-menu-item-group v-for="(x,i) in item.list" :key="i" v-show="!x.state">
           <el-menu-item :index="x.index">{{x.name}}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-       <el-menu-item :index="item.index" v-for="(item,i) in sideText" v-if="item.list.length==0" :key="i">
+       <el-menu-item :index="item.index" v-for="(item,i) in sideText" v-if="item.list.length==0&& !item.state" :key="i">
 	    <i :class="item.ico"></i>
 	    <span slot="title">{{item.title}}</span>
 	  </el-menu-item>
     </el-menu>
   </div>
+  
 </template>
 
 <script>

@@ -116,7 +116,7 @@
         copyTable: {},
         delList: [],
         pageNum: 1,
-        pageSize: 8,
+        pageSize: 10,
         pageAll: 0,
         componentName: '',
         currentPage: 0,
@@ -256,7 +256,7 @@
           url = this.$API.queryCompon + '?catType=1' + '&pageNum=' + this.pageNum + '&pageSize=' + this.pageSize
         } else {
           console.log('查询')
-          url = this.$API.queryCompon + '?catType=1&catName=' + this.queryText + '&catExt=' + type + '&pageNum=1' + '&pageSize=8'
+          url = this.$API.queryCompon + '?catType=1&catName=' + this.queryText + '&catExt=' + type + '&pageNum=1' + '&pageSize=10'
           this.currentPage = 1
         }
         this.$http.get(url, res => {

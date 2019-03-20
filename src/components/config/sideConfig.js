@@ -168,132 +168,160 @@ const sideText = [
     title: '用户管理',
     index: '1',
     ico: 'el-icon-tickets',
+    state:false,
+    deter:false,
     list: [{
         name: '个人资料',
         index: '1-1',
-        path: '/userData'
+        path: '/userData',
+        state:false,
       },
     ]
 },
-  {
+{
     title: '模板管理',
     index: '2',
     ico: 'el-icon-edit-outline',
+    state:false,
+    deter:false,
     list: [{
         name: '组件管理',
         index: '2-1',
-        path: '/manageComponent'
+        path: '/manageComponent',
+        state:false,
       },
       {
         name: '页面模板',
         index: '2-2',
-        path: '/allTemplate'
+        path: '/allTemplate',
+        state:false,
       },
       {
         name: '模板套件',
         index: '2-3',
-        path: '/suiteManagement'
+        path: '/suiteManagement',
+        state:false,
       }
     ]
-  },
+},
+ 
 {
     title: '站点管理',
     index: '3',
     ico: 'el-icon-share',
     path: '/siteManage',
+    state:false,
     list: []
 },
-// {
-//  title: '安全设置',
-//  index: '4',
-//  ico: 'el-icon-view',
-//  list: [{
-//      name: '登陆密码设置',
-//      index: '4-1',
-//      path: '/passwordChange'
-//    },
-//  ]
-// },
-//   {
-//    title: '活动管理',
-//    index: '5',
-//    ico: 'el-icon-menu',
-//    // path: '/banner',
-//    list: [
-//      {
-//        name: 'banner管理',
-//        index: '5-1',
-//        path: '/banner'
-//      },
-//      {
-//        name: '活动配置',
-//        index: '5-2',
-//        path: '/activeConfiguration'
-//      }
-//    ]
-//   },
-//   {
-//     title: '内容管理',
-//     index: '6',
-//     ico: 'el-icon-document',
-//     // path: '/banner',
-//     list: [
-//       {
-//         name: '教程管理',
-//         index: '6-1',
-//         path: '/courseManagement'
-//       },
-//       {
-//         name: '案例配置',
-//         index: '6-2',
-//         path: '/caseManagement'
-//       }
-//     ]
-//   },
-//   {
-//     title: '系统设置',
-//     index: '7',
-//     ico: 'el-icon-setting',
-//     // path: '/banner',
-//     list: [
-//       {
-//         name: '操作日志',
-//         index: '7-1',
-//         path: '/operationLog'
-//       },
-//       {
-//         name: '数据备份',
-//         index: '7-2',
-//         path: '/backup'
-//       },
-//       {
-//         name: '平台基本信息设置',
-//         index: '7-3',
-//         path: '/informationSet'
-//       }
-//     ]
-//   },
-// {
-//  title: '权限管理',
-//  index: '8',
-//  ico: 'el-icon-refresh',
-//  list: [{
-//      name: '员工管理',
-//      index: '8-1',
-//      path: '/workersManage'
-//    },
-//    {
-//      name: '角色管理',
-//      index: '8-2',
-//      path: '/roleManage'
-//    },
-//  ]
-// },
+
+   {
+    title: '安全设置',
+    index: '4',
+    ico: 'el-icon-view',
+    state:false,
+    list: [{
+        name: '登陆密码设置',
+        index: '4-1',
+        path: '/passwordChange',
+        state:false,
+      },
+    ]
+},
+     {
+      title: '活动管理',
+      index: '5',
+      ico: 'el-icon-menu',
+         path: '/banner',
+       state:false,
+      list: [
+        {
+          name: 'banner管理',
+          index: '5-1',
+          path: '/banner',
+           state:false,
+        },
+        {
+          name: '活动配置',
+          index: '5-2',
+          path: '/activeConfiguration',
+          state:false,
+        }
+      ]
+     },
+     {
+       title: '内容管理',
+       index: '6',
+       ico: 'el-icon-document',
+          path: '/banner',
+          state:false,
+       list: [
+         {
+           name: '教程管理',
+           index: '6-1',
+           path: '/courseManagement',
+           state:false,
+         },
+         {
+           name: '案例配置',
+           index: '6-2',
+           path: '/caseManagement',
+           state:false,
+         }
+       ]
+     },
+     {
+       title: '系统设置',
+       index: '7',
+       ico: 'el-icon-setting',
+          path: '/banner',
+          state:false,
+       list: [
+         {
+           name: '操作日志',
+           index: '7-1',
+           path: '/operationLog',
+           state:false,
+         },
+         {
+           name: '数据备份',
+           index: '7-2',
+           path: '/backup',
+           state:false,
+         },
+         {
+           name: '平台基本信息设置',
+           index: '7-3',
+           path: '/informationSet',
+           state:false,
+         }
+       ]
+     },
+{
+    title: '权限管理',
+    index: '8',
+    ico: 'el-icon-refresh',
+    state:false,
+    deter:false,
+    list: [{
+        name: '员工管理',
+        index: '8-1',
+        path: '/workersManage',
+        state:false,
+      },
+      {
+        name: '角色管理',
+        index: '8-2',
+        path: '/roleManage',
+        state:false,
+      },
+    ]
+},
   {
     title: '素材库',
     index: '9',
     ico: 'el-icon-picture-outline',
     path: '/pictureManage',
+    state:false,
     list: []
   },
 ]

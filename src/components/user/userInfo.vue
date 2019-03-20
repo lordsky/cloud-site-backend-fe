@@ -31,6 +31,29 @@
           </tr>
         </table>
       </div>
+      <p class="userInfo-title company">企业信息</p>
+      <div class="userInfo-table">
+        <table border="1" cellspacing="0" cellpadding="0">
+          <tr>
+            <td class="gray">公司名称</td>
+            <td>1111</td>
+            <td class="gray">联系电话</td>
+            <td>{{list.account}}</td>
+          </tr>
+          <tr>
+            <td class="gray">所在行业</td>
+            <td>{{list.name}}</td>
+            <td class="gray">邮箱</td>
+            <td>{{list.starTime}}</td>
+          </tr>
+          <tr>
+            <td class="gray">网站负责人</td>
+            <td></td>
+            <td class="gray"></td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
       <div class="site-info">
         <p class="userInfo-title">站点信息</p>
         <div class="site-list">
@@ -44,14 +67,16 @@
             </div>
             <div class="site-item-btn">
               <div class="site-item-btns">
-                <div>
-                  <el-button type="" round @click="jump">查看</el-button>
-                </div>
+                 <div class="site_button">
+                 	<img src="../../assets/img/ic_cms_view.png" alt="" class="site_ico"/>
+                 	<p>查看</p>
+                 </div>
               </div>
               <div class="site-item-btns">
-                <div>
-                  <el-button type="danger" round @click="disable">禁用</el-button>
-                </div>
+                <div class="site_button">
+                 	<img src="../../assets/img/ic_cms_design.png" alt="" class="site_ico"/>
+                 	<p>禁用</p>
+                 </div>
               </div>
             </div>
           </div>
@@ -123,6 +148,9 @@
       font-size: 20px;
       font-weight: 600;
     }
+    .company{
+    	  padding: 30px 0 20px 0;
+    }
     .resetassword {
       display: flex;
       justify-content: flex-end;
@@ -131,7 +159,7 @@
       table {
         width: 100%;
         border-collapse: collapse;
-        border: 1px solid black;
+        border: 1px solid #999;
       }
       td {
         width: 100px;
@@ -139,7 +167,8 @@
         text-align: center;
       }
       .gray {
-        background: #cccccc;
+        background: #add4ff;
+        color: white;
       }
       .grayIco{
       	width: 50px;
@@ -157,37 +186,50 @@
         justify-content: space-between;
         .site-item {
           width: 30%;
-          height: 300px;
+          height: auto;
+          border:#f2f2f2 solid 1px;
+          box-shadow: 0 0 8px #cbe0f9;
           .site-item-title {
-            height: 60%;
-            border: 1px solid black;
             .site-item-title-text {
               margin: 20px 0 0 30px;
               p {
                 margin-bottom: 5px;
-                font-size: 15px;
+                font-size: 13px;
                 &:nth-child(1) {
                   font-size: 18px;
-                  font-weight: 600;
+                  font-weight: 400;
                 }
               }
             }
           }
           .site-item-btn {
             width: 100%;
-            height: 40%;
+            margin-top: 80px;
             display: flex;
             .site-item-btns {
+            	  padding: 30px 0 30px 0;
               height: 100%;
               width: 50%;
-              border: 1px solid black;
-              border-top: 0;
+              transition: .5s ease all;
               display: flex;
               justify-content: center;
               align-items: center;
-              &:nth-child(1) {
-                border-right: 0;
+              &:hover{
+              	transform: translateY(-3px);
+              	box-shadow: 0 0 8px #cbe0f9;
               }
+            }
+            .site_button{
+            	  display: flex;
+            	  flex-direction: column;
+            	  align-items: center;
+            	  cursor: pointer;
+            	  font-size: 14px;
+            	  .site_ico{
+            	  	width: 52px;
+            	  	height: 52px;
+            	  	padding-bottom: 5px;
+            	  }
             }
           }
         }

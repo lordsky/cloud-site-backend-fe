@@ -36,23 +36,28 @@
       </div>
       <div class="user-table">
         <el-table :data="tableData"  border style="width: 100%;height: auto;">
-          <el-table-column prop="id" label="用户ID" width="180" align="center">
+          <el-table-column prop="account" label="用户手机号" width="180" align="center">
           </el-table-column>
-          <el-table-column prop="account" label="用户账号" width="180" align="center">
+          <el-table-column prop="nickname" label="用户昵称" align="center">
           </el-table-column>
-          <el-table-column prop="name" label="用户昵称" align="center">
+          <el-table-column prop="nickname" label="用户姓名" align="center">
+          </el-table-column>
+           <el-table-column prop="nickname" label="企业名称" align="center">
           </el-table-column>
           <el-table-column prop="starTime" label="注册时间" align="center">
+          	<template slot-scope="scope">
+          		<span>{{scope.row.createTime}}</span>
+          		</template>
           </el-table-column>
           <el-table-column prop="status" label="状态" align="center">
           	<template slot-scope = "scope">
-          		<span>{{scope.row.status==1?'启用':'未启用'}}</span>
+          		<span>{{scope.row.status==1?'正常':'禁用'}}</span>
           	</template>
           </el-table-column>
           <el-table-column prop="address" label="操作" align="center" width="180">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="lookUser(scope.row)">查看</el-button>
-              <el-button type="text" size="small" @click="disableUser">禁用</el-button>
+              <el-button type="text" size="small" @click="disableUser(scope.row)">禁用</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -73,6 +78,7 @@
 </template>
 
 <script>
+	  
   export default {
     name: 'userData',
     data() {
@@ -86,12 +92,12 @@
         tableData: [],
         listState:[
             {
-	          value: '1',
+	          value: '0',
 	          label: '启用'
 	        },
 	        {
-	          value: '2',
-	          label: '未启用'
+	          value: '1',
+	          label: '禁用'
 	        }
         ]
       }
@@ -106,23 +112,22 @@
     	 },
       //用户信息
       lookUser(res) {
-      	 this.$message({
-            type: 'warning',
-            message: '该功能开发中!'
-          });
-//      this.$router.push({
-//        name: 'userInfo',
-//        params:{
-//          data:res
-//        }
-//      })
+        this.$router.push({
+          name: 'userInfo',
+          params:{
+            data:res
+          }
+        })
       },
-      disableUser(){
+      disableUser(val){
       	this.$confirm('是否禁用该用户?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.$http.post('backend/stopUserTemplate',{userTemplateId:val.id},res=>{
+          	 console.log(val)
+          })
           this.$message({
             type: 'success',
             message: '禁用成功!'
@@ -140,7 +145,9 @@
       	let timeEnd = ''
       	let status = this.fromUser.state
       	let account = this.fromUser.account
+      	let name = this.fromUser.name
       	let url = this.$API.userList
+      	console.log(this.fromUser)
         if(this.fromUser.timeData){
       		timeStatr = this.$http.getLocalTime(this.fromUser.timeData[0])
       		timeEnd = this.$http.getLocalTime(this.fromUser.timeData[1])
@@ -149,6 +156,7 @@
       	}
         status?obj.status = status : ''
         account?obj.account = account : ''
+        name?obj.name = name :''
       	this.$http.get(url,(res)=>{
       		console.log(res)
       		if(res.data.code===200){

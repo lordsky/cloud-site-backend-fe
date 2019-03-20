@@ -46,7 +46,7 @@ import navHead from './navHead';
   	   overflow: auto;
   	}
   	.content-box{
-      position: relative;
+        position: relative;
   		width: 97%;
   		margin: 0 auto;
   		margin-top: 50px;
