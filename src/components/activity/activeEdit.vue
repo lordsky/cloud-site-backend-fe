@@ -1,18 +1,18 @@
 <template>
   <div>
-    <el-form ref="active" :model="active" :rules="rules" label-width="100px" class="activeAdd">
+    <el-form ref="active" :model="active" :rules="rules" label-width="100px" class="activeEdit">
       <el-form-item label="活动名称:" prop="name">
         <el-input v-model="active.name" placeholder="请输入活动名称，不超过12个字符" class="el-input-active"></el-input>
       </el-form-item>
-      <el-form-item label="状态:" prop="activeState">
-        <el-radio-group v-model="active.activeState">
+      <el-form-item label="状态:" prop="status">
+        <el-radio-group v-model="active.status">
           <el-radio :label="1">上线</el-radio>
           <el-radio :label="-1">下线</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="活动时间:" prop="offlineStartDate">
+      <el-form-item label="活动时间:" prop="actTime">
         <el-date-picker
-          v-model="active.offlineStartDate"
+          v-model="active.actTime"
           type="datetimerange"
           align="right"
           start-placeholder="开始日期"
@@ -22,7 +22,7 @@
         </el-date-picker>
         <span class="clearDate" @click="clearDate">重置</span>
       </el-form-item>
-      <el-form-item label="活动描述" prop="content">
+      <el-form-item label="活动描述" prop="description">
         <!-- 图片上传组件辅助-->
         <el-upload
           class="avatar-uploader"
@@ -31,7 +31,7 @@
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
         </el-upload>
-        <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" @change="onEditorChange($event)"></quill-editor>
+        <quill-editor ref="myTextEditor" v-model="active.description" :options="editorOption" @change="onEditorChange($event)"></quill-editor>
       </el-form-item>
       <el-form-item>
         <div style="text-align: center">
@@ -99,7 +99,7 @@
     'ql-upload':'文件'
   };
   export default {
-    name: "activeAdd",
+    name: "activeEdit",
     data() {
       return {
         pickerOptions1: {
@@ -126,6 +126,8 @@
             }
           }
         },
+        actTime1:'',
+        actTime2:'',
         activeLink: 1,
         activeState:-1,
         host:host,
@@ -139,24 +141,17 @@
         componentList:[],
         classifyList:[],
         type:'',//操作区域
-        active: {
-          content:'',
-          name: '',
-          classification: '',
-          introduce: '',
-          offlineStartDate:[],
-          activeState:-1
-        },
+        active: {},
         classification:[],
         rules:{
           name: [
             { required: true, message: '请输入活动名称', trigger: 'blur' },
             { max: 12, message: '不超过12个字符', trigger: 'blur' }
           ],
-          offlineStartDate: [
+          actTime: [
             { required: true, message: '请选择活动时间', trigger: 'change' }
           ],
-          content: [
+          description: [
             { required: true, message: '请输入活动描述', trigger: 'blur' }
           ]
         },
@@ -173,8 +168,7 @@
         this.active.content = html
       },
       clearDate(){
-        this.active.onlineDate = ''
-        this.active.offlineStartDate = ''
+        this.active.actTime = ''
       },
       //选择模版
       btnType(i){
@@ -239,18 +233,17 @@
       },
       //点击下一步保存套件信息并进入下一步
       onSubmit() {
-        console.log(this.$http.getLocalTimeDate(this.active.offlineStartDate[0]))
         this.$refs.active.validate((valid) => {
           if (valid) {
             this.addLoading = true;
             // this.$refs.upload.submit();
             this.$api.apiAddActive({
-              id:'',
+              id:this.active.id,
               name: this.active.name,
-              description:this.active.content,
-              status:this.active.activeState,
-              startTime:this.$http.getLocalTimeDate(this.active.offlineStartDate[0]),
-              endTime:this.$http.getLocalTimeDate(this.active.offlineStartDate[1]),
+              description:this.active.description,
+              status:this.active.status,
+              startTime:this.active.actTime[0] == this.actTime1 ? this.active.actTime[0] : this.$http.getLocalTimeDate(this.active.actTime[0]),
+              endTime:this.active.actTime[1] == this.actTime2 ? this.active.actTime[1] : this.$http.getLocalTimeDate(this.active.actTime[1]),
             }).then(res => {
               console.log(res)
               if(res.code === 200) {
@@ -291,12 +284,22 @@
     },
     mounted () {
       this.addQuillTitle()
+      this.active = this.$route.query.data
+      let actTimeStr = this.active.actTime
+      let actTime = []
+      actTime.push(actTimeStr.split("~")[0])
+      actTime.push(actTimeStr.split("~")[1])
+      this.actTime1 = actTimeStr.split("~")[0]
+      this.actTime2 = actTimeStr.split("~")[1]
+      this.active.actTime = []
+      this.active.actTime = actTime
+      console.log(this.active.actTime)
     },
   }
 </script>
 
 <style lang="scss" scoped>
-  .activeAdd{
+  .activeEdit{
     margin: 20px;
     .ql-editor{
       min-height: 500px;
@@ -346,7 +349,7 @@
   }
 </style>
 <style lang="scss">
-  .activeAdd{
+  .activeEdit{
     .ql-editor{
       min-height: 500px;
     }

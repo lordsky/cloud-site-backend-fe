@@ -2,17 +2,11 @@
   <div>
     <el-form ref="banner" :model="banner" :rules="rules" label-width="100px" class="bannerAdd">
       <el-form-item label="banner名称:" prop="name">
-        <el-input v-model="banner.name" placeholder="请输入套件标题，不超过12个字符" class="el-input-banner"></el-input>
+        <el-input v-model="banner.name" placeholder="请输入banner名称，不超过12个字符" class="el-input-banner"></el-input>
       </el-form-item>
-      <el-form-item label="banner位置:" prop="classification" v-if="pageId != 2">
-        <el-select v-model="banner.classification" placeholder="请选择套件分类" class="el-select-banner">
+      <el-form-item label="banner位置:" prop="classification">
+        <el-select v-model="banner.classification" placeholder="请选择banner位置" class="el-select-banner">
           <el-option :label="x.catName" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="banner位置:" v-if="pageId == 2">
-        <el-select v-model="catType.catName" placeholder="请选择模版分类" class="el-select-banner" disabled>
-          <el-option  :key="catType.id" :label="catType.catName" :value="catType.catName">
-          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="banner链接:" prop="bannerLink">
@@ -79,6 +73,20 @@
         </div>
       </el-form-item>
     </el-form>
+    <!--组件模版弹框-->
+    <el-dialog title="素材库" :visible.sync="dialogVisibleManage" width="80%" class="manage-dialog">
+      <div class="compon-edit-list">
+        <ul>
+          <li v-for="(item,i) in componentList" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i">
+          </li>
+        </ul>
+      </div>
+      <div class="dialog-footer">
+        <div @click="cancelDialog">取消</div>
+        <div @click="completeDialog(type,activeShow)">完成</div>
+      </div>
+    </el-dialog>
+    <!--组件模版弹框-->
   </div>
 </template>
 
@@ -90,6 +98,7 @@
     name: "bannerAdd",
     data() {
       return {
+        componentList:[],
         bannerLink: 1,
         bannerState:1,
         catType:this.$route.query.catType,
@@ -97,6 +106,7 @@
         host:host,
         topDate:'',
         footerDate:'',
+        dialogVisibleManage:false,
         showTop:false,
         showFooter:false,
         dialogTemplate:false,
@@ -139,6 +149,9 @@
       }
     },
     methods: {
+      cancelDialog(){
+
+      },
       clearDate(){
         this.banner.onlineDate = ''
         this.banner.offlineStartDate = ''
@@ -158,74 +171,13 @@
       handleAvatarSuccess(res, file) {
         this.banner.imageUrl = URL.createObjectURL(file.raw);
       },
-      //获取组件列表
-      getComponentList(val){
-        this.$api.apiComponentByName(val).then(res => {
-          if(res.msg === "success") {
-            this.componentList = res.data
-          } else {
-            this.$message.error(res.msg)
-          }
-        })
-      },
-      //添加组件
-      addComponent(type){
-        this.type = type
-        switch(type) {
-          case 'top':
-            this.getComponentList("页头")
-            this.dialogTemplate = true
-            break;
-          case 'footer':
-            this.getComponentList("页脚")
-            this.dialogTemplate = true
-            break;
-        }
-      },
-      //完成选择模版
-      completeDialog(type,index){
-        switch(type) {
-          case 'top':
-            this.topDate = this.componentList[index].segmentCode
-            console.log('顶部区')
-            break;
-          case 'footer':
-            this.footerDate = this.componentList[index].segmentCode
-            console.log('页脚区')
-            break;
-        }
-        this.componentList = ''
-        this.dialogTemplate = false
-        this.activeShow = 0
-      },
-      //删除组件
-      delComponent(type) {
-        switch(type) {
-          case 'top':
-            this.topDate = ''
-            break;
-          case 'footer':
-            this.footerDate = ''
-            break;
-        }
-      },
       //点击下一步保存套件信息并进入下一步
       onSubmit(index) {
-        if(this.pageId == 2){
-          index = this.catType.index
-        }
         this.$refs.banner.validate((valid) => {
           if(this.banner.imageUrl == ''){
             this.$message({
               type: 'warning',
               message: '请选择上传背景图片!'
-            });
-            return
-          }
-          if(this.topDate == '' || this.footerDate == ''){
-            this.$message({
-              type: 'warning',
-              message: '请选择页头和页脚!'
             });
             return
           }

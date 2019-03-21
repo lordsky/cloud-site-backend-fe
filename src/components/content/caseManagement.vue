@@ -7,14 +7,14 @@
             <el-form-item label="案例标题:" prop="name">
               <el-input v-model="filters.name" placeholder="请输入关键字" clearable></el-input>
             </el-form-item>
-            <el-form-item label="案例类型">
-              <el-select v-model="activeState" placeholder="全部" class="el-select-banner">
-                <el-option :label="x.name" :value="i" v-for="(x,i) in tableData" :key="i"></el-option>
+            <el-form-item label="案例类型" prop="caseType">
+              <el-select v-model="filters.caseType" placeholder="全部" class="el-select-banner">
+                <el-option :label="x.catName" :value="x.id" v-for="(x,i) in setTree" :key="i"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="状态">
-              <el-select v-model="activeState" placeholder="全部" class="el-select-banner">
-                <el-option :label="x.name" :value="i" v-for="(x,i) in tableData" :key="i"></el-option>
+            <el-form-item label="状态" prop="state">
+              <el-select v-model="filters.state" placeholder="全部" class="el-select-banner">
+                <el-option :label="x.name" :value="x.id" v-for="(x,i) in stateList" :key="i"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="发布时间:" prop="timeData">
@@ -23,9 +23,9 @@
             </el-form-item>
           </div>
           <el-form-item>
-            <el-button type="primary" size="small">查询</el-button>
+            <el-button type="primary" size="small" @click="getCaseList">查询</el-button>
             <el-button type="primary" size="small" @click="resetForm">清空</el-button>
-            <el-button type="primary" size="small" disabled >批量删除</el-button>
+            <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >批量删除</el-button>
             <el-button type="primary" size="small" @click="caseAdd">新增案例</el-button>
           </el-form-item>
         </el-form>
@@ -38,6 +38,7 @@
             :props="defaultProps"
             node-key="id"
             ref="SlotMenuList"
+            @node-click="handleNodeClick"
             :filter-node-method="filterNode"
             @node-contextmenu='rihgtClick'
             accordion
@@ -57,7 +58,7 @@
               <!-- 编辑输入框 -->
               <span v-show="node.isEdit">
                 <el-input class="slot-t-input" size="mini" autofocus
-                          v-model="data.name"
+                          v-model="data.catName"
                           :ref="'slotTreeInput'+data.id"
                           @blur.stop="NodeBlur(node, data)"
                           @keyup.enter.native="NodeBlur(node, data)"></el-input>
@@ -91,23 +92,27 @@
               border
               row-key="id"
               tooltip-effect="dark"
-              style="width: 100%">
+              style="width: 100%"
+              @selection-change="selsChange">
               <el-table-column type="selection" width="55" align="center">
               </el-table-column>
               <el-table-column prop="name" label="案例标题" align="center">
               </el-table-column>
-              <el-table-column prop="caseType" label="案例类型" align="center">
+              <el-table-column prop="caseCatsId" label="案例类型" align="center">
               </el-table-column>
-              <el-table-column prop="date" label="发布时间" align="center">
+              <el-table-column prop="createTime" label="发布时间" align="center">
               </el-table-column>
-              <el-table-column prop="state" label="状态" align="center">
+              <el-table-column label="状态" align="center">
+                <template slot-scope="scope">
+                  {{scope.row.onlineStatus == -1 ? '下线' : '上线'}}
+                </template>
               </el-table-column>
               <el-table-column label="操作" width="200" align="center">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="managecase(scope.$index, scope.row)">查看</el-button>
+                  <el-button type="text" @click="manageCase(scope.$index, scope.row)">查看</el-button>
                   <el-button type="text" @click="editcase(scope.$index, scope.row)">编辑</el-button>
-                  <el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>
-                  <el-button type="text" v-if="scope.row.state == '在线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
+                  <el-button type="text" v-if="scope.row.onlineStatus == -1" @click="popCase(scope.$index, scope.row)">上线</el-button>
+                  <el-button type="text" v-if="scope.row.onlineStatus == 1" @click="offlineCase(scope.$index, scope.row)">下线</el-button>
                   <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                 </template>
               </el-table-column>
@@ -115,7 +120,13 @@
           </div>
         </div>
         <div class="pagination">
-          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
+          <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
+            :page-size="pageSize"
+            layout="prev, pager, next, jumper"
+            :total="pageAll">
           </el-pagination>
         </div>
       </el-col>
@@ -156,79 +167,69 @@
         maxexpandId: api.maxexpandId,//新增节点开始id
         non_maxexpandId: api.maxexpandId,//新增节点开始id(不更改)
         isLoadingTree: true,//是否加载节点树
-        setTree: api.treelist2,//节点树数据
+        setTree: [],//节点树数据
         defaultProps: {
           children: 'children',
-          label: 'name'
+          label: 'catName'
         },
+        stateList:[//状态选择
+          {
+            id:-1,
+            name:'下线'
+          },
+          {
+            id:1,
+            name:'在线'
+          }
+        ],
+        sels:'',
+        caseCatsId:'',
+        state:'',
+        caseType:'',
         filterText: '',
         input: "",
         currentPage4: 4,
         editObj: {},
         menuVisible: false,
         objectID: null,
+        pageAll:0,
         page:1,
         pageSize:10,
         activeShow:0,
         activeState:'',//状态
-        filters: {
+        filters: {//存放查询数据
           name: '',
           timeData:[],
+          caseType:'',
+          state:''
         },
         caseList:['首页','模板','教程中心','案例','关于我们'],
-        tableData: [
-          {
-            id: '1',
-            date: '2016-05-02',
-            directory1:'基础组件',
-            directory2:'网站管理',
-            name: '如何编辑网站？',
-            caseType:'常见类型',
-            state:'在线'
-          },
-          {
-            id: '2',
-            date: '2016-05-02',
-            directory1:'基础组件',
-            directory2:'网站管理',
-            name: '如何编辑网站？',
-            caseType:'常见类型',
-            state:'在线'
-          },
-          {
-            id: '3',
-            date: '2016-05-02',
-            directory1:'基础组件',
-            directory2:'/',
-            name: '如何编辑网站？',
-            caseType:'常见类型',
-            state:'在线'
-          },
-          {
-            id: '4',
-            date: '2016-05-02',
-            directory1:'基础组件',
-            directory2:'网站管理',
-            name: '如何编辑网站？',
-            caseType:'常见类型',
-            state:'在线'
-          }
-        ]
+        tableData: []//案例表单列表
       }
-    },
-    mounted() {
     },
     methods: {
       //新增一级目录
       handleAddTop() {
-        this.setTree.push({
-          id: ++this.maxexpandId,
-          name: this.formCompon.name,
-          pid: '',
-          isEdit: false,
-          children: []
+        let parm = {
+          id:"",
+          catName:this.formCompon.name
+        }
+        this.$api.apiAddCaseType(parm).then(res=>{
+          if(res.msg === 'success'){
+            this.$message.success("添加成功！")
+            this.setTree.push({
+              id: res.data,
+              name: this.formCompon.name,
+              pid: '',
+              isEdit: false,
+              children: []
+            })
+            this.dialogVisible2 = false
+            this.getCaseCat('')
+          }else{
+            this.$message.error(res.msg)
+          }
         })
-        this.dialogVisible2 = false
       },
       filterNode(value, data) {
         console.log('value:',value)
@@ -256,7 +257,19 @@
         if(n.isEdit){
           this.$set(n, 'isEdit', false)
         }
+        let parm = {
+          id:d.id,
+          catName: d.catName
+        }
         this.$nextTick(() => {
+          this.$api.apiAddCaseType(parm).then(res=>{
+            if(res.msg === 'success'){
+              this.$message.success("修改成功！")
+              this.getCaseList()
+            }else{
+              this.$message.error(res.msg)
+            }
+          })
           this.$refs['slotTreeInput'+d.id].$refs.input.focus()
         })
       },
@@ -269,31 +282,24 @@
       NodeDel(n, d){//删除节点
         console.log(n, d)
         let that = this;
-        if(d.children && d.children.length !== 0){
+        if(d.caseNum != null){
           this.$message.error("此节点有子级，不可删除！")
           return false;
         }else{
-          //新增节点可直接删除，已存在的节点要二次确认
-          //删除操作
-          let DelFun = () => {
-            let _list = n.parent.data.children || n.parent.data;//节点同级数据
-            let _index = _list.map((c) => c.id).indexOf(d.id);
-            console.log(_index)
-            _list.splice(_index, 1);
-            this.$message.success("删除成功！")
-          }
-          //二次确认
-          let ConfirmFun = () => {
-            this.$confirm("是否删除此节点？","提示",{
-              confirmButtonText: "确认",
-              cancelButtonText: "取消",
-              type: "warning"
-            }).then(() => {
-              DelFun()
-            }).catch(() => {})
-          }
-          //判断是否是新增节点
-          d.id > this.non_maxexpandId ? DelFun() : ConfirmFun()
+          this.$confirm('是否删除此节点？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            this.$api.apiDelCaseType(d.id).then(res=>{
+              if(res.msg === 'success'){
+                this.$message.success("删除成功！")
+                this.getCaseCat('')
+              }else{
+                this.$message.error(res.msg)
+              }
+            })
+          }).catch(() => {
+
+          });
         }
       },
       //新增二级目录
@@ -355,26 +361,47 @@
         // console.log("右键被点击的element:", element);
       },
       handleNodeClick(d, n, s) { // 点击节点
-        // console.log(d,n)
-        // d.isEdit = false// 放弃编辑状态
+        console.log(d,n)
+        d.isEdit = false// 放弃编辑状态
       },
-      append(data) {
-        const newChild = { id: id++, label: 'testtest', children: [] };
-        if (!data.children) {
-          this.$set(data, 'children', []);
-        }
-        data.children.push(newChild);
-      },
+      //上线
+      popCase(index, row) {
+        this.$confirm('确认上线该案例吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.$api.apiCaseOnlineOperate(row.id).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getCaseList()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
 
-      remove(node, data) {
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
+        });
+      },
+      //下线
+      offlineCase(index, row) {
+        this.$confirm('确认下线该案例吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.$api.apiCaseOnlineOperate(row.id).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getCaseList()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
       },
       //清空查询
       resetForm(){
         this.$refs['filters'].resetFields();
+        this.getCaseList()
       },
       //清空分类
       resetForm2(){
@@ -391,24 +418,108 @@
         })
       },
       //管理case
-      managecase(index,row){
-
+      manageCase(index,row){
+        window.open(row.link);
       },
       //编辑case
       editcase(index,row){
+        this.$router.push({
+          path:'/caseEdit',
+          query:{id:row.id}
+        })
+      },
+      //删除
+      handleDel(index,data){
+        this.$confirm('确认删除该案例吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          let a = []
+          a.push(data.id)
+          this.$api.apiDelCase({
+            idList:a
+          }).then(res=>{
+            if(res.code ===200){
+              this.getCaseList()
+            }else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
 
+        });
+      },
+      selsChange: function (sels) {
+        this.sels = sels;
+      },
+      //批量删除
+      batchRemove: function () {
+        let ids = this.sels.map(item => item.id);
+        this.$confirm('确认删除选中记录吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          console.log(ids)
+          let a = []
+          a.push(ids)
+          this.$api.apiDelCase({
+            idList:ids
+          }).then(res=>{
+            if(res.code ===200){
+              this.getCaseList()
+            }else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
       },
       //当前页码
       handleCurrentChange(val) {
         this.page = val;
-        this.getComponList();
+        this.getCaseList();
       },
       //当前条数
       handleSizeChange(val) {
         this.pageSize = val;
-        this.getComponList();
+        this.getCaseList();
       },
-    }
+      getCaseCat(val){
+        this.$api.apiSelectCaseCat(val).then(res=>{
+          if(res.msg === "success") {
+            this.setTree = res.data
+            this.getCaseList()
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      },
+      getCaseList(){
+        let para = {
+          caseCatsId:this.filters.caseType,
+          pageNum: this.page,
+          pageSize: this.pageSize,
+          name: this.filters.name,
+          state:this.filters.state,
+          startDate:this.filters.timeData == null ? '' : this.filters.timeData[0] != undefined ? this.$http.getLocalTime(this.filters.timeData[0]) : '',
+          endDate:this.filters.timeData == null ? '' : this.filters.timeData[1] != undefined ? this.$http.getLocalTime(this.filters.timeData[1]) : ''
+        };
+        this.$api.apiCaseList(para).then(res=>{
+          if(res.msg === "success") {
+            this.tableData = res.data.content
+            this.pageAll = res.data.totalElements
+            for(let i = 0;i<this.tableData.length;i++){
+              const index =  this.setTree.findIndex(d => d.id === this.tableData[i].caseCatsId);
+              this.tableData[i].caseCatsId = this.setTree[index].catName
+            }
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      }
+    },
+    mounted() {
+      this.getCaseCat('')
+    },
   }
 </script>
 

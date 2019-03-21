@@ -1,45 +1,48 @@
 <template>
   <div class="active">
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-      <el-form :inline="true" :model="filters">
+      <el-form :inline="true" :model="filters" ref="filters">
         <div>
-          <el-form-item label="活动名称:">
+          <el-form-item label="活动名称:" prop="name">
             <el-input v-model="filters.name" placeholder="请输入关键字" clearable></el-input>
           </el-form-item>
-          <el-form-item label="发布时间:">
-            <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+          <el-form-item label="发布时间:" prop="actTime">
+            <el-date-picker v-model="filters.actTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="activeState" placeholder="请选择套件分类" class="el-select-banner">
-              <el-option :label="x.catName" :value="i" v-for="(x,i) in templateTypeLsit" :key="i"></el-option>
+          <el-form-item label="状态" prop="activeState">
+            <el-select v-model="filters.activeState" placeholder="全部" class="el-select-banner">
+              <el-option :label="x.name" :value="x.id" v-for="(x,i) in stateList" :key="i"></el-option>
             </el-select>
           </el-form-item>
         </div>
         <el-form-item>
-          <el-button type="primary" size="small" v-on:click="getComponList">查询</el-button>
-          <el-button type="primary" size="small" >清空</el-button>
+          <el-button type="primary" size="small" v-on:click="getActiveList">查询</el-button>
+          <el-button type="primary" size="small" @click="resetForm">清空</el-button>
           <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >批量删除</el-button>
           <el-button type="primary" size="small" @click="activeAdd">新增活动</el-button>
         </el-form-item>
       </el-form>
     </el-col>
     <div class="active-box">
-      <el-table :data="templateTypeLsit"  border style="width: 100%" tooltip-effect="dark"
+      <el-table :data="activeList"  border style="width: 100%" tooltip-effect="dark"
                 v-loading="listLoading" @selection-change="selsChange">
         <el-table-column type="selection" width="55" align="center">
         </el-table-column>
-        <el-table-column prop="activeName" label="活动名称"  align="center">
+        <el-table-column prop="name" label="活动名称"  align="center">
         </el-table-column>
-        <el-table-column prop="activeTime" label="活动时间" align="center">
+        <el-table-column prop="actTime" label="活动时间" align="center">
         </el-table-column>
-        <el-table-column prop="state" label="状态"  align="center">
+        <el-table-column label="状态"  align="center">
+          <template slot-scope="scope">
+            {{scope.row.status == -1 ? '下线' : '上线'}}
+          </template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
-            <el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>
-            <el-button type="text" v-if="scope.row.state == '上线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
-            <el-button type="text" @click="manageCompon(scope.$index, scope.row)">查看</el-button>
+            <el-button type="text" v-if="scope.row.status == '-1'" @click="popCompon(scope.$index, scope.row)">上线</el-button>
+            <el-button type="text" v-if="scope.row.status == '1'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
+            <el-button type="text" v-if="scope.row.status == '1'" @click="manageCompon(scope.$index, scope.row)">查看</el-button>
             <el-button type="text" @click="editCompon(scope.$index, scope.row)">编辑</el-button>
             <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>
           </template>
@@ -48,106 +51,49 @@
     </div>
 
     <div class="pagination">
-      <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
+      <el-pagination
+        background
+        @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
+        :page-size="pageSize"
+        layout="prev, pager, next, jumper"
+        :total="pageAll">
       </el-pagination>
     </div>
-
-    <el-dialog :title="componTitle" :visible.sync="dialogVisible" width="500px">
-      <div class="el-componClass" v-show="editShow">
-        <el-form :inline="true" :model="addCatRequest" :rules="rules2" class="demo-form-inline" label-width="120px" ref="addCatRequest">
-          <el-form-item label="模版分类名称:" prop="catName">
-            <el-input v-model="addCatRequest.catName" :placeholder="dialogText"></el-input>
-          </el-form-item>
-          <el-form-item label="网页别名:" prop="catExt">
-            <el-input v-model="addCatRequest.catExt" placeholder="请输入网页英文名">
-              <template slot="append">.html</template>
-            </el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div class="el-componClassBtn">
-        <el-button @click="dialogVisible = false" size="medium">取 消</el-button>
-        <el-button type="primary" @click="saveCompon" size="medium">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-  import API from '../config/server';
   export default {
     name: 'activeConfiguration',
     data() {
-      const re=/^[a-zA-Z]+$/;
-      let validateEnglish = (rule, value, callback) => {
-        if (value === "") {
-          callback(new Error("网页别名不能为空"));
-        } else if (!re.test(value)) {
-          callback(new Error("不能输入英文以外的字符!"));
-        } else {
-          callback();
-        }
-      }
       return {
-        rules2: {
-          catName: [
-            {required: true, message: '分类名称不能为空'},
-            { max: 6, message: '不能超过6字符', trigger: 'blur' }
-          ],
-          catExt: [
-            { validator: validateEnglish, trigger: 'blur' },
-            { max: 20, message: '不能超过20字符', trigger: 'blur' }
-          ]
-        },
         filters: {
-          name: ''
+          name: '',
+          actTime:[],
+          activeState:''
         },
+        stateList:[//状态选择
+          {
+            id:-1,
+            name:'下线'
+          },
+          {
+            id:1,
+            name:'在线'
+          }
+        ],
         activeState:'',//状态
-        total: 0,
+        pageAll: 0,
         page: 1,
         pageSize:10,
         listLoading: false,
         sels: [],//列表选中列
         timeData: [],
-        btnShow: '',
-        componTitle: '',
         classBtn: 1,
         dialogVisible: false,
-        dialogStu: '',
-        dialogText: '',
-        editShow: true,
-        addShow: false,
         value: '',
-        addCatRequest: {
-          catExt: '',
-          catName: '',
-          catType:2
-        },
-        templateTypeLsit: [{
-          activeName:'促销活动1年度大促3C产品全场9折',
-          activeTime:'2018-01-01 16:00  ~  2019-01-01 18:00',
-          state:'在线'
-        },
-          {
-            activeName:'促销活动1年度大促3C产品全场9折',
-            activeTime:'2018-01-01 16:00  ~  2019-01-01 18:00',
-            state:'在线'
-          },
-          {
-            activeName:'促销活动1年度大促3C产品全场9折',
-            activeTime:'2018-01-01 16:00  ~  2019-01-01 18:00',
-            state:'在线'
-          },
-          {
-            activeName:'促销活动1年度大促3C产品全场9折',
-            activeTime:'2018-01-01 16:00  ~  2019-01-01 18:00',
-            state:'在线'
-          },
-          {
-            activeName:'促销活动1年度大促3C产品全场9折',
-            activeTime:'2018-01-01 16:00  ~  2019-01-01 18:00',
-            state:'在线'
-          }],
+        activeList: [],
         date:[]
       }
     },
@@ -173,9 +119,10 @@
       btnType(i) {
         this.btnShow = i
       },
-      //清除
-      clear() {
-        this.addCatRequest.catName = ''
+      //清空查询
+      resetForm(){
+        this.$refs['filters'].resetFields();
+        this.getActiveList()
       },
       //新增活动
       activeAdd(){
@@ -184,77 +131,61 @@
           query:{text:'活动新增',pageId:1}
         })
       },
-      //  新模版件分类
-      addComponClass() {
-        this.clear()
-        this.dialogVisible = true
-        this.editShow = true
-        this.componTitle = '新增模版分类'
-        this.dialogStu = 'addClass'
-        this.dialogText = '不超过6个字符'
-      },
       //编辑
       editCompon(index, row) {
-        // this.clear()
-        this.dialogVisible = true
-        this.editShow = true
-        this.addCatRequest.catName = row.name;
-        this.componTitle = '编辑组件分类'
-        this.dialogStu = 'edit'
-        //this.dialogText = '导航'
-      },
-      //删除
-      delCompon() {
-        this.dialogVisible = true
-        this.componTitle = '删除组件分类后将不可恢复，确定删除吗？'
-        this.dialogStu = 'del'
-        this.editShow = false
+        this.$router.push({
+          path:'/activeEdit',
+          query:{data:row}
+        })
       },
       //上线
       popCompon(index, row) {
-        this.$confirm('上线后该分类将出现在模版选择器,确认上线该模块吗?', '提示', {
+        this.$confirm('确认上线该活动吗?', '提示', {
           type: 'warning'
         }).then(() => {
-          this.listLoading = true;
-          //NProgress.start();
-          let id = row.id;
-          setTimeout(() => {
-            this.listLoading = false;
-            this.templateTypeLsit[index].state = '上线'
-          }, 500);
+          this.$api.apiActiveOnlineOperate(row.id).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getActiveList()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
         }).catch(() => {
 
         });
       },
       //下线
       offlineCompon(index, row) {
-        this.$confirm('下线后该分类将消失在模版选择器,确认下线该模块吗?', '提示', {
+        this.$confirm('确认下线该活动吗?', '提示', {
           type: 'warning'
         }).then(() => {
-          this.listLoading = true;
-          //NProgress.start();
-          let id = row.id;
-          setTimeout(() => {
-            this.listLoading = false;
-            this.templateTypeLsit[index].state = '下线'
-          }, 500);
+          this.$api.apiActiveOnlineOperate(row.id).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getActiveList()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
         }).catch(() => {
 
         });
       },
       //删除
-      handleDel: function (index, row) {
-        this.$confirm('确认删除该模块吗?', '提示', {
+      handleDel(index,data){
+        this.$confirm('确认删除该活动吗?', '提示', {
           type: 'warning'
         }).then(() => {
-          this.listLoading = true;
-          //NProgress.start();
-          let id = row.id;
-          this.$http.delete(this.$API.componentDel+row.id,{
-          },(res)=>{
-            if(res.data.data){
-              this.getComponList();
-              this.listLoading = false;
+          let a = []
+          a.push(data.id)
+          this.$api.apiDelActive({
+            idList:a
+          }).then(res=>{
+            if(res.code ===200){
+              this.getActiveList()
+            }else {
+              this.$message.error(res.msg)
             }
           })
         }).catch(() => {
@@ -266,26 +197,22 @@
       },
       //批量删除
       batchRemove: function () {
-        var ids = this.sels.map(item => item.id).toString();
-        this.$confirm('确认删除选中记录吗？', '提示', {
+        let ids = this.sels.map(item => item.id);
+        this.$confirm('确认删除选中活动吗？', '提示', {
           type: 'warning'
         }).then(() => {
-          this.listLoading = true;
-          //NProgress.start();
-          let para = { ids: ids };
-          setTimeout(() => {
-            this.listLoading = false;
-          }, 500);
-          //NProgress.start();
-          // batchRemoveUser(para).then((res) => {
-          // 	this.listLoading = false;
-          // 	//NProgress.done();
-          // 	this.$message({
-          // 		message: '删除成功',
-          // 		type: 'success'
-          // 	});
-          // 	this.getUsers();
-          // });
+          console.log(ids)
+          let a = []
+          a.push(ids)
+          this.$api.apiDelActive({
+            idList:ids
+          }).then(res=>{
+            if(res.code ===200){
+              this.getActiveList()
+            }else {
+              this.$message.error(res.msg)
+            }
+          })
         }).catch(() => {
 
         });
@@ -293,59 +220,25 @@
       //查看
       manageCompon(index, row) {
         this.$router.push({
-          path: '/activeItems'
+          path: '/activeItems',
+          query:{data:row}
         })
       },
-      //保存
-      saveCompon() {
-        switch(this.dialogStu) {
-          case 'addClass':
-            //新增模板分类
-            this.$refs.addCatRequest.validate((valid) => {
-              if (valid) {
-                API.apiAddCat({
-                  catExt: this.addCatRequest.catExt,
-                  catName: this.addCatRequest.catName,
-                  catType: this.addCatRequest.catType
-                }).then(res => {
-                  console.log(res)
-                  if (res.code === 200) {
-                    this.dialogVisible = false
-                    this.getComponList()
-                  } else {
-                    this.$message.error(res.msg)
-                  }
-
-                })
-              }
-            });
-            break;
-          case 'edit':
-            console.log('编辑')
-            break;
-          case 'del':
-            console.log('删除')
-            break;
-          case 'pop':
-            console.log('上线')
-            break;
-        }
-      },
       //获取模版分类列表
-      getComponList() {
-        console.log('获取列表')
+      getActiveList() {
         let para = {
-          page: this.page,
+          pageNum: this.page,
           pageSize: this.pageSize,
           name: this.filters.name,
-          startTime:this.timeData[0],
-          endTime:this.timeData[1]
+          status:this.filters.activeState,
+          startDate:this.filters.actTime == null ? '' : this.filters.actTime[0] != undefined ? this.$http.getLocalTime(this.filters.actTime[0]) : '',
+          endDate:this.filters.actTime == null ? '' : this.filters.actTime[1] != undefined ? this.$http.getLocalTime(this.filters.actTime[1]) : ''
         };
-        API.apiCatType(2).then(res => {
-          if(res.msg === "success") {
-            this.templateTypeLsit = this.templateTypeLsit.concat(res.data)
-            console.log('sss',this.templateTypeLsit)
-          } else {
+        this.$api.apiActiveList(para).then(res=>{
+          if(res.code === 200){
+            this.activeList = res.data.content
+            this.pageAll = res.data.totalElements
+          }else {
             this.$message.error(res.msg)
           }
         })
@@ -353,16 +246,16 @@
       //当前页码
       handleCurrentChange(val) {
         this.page = val;
-        this.getComponList();
+        this.getActiveList();
       },
       //当前条数
       handleSizeChange(val) {
         this.pageSize = val;
-        this.getComponList();
+        this.getActiveList();
       },
     },
     mounted() {
-      // this.getComponList();
+      this.getActiveList();
     }
   }
 </script>

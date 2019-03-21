@@ -127,6 +127,32 @@ const http = {
     }
     console.log(year+"-"+month+"-"+date+" "+hour+":"+minute);
     return year+"-"+month+"-"+date;
+  },
+  getLocalTimeDate:function(now) {
+    let year=now.getFullYear();
+    let month=now.getMonth()+1;
+    if(month<10){
+      month="0"+month;
+    }
+    let date=now.getDate();
+    if(date<10){
+      date="0"+date;
+
+    }
+    let hour=now.getHours();
+    if(hour<10){
+      hour="0"+hour;
+    }
+    let minute=now.getMinutes();
+    if(minute<10){
+      minute="0"+minute;
+    }
+    let second=now.getSeconds();
+    if(second<10){
+      second="0"+second;
+    }
+    console.log(year+"-"+month+"-"+date+" "+hour+":"+minute);
+    return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
   }
 }
 

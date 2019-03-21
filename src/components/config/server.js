@@ -277,6 +277,182 @@ const apiUpdateTemplate = (data) => {
   })
 }
 
+//查询案例分类
+const apiSelectCaseCat= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/caseCat/select?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//案例列表
+const apiCaseList= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/case/caseList?caseCatsId=${data.caseCatsId}&name=${data.name}&pageNum=${data.pageNum}&pageSize=${data.pageSize}&startTime=${data.startDate}&endTime=${data.endDate}&state=${data.state}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//新增/修改案例分类
+const apiAddCaseType = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post('backend/caseCat/addCase',data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//新增/修改案例
+const apiAddCase = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post('backend/case/editCase',data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//删除案例分类
+const apiDelCaseType= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.delete(`backend/caseCat/delCase?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//删除案例
+const apiDelCase= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/case/delCase`,data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//查询案例通过id
+const apiSelectCaseCatById= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/case/select?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//案例上线/下线操作
+const apiCaseOnlineOperate = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/case/onlineOperate?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//新增/修改banner
+const apiAddBanner = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/addBanner`,data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//上线/下线banner
+const apiBannerOnlineOperate = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/banOnlineOperate`,data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//banner列表
+const apiBannerList= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/bannerList?pageNum=${data.pageNum}&pageSize=${data.pageSize}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//活动列表
+const apiActiveList= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/activityList?name=${data.name}&pageNum=${data.pageNum}&pageSize=${data.pageSize}&startTime=${data.startDate}&endTime=${data.endDate}&status=${data.status}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//查看活动详情
+const apiActivityDetails= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/activityDetails?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//上线/下线活动
+const apiActiveOnlineOperate = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/actOnlineOperate?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//新增/修改活动
+const apiAddActive = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/addActivity`,data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//删除活动
+const apiDelActive= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/delActivity`,data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -300,5 +476,21 @@ export default {
   apiOnlineOperate,
   apiUpdateTemplate,
   apiDelTemplate,
-  apiBySizeCatType
+  apiBySizeCatType,
+  apiSelectCaseCat,
+  apiCaseList,
+  apiAddCaseType,
+  apiAddCase,
+  apiDelCaseType,
+  apiSelectCaseCatById,
+  apiDelCase,
+  apiCaseOnlineOperate,
+  apiAddBanner,
+  apiBannerOnlineOperate,
+  apiBannerList,
+  apiActiveList,
+  apiActivityDetails,
+  apiActiveOnlineOperate,
+  apiAddActive,
+  apiDelActive
 }

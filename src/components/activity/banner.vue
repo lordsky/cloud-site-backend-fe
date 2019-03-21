@@ -25,11 +25,11 @@
               </el-table-column>
               <el-table-column prop="name" label="banner名称" align="center">
               </el-table-column>
-              <el-table-column prop="address" width="250" label="链接/活动名称" align="center">
+              <el-table-column prop="url" width="250" label="链接/活动名称" align="center">
               </el-table-column>
-              <el-table-column prop="date" label="上传时间" align="center">
+              <el-table-column prop="createTime" label="上传时间" align="center">
               </el-table-column>
-              <el-table-column prop="stats" label="状态" align="center">
+              <el-table-column prop="status" label="状态" align="center">
               </el-table-column>
               <el-table-column label="操作" width="200" align="center">
                 <template slot-scope="scope">
@@ -49,18 +49,17 @@
           </div>
         </div>
         <div class="pagination">
-          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
+          <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
+            :page-size="pageSize"
+            layout="prev, pager, next, jumper"
+            :total="pageAll">
           </el-pagination>
         </div>
       </el-col>
     </el-row>
-    <!--<pre style="text-align: left">-->
-      <!--{{col}}-->
-    <!--</pre>-->
-    <!--<hr>-->
-    <!--<pre style="text-align: left">-->
-      <!--{{tableData}}-->
-    <!--</pre>-->
   </div>
 </template>
 
@@ -70,6 +69,7 @@
         name: "banner",
       data() {
         return {
+          pageAll:0,
           page:1,
           pageSize:10,
           activeShow:0,
@@ -77,36 +77,7 @@
             name: ''
           },
           bannerList:['首页','模板','教程中心','案例','关于我们'],
-          tableData: [
-            {
-              id: '1',
-              date: '2016-05-02',
-              name: 'banner1',
-              address: 'www.xxx.com',
-              stats:'在线'
-            },
-            {
-              id: '2',
-              date: '2016-05-04',
-              name: 'banner1',
-              address: 'www.xxx.com',
-              stats:'在线'
-            },
-            {
-              id: '3',
-              date: '2016-05-01',
-              name: 'banner1',
-              address: 'www.xxx.com',
-              stats:'在线'
-            },
-            {
-              id: '4',
-              date: '2016-05-03',
-              name: 'banner1',
-              address: 'www.xxx.com',
-              stats:'在线'
-            }
-          ]
+          tableData: []
         }
       },
       mounted() {
@@ -134,12 +105,26 @@
         //当前页码
         handleCurrentChange(val) {
           this.page = val;
-          this.getComponList();
+          this.getBannerList();
         },
         //当前条数
         handleSizeChange(val) {
           this.pageSize = val;
-          this.getComponList();
+          this.getBannerList();
+        },
+        getBannerList(){
+          let parm = {
+            pageNum: this.page,
+            pageSize: this.pageSize
+          };
+          this.$api.apiBannerList(parm).then(res=>{
+            if(res.msg === "success") {
+              this.tableData = res.data.content
+              this.pageAll = res.data.totalElements
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
         },
         //行拖拽
         rowDrop() {
