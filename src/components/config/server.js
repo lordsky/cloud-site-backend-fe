@@ -390,7 +390,18 @@ const apiBannerOnlineOperate = (data) => {
 //banner列表
 const apiBannerList= (data) => {
   return new Promise((resolve, reject)=>{
-    instance.get(`backend/bannerList?pageNum=${data.pageNum}&pageSize=${data.pageSize}`).then((res)=> {
+    instance.get(`backend/bannerList?pageNum=${data.pageNum}&pageSize=${data.pageSize}&positionId=${data.positionId}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//删除banner
+const apiDelBanner= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/delBanner`,data).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -453,6 +464,105 @@ const apiDelActive= (data) => {
   })
 }
 
+//获取素材库图片/视频
+const apiMaterials= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/getMaterials?materialsType=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//获取教程分类列表
+const apiCatList= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/catList`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//新增/修改教程分类
+const apiAddCatType = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/editCat`,data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//删除教程分类
+const apiDelCatType= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.delete(`backend/delCat?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//查看教程
+const apiCourseDetails= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/courseDetails?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//新增/修改教程
+const apiAddCourse = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/editCourse`,data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//查看活动列表无分页上线
+const apiActivityListNoPage= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/activityListNoPage`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//删除教程
+const apiDelCourse= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/delCourse`,data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//教程列表
+const apiCourseList= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/courseList?catId=${data.catId}&title=${data.title}&pageNum=${data.pageNum}&pageSize=${data.pageSize}&startTime=${data.startDate}&endTime=${data.endDate}&onlineStatus=${data.state}&type=${data.type}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -492,5 +602,15 @@ export default {
   apiActivityDetails,
   apiActiveOnlineOperate,
   apiAddActive,
-  apiDelActive
+  apiDelActive,
+  apiMaterials,
+  apiCatList,
+  apiAddCatType,
+  apiCourseDetails,
+  apiAddCourse,
+  apiDelCourse,
+  apiActivityListNoPage,
+  apiDelBanner,
+  apiDelCatType,
+  apiCourseList
 }

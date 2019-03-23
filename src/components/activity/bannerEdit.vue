@@ -1,5 +1,5 @@
 <template>
-  <div class="bannerAdd">
+  <div class="bannerEdit">
     <el-form ref="banner" :model="banner" :rules="rules" label-width="100px">
       <el-form-item label="banner名称:" prop="name">
         <el-input v-model="banner.name" placeholder="请输入banner名称，不超过12个字符" class="el-input-banner"></el-input>
@@ -47,7 +47,7 @@
         </el-radio-group>
         <div v-show="banner.status == 1">
           <el-date-picker
-            v-model="banner.onlineDate"
+            v-model="banner.offlineTime"
             type="datetime"
             placeholder="请选择下线日期"
             default-time="12:00:00">
@@ -56,7 +56,7 @@
         </div>
         <div v-show="banner.status == -1">
           <el-date-picker
-            v-model="banner.offlineStartDate"
+            v-model="offlineStartDate"
             type="datetimerange"
             align="right"
             start-placeholder="开始日期"
@@ -68,8 +68,8 @@
       </el-form-item>
       <el-form-item>
         <div style="text-align: center">
-        <el-button @click="back">返回</el-button>
-        <el-button type="primary" @click="onSubmit()" :loading="addLoading">保存</el-button>
+          <el-button @click="back">返回</el-button>
+          <el-button type="primary" @click="onSubmit()" :loading="addLoading">保存</el-button>
         </div>
       </el-form-item>
     </el-form>
@@ -96,20 +96,23 @@
   import fileUtil from '../config/fileUtil'
   import '@/assets/js/jquery';
   export default {
-    name: "bannerAdd",
+    name: "bannerEdit",
     data() {
-      // const URL_REG = '(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
-      // const re=new RegExp(URL_REG);
-      // let validateUrl = (rule, value, callback) => {
-      //   if (value === "") {
-      //     callback(new Error("请输入案例链接地址"));
-      //   } else if (!re.test(value)) {
-      //     callback(new Error("请输入正确的案例链接地址!"));
-      //   } else {
-      //     callback();
-      //   }
-      // }
+      const URL_REG = '(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
+      const re=new RegExp(URL_REG);
+      let validateUrl = (rule, value, callback) => {
+        if (value === "") {
+          callback(new Error("请输入案例链接地址"));
+        } else if (!re.test(value)) {
+          callback(new Error("请输入正确的案例链接地址!"));
+        } else {
+          callback();
+        }
+      }
       return {
+        onlineTime:'',
+        offlineTime:'',
+        offlineStartDate:[],
         bannerLink: 1,
         bannerState:1,
         host:host,
@@ -141,18 +144,7 @@
           name:'关于我们'
         }],
         type:'',//操作区域
-        banner: {
-          name: '',
-          positionId: '',
-          imageUrl: '',
-          onlineDate:'',
-          offlineStartDate:[],
-          offlineEndDate:'',
-          actId:'',
-          url:'',
-          urlType:0,
-          status:1
-        },
+        banner: {},
         classification:[],
         rules:{
           name: [
@@ -194,8 +186,6 @@
       },
       //点击下一步保存套件信息并进入下一步
       onSubmit(index) {
-        console.log(this.banner.offlineStartDate[0])
-        console.log(this.banner.onlineDate)
         this.$refs.banner.validate((valid) => {
           if(this.banner.imageUrl == ''){
             this.$message({
@@ -211,28 +201,28 @@
             });
             return
           }
-         if(this.banner.urlType == 2){
-           let url = this.banner.url
+          if(this.banner.urlType == 2){
+            let url = this.banner.url
             const URL_REG = '(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
             const re=new RegExp(URL_REG);
-              if (url === "") {
-                this.$message({
-                  type: 'warning',
-                  message: '请输入案例外部链接地址'
-                });
-                return
-              } else if (!re.test(url)) {
-                this.$message({
-                  type: 'warning',
-                  message: '请输入正确的案例外部链接地址，含http://前缀'
-                });
-                return
-              }
+            if (url === "") {
+              this.$message({
+                type: 'warning',
+                message: '请输入案例外部链接地址'
+              });
+              return
+            } else if (!re.test(url)) {
+              this.$message({
+                type: 'warning',
+                message: '请输入正确的案例外部链接地址，含http://前缀'
+              });
+              return
+            }
           }
           if (valid) {
             this.addLoading = true;
             this.$api.apiAddBanner({
-              id:'',
+              id:this.banner.id,
               name: this.banner.name,
               positionId: this.banner.positionId,
               urlType:this.banner.urlType,
@@ -240,8 +230,8 @@
               url:this.banner.urlType != 2 ? '' : this.banner.url,
               status:this.banner.status,
               imageUrl:this.banner.imageUrl,
-              onlineTime:this.banner.offlineStartDate[0] == undefined ? '' : this.$http.getLocalTimeDate(this.banner.offlineStartDate[0]),
-              offlineTime: this.banner.status == 1 ? (this.banner.onlineDate == '' ? '' : this.$http.getLocalTimeDate(this.banner.onlineDate)) : this.$http.getLocalTimeDate(this.banner.offlineStartDate[1])
+              onlineTime:this.offlineStartDate[0] == '' ? '' :(this.offlineStartDate[0] == this.onlineTime ? this.offlineStartDate[0] : this.$http.getLocalTimeDate(this.offlineStartDate[0])),
+              offlineTime: this.banner.status == 1 ? (this.banner.offlineTime == '' ? '' : (this.banner.offlineTime == this.offlineTime ? this.offlineTime : this.$http.getLocalTimeDate(this.banner.offlineTime))) : (this.offlineStartDate[1] == undefined ? '' : (this.offlineStartDate[1] == this.offlineTime ? this.offlineStartDate[1] : this.$http.getLocalTimeDate(this.offlineStartDate[1])))
             }).then(res => {
               console.log(res)
               if(res.code === 200) {
@@ -258,6 +248,7 @@
           }
         });
       },
+      //获取素材库图片
       getPicture(){
         if(this.banner.imageUrl == ''){
           this.dialogVisibleManage = true
@@ -268,10 +259,6 @@
           })
         }
       },
-      //返回
-      back() {
-        this.$router.go(-1)
-      },
       //获取活动列表
       getActiveList(){
         this.$api.apiActivityListNoPage().then(res => {
@@ -281,16 +268,31 @@
             this.$message.error(res.msg)
           }
         })
-      }
+      },
+      //返回
+      back() {
+        this.$router.go(-1)
+      },
     },
     mounted() {
+     this.banner = this.$route.query.data
+      if(this.banner.actId == 0){
+        this.banner.actId = ''
+      }
+      this.onlineTime = this.banner.onlineTime
+      this.offlineStartDate.push(this.banner.onlineTime)
+      if(this.banner.offlineTime == null || this.banner.offlineTime == ''){
+        this.banner.offlineTime = ''
+      }
+      this.offlineTime = this.banner.offlineTime
+      this.offlineStartDate.push(this.banner.offlineTime)
       this.getActiveList()
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .bannerAdd{
+  .bannerEdit{
     margin: 20px;
     /*width: 90%;*/
     .footerside-right-list{
@@ -381,7 +383,7 @@
   }
 </style>
 <style lang="scss">
-  .bannerAdd{
+  .bannerEdit{
     .manage-dialog{
       .el-dialog__header{
         padding: 20px;

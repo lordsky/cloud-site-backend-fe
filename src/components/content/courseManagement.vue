@@ -7,14 +7,14 @@
             <el-form-item label="教程标题:" prop="name">
               <el-input v-model="filters.name" placeholder="请输入关键字" clearable></el-input>
             </el-form-item>
-            <el-form-item label="教程类型">
-              <el-select v-model="activeState" placeholder="全部" class="el-select-banner">
-                <el-option :label="x.name" :value="i" v-for="(x,i) in tableData" :key="i"></el-option>
+            <el-form-item label="教程类型" prop="courseType">
+              <el-select v-model="filters.courseType" placeholder="全部" class="el-select-banner">
+                <el-option :label="x.name" :value="x.id" v-for="(x,i) in courseTypeList" :key="i"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="状态">
-              <el-select v-model="activeState" placeholder="全部" class="el-select-banner">
-                <el-option :label="x.name" :value="i" v-for="(x,i) in tableData" :key="i"></el-option>
+            <el-form-item label="状态" prop="state">
+              <el-select v-model="filters.state" placeholder="全部" class="el-select-banner">
+                <el-option :label="x.name" :value="x.id" v-for="(x,i) in stateList" :key="i"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="发布时间:" prop="timeData">
@@ -23,21 +23,22 @@
             </el-form-item>
           </div>
           <el-form-item>
-            <el-button type="primary" size="small">查询</el-button>
+            <el-button type="primary" size="small" @click="getCourseList">查询</el-button>
             <el-button type="primary" size="small" @click="resetForm">清空</el-button>
-            <el-button type="primary" size="small" disabled >批量删除</el-button>
+            <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >批量删除</el-button>
             <el-button type="primary" size="small" @click="courseAdd">新增教程</el-button>
           </el-form-item>
         </el-form>
       </el-col>
       <el-col :span="5">
         <div class="course-left">
-          <div style="text-align: center"><el-button type="primary" @click="dialogVisible2 =true,isCourse = 1">创建一级目录</el-button></div>
+          <div style="text-align: center"><el-button type="primary" @click="dialogVisible2 =true,isCourse = 1,catTitle='创建一级目录'">创建一级目录</el-button></div>
           <el-tree
             :data="setTree"
             :props="defaultProps"
             node-key="id"
             ref="SlotMenuList"
+            @node-click="handleNodeClick"
             :filter-node-method="filterNode"
             @node-contextmenu='rihgtClick'
             accordion
@@ -57,10 +58,10 @@
               <!-- 编辑输入框 -->
               <span v-show="node.isEdit">
                 <el-input class="slot-t-input" size="mini" autofocus
-                    v-model="data.name"
-                    :ref="'slotTreeInput'+data.id"
-                    @blur.stop="NodeBlur(node, data)"
-                    @keyup.enter.native="NodeBlur(node, data)"></el-input>
+                          v-model="data.catName"
+                          :ref="'slotTreeInput'+data.id"
+                          @blur.stop="NodeBlur(node, data)"
+                          @keyup.enter.native="NodeBlur(node, data)"></el-input>
               </span>
             </span>
           </el-tree>
@@ -74,7 +75,7 @@
               active-text-color="#fff"
               text-color="#fff">
               <el-menu-item index="1" class="menuItem" v-if="showAdd == true">
-                <span slot="title">添加子分类</span>
+                <span slot="title">添加子目录</span>
               </el-menu-item>
               <el-menu-item index="2" class="menuItem">
                 <span slot="title">重命名</span>
@@ -94,27 +95,34 @@
               border
               row-key="id"
               tooltip-effect="dark"
-              style="width: 100%">
+              style="width: 100%"
+              @selection-change="selsChange">
               <el-table-column type="selection" width="55" align="center">
               </el-table-column>
-              <el-table-column prop="name" label="教程标题" align="center">
+              <el-table-column prop="title" label="教程标题" align="center">
               </el-table-column>
-              <el-table-column prop="directory1" label="一级目录" align="center">
+              <el-table-column prop="firstCat" label="一级目录" align="center">
               </el-table-column>
-              <el-table-column prop="directory2" label="二级目录" align="center">
+              <el-table-column prop="secondCat" label="二级目录" align="center">
               </el-table-column>
-              <el-table-column prop="courseType" label="教程类型" align="center">
+              <el-table-column label="教程类型" align="center">
+                <template slot-scope="scope">
+                  {{scope.row.type == 1 ? '常见教程' : scope.row.type == 2 ? '视频教程' : '图文教程'}}
+                </template>
               </el-table-column>
-              <el-table-column prop="date" label="发布时间" align="center">
+              <el-table-column prop="creatTime" label="发布时间" align="center">
               </el-table-column>
-              <el-table-column prop="state" label="状态" align="center">
+              <el-table-column label="状态" align="center">
+                <template slot-scope="scope">
+                  {{scope.row.onlineStatus == -1 ? '下线' : '上线'}}
+                </template>
               </el-table-column>
               <el-table-column label="操作" width="200" align="center">
                 <template slot-scope="scope">
                   <el-button type="text" @click="managecourse(scope.$index, scope.row)">查看</el-button>
                   <el-button type="text" @click="editcourse(scope.$index, scope.row)">编辑</el-button>
-                  <el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>
-                  <el-button type="text" v-if="scope.row.state == '在线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
+                  <el-button type="text" v-if="scope.row.onlineStatus == -1" @click="popCompon(scope.$index, scope.row)">上线</el-button>
+                  <el-button type="text" v-if="scope.row.onlineStatus == 1" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
                   <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                 </template>
               </el-table-column>
@@ -122,13 +130,19 @@
           </div>
         </div>
         <div class="pagination">
-          <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
+          <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
+            :page-size="pageSize"
+            layout="prev, pager, next, jumper"
+            :total="pageAll">
           </el-pagination>
         </div>
       </el-col>
     </el-row>
     <!--创建分类弹框-->
-    <el-dialog title="创建目录" :visible.sync="dialogVisible2" width="400px" center>
+    <el-dialog :title="catTitle" :visible.sync="dialogVisible2" width="400px" center>
       <el-form :inline="true" :model="formCompon" class="demo-form-inline" ref="formCompon">
         <el-form-item label="目录名称:" prop="name" :rules="[{required: true, message: '目录名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
           <el-input v-model="formCompon.name"></el-input>
@@ -153,8 +167,10 @@
     data() {
       return {
         formCompon:{
-          name : '',
+          name : ''
         },
+        sels:'',
+        catTitle:'',
         isCourse:1,
         dialogVisible2:false,
         showAdd:true,
@@ -165,10 +181,10 @@
         maxexpandId: api.maxexpandId,//新增节点开始id
         non_maxexpandId: api.maxexpandId,//新增节点开始id(不更改)
         isLoadingTree: true,//是否加载节点树
-        setTree: api.treelist,//节点树数据
+        setTree: [],//节点树数据
         defaultProps: {
           children: 'children',
-          label: 'name'
+          label: 'catName'
         },
         filterText: '',
         input: "",
@@ -176,6 +192,7 @@
         editObj: {},
         menuVisible: false,
         objectID: null,
+        pageAll:0,
         page:1,
         pageSize:10,
         activeShow:0,
@@ -183,61 +200,66 @@
         filters: {
           name: '',
           timeData:[],
+          courseType:'',
+          state:''
         },
-        courseList:['首页','模板','教程中心','案例','关于我们'],
-        tableData: [
+        stateList:[//状态选择
           {
-            id: '1',
-            date: '2016-05-02',
-            directory1:'基础组件',
-            directory2:'网站管理',
-            name: '如何编辑网站？',
-            courseType:'常见类型',
-            state:'在线'
+            id:-1,
+            name:'下线'
           },
           {
-            id: '2',
-            date: '2016-05-02',
-            directory1:'基础组件',
-            directory2:'网站管理',
-            name: '如何编辑网站？',
-            courseType:'常见类型',
-            state:'在线'
-          },
-          {
-            id: '3',
-            date: '2016-05-02',
-            directory1:'基础组件',
-            directory2:'/',
-            name: '如何编辑网站？',
-            courseType:'常见类型',
-            state:'在线'
-          },
-          {
-            id: '4',
-            date: '2016-05-02',
-            directory1:'基础组件',
-            directory2:'网站管理',
-            name: '如何编辑网站？',
-            courseType:'常见类型',
-            state:'在线'
+            id:1,
+            name:'在线'
           }
-        ]
+        ],
+        courseTypeList:[
+          {
+            id:1,
+            name:'常见教程'
+          },
+          {
+            id:2,
+            name:'视频教程'
+          },
+          {
+            id:3,
+            name:'图文教程'
+          },
+        ],
+        tableData: []
       }
     },
-    mounted() {
-    },
     methods: {
+      //新增一级目录
       handleAddTop() {
-        this.setTree.push({
-          id: ++this.maxexpandId,
-          name: this.formCompon.name,
-          pid: '',
-          isEdit: false,
-          children: []
-        })
-        this.dialogVisible2 = false
-        this.resetForm2()
+        this.$refs.formCompon.validate((valid) => {
+          if (valid) {
+            let parm = {
+              id:"",
+              catName:this.formCompon.name,
+              catLevel:1,
+              parentId:0
+            }
+            this.$api.apiAddCatType(parm).then(res=>{
+              if(res.msg === 'success'){
+                this.$message.success("添加成功！")
+                this.setTree.push({
+                  id: res.data,
+                  name: this.formCompon.name,
+                  parentId: '',
+                  isEdit: false,
+                  children: []
+                })
+                this.dialogVisible2 = false
+                this.getCatList()
+                this.resetForm2()
+              }else{
+                this.$message.error(res.msg)
+              }
+            })
+          }
+        });
       },
       filterNode(value, data) {
         console.log('value:',value)
@@ -250,6 +272,7 @@
         if (key == 1) {
           this.dialogVisible2 = true
           this.isCourse = 2
+          this.catTitle = '创建二级目录'
           // this.NodeAdd(this.NODE, this.DATA);
           this.menuVisible = false;
         } else if (key == 2) {
@@ -268,7 +291,23 @@
         if(n.isEdit){
           this.$set(n, 'isEdit', false)
         }
+        let parm = {
+          id:d.id,
+          catName: d.catName,
+          catLevel:d.catLevel,
+          parentId:d.parentId
+        }
         this.$nextTick(() => {
+          this.$api.apiAddCatType(parm).then(res=>{
+            if(res.msg === 'success'){
+              this.$message.success("修改成功！")
+              this.getCatList()
+              this.getCourseList()
+            }else{
+              this.$message.error(res.msg)
+              this.getCatList()
+            }
+          })
           this.$refs['slotTreeInput'+d.id].$refs.input.focus()
         })
       },
@@ -281,56 +320,61 @@
       NodeDel(n, d){//删除节点
         console.log(n, d)
         let that = this;
-        if(d.children && d.children.length !== 0){
+        if(d.children.length != 0){
           this.$message.error("此节点有子级，不可删除！")
           return false;
         }else{
-          //新增节点可直接删除，已存在的节点要二次确认
-          //删除操作
-          let DelFun = () => {
-            let _list = n.parent.data.children || n.parent.data;//节点同级数据
-            let _index = _list.map((c) => c.id).indexOf(d.id);
-            console.log(_index)
-            _list.splice(_index, 1);
-            this.$message.success("删除成功！")
-          }
-          //二次确认
-          let ConfirmFun = () => {
-            this.$confirm("是否删除此节点？","提示",{
-              confirmButtonText: "确认",
-              cancelButtonText: "取消",
-              type: "warning"
-            }).then(() => {
-              DelFun()
-            }).catch(() => {})
-          }
-          //判断是否是新增节点
-          d.id > this.non_maxexpandId ? DelFun() : ConfirmFun()
+          this.$confirm('是否删除此目录？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            this.$api.apiDelCatType(d.id).then(res=>{
+              if(res.msg === 'success'){
+                this.$message.success("删除成功！")
+                this.getCatList()
+              }else{
+                this.$message.error(res.msg)
+              }
+            })
+          }).catch(() => {
+
+          });
         }
       },
-      NodeAdd(n, d){//新增节点
-        console.log(n, d)
-        //判断层级
-        if(n.level >= 2){
-          this.$message.error("最多只支持二级！")
-          return false;
-        }
-        //新增数据
-        d.children.push({
-          id: ++this.maxexpandId,
-          name: this.formCompon.name,
-          pid: d.id,
-          children: []
-        })
-        //同时展开节点
-        if(!n.expanded){
-          n.expanded = true
-        }
-        this.dialogVisible2 = false
-        this.resetForm2()
+      NodeAdd : async function(n, d){//新增节点
+        this.$refs.formCompon.validate((valid) => {
+          if (valid) {
+            let parm = {
+              id:"",
+              catName:this.formCompon.name,
+              catLevel:2,
+              parentId:d.id
+            }
+            this.$api.apiAddCatType(parm).then(res=>{
+              if(res.msg === 'success'){
+                this.$message.success("添加成功！")
+                d.children.push({
+                  id: res.data,
+                  name: this.formCompon.name,
+                  parentId: d.id,
+                  isEdit: false,
+                  children: []
+                })
+                this.dialogVisible2 = false
+                this.resetForm2()
+                this.getCatList()
+                //同时展开节点
+                // if(!n.expanded){
+                //   n.expanded = true
+                // }
+              }else{
+                this.$message.error(res.msg)
+              }
+            })
+          }
+        });
       },
       rihgtClick(event, object, value, element) {
-        this.showAdd = object.pid == '' ? true : false
+        this.showAdd = object.parentId == 0 ? true : false
         if (this.objectID !== object.id) {
           this.objectID = object.id;
           this.menuVisible = true;
@@ -369,25 +413,59 @@
       },
       handleNodeClick(d, n, s) { // 点击节点
         // console.log(d,n)
-        // d.isEdit = false// 放弃编辑状态
+        d.isEdit = false// 放弃编辑状态
       },
-      append(data) {
-        const newChild = { id: id++, label: 'testtest', children: [] };
-        if (!data.children) {
-          this.$set(data, 'children', []);
-        }
-        data.children.push(newChild);
-      },
+      //删除
+      handleDel(index,data){
+        this.$confirm('确认删除该教程吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          let a = []
+          a.push(data.id)
+          this.$api.apiDelCourse({
+            idList:a
+          }).then(res=>{
+            if(res.code ===200){
+              this.$message.success("删除成功！")
+              this.getCourseList()
+            }else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
 
-      remove(node, data) {
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
+        });
+      },
+      selsChange: function (sels) {
+        this.sels = sels;
+      },
+      //批量删除
+      batchRemove: function () {
+        let ids = this.sels.map(item => item.id);
+        this.$confirm('确认删除选中教程吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          console.log(ids)
+          let a = []
+          a.push(ids)
+          this.$api.apiDelCourse({
+            idList:ids
+          }).then(res=>{
+            if(res.code ===200){
+              this.$message.success("删除成功！")
+              this.getCourseList()
+            }else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
       },
       //清空查询
       resetForm(){
         this.$refs['filters'].resetFields();
+        this.getCourseList()
       },
       //清空分类
       resetForm2(){
@@ -423,7 +501,41 @@
         this.pageSize = val;
         this.getComponList();
       },
-    }
+      getCatList(){
+        this.$api.apiCatList().then(res=>{
+          if(res.msg === "success") {
+            this.setTree = res.data
+
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      },
+      getCourseList(){
+        let para = {
+          catId:'',
+          pageNum: this.page,
+          pageSize: this.pageSize,
+          title: this.filters.name,
+          state:this.filters.state,
+          type:this.filters.courseType,
+          startDate:this.filters.timeData == null ? '' : this.filters.timeData[0] != undefined ? this.$http.getLocalTime(this.filters.timeData[0]) : '',
+          endDate:this.filters.timeData == null ? '' : this.filters.timeData[1] != undefined ? this.$http.getLocalTime(this.filters.timeData[1]) : ''
+        };
+        this.$api.apiCourseList(para).then(res=>{
+          if(res.msg === "success") {
+            this.tableData = res.data.content
+            this.pageAll = res.data.totalElements
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      }
+    },
+    mounted() {
+      this.getCatList()
+      this.getCourseList()
+    },
   }
 </script>
 
@@ -489,6 +601,9 @@
 </style>
 <style lang="scss">
   .course{
+    .el-tree-node__content{
+      margin: 5px 0;
+    }
     .bannner-box {
       margin-top: 10px;
       margin-bottom: 10px;

@@ -1,46 +1,51 @@
 <template>
-  <div>
-    <el-form ref="course" :model="course" :rules="rules" label-width="100px" class="courseAdd">
+  <div class="courseAdd">
+    <el-form ref="course" :model="course" :rules="rules" label-width="100px">
       <el-form-item label="教程标题:" prop="name">
-        <el-input v-model="course.name" placeholder="请输入教程标题" class="el-input-course"></el-input>
+        <el-input v-model="course.title" placeholder="请输入教程标题" class="el-input-course"></el-input>
       </el-form-item>
-      <el-form-item label="教程介绍:" prop="introduce">
-        <el-input type="textarea" v-model="course.introduce" :rows="5" placeholder="请输入教程介绍，不超过40个字符"></el-input>
+      <el-form-item label="教程介绍:" prop="description">
+        <el-input type="textarea" v-model="course.description" :rows="5" placeholder="请输入教程介绍，不超过40个字符"></el-input>
       </el-form-item>
       <el-form-item label="教程封面:">
-        <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
-          <!--<img v-if="banner.imageUrl" :src="banner.imageUrl" class="avatar">-->
-          <div v-if="course.imageUrl" :class="{'delItem':showDel}">
+        <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false" @click="getPicture">
+          <div v-if="course.coverUrl" :class="{'delItem':showDel}">
             <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible=true"></i>
             <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
           </div>
         </div>
-        <img v-if="course.imageUrl" :src="course.imageUrl" class="avatar">
+        <img v-if="course.coverUrl" :src="course.coverUrl" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         <div class="el-upload__tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
         <el-dialog :visible.sync="dialogVisible">
-          <img width="100%" :src="course.imageUrl" alt="">
+          <img width="100%" :src="course.coverUrl" alt="">
         </el-dialog>
       </el-form-item>
-      <el-form-item label="教程目录:" prop="classification" v-if="pageId != 2">
-        <el-select v-model="course.classification" placeholder="请选择套件分类" class="el-select-course">
-          <el-option :label="x.name" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
+      <el-form-item label="教程目录:" prop="directory1">
+        <el-select v-model="course.directory1" placeholder="请选择一级目录" class="el-select-course" @change="levelChange">
+          <el-option :label="x.catName" :value="x.id" v-for="(x,i) in courseTypeList" :key="i"></el-option>
         </el-select>
-        <el-select v-model="course.classification" placeholder="请选择套件分类" class="el-select-course">
-          <el-option :label="x.name" :value="i" v-for="(x,i) in classification" :key="i"></el-option>
+        <el-select v-model="course.directory2" placeholder="请选择二级目录" class="el-select-course" :disabled="isDisabled">
+          <el-option :label="x.catName" :value="x.id" v-for="(x,i) in courseTypeList2" :key="i"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="教程类型:" prop="courseState">
-        <el-radio-group v-model="courseState">
+      <el-form-item label="教程类型:" prop="type">
+        <el-radio-group v-model="course.type">
           <el-radio :label="1">常见教程</el-radio>
           <el-radio :label="2">视频教程</el-radio>
           <el-radio :label="3">图文教程</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="教程内容" prop="courseDescribe" v-if="courseState==1">
-        <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" @change="onEditorChange($event)"></quill-editor>
-      </el-form-item>
-      <el-form-item label="视频介绍" prop="courseDescribe" v-if="courseState==2">
+      <el-form-item :label="courseTitle" prop="content">
+        <!-- 图片上传组件辅助-->
+        <el-upload
+          class="avatar-uploader"
+          :action="host.hostUrl+'/common/upload'"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+        style="display: none">
+        </el-upload>
         <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" @change="onEditorChange($event)"></quill-editor>
       </el-form-item>
       <el-form-item label="视频上传" prop="courseDescribe" v-if="courseState==2">
@@ -52,21 +57,16 @@
           :on-change="handleChange"
           :before-upload="beforeUpLoad">
           <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
-            <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
-            <div v-if="course.imageUrl" :class="{'delItem':showDel}">
+            <div v-if="course.coverUrl" :class="{'delItem':showDel}">
               <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible=true"></i>
               <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
             </div>
           </div>
-          <!--<img v-if="course.imageUrl" :src="course.imageUrl" class="avatar">-->
-          <video v-if="course.imageUrl" :src="course.imageUrl" controls="controls" class="avatar">您的浏览器不支持 video 标签。
+          <video v-if="course.coverUrl" :src="course.coverUrl" controls="controls" class="avatar">您的浏览器不支持 video 标签。
           </video>
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           <div class="el-upload__tip" slot="tip">上传视频支持MP4,wma等格式，不超过10M</div>
         </el-upload>
-      </el-form-item>
-      <el-form-item label="教程内容" prop="courseDescribe" v-if="courseState==3">
-        <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" @change="onEditorChange($event)"></quill-editor>
       </el-form-item>
       <el-form-item>
         <div style="text-align: center">
@@ -75,6 +75,21 @@
         </div>
       </el-form-item>
     </el-form>
+    <!--组件模版弹框-->
+    <el-dialog title="素材库" :visible.sync="dialogVisibleManage" width="80%" class="manage-dialog">
+      <div class="compon-edit-list">
+        <ul>
+          <li v-for="(item,i) in materialsList" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i">
+            <img width="100%" :src="item.filePath" alt="">
+          </li>
+        </ul>
+      </div>
+      <div class="dialog-footer">
+        <div @click="dialogVisibleManage = false">取消</div>
+        <div @click="completeDialog(activeShow)">完成</div>
+      </div>
+    </el-dialog>
+    <!--组件模版弹框-->
   </div>
 </template>
 
@@ -86,20 +101,80 @@
   import 'quill/dist/quill.bubble.css'
   import { quillEditor } from 'vue-quill-editor'
   import '@/assets/js/jquery';
+  // 工具栏配置
+  const toolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+    ['blockquote', 'code-block'],
+
+    [{'header': 1}, {'header': 2}],               // custom button values
+    [{'list': 'ordered'}, {'list': 'bullet'}],
+    [{'script': 'sub'}, {'script': 'super'}],      // superscript/subscript
+    [{'indent': '-1'}, {'indent': '+1'}],          // outdent/indent
+    [{'direction': 'rtl'}],                         // text direction
+
+    [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
+    [{'header': [1, 2, 3, 4, 5, 6, false]}],
+
+    [{'color': []}],
+    [{'background': []}],          // dropdown with defaults from theme
+    [{'font': []}],
+    [{'align': []}],
+    ['link', 'image'],//, 'video'
+    ['clean']                                         // remove formatting button
+  ];
+  // 标题
+  const titleConfig = {
+    'ql-bold':'加粗',
+    'ql-color':'颜色',
+    'ql-font':'字体',
+    'ql-code':'插入代码',
+    'ql-italic':'斜体',
+    'ql-link':'添加链接',
+    'ql-background':'背景颜色',
+    'ql-size':'字体大小',
+    'ql-strike':'删除线',
+    'ql-script':'上标/下标',
+    'ql-underline':'下划线',
+    'ql-blockquote':'引用',
+    'ql-header':'标题',
+    'ql-indent':'缩进',
+    'ql-list':'列表',
+    'ql-align':'文本对齐',
+    'ql-direction':'文本方向',
+    'ql-code-block':'代码块',
+    'ql-formula':'公式',
+    'ql-image':'图片',
+    'ql-video':'视频',
+    'ql-clean':'清除字体样式',
+    'ql-upload':'文件'
+  };
   export default {
     name: "courseAdd",
     data() {
       return {
         content: '',
         editorOption: {
-          placeholder: 'Hello World',
-          // modules:{
-          //   toolbar:[
-          //     ['bold', 'italic', 'underline', 'strike','blockquote','code-block','image','video','clean'],        // toggled buttons
-          //     ['blockquote', 'code-block']
-          //   ]
-          // }
+          placeholder: '请输入活动描述',
+          modules: {
+            toolbar: {
+              container: toolbarOptions,  // 工具栏
+              handlers: {
+                'image': function (value) {
+                  if (value) {
+                    // 触发input框选择图片文件
+                    document.querySelector('.avatar-uploader input').click()
+                  } else {
+                    this.quill.format('image', false);
+                  }
+                }
+              }
+            }
+          }
         },
+        courseTitle:'教程内容',
+        activeShow:0,
+        dialogVisibleManage:false,
+        isDisabled:true,
         courseLink: 1,
         courseState:1,
         catType:this.$route.query.catType,
@@ -114,18 +189,21 @@
         courseShow:0,
         componentList:[],
         classifyList:[],
+        materialsList:[],
         type:'',//操作区域
         course: {
-          name: '',
-          classification: '',
-          imageUrl: '',
-          introduce: '',
-          onlineDate:'',
-          offlineStartDate:'',
-          offlineEndDate:'',
-          video:''
-
+          directory1:'',
+          directory2:'',
+          title: '',
+          coverUrl: '',
+          content:'',
+          description:'',
+          type:1,
+          level:'',
+          videoUrl:''
         },
+        courseTypeList:[],
+        courseTypeList2:[],
         classification:[
           {name:'企业官网'},
           {name:'在线商城'},
@@ -137,10 +215,10 @@
             { required: true, message: '请输入套件标题', trigger: 'blur' },
             { max: 12, message: '不超过12个字符', trigger: 'blur' }
           ],
-          classification: [
-            { required: true, message: '请选择套件分类', trigger: 'change' }
+          directory1: [
+            { required: true, message: '请选择目录', trigger: 'change' }
           ],
-          introduce: [
+          description: [
             { max: 40,message: '不超过40个字符', trigger: 'change' }
           ]
         },
@@ -154,7 +232,7 @@
     },
     methods: {
       onEditorChange({ editor, html, text }) {//富文本编辑器  文本改变时 设置字段值
-        this.content = html
+        this.course.content = html
       },
       clearDate(){
         this.course.onlineDate = ''
@@ -162,18 +240,47 @@
       },
       //选择模版
       btnType(i){
-        this.courseShow = i
+        this.activeShow = i
+      },
+      completeDialog(index){
+        this.course.coverUrl = this.materialsList[index].filePath
+        this.dialogVisibleManage = false
       },
       handleRemove(file, fileList) {
         this.$refs.upload.clearFiles()
-        this.course.imageUrl = ''
+        this.course.coverUrl = ''
         setTimeout(() => {
           let oV1 =  document.getElementsByClassName('el-upload__input')
           oV1[0].disabled=false
         }, 100);
       },
       handleAvatarSuccess(res, file) {
-        this.course.imageUrl = URL.createObjectURL(file.raw);
+        // 获取富文本组件实例
+        let quill = this.$refs.myTextEditor.quill
+        // 如果上传成功
+        if (res) {
+          // 获取光标所在位置
+          let length = quill.getSelection().index;
+          // 插入图片，res为服务器返回的图片链接地址
+          quill.insertEmbed(length, 'image', res)
+          // 调整光标到最后
+          quill.setSelection(length + 1)
+        } else {
+          // 提示信息，需引入Message
+          Message.error('图片插入失败')
+        }
+      },
+      beforeAvatarUpload(file) {
+        const isType = file.type === 'image/jpeg' || file.type === 'image/png';
+        const isLt10M = file.size / 1024 / 1024 < 10;
+
+        if (!isType) {
+          this.$message.error('上传背景图片只能是 JPG、PNG 格式!');
+        }
+        if (!isLt10M) {
+          this.$message.error('上传背景图片大小不能超过 10MB!');
+        }
+        return isType && isLt10M;
       },
       beforeUpLoad(file) {
         return new Promise((resolve) => {
@@ -211,63 +318,19 @@
           return
         }
         if(file.response != undefined){
-          this.course.imageUrl = file.response;
+          this.course.coverUrl = file.response;
         }else {
-          this.course.imageUrl = URL.createObjectURL(file.raw);
+          this.course.coverUrl = URL.createObjectURL(file.raw);
         }
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true
       },
-      //获取组件列表
-      getComponentList(val){
-        this.$api.apiComponentByName(val).then(res => {
-          if(res.msg === "success") {
-            this.componentList = res.data
-          } else {
-            this.$message.error(res.msg)
-          }
-        })
-      },
-      //添加组件
-      addComponent(type){
-        this.type = type
-        switch(type) {
-          case 'top':
-            this.getComponentList("页头")
-            this.dialogTemplate = true
-            break;
-          case 'footer':
-            this.getComponentList("页脚")
-            this.dialogTemplate = true
-            break;
-        }
-      },
-      //完成选择模版
-      completeDialog(type,index){
-        switch(type) {
-          case 'top':
-            this.topDate = this.componentList[index].segmentCode
-            console.log('顶部区')
-            break;
-          case 'footer':
-            this.footerDate = this.componentList[index].segmentCode
-            console.log('页脚区')
-            break;
-        }
-        this.componentList = ''
-        this.dialogTemplate = false
-        this.courseShow = 0
-      },
-      //删除组件
-      delComponent(type) {
-        switch(type) {
-          case 'top':
-            this.topDate = ''
-            break;
-          case 'footer':
-            this.footerDate = ''
-            break;
-        }
+      //选完一级目录再选二级目录
+      levelChange(val){
+        this.isDisabled = false
+        this.course.directory2 = ''
+        const index =  this.courseTypeList.findIndex(d => d.id === val);
+        this.courseTypeList2 = this.courseTypeList[index].children
       },
       //点击下一步保存套件信息并进入下一步
       onSubmit(index) {
@@ -275,17 +338,10 @@
           index = this.catType.index
         }
         this.$refs.course.validate((valid) => {
-          if(this.course.imageUrl == ''){
+          if(this.course.coverUrl == ''){
             this.$message({
               type: 'warning',
               message: '请选择上传背景图片!'
-            });
-            return
-          }
-          if(this.topDate == '' || this.footerDate == ''){
-            this.$message({
-              type: 'warning',
-              message: '请选择页头和页脚!'
             });
             return
           }
@@ -293,30 +349,20 @@
             this.addLoading = true;
             // this.$refs.upload.submit();
             this.$api.apiAddTemplate({
-              name: this.course.name,
-              catId: this.classification[index].id,
-              description:this.course.introduce,
-              thumb:this.course.imageUrl
+              id:'',
+              title: this.course.title,
+              content: this.course.content,
+              description:this.course.description,
+              coverUrl:this.course.coverUrl,
+              videoUrl:this.course.videoUrl,
+              level:this.course.level,
+              type:this.course.type
             }).then(res => {
               console.log(res)
               if(res.code === 200) {
                 this.addLoading = false;
-                $("#silder").find("li").remove();
-                this.topDate = $('#topDate').html()
-                window.localStorage.setItem('courseHeater',this.topDate)
-                window.localStorage.setItem('courseFooter',this.footerDate)
-                this.$store.commit('saveSuiteId', this.classification[index].id)
                 this.$router.push({
-                  path:'/websiteEditor',
-                  query:{text:'网站编辑器'
-                    ,data:{
-                      templateId:res.data,//带参新增套件id
-                    },pageId:2
-                    ,catType:{
-                      catName:this.$route.query.catName,
-                      id:this.$route.query.id,
-                      index:this.$route.query.catIndex
-                    }}
+                  path:'/courseManagement',
                 })
               } else {
                 this.$message.error(res.msg)
@@ -327,23 +373,62 @@
           }
         });
       },
+      getPicture(){
+        if(this.course.coverUrl == ''){
+          this.dialogVisibleManage = true
+          this.$api.apiMaterials(1).then(res=>{
+            if(res.code === 200){
+              this.materialsList = res.data
+            }
+          })
+        }
+      },
       //返回
       back() {
         this.$router.go(-1)
       },
-      //获取模板分类
-      getSuiteTypeList(val){
-        this.$api.apiCatType(val).then(res => {
+      getCatList(){
+        this.$api.apiCatList().then(res=>{
           if(res.msg === "success") {
-            this.classification = res.data
+            this.courseTypeList = res.data
+
           } else {
             this.$message.error(res.msg)
           }
         })
-      }
+      },
+      addQuillTitle () {
+        const oToolBar = document.querySelector('.ql-toolbar'),
+          aButton = oToolBar.querySelectorAll('button'),
+          aSelect =  oToolBar.querySelectorAll('select');
+        aButton.forEach(function(item){
+          if(item.className === 'ql-script'){
+            item.value === 'sub' ? item.title = '下标': item.title = '上标';
+          }else if(item.className === 'ql-indent'){
+            item.value === '+1' ? item.title ='向右缩进': item.title ='向左缩进';
+          }else{
+            item.title = titleConfig[item.classList[0]];
+          }
+        });
+        aSelect.forEach(function(item){
+          item.parentNode.title = titleConfig[item.classList[0]];
+        });
+      },
     },
-    created() {
-      // this.getSuiteTypeList(3)
+    mounted() {
+      this.addQuillTitle()
+      this.getCatList()
+    },
+    watch:{
+      'course.type' : function(val) {
+        if(val == 1){
+          this.courseTitle = '教程内容'
+        }else if(val == 2){
+          this.courseTitle = '视频介绍'
+        }else {
+          this.courseTitle = '教程内容'
+        }
+      }
     }
   }
 </script>
@@ -389,10 +474,70 @@
         justify-content:space-evenly;
       }
     }
+    .compon-edit-list {
+      margin: 10px 0 10px 0;
+      height: 35vw;
+      overflow-y: auto;
+      padding-bottom: 45px;
+      ul {
+        width: 95%;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        li {
+          margin: 10px;
+          width: 30%;
+          height: 15vw;
+          border: 1px #cccccc solid;
+          list-style: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          overflow: hidden;
+          /*&:hover{*/
+          /*border: 3px #4d78ff solid;*/
+          /*}*/
+        }
+        .active{
+          border: 3px #4d78ff solid;
+        }
+      }
+    }
+    .manage-dialog{
+      .dialog-footer{
+        width: 100%;
+        height: 45px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        background-color: #e6e7e7;
+        box-shadow: 0 -2px 3px #676767;
+        div{
+          height: 45px;
+          line-height: 45px;
+          flex: 1;
+          text-align: center;
+          border-right: 1px solid #ffffff;
+          cursor: pointer;
+        }
+      }
+    }
   }
 </style>
 <style lang="scss">
   .courseAdd{
+    .manage-dialog{
+      .el-dialog__header{
+        padding: 20px;
+        border-bottom: 1px solid #c3c3c3;
+      }
+      .el-dialog__body{
+        padding: 0 10px 10px 10px;
+      }
+    }
     .ql-editor{
       min-height: 500px;
     }

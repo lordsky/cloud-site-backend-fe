@@ -3,15 +3,15 @@
     <el-row>
       <el-col :span="5">
         <div class="banner-left">
-        <div v-for="(item,index) in bannerList" :key="index" @click="btnType(index)" :class="{'banner-left-show':activeShow==index}">
-          {{item}}
+        <div v-for="(item,index) in bannerList" :key="index" @click="btnType(item.id,index)" :class="{'banner-left-show':activeShow==index}">
+          {{item.name}}
         </div>
       </div>
       </el-col>
       <el-col :span="19">
         <div>
           <el-col :span="24" class="toolbar">
-            <el-button type="primary" size="small">批量删除</el-button>
+            <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
             <el-button type="primary" size="small" @click="bannerAdd">新增banner</el-button>
           </el-col>
           <div class="bannner-box">
@@ -20,24 +20,31 @@
               border
               row-key="id"
               tooltip-effect="dark"
-              style="width: 100%">
+              style="width: 100%"
+              @selection-change="selsChange">
               <el-table-column type="selection" width="55" align="center">
               </el-table-column>
               <el-table-column prop="name" label="banner名称" align="center">
               </el-table-column>
-              <el-table-column prop="url" width="250" label="链接/活动名称" align="center">
+              <el-table-column width="250" label="链接/活动名称" align="center">
+                <template slot-scope="scope">
+                  {{scope.row.url == '' ? '暂无设置' : scope.row.url}}
+                </template>
               </el-table-column>
               <el-table-column prop="createTime" label="上传时间" align="center">
               </el-table-column>
               <el-table-column prop="status" label="状态" align="center">
+                <template slot-scope="scope">
+                  {{scope.row.status == 1 ? '在线' : '下线'}}
+                </template>
               </el-table-column>
               <el-table-column label="操作" width="200" align="center">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="manageBanner(scope.$index, scope.row)">管理</el-button>
+                  <el-button type="text" v-if="scope.row.status == -1" @click="popCompon(scope.$index, scope.row)">上线</el-button>
+                  <el-button type="text" v-if="scope.row.status == 1" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
+                  <el-button type="text" @click="manageBanner(scope.$index, scope.row)">查看</el-button>
                   <el-button type="text" @click="editBanner(scope.$index, scope.row)">编辑</el-button>
-                  <el-button type="text" v-if="scope.row.state == '下线'" @click="popCompon(scope.$index, scope.row)">上线</el-button>
-                  <el-button type="text" v-if="scope.row.state == '上线'" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
-                  <el-button type="text" v-if="scope.row.catNum == 0" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+                  <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                 </template>
               </el-table-column>
               <el-table-column label="Drag" align="center">
@@ -60,6 +67,9 @@
         </div>
       </el-col>
     </el-row>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="imageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 
@@ -69,38 +79,105 @@
         name: "banner",
       data() {
         return {
+          imageUrl:'',
+          dialogVisible:false,
+          positionId:1,
           pageAll:0,
           page:1,
           pageSize:10,
           activeShow:0,
+          sels:'',
           filters: {
             name: ''
           },
-          bannerList:['首页','模板','教程中心','案例','关于我们'],
+          bannerList:[{
+            id:1,
+            name:'首页'
+          },{
+            id:2,
+            name:'模板'
+          },{
+            id:3,
+            name:'教程中心'
+          },{
+            id:4,
+            name:'案例'
+          },{
+            id:5,
+            name:'关于我们'
+          }],
           tableData: []
         }
       },
-      mounted() {
-        this.rowDrop()
-      },
       methods: {
         //切换目录
-        btnType(i){
+        btnType(id,i){
+          this.positionId = id
+          this.getBannerList()
           this.activeShow = i
         },
         bannerAdd(){
           this.$router.push({
-            path:'/bannerAdd',
-            query:{text:'新增banner',pageId:1}
+            path:'/bannerAdd'
           })
         },
         //管理banner
         manageBanner(index,row){
-
+          // this.dialogVisible = true
+          this.imageUrl = row.imageUrl
+          window.open(this.imageUrl)
         },
         //编辑banner
         editBanner(index,row){
+          this.$router.push({
+            path:'/bannerEdit',
+            query:{data:row}
+          })
+        },
+        //删除
+        handleDel(index,data){
+          this.$confirm('确认删除该banner吗?', '提示', {
+            type: 'warning'
+          }).then(() => {
+            let a = []
+            a.push(data.id)
+            this.$api.apiDelBanner({
+              idList:a
+            }).then(res=>{
+              if(res.code ===200){
+                this.getBannerList()
+              }else {
+                this.$message.error(res.msg)
+              }
+            })
+          }).catch(() => {
 
+          });
+        },
+        selsChange: function (sels) {
+          this.sels = sels;
+        },
+        //批量删除
+        batchRemove: function () {
+          let ids = this.sels.map(item => item.id);
+          this.$confirm('确认删除选中banner吗？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            console.log(ids)
+            let a = []
+            a.push(ids)
+            this.$api.apiDelBanner({
+              idList:ids
+            }).then(res=>{
+              if(res.code ===200){
+                this.getBannerList()
+              }else {
+                this.$message.error(res.msg)
+              }
+            })
+          }).catch(() => {
+
+          });
         },
         //当前页码
         handleCurrentChange(val) {
@@ -114,6 +191,7 @@
         },
         getBannerList(){
           let parm = {
+            positionId:this.positionId,
             pageNum: this.page,
             pageSize: this.pageSize
           };
@@ -137,7 +215,11 @@
             }
           })
         },
-      }
+      },
+      mounted() {
+        this.rowDrop()
+        this.getBannerList()
+      },
     }
 </script>
 

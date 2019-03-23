@@ -239,7 +239,6 @@
       },
       //点击下一步保存套件信息并进入下一步
       onSubmit() {
-        console.log(this.$http.getLocalTimeDate(this.active.offlineStartDate[0]))
         this.$refs.active.validate((valid) => {
           if (valid) {
             this.addLoading = true;

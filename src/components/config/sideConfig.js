@@ -92,6 +92,11 @@ const navHead = [{
     text: ['活动管理','banner管理','新增banner']
   },
   {
+    path: 'bannerEdit',
+    index: '5-1',
+    text: ['活动管理','banner管理','编辑banner']
+  },
+  {
     path: 'activeConfiguration',
     index: '5-2',
     text: ['活动管理','活动配置']

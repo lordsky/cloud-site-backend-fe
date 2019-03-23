@@ -14,11 +14,17 @@
     <div style="width: 100%" v-html="active.description">{{active.description}}</div>
   </div>
     <div class="foot-nav">
-  <span>
-    &lt;  如何使用商城系统
+  <span v-if="active.beforeId != null" @click="getActiveInfo(active.beforeId)">
+    &lt;  {{active.beforeName}}
   </span>
-      <span>
-    如何修改网站的名称  &gt;
+      <span v-if="active.beforeId == null">
+    &lt;  暂无上一个
+  </span>
+      <span v-if="active.afterId != null" @click="getActiveInfo(active.afterId)">
+    {{active.afterName}}  &gt;
+  </span>
+      <span v-if="active.afterId == null">
+    &lt;  暂无下一个
   </span>
     </div>
   </div>
@@ -47,8 +53,8 @@
       }
     },
     mounted() {
-      this.active = this.$route.query.data
-      console.log(this.active)
+		  this.getActiveInfo(this.$route.query.data.id)
+      // this.active = this.$route.query.data
     }
   }
 </script>

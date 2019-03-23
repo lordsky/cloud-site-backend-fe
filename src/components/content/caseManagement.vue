@@ -149,7 +149,6 @@
 
 <script>
   import api from '../config/api'
-  api.treelist2 = api.treelist2.splice(0,10)
   let id = 1000;
   export default {
     name: "case",
@@ -210,26 +209,30 @@
     methods: {
       //新增一级目录
       handleAddTop() {
-        let parm = {
-          id:"",
-          catName:this.formCompon.name
-        }
-        this.$api.apiAddCaseType(parm).then(res=>{
-          if(res.msg === 'success'){
-            this.$message.success("添加成功！")
-            this.setTree.push({
-              id: res.data,
-              name: this.formCompon.name,
-              pid: '',
-              isEdit: false,
-              children: []
+        this.$refs.formCompon.validate((valid) => {
+          if (valid) {
+            let parm = {
+              id:"",
+              catName:this.formCompon.name
+            }
+            this.$api.apiAddCaseType(parm).then(res=>{
+              if(res.msg === 'success'){
+                this.$message.success("添加成功！")
+                this.setTree.push({
+                  id: res.data,
+                  name: this.formCompon.name,
+                  pid: '',
+                  isEdit: false,
+                  children: []
+                })
+                this.dialogVisible2 = false
+                this.getCaseCat('')
+              }else{
+                this.$message.error(res.msg)
+              }
             })
-            this.dialogVisible2 = false
-            this.getCaseCat('')
-          }else{
-            this.$message.error(res.msg)
           }
-        })
+        });
       },
       filterNode(value, data) {
         console.log('value:',value)
@@ -361,7 +364,7 @@
         // console.log("右键被点击的element:", element);
       },
       handleNodeClick(d, n, s) { // 点击节点
-        console.log(d,n)
+        // console.log(d,n)
         d.isEdit = false// 放弃编辑状态
       },
       //上线
@@ -439,6 +442,7 @@
             idList:a
           }).then(res=>{
             if(res.code ===200){
+              this.$message.success("删除成功！")
               this.getCaseList()
             }else {
               this.$message.error(res.msg)
@@ -454,7 +458,7 @@
       //批量删除
       batchRemove: function () {
         let ids = this.sels.map(item => item.id);
-        this.$confirm('确认删除选中记录吗？', '提示', {
+        this.$confirm('确认删除选中案例吗？', '提示', {
           type: 'warning'
         }).then(() => {
           console.log(ids)
@@ -464,6 +468,7 @@
             idList:ids
           }).then(res=>{
             if(res.code ===200){
+              this.$message.success("删除成功！")
               this.getCaseList()
             }else {
               this.$message.error(res.msg)

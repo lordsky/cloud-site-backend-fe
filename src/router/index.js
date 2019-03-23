@@ -23,6 +23,7 @@ import PreviewTemplate from '@/components/suite/previewTemplate'//预览模板�
 import PictureManage from '@/components/materialManage/pictureManage'//素材库
 import Banner from '@/components/activity/banner'//banner管理
 import BannerAdd from '@/components/activity/bannerAdd'//banner新增
+import BannerEdit from '@/components/activity/bannerEdit'//banner编辑
 import ActiveConfiguration from '@/components/activity/activeConfiguration'//活动配置
 import ActiveAdd from '@/components/activity/activeAdd'//活动新增
 import ActiveEdit from '@/components/activity/activeEdit'//活动编辑
@@ -159,6 +160,11 @@ export default new Router({
       path: '/bannerAdd',
       name: 'bannerAdd',
       component: BannerAdd
+     },
+     {
+      path: '/bannerEdit',
+      name: 'bannerEdit',
+      component: BannerEdit
      },
      {
       path: '/activeConfiguration',
