@@ -104,6 +104,9 @@
               <el-table-column prop="firstCat" label="一级目录" align="center">
               </el-table-column>
               <el-table-column prop="secondCat" label="二级目录" align="center">
+                <template slot-scope="scope">
+                  {{scope.row.secondCat != null ? scope.row.secondCat : '/'}}
+                </template>
               </el-table-column>
               <el-table-column label="教程类型" align="center">
                 <template slot-scope="scope">
@@ -198,6 +201,7 @@
         activeShow:0,
         activeState:'',//状态
         filters: {
+          id:'',
           name: '',
           timeData:[],
           courseType:'',
@@ -412,8 +416,44 @@
         // console.log("右键被点击的element:", element);
       },
       handleNodeClick(d, n, s) { // 点击节点
-        // console.log(d,n)
+        console.log(d,n)
+        this.filters.id  = d.id
+        this.getCourseList()
         d.isEdit = false// 放弃编辑状态
+      },
+      //上线
+      popCompon(index, row) {
+        this.$confirm('确认上线该教程吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.$api.apiCourseOnlineOperate(row.id).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getCourseList()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
+      },
+      //下线
+      offlineCompon(index, row) {
+        this.$confirm('确认下线该教程吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.$api.apiCourseOnlineOperate(row.id).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getCourseList()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
       },
       //删除
       handleDel(index,data){
@@ -465,6 +505,7 @@
       //清空查询
       resetForm(){
         this.$refs['filters'].resetFields();
+        this.filters.id = ''
         this.getCourseList()
       },
       //清空分类
@@ -489,7 +530,10 @@
       },
       //编辑course
       editcourse(index,row){
-
+        this.$router.push({
+          path:'/courseEdit',
+          query:{data:row}
+        })
       },
       //当前页码
       handleCurrentChange(val) {
@@ -513,7 +557,7 @@
       },
       getCourseList(){
         let para = {
-          catId:'',
+          catId:this.filters.id,
           pageNum: this.page,
           pageSize: this.pageSize,
           title: this.filters.name,

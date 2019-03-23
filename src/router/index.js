@@ -30,6 +30,7 @@ import ActiveEdit from '@/components/activity/activeEdit'//活动编辑
 import ActiveItems from '@/components/activity/activeItems'//活动详情
 import CourseManagement from '@/components/content/courseManagement'//教程管理
 import CourseAdd from '@/components/content/courseAdd'//教程新增
+import CourseEdit from '@/components/content/courseEdit'//教程编辑
 import CourseList from '@/components/content/courseList'//教程详情
 import CaseManagement from '@/components/content/caseManagement'//案例管理
 import CaseAdd from '@/components/content/caseAdd'//案例新增
@@ -195,6 +196,11 @@ export default new Router({
         path: '/courseAdd',
         name: 'courseAdd',
         component: CourseAdd
+      },
+      {
+        path: '/courseEdit',
+        name: 'courseEdit',
+        component: CourseEdit
       },
       {
         path: '/courseList',

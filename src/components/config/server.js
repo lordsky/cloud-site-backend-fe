@@ -500,7 +500,7 @@ const apiAddCatType = (data) => {
 //删除教程分类
 const apiDelCatType= (data) => {
   return new Promise((resolve, reject)=>{
-    instance.delete(`backend/delCat?id=${data}`).then((res)=> {
+    instance.post(`backend/delCourseCat?id=${data}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -563,6 +563,17 @@ const apiCourseList= (data) => {
   })
 }
 
+//上线/下线教程
+const apiCourseOnlineOperate = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/courseOnlineOperate?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -612,5 +623,6 @@ export default {
   apiActivityListNoPage,
   apiDelBanner,
   apiDelCatType,
-  apiCourseList
+  apiCourseList,
+  apiCourseOnlineOperate
 }

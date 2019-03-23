@@ -127,6 +127,11 @@ const navHead = [{
     text: ['内容管理','教程管理','新增教程']
   },
   {
+    path: 'courseEdit',
+    index: '6-1',
+    text: ['内容管理','教程管理','编辑教程']
+  },
+  {
     path: 'caseManagement',
     index: '6-2',
     text: ['内容管理','案例管理']

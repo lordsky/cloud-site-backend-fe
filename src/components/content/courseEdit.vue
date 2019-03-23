@@ -1,5 +1,5 @@
 <template>
-  <div class="courseAdd">
+  <div class="courseEdit">
     <el-form ref="course" :model="course" :rules="rules" label-width="100px">
       <el-form-item label="教程标题:" prop="title">
         <el-input v-model="course.title" placeholder="请输入教程标题" class="el-input-course"></el-input>
@@ -25,7 +25,7 @@
         <el-select v-model="course.directory1" placeholder="请选择一级目录" class="el-select-course" @change="levelChange">
           <el-option :label="x.catName" :value="x.id" v-for="(x,i) in courseTypeList" :key="i"></el-option>
         </el-select>
-        <el-select v-model="course.directory2" placeholder="请选择二级目录" class="el-select-course" :disabled="isDisabled">
+        <el-select v-model="directory2" placeholder="请选择二级目录" class="el-select-course" :disabled="isDisabled">
           <el-option :label="x.catName" :value="x.id" v-for="(x,i) in courseTypeList2" :key="i"></el-option>
         </el-select>
       </el-form-item>
@@ -44,7 +44,7 @@
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
-        style="display: none">
+          style="display: none">
         </el-upload>
         <quill-editor ref="myTextEditor" v-model="course.content" :options="editorOption" @change="onEditorChange($event)"></quill-editor>
       </el-form-item>
@@ -143,7 +143,7 @@
     'ql-upload':'文件'
   };
   export default {
-    name: "courseAdd",
+    name: "courseEdit",
     data() {
       return {
         content: '',
@@ -171,8 +171,6 @@
         isDisabled:true,
         courseLink: 1,
         courseState:1,
-        catType:this.$route.query.catType,
-        pageId:this.$route.query.pageId,
         host:host,
         topDate:'',
         footerDate:'',
@@ -188,30 +186,19 @@
         course: {
           directory1:'',
           directory2:'',
-          title: '',
-          coverUrl: '',
-          content:'',
-          description:'',
-          type:1,
-          level:'',
-          videoUrl:''
         },
+        directory1:'',
+        directory2:'',
         courseTypeList:[],
         courseTypeList2:[],
-        classification:[
-          {name:'企业官网'},
-          {name:'在线商城'},
-          {name:'外贸站'},
-          {name:'工作室'},
-        ],
         rules:{
           title: [
             { required: true, message: '请输入套件标题', trigger: 'blur' },
             { max: 12, message: '不超过12个字符', trigger: 'blur' }
           ],
-          directory1: [
-            { required: true, message: '请选择目录', trigger: 'change' }
-          ],
+          // directory1: [
+          //   { required: true, message: '请选择目录', trigger: 'change' }
+          // ],
           description: [
             { max: 40,message: '不超过40个字符', trigger: 'change' }
           ]
@@ -240,7 +227,7 @@
         this.course.coverUrl = this.materialsList[index].filePath
         this.dialogVisibleManage = false
       },
-      handleRemove() {
+      handleRemove(file, fileList) {
         setTimeout(() => {
           this.course.coverUrl = ''
         }, 100);
@@ -339,7 +326,7 @@
       //选完一级目录再选二级目录
       levelChange(val){
         this.isDisabled = false
-        this.course.directory2 = ''
+        this.directory2 = ''
         const index =  this.courseTypeList.findIndex(d => d.id === val);
         this.courseTypeList2 = this.courseTypeList[index].children
       },
@@ -358,9 +345,10 @@
           }
           if (valid) {
             this.addLoading = true;
-            this.course.level = this.course.directory1 + ',' + this.course.directory2
+            // this.$refs.upload.submit();
+            this.course.level = this.course.directory1 + ',' + this.directory2
             this.$api.apiAddCourse({
-              id:'',
+              id:this.course.id,
               title: this.course.title,
               content: this.course.content,
               description:this.course.description,
@@ -402,7 +390,15 @@
         this.$api.apiCatList().then(res=>{
           if(res.msg === "success") {
             this.courseTypeList = res.data
-
+            this.isDisabled = false
+            this.course.directory1 = Number(this.course.level.split(",")[0])
+            const index =  this.courseTypeList.findIndex(d => d.id === this.course.directory1);
+            this.courseTypeList2 = this.courseTypeList[index].children
+            if(this.course.level.split(",")[1] != ''){
+              this.directory2 = Number(this.course.level.split(",")[1])
+            }else{
+              this.directory2 = ''
+            }
           } else {
             this.$message.error(res.msg)
           }
@@ -427,6 +423,7 @@
       },
     },
     mounted() {
+      this.course = this.$route.query.data
       this.addQuillTitle()
       this.getCatList()
     },
@@ -445,7 +442,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .courseAdd{
+  .courseEdit{
     margin: 20px;
     .ql-editor{
       min-height: 500px;
@@ -539,7 +536,7 @@
   }
 </style>
 <style lang="scss">
-  .courseAdd{
+  .courseEdit{
     .manage-dialog{
       .el-dialog__header{
         padding: 20px;

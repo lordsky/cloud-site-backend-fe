@@ -134,6 +134,40 @@
             query:{data:row}
           })
         },
+        //上线
+        popCompon(index, row) {
+          this.$confirm('确认上线该banner吗?', '提示', {
+            type: 'warning'
+          }).then(() => {
+            this.$api.apiBannerOnlineOperate(row.id).then(res => {
+              console.log(res)
+              if(res.code === 200) {
+                this.getBannerList()
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }).catch(() => {
+
+          });
+        },
+        //下线
+        offlineCompon(index, row) {
+          this.$confirm('确认下线该banner吗?', '提示', {
+            type: 'warning'
+          }).then(() => {
+            this.$api.apiBannerOnlineOperate(row.id).then(res => {
+              console.log(res)
+              if(res.code === 200) {
+                this.getBannerList()
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }).catch(() => {
+
+          });
+        },
         //删除
         handleDel(index,data){
           this.$confirm('确认删除该banner吗?', '提示', {
