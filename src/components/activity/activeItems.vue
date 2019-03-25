@@ -4,28 +4,30 @@
       <i class="el-icon-arrow-left icon-size"></i>
       <el-button type="text" @click="backCompon">返回</el-button>
     </div>
-  <div class="course-header">
-    <div class="main_title">
-      <span>{{active.name}}</span>
-      <p><span>发布日期：{{active.actTime}}</span></p>
-    </div>
-  </div>
-  <div class="course-item">
-    <div style="width: 100%" v-html="active.description">{{active.description}}</div>
-  </div>
-    <div class="foot-nav">
-  <span v-if="active.beforeId != null" @click="getActiveInfo(active.beforeId)">
-    &lt;  {{active.beforeName}}
-  </span>
-      <span v-if="active.beforeId == null">
-    &lt;  暂无上一个
-  </span>
-      <span v-if="active.afterId != null" @click="getActiveInfo(active.afterId)">
-    {{active.afterName}}  &gt;
-  </span>
-      <span v-if="active.afterId == null">
-    &lt;  暂无下一个
-  </span>
+    <div class="course-shadow">
+      <div class="course-header">
+        <div class="main_title">
+          <span>{{active.name}}</span>
+          <p><span>发布日期：{{active.actTime}}</span></p>
+        </div>
+      </div>
+      <div class="course-item">
+        <div style="width: 100%" v-html="active.description">{{active.description}}</div>
+      </div>
+      <div class="foot-nav">
+        <span v-if="active.beforeId != null" @click="getActiveInfo(active.beforeId)">
+          &lt;  {{active.beforeName}}
+        </span>
+            <span v-if="active.beforeId == null">
+          &lt;  暂无上一个
+        </span>
+            <span v-if="active.afterId != null" @click="getActiveInfo(active.afterId)">
+          {{active.afterName}}  &gt;
+        </span>
+            <span v-if="active.afterId == null">
+          暂无下一个  &gt;
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -72,6 +74,28 @@
         font-size: 20px;
       }
     }
+    .course-shadow{
+      position: relative;
+      box-shadow: -1px 5px 20px #e0e1e0;
+      .foot-nav{
+        position: absolute;
+        padding: 0 32px;
+        bottom: 20px;
+        width: 100%;
+        font-size: 13px;
+        color: #6B6B6B;
+        span{
+          cursor: pointer;
+          &:hover{
+            color: #6389f8;
+          }
+        }
+        span:nth-child(2){
+          float: right;
+          /*padding-right: 60px;*/
+        }
+      }
+    }
     .course-header {
       height: 90px;
       align-items: center;
@@ -113,8 +137,8 @@
     }
     .course-item{
       position: relative;
-        padding: 20px 32px 0px 32px;
-        height: 72vh;
+        padding: 20px 32px 40px 32px;
+        height: 75vh;
       overflow: hidden;
       overflow-y: auto;
       img{
@@ -137,23 +161,5 @@
           line-height: 28px;
         }
       }
-    .foot-nav{
-      position: absolute;
-      padding: 0 32px;
-      bottom: -30px;
-      width: 100%;
-      font-size: 13px;
-      color: #6B6B6B;
-      span{
-        cursor: pointer;
-        &:hover{
-          color: #6389f8;
-        }
-      }
-      span:nth-child(2){
-        float: right;
-        /*padding-right: 60px;*/
-      }
-    }
   }
 </style>

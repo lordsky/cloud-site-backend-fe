@@ -3,10 +3,10 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" ref="filters" :model="filters">
         <div>
-          <el-form-item label="模版分类:" prop="name">
-            <el-input v-model="filters.name" placeholder="请输入模版分类名称" clearable></el-input>
+          <el-form-item label="IP地址:" prop="name">
+            <el-input v-model="filters.name" placeholder="请输入IP地址" clearable></el-input>
           </el-form-item>
-          <el-form-item label="添加时间:" prop="timeData">
+          <el-form-item label="操作时间:" prop="timeData">
             <el-date-picker v-model="filters.timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
@@ -18,10 +18,8 @@
       </el-form>
     </el-col>
     <div class="operation-box">
-      <el-table :data="templateTypeLsit"  border style="width: 100%" tooltip-effect="dark"
+      <el-table :data="tableData"  border style="width: 100%" tooltip-effect="dark"
                 v-loading="listLoading" @selection-change="selsChange">
-        <!--<el-table-column type="selection" width="55" align="center">-->
-        <!--</el-table-column>-->
         <el-table-column prop="operatingTime" label="操作时间"  align="center">
         </el-table-column>
         <el-table-column prop="operationType" label="操作类型" align="center">
@@ -76,32 +74,7 @@
           catName: '',
           catType:2
         },
-        templateTypeLsit: [
-          {
-            operatingTime:'2019-01-01 16:39:01',
-            operationType:'登录',
-            operationContent:'登录成功',
-            IPAddress:'119.120.31.207'
-          },
-          {
-            operatingTime:'2019-01-01 16:39:01',
-            operationType:'修改密码',
-            operationContent:'修改密码为：123456成功',
-            IPAddress:'119.120.31.207'
-          },
-          {
-            operatingTime:'2019-01-01 16:39:01',
-            operationType:'新增组件',
-            operationContent:'新增组件成功',
-            IPAddress:'119.120.31.207'
-          },
-          {
-            operatingTime:'2019-01-01 16:39:01',
-            operationType:'登录',
-            operationContent:'登录成功',
-            IPAddress:'119.120.31.207'
-          }
-        ],
+        tableData: [],
         date:[]
       }
     },
@@ -121,6 +94,23 @@
       handleSizeChange(val) {
         this.pageSize = val;
       },
+      getList(){
+        let pram = {
+          pageNum: this.page,
+          pageSize: this.pageSize,
+          ipAddress: this.filters.name,
+          startDate:this.filters.timeData == null ? '' : this.filters.timeData[0] != undefined ? this.$http.getLocalTime(this.filters.timeData[0]) : '',
+          endDate:this.filters.timeData == null ? '' : this.filters.timeData[1] != undefined ? this.$http.getLocalTime(this.filters.timeData[1]) : ''
+        }
+        this.$api.apiListSystemLog(pram).then(res=>{
+          if(res.msg === "success") {
+            this.tableData = res.data.content
+            this.pageAll = res.data.totalElements
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      }
     },
     mounted() {
 

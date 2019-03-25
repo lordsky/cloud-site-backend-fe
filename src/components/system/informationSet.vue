@@ -3,8 +3,8 @@
     <el-row>
       <el-col :span="5">
         <div class="information-left">
-          <div v-for="(item,index) in informationList" :key="index" @click="btnType(index)" :class="{'information-left-show':activeShow==index}">
-            {{item}}
+          <div v-for="(item,index) in informationList" :key="index" @click="btnType(item.id,index)" :class="{'information-left-show':activeShow==index}">
+            {{item.name}}
           </div>
         </div>
       </el-col>
@@ -30,17 +30,13 @@
                   </el-table-column>
                   <el-table-column label="操作" width="200" align="right">
                     <template slot-scope="scope">
-                      <el-radio-group v-model="scope.row.isShow" size="small">
-                        <el-radio-button label="显示"></el-radio-button>
-                        <el-radio-button label="隐藏"></el-radio-button>
+                      <el-radio-group v-model="scope.row.state" size="small" @change="changeState(scope.row.id)">
+                        <el-radio-button label="1">显示</el-radio-button>
+                        <el-radio-button label="-1">隐藏</el-radio-button>
                       </el-radio-group>
                     </template>
                   </el-table-column>
                 </el-table>
-                <div class="pagination">
-                  <el-pagination layout="prev, pager, next, jumper" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" >
-                  </el-pagination>
-                </div>
               </el-tab-pane>
               <el-tab-pane label="LOGO" name="LOGO">
                 <div style="overflow: hidden;display: flex">
@@ -65,12 +61,15 @@
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     <div class="el-upload__tip" slot="tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
                   </el-upload>
-                    <el-button style="position: absolute;left: 350px;bottom: 30px" size="small" type="primary">重新上传</el-button>
+                    <el-dialog :visible.sync="dialogVisible3">
+                      <img width="100%" :src="imageUrl" alt="">
+                    </el-dialog>
+                    <el-button style="position: absolute;left: 350px;bottom: 30px" size="small" type="primary" @click="editLogo">重新上传</el-button>
                   </div>
                 </div>
               </el-tab-pane>
               <el-tab-pane label="底部(友情链接)" name="footerUrl">
-                <el-table :data="tableData2"  style="width: 100%" tooltip-effect="dark" row-key="id"
+                <el-table :data="tableData"  style="width: 100%" tooltip-effect="dark" row-key="id"
                           v-loading="listLoading" @selection-change="selsChange" :show-header="false" class="table2">
                   <el-table-column label="Drag" align="center" width="50">
                     <template slot-scope="{}">
@@ -92,8 +91,8 @@
                 </el-table>
                 <div style="margin-top: 20px">
                   <el-button type="primary" >全选</el-button>
-                  <el-button type="primary" :disabled="this.sels.length===0">批量删除</el-button>
-                  <el-button type="primary" @click="dialogUrl('add')" :disabled="tableData2.length>=6">新增链接</el-button>
+                  <el-button type="primary" :disabled="this.sels.length===0" @click="batchRemove">批量删除</el-button>
+                  <el-button type="primary" @click="dialogUrl('add')" :disabled="tableData.length>=6">新增链接</el-button>
                 </div>
               </el-tab-pane>
             </el-tabs>
@@ -110,7 +109,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible2=false">取消</el-button>
-        <el-button type="primary" @click="dialogVisible2=true">确定</el-button>
+        <el-button type="primary" @click="editheader">确定</el-button>
       </span>
     </el-dialog>
     <!--修改页面名称弹框-->
@@ -126,7 +125,8 @@
         <el-form-item>
           <div class="dialog-footer" style="width: 100%;margin-left: 50%">
         <el-button @click="resetForm">取消</el-button>
-        <el-button type="primary" @click="dialogVisible=false">确定</el-button>
+        <el-button v-if="dialogTitle == '新增友情链接'" type="primary" @click="addFooter">确定</el-button>
+        <el-button v-if="dialogTitle == '编辑友情链接'" type="primary" @click="editFooter">确定</el-button>
       </div>
         </el-form-item>
       </el-form>
@@ -149,9 +149,11 @@
         dialogTitle:'',
         radio:'显示',
         formCompon:{
+          id:'',
           name : '',
         },
         formCompon2:{
+          id:'',
           name : '',
           url:''
         },
@@ -167,76 +169,25 @@
         sels:[],
         listLoading:false,
         activeName: 'navigation',
-        informationList:['首页','模板','教程中心','案例','关于我们'],
-        tableData: [
-          {
-            id: '1',
-            name:'首页',
-            url:'www.xxxx.com',
-            isShow:'显示'
-          },
-          {
-            id: '2',
-            name:'模板',
-            url:'www.yyyy.com',
-            isShow:'显示'
-          },
-          {
-            id: '3',
-            name:'教程中心',
-            url:'www.zzzz.com',
-            isShow:'隐藏'
-          },
-          {
-            id: '4',
-            name:'案例',
-            url:'www.bbbb.com',
-            isShow:'显示'
-          },
-          {
-            id: '5',
-            name:'关于我们',
-            url:'www.ssss.com',
-            isShow:'显示'
-          }
-        ],
-        tableData2: [
-          {
-            id: '1',
-            name:'中国移动网',
-            url:'www.xxxx.com',
-            isShow:'显示'
-          },
-          {
-            id: '2',
-            name:'中国移动网',
-            url:'www.yyyy.com',
-            isShow:'显示'
-          },
-          {
-            id: '3',
-            name:'中国移动网',
-            url:'www.zzzz.com',
-            isShow:'隐藏'
-          },
-          {
-            id: '4',
-            name:'中国移动网',
-            url:'www.bbbb.com',
-            isShow:'显示'
-          },
-          {
-            id: '5',
-            name:'中国移动网',
-            url:'www.ssss.com',
-            isShow:'显示'
-          }
-        ],
+        informationList:[{
+          id:1,
+          name:'首页'
+        },{
+          id:2,
+          name:'模板'
+        },{
+          id:3,
+          name:'教程中心'
+        },{
+          id:4,
+          name:'案例'
+        },{
+          id:5,
+          name:'关于我们'
+        }],
+        tableData: [],
+        tableData2: []
       }
-    },
-    mounted() {
-      this.rowDrop()
-      this.rowDrop2()
     },
     methods: {
       //清空查询
@@ -247,15 +198,19 @@
       editName(data){
         this.dialogVisible2 = true
         this.formCompon.name = data.name
+        this.formCompon.id = data.id
       },
       handleClick(tab, event) {
-        console.log(tab, event);
-      },
-      selsChange: function (sels) {
-        this.sels = sels;
+        if(tab.name == "navigation"){
+          this.getList(1)
+        }else if(tab.name == "LOGO"){
+          this.getList(2)
+        }else {
+          this.getList(3)
+        }
       },
       //切换目录
-      btnType(i){
+      btnType(id,i){
         this.activeShow = i
       },
       informationAdd(){
@@ -277,25 +232,19 @@
             this.dialogTitle = '编辑友情链接'
             this.formCompon2.name = data.name
             this.formCompon2.url = data.url
+            this.formCompon2.id = data.id
             break
         }
 
       },
-      //编辑底部
-      editBanner(data){
-
-      },
-      //删除底部链接
-      handleDel(data){
-
-      },
-      //管理information
-      manageinformation(index,row){
-
-      },
-      //编辑information
-      editinformation(index,row){
-
+      //隐藏显示状态change
+      changeState(val){
+        this.$api.apiNavigationStatus(val).then(res=>{
+          if(res.msg === "success") {
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       },
       //当前页码
       handleCurrentChange(val) {
@@ -343,9 +292,38 @@
           return
         }
         if(file.response != undefined){
-          this.suite.imageUrl = file.response;
+          this.imageUrl = file.response;
+          if(this.tableData.length == 0){
+            let pram = {
+              id : '',
+              name : '',
+              type: 2,
+              url:this.imageUrl
+            }
+            this.$api.apiEditSystemInfo(pram).then(res=>{
+              if(res.msg === "success") {
+                this.$message.success("上传成功！")
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }else {
+            let pram = {
+              id : this.tableData[0].id,
+              name : '',
+              type: 2,
+              url:this.imageUrl
+            }
+            this.$api.apiEditSystemInfo(pram).then(res=>{
+              if(res.msg === "success") {
+                this.$message.success("上传成功！")
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }
         }else {
-          this.suite.imageUrl = URL.createObjectURL(file.raw);
+          this.imageUrl = URL.createObjectURL(file.raw);
         }
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true
@@ -367,12 +345,149 @@
         const _this = this
         Sortable.create(tbody, {
           onEnd({ newIndex, oldIndex }) {
-            const currRow = _this.tableData2.splice(oldIndex, 1)[0]
-            _this.tableData2.splice(newIndex, 0, currRow)
+            const currRow = _this.tableData.splice(oldIndex, 1)[0]
+            _this.tableData.splice(newIndex, 0, currRow)
           }
         })
       },
-    }
+      getList(val){
+        this.$api.apiListSystemInfo(val).then(res=>{
+          if(res.msg === "success") {
+            this.tableData = res.data
+            this.imageUrl = this.tableData[0].url
+            let oV1 =  document.getElementsByClassName('el-upload__input')
+            if(this.imageUrl != null || this.imageUrl != ''){
+              oV1[0].disabled = true
+            }
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      },
+      editheader(){
+        this.$refs.formCompon.validate((valid) => {
+          if (valid) {
+            let pram = {
+              id : this.formCompon.id,
+              name : this.formCompon.name,
+              type: 1,
+              url:this.tableData.url
+            }
+            this.$api.apiEditSystemInfo(pram).then(res=>{
+              if(res.msg === "success") {
+                this.dialogVisible2 = false
+                this.getList(1)
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }
+        });
+      },
+      addFooter(){
+        this.$refs.formCompon2.validate((valid) => {
+          if (valid) {
+            let pram = {
+              id : '',
+              name : this.formCompon2.name,
+              type: 3,
+              url:this.formCompon2.url
+            }
+            this.$api.apiEditSystemInfo(pram).then(res=>{
+              if(res.msg === "success") {
+               this.dialogVisible = false
+                this.getList(3)
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }
+        });
+      },
+      editFooter(){
+        this.$refs.formCompon2.validate((valid) => {
+          if (valid) {
+            let pram = {
+              id : this.formCompon2.id,
+              name : this.formCompon2.name,
+              type: 3,
+              url:this.formCompon2.url
+            }
+            this.$api.apiEditSystemInfo(pram).then(res=>{
+              if(res.msg === "success") {
+                this.dialogVisible = false
+                this.getList(3)
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }
+        });
+      },
+      //删除
+      handleDel(data){
+        this.$confirm('确认删除该链接吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          let a = []
+          a.push(data.id)
+          this.$api.apiDelSystemInfo({
+            idList:a
+          }).then(res=>{
+            if(res.code ===200){
+              this.$message.success("删除成功！")
+              this.getList(3)
+            }else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
+      },
+      selsChange: function (sels) {
+        this.sels = sels;
+      },
+      //批量删除
+      batchRemove: function () {
+        let ids = this.sels.map(item => item.id);
+        this.$confirm('确认删除选中链接吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          console.log(ids)
+          let a = []
+          a.push(ids)
+          this.$api.apiDelSystemInfo({
+            idList:ids
+          }).then(res=>{
+            if(res.code ===200){
+              this.$message.success("删除成功！")
+              this.getList(3)
+            }else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
+      },
+      handleRemove(file, fileList) {
+        this.$refs.upload.clearFiles()
+        this.imageUrl = ''
+        setTimeout(() => {
+          let oV1 =  document.getElementsByClassName('el-upload__input')
+          oV1[0].disabled=false
+        }, 100);
+      },
+      editLogo : async function(){
+        this.$refs.upload.submit();
+      }
+    },
+    mounted() {
+      this.rowDrop()
+      this.rowDrop2()
+      this.getList(1)
+    },
   }
 </script>
 
@@ -380,6 +495,40 @@
   .information {
     margin-top: 10px;
     /*display: flex;*/
+    .footerside-right-list{
+      position: absolute;
+      width: 275px;
+      height: 148px;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed;
+      border-radius: 10px;
+      cursor: pointer;
+      &:hover{
+        border: 1px dashed #409eff;
+      }
+      .compon-edit-ico {
+        display: none;
+        font-size: 30px;
+        color: #ffffff;
+      }
+      .icoShow {
+        display: block;
+      }
+      .delItem {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content:space-evenly;
+      }
+    }
     .information-left{
       width: 15vw;
       height: calc(100vh - 160px);

@@ -1,24 +1,23 @@
 <template>
   <div class="course-item">
-     <p class="title">这是一段视频教程，请观看视频</p>
-     <h3 class="detail">视频简介</h3>
-     <p class="text">那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮。
-那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮。
-那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮。
-那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮。
-那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮。
-</p>
-  <!--<video width="100%" height="">-->
-  	<!--当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>-->
-  <!--</video>-->
-  <div class="foot-nav">
-  	<span>
-  		&lt;  如何使用商城系统
-  	</span>
-  	<span>
-  		如何修改网站的名称  &gt;
-  	</span>
-  </div>
+    <div v-html="courseInfo.content">{{courseInfo.content}}</div>
+  <video width="100%" height="">
+  	当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
+  </video>
+    <div class="foot-nav">
+        <span v-if="courseInfo.beforeId != null" @click="getCatInfo(courseInfo.beforeId)">
+          &lt;  {{courseInfo.beforeName}}
+        </span>
+      <span v-if="courseInfo.beforeId == null">
+          &lt;  暂无上一个
+        </span>
+      <span v-if="courseInfo.afterId != null" @click="getCatInfo(courseInfo.afterId)">
+          {{courseInfo.afterName}}  &gt;
+        </span>
+      <span v-if="courseInfo.afterId == null">
+         暂无下一个 &gt;
+        </span>
+    </div>
   </div>
 </template>
 
@@ -29,13 +28,25 @@
 			return{
 				
 			}
-		}
+		},
+    props:['courseInfo'],
+    methods:{
+      getCatInfo(id) {
+        this.$emit('getCatInfo', id)
+      },
+    }
 	}
 </script>
 
 <style lang="less">
   .course-item{
-  	  padding: 0 32px 0 32px;
+  	  padding: 24px 32px 35px 32px;
+      height: 75vh;
+      overflow: hidden;
+      overflow-y: auto;
+      img{
+        width: 100%;
+      }
   	  .title{
   	  	 padding: 30px 0 28px 0;
   	     font-size: 18px;

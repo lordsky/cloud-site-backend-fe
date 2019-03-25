@@ -574,6 +574,61 @@ const apiCourseOnlineOperate = (data) => {
   })
 }
 
+//系统日志列表
+const apiListSystemLog= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/listSystemLog?ipAddress=${data.ipAddress}&pageNum=${data.pageNum}&pageSize=${data.pageSize}&startTime=${data.startDate}&endTime=${data.endDate}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//平台信息列表
+const apiListSystemInfo = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/listSystemInfo?type=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//平台信息删除
+const apiDelSystemInfo= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/delSystemInfo`,data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//添加/修改平台信息
+const apiEditSystemInfo= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/editSystemInfo?id=${data.id}&name=${data.name}&type=${data.type}&url=${data.url}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//导航信息状态改变
+const apiNavigationStatus = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.get(`backend/navigationStatus?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -624,5 +679,10 @@ export default {
   apiDelBanner,
   apiDelCatType,
   apiCourseList,
-  apiCourseOnlineOperate
+  apiCourseOnlineOperate,
+  apiListSystemLog,
+  apiListSystemInfo,
+  apiDelSystemInfo,
+  apiEditSystemInfo,
+  apiNavigationStatus
 }

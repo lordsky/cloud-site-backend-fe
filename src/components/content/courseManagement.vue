@@ -522,10 +522,11 @@
           path:'/courseAdd'
         })
       },
-      //管理course
+      //查看course
       managecourse(index,row){
         this.$router.push({
-          path:'/courseList'
+          path:'/courseList',
+          query:{id:row.id}
         })
       },
       //编辑course

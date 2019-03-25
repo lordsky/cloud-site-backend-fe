@@ -41,7 +41,7 @@
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="previewSuite(scope.$index, scope.row)">预览</el-button>
-              <el-button type="text" v-if="scope.row.onlineStatus == 0" @click="popSuite(scope.$index, scope.row)">上线</el-button>
+              <el-button type="text" v-if="scope.row.onlineStatus == -1" @click="popSuite(scope.$index, scope.row)">上线</el-button>
               <el-button type="text" v-if="scope.row.onlineStatus == 1" @click="offlineSuite(scope.$index, scope.row)">下线</el-button>
               <el-button type="text" @click="editSuite(scope.$index, scope.row)">编辑</el-button>
               <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>

@@ -1,23 +1,22 @@
 <template>
   <div class="courseList">
+    <div class="template-edit-head">
+      <i class="el-icon-arrow-left icon-size"></i>
+      <el-button type="text" @click="backCompon">返回</el-button>
+    </div>
     <div class="main">
       <div class="main-content">
       	<div class="main-content-left">
-      		<CourseSeek :titleList="titleList"></CourseSeek>
-      		<!--<div class="main-content-left-list" v-if="listShow">-->
-      			<!--<div class="main-content-left-item" v-for="x in 2">-->
-      				<!--<img src="@/assets/img/5.jpg" alt="" />-->
-      				<!--<div class="main-content-left-item-text">-->
-      				   <!--<div class="main-content-left-item-text-title">-->
-      				   	<!--<p>我已经有一个域名了，如何绑定到云建站？（视频教程）</p>-->
-      				   	<!--<span>发布日期：2018.12.13</span><span>分类：云建站素材 邮箱和域名</span>-->
-      				   <!--</div>-->
-      				   <!--<p class="main-content-left-item-text__detail">那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮，那你需要登录云建站后台，登录成功后会在后台也汇总看到修改域名的按钮。</p>-->
-      				   <!--<span class="main-content-left-item-text__btn" @click="jumpDetail">阅读正文&gt;</span>-->
-      				<!--</div>-->
-      			<!--</div>-->
-      		<!--</div>-->
-      		<CourseItem/>
+          <div class="course-header">
+            <div class="main_title">
+              <span>{{courseInfo.title}}</span>
+              <p><span>发布日期：{{courseInfo.createTime}}</span></p>
+            </div>
+            <!--<div class="main__input">-->
+              <!--<el-input placeholder="请输入您的问题,例如：绑定域名"></el-input><i class="el-icon-search seek"></i>-->
+            <!--</div>-->
+          </div>
+      		<CourseItem @getCatInfo="getCatInfo" :courseInfo="courseInfo"/>
       	</div>
       	<div class="main-content-right">
       	 <div class="main-right-tutorial">
@@ -25,37 +24,16 @@
       	   	 <i class="el-icon-menu"></i><span>教程分类</span>
       	   </div>
       	   <div class="main-content-right-class">
-      	   	  <ul class="main-content-list" v-for="(x,i) in 10" :key="i">
-      	   	  	<li @click="isItemShow = i" >基础组件(视频教程) 
+      	   	  <ul class="main-content-list" v-for="(x,i) in setTree" :key="i">
+      	   	  	<li @click="isItemShow = i" >{{x.catName}}
       	   	  		<i :class="isItemShow==i?'el-icon-arrow-down':'el-icon-arrow-right'"></i>
       	   	  	</li>
       	   	  	<ul class="main-content-item" :class="{'show':isItemShow==i}">
-      	   	  			<li>网站管理</li>
-      	   	  			<li>网站备案</li>
-      	   	  			<li>邮箱和域名</li>
-      	   	  			<li>SEO搜索引擎优化</li>
+                    <li v-for="(x,index) in setTree[i].children">{{x.catName}}</li>
       	   	   </ul>
       	   	  </ul>
       	   </div>
       	   </div>
-      	   <!--<div class="main-right-hot">-->
-      	   <!--<div class="main-content-right-head">-->
-      	   	 <!--<i class="el-icon-menu"></i><span>热门分类</span>-->
-      	   <!--</div>-->
-      	   <!--<div class="main-content-right-class">-->
-      	   	  <!--<ul class="main-content-list" v-for="(x,i) in 3" :key="i">-->
-      	   	  	<!--<li @click="isItemShow = i" >基础组件(视频教程)-->
-      	   	  		<!--<i :class="isItemShow==i?'el-icon-arrow-down':'el-icon-arrow-right'"></i>-->
-      	   	  	<!--</li>-->
-      	   	  	<!--<ul class="main-content-item" :class="{'show':isItemShow==i}">-->
-      	   	  			<!--<li>网站管理</li>-->
-      	   	  			<!--<li>网站备案</li>-->
-      	   	  			<!--<li>邮箱和域名</li>-->
-      	   	  			<!--<li>SEO搜索引擎优化</li>-->
-      	   	   <!--</ul>-->
-      	   	  <!--</ul>-->
-      	   <!--</div>-->
-      	   <!--</div>-->
       	</div>
       	
       </div>
@@ -64,7 +42,6 @@
 </template>
 
 <script>
-  import CourseSeek from './courseHeader'
   import CourseItem from './courseItems'
   export default {
     name: "CourseList",
@@ -74,30 +51,106 @@
         titleList:{title:'我已经有一个域名了，如何绑定到云建站？（视频教程）'},
         listShow:true,
         isItemShow:0,
-        classText:''
+        classText:'',
+        setTree:[],
+        courseInfo:{}
       }
     },
+    components: {
+      CourseItem
+    },
     methods:{
+      backCompon(){
+        this.$router.go(-1)
+      },
     	//详情页面
     	 jumpDetail(){
     	 	this.listShow = false
     	 	this.textList =['教程中心', '教程列表','视频教程']
     	 	this.titleList.title = '我已经有一个域名了，如何绑定到云建站？（视频教程）'
     	 	this.titleList.list = '11'
-    	 }
+    	 },
+      getCatList(){
+        this.$api.apiCatList().then(res=>{
+          if(res.msg === "success") {
+            this.setTree = res.data
+
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      },
+      getCatInfo(val){
+        this.$api.apiCourseDetails(val).then(res=>{
+          if(res.msg === "success") {
+            this.courseInfo = res.data
+
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      },
     },
-    components: {
-      CourseSeek,
-      CourseItem
-    },
-    
+    mounted() {
+      this.getCatList()
+      this.getCatInfo(this.$route.query.id)
+    }
+
   }
 </script>
 
 <style lang="less">
   
   .courseList {
+    .template-edit-head {
+      .icon-size{
+        /*margin-left: 20px;*/
+        font-size: 20px;
+      }
+      button {
+        font-size: 20px;
+      }
+    }
   	/*background: #f7fcfd;*/
+    .course-header {
+      height: 90px;
+      align-items: center;
+      justify-content: space-between;
+      display: flex;
+      border-bottom: 1px solid #F2DEDE;
+      .main_title{
+        margin-left: 30px;
+        &:nth-child(1){
+          font-size: 20px;
+        }
+        color: #6B6B6B;
+        p{
+          font-size: 13px;
+          padding-top: 5px;
+          span{
+            padding-right: 20px;
+          }
+        }
+      }
+      .main__input {
+        display: flex;
+        width: 400px;
+        margin-right: 20px;
+        .el-input__inner {
+          border-radius: 0px !important;
+          height: 44px;
+        }
+        .seek {
+          width: 70px;
+          background: #1088f3;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          font-size: 20px;
+        }
+      }
+    }
     .topColor {
       height: 62px;
       background: linear-gradient(left, #476cf0, #3e96fa);
@@ -168,7 +221,7 @@
     	  		width: 20%;
     	  		.main-right-tutorial{
     	  			box-shadow: -1px 5px 20px #e0e1e0;
-    	  			height: 70vh;
+    	  			height: 83vh;
     	  			overflow-y: auto;
     	  		}
     	  		.main-right-hot{
