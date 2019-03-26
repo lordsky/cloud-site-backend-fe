@@ -14,15 +14,16 @@
     name: 'navHead',
     data() {
       return {
-         list:[]
+         list:[],
+         msg:''
       }
     },
     props:[],
     watch:{
 	  $route(to,from){
 	  	this.list = []
-	  	var msg = this.$route.query.text
-	  	this.list = setNav(to,msg)
+	  	this.msg = this.$route.query.text
+	  	this.list = setNav(to,this.msg)
 	  },
 	},
 	created(){

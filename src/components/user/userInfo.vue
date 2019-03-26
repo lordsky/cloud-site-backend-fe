@@ -87,7 +87,7 @@
       <span>{{dialogText}}</span>
       <span slot="footer" class="dialog-footer">
     <el-button @click="diaShow = false" size="small">取 消</el-button>
-    <el-button type="primary" @click="diaShow = false" size="small">确 定</el-button>
+    <el-button type="primary" @click="resetPassword" size="small">确 定</el-button>
      </span>
     </el-dialog>
 
@@ -119,13 +119,26 @@
       	this.diaShow = true
       	this.dialogText = '确定要重置密码吗？'
       },
+      resetPassword(){
+      	this.$http.post(this.$API.resetUserPassword,{
+      		userId:''
+      	},(response)=>{
+      		console.log(response)
+      	})
+      },
       jump(){
       	
+      },
+      getUserList(){
+      	this.$http.post(this.$API.userDetails+'?userId='+this.list.id,{
+      	},(response)=>{
+      		console.log(response)
+      	})
       }
     },
     created(){
     	    this.list = this.$route.params.data
-    	   console.log(this.$route.params.data)
+    	    this.getUserList()
     }
   }
 </script>

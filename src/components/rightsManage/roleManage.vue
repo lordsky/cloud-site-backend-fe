@@ -61,18 +61,24 @@
 	    	},
 	    	//添加角色
 	    	addRole(){
-	    	   this.setRole('角色名称','添加角色 ：','添加成功')
+	    	   this.setRole('角色名称','添加角色 ：','添加成功','add')
 	    	},
 	    	//弹框
-	    	setRole(title,content,msg){
+	    	setRole(title,content,msg,state){
 	     this.$prompt(content, title, {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: msg 
-          });
+        	  if(state=='add'){
+        	  	console.log(this.$userInfo)
+        	  	this.$http.post(this.$API.addRole,{name:value,userId:this.$userInfo.userId},response=>{
+        	  		console.log(response)
+        	  	})
+        	  }
+//        this.$message({
+//          type: 'success',
+//          message: msg 
+//        });
         }).catch(() => {
            
         });

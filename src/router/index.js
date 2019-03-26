@@ -5,8 +5,8 @@ import Management from '@/components/management'//管理首页
 import UserData from '@/components/user/userData'//用户管理
 import UserInfo from '@/components/user/userInfo'//用户信息
 import PasswordChange from '@/components/user/passwordChange'//密码修改
-import ManageComponent from '@/components/component/manageComponent'//模板管理
-import ComponentEditor from '@/components/component/componentEditor'//组件管理
+import ManageComponent from '@/components/component/manageComponent'//组件管理
+import ComponentEditor from '@/components/component/componentEditor'//组件列表管理
 import AllTemplate from '@/components/template/allTemplate'//全部模版
 import TemplateEditor from '@/components/template/templateEditor'//模版管理
 import AddTemplate from '@/components/template/addTemplate'//新增模版
@@ -40,7 +40,9 @@ import Backup from '@/components/system/backup'//操作日志
 import InformationSet from '@/components/system/informationSet'//操作日志
 import WorkersManage from '@/components/rightsManage/workersManage'//员工管理
 import RoleManage from '@/components/rightsManage/roleManage'//角色管理
-
+import SystemMessage from '@/components/messageManage/system'//系统消息
+import FeedbackMessage from '@/components/messageManage/feedback'//反馈消息
+import FeedbackItem from '@/components/messageManage/feedbackItem'//反馈消息
 
 
 Vue.use(Router)
@@ -92,6 +94,7 @@ export default new Router({
 		  name: 'componentEditor',
 		  component: ComponentEditor
 		 },
+		 
 		 {
 		  path: '/allTemplate',
 		  name: 'allTemplate',
@@ -251,6 +254,21 @@ export default new Router({
         path: '/roleManage',
         name: 'roleManage',
         component: RoleManage
+      },
+      {
+        path: '/systemMessage',
+        name: 'systemMessage',
+        component: SystemMessage
+      },
+      {
+        path: '/feedbackMessage',
+        name: 'feedbackMessage',
+        component: FeedbackMessage
+      },
+      {
+        path: '/feedbackItem',
+        name: 'feedbackItem',
+        component: FeedbackItem
       },
       ]
     }]

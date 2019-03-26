@@ -38,14 +38,15 @@
         <span class="check-item"><el-button type="primary" size="small" @click="allDel('video')">批量删除</el-button></span>
       </div>
       <div class="picture-list" v-show="listLabel==2">
-        <div class="picture-list-item update" >
+        <div class="picture-list-item update">
           <el-upload class="avatar-uploader" :action="host.hostUrl+'/common/upload'" :on-success="videoSuccess" >
           	<i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传视频支持MP4,wma等格式，不超过10M</i>
         </div>
-        <div class="picture-list-item" v-for="(x,i) in videoList"  :key="i">
-        	  <video :src="x.filePath" controls="controls" @click="videoChoose(i,checkVideoShow[i],x)" style="width: 100%;height: 100%;">
+        <div class="picture-list-item" v-for="(x,i) in videoList"  :key="i"  @mouseleave="itemShow = null" @mouseenter="itemShow = i">
+        	 <div class="mask-list" @click="videoChoose(i,checkVideoShow[i],x)"></div>
+        	  <video :src="x.filePath" controls="controls"  style="width: 100%;height: 100%;">
 			您的浏览器不支持 video 标签。
 		  </video>
         	  <div class="picture-list-item-check">
@@ -261,7 +262,6 @@
       imgSuccess(res, file) {
 //      console.log(this.imgUpload(file))
 //      if(!this.imgUpload(file))return
-       
         if(file.status=='success'){
         	   this.$http.post(this.$API.materialsUpload,{
         	   	filePath:file.response,
@@ -524,9 +524,17 @@
   }
   .footBar{
   	animation: bb .5s ease;
+  	z-index: 20;
   }
   @keyframes bb{
   	from{transform: translateY(50px);}
   	to{transform: translateY(0);}
+  }
+  .mask-list{
+  	   	 width: 100%;
+  	   	 height: 100%;
+  	   	 position: absolute;
+  	   	 top: 0;
+  	   	 z-index: 10;
   }
 </style>

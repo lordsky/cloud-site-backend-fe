@@ -22,6 +22,8 @@
           <li v-for="(x,i) in comItem" :key="i" @mouseleave="delShow = null" @mousemove="delShow = i" class="compon-edit-item">
             <p class="compon-name">组件名称:{{x.name}}</p>
             <div :class="{'delItem':delShow==i}" class="mask-compon">
+              <i class="el-icon-view compon-edit-ico" :class="{'icoShow':delShow==i}" @click="lookComponent(x)"></i>
+            	  <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':delShow==i}" @click="editComponent(x)"></i>
               <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i>
             </div>
             <div v-html="x.segmentCode"></div>
@@ -56,27 +58,38 @@
 </template>
 
 <script>
+	import host from '../config/host'
   export default {
     name: 'componentEditor',
     data() {
       return {
         delShow: null,
         dialogAdd: false,
-
         options: {},
         comItem: [],
         comList: {},
         textData: '',
         componentName: '',
-        queryItem: ''
+        queryItem: '',
+        host:host
       }
     },
     created() {
-      this.options.id = this.$route.query.id
+    	  let id = JSON.parse(this.$route.query.item)
+      this.options.id = id
       this.options.catName = this.$route.query.text
-           this.update()
+      this.update()
     },
     methods: {
+    	  //查看组件
+    	  lookComponent(item){
+    	  	 window.localStorage.setItem('saveTemplateCode',item.segmentCode)
+    	  	 this.$router.push({path:'/PreviewTemplate'})
+    	  },
+    	  //编辑组件
+    	  editComponent(item){
+    	  	 window.location.href = host.editorUrl+'?catId='+item.id+'&name='+item.name+'&type=componentEditor'
+    	  },
       //查询组件
       queryComponent() {
         this.$http.get(this.$API.componentList + '?catId=' + this.options.id + '&name=' + this.queryItem, (res) => {
@@ -92,6 +105,7 @@
           }
         })
       },
+      //更新组件列表
       update() {
         this.$http.get(this.$API.componentList + '?catId=' + this.options.id, (res) => {
           console.log(res)
@@ -100,6 +114,7 @@
           }
         })
       },
+      //保存组件
       saveCompon() {
         if(this.value === '' || this.textData === '') return
         if(this.textData.type !== 'text/plain') {
@@ -227,6 +242,7 @@
             font-size: 2vw;
             color: white;
             cursor: pointer;
+            padding-left: 20px;
           }
           .icoShow {
             display: block;

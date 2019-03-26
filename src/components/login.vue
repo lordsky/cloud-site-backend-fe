@@ -8,10 +8,16 @@
       <div class="login-input">
         <el-form :model="data" status-icon :rules="rules2" ref="ruleForm2" class="demo-ruleForm">
           <el-form-item prop="phone">
-            <el-input v-model="data.phone" placeholder="请输入管理员账号" ></el-input>
+            <el-input v-model="data.phone" placeholder="请输入管理员账号" @keyup.enter.native="login"></el-input>
           </el-form-item>
           <el-form-item prop="pwd">
             <el-input type="password" v-model="data.pwd" placeholder="请输入密码" @keyup.enter.native="login"></el-input>
+          </el-form-item>
+          <el-form-item prop="code">
+            <el-input type="text" v-model="data.code" placeholder="请输入验证码" @keyup.enter.native="login"></el-input>
+            <div class="login_validation" v-show="identifyCode" @click="getCode">
+            	 <Validation :identifyCode="identifyCode"></Validation>
+            </div>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="login">立即登录</el-button>
@@ -23,62 +29,79 @@
 </template>
 
 <script>
+  import Validation from './common/identify'
   export default {
     name: 'login',
     data() {
-    	const PHONE_REG = /^1[34578]\d{9}$/
-    	let validatePhone = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入手机号"));
-      } else if (!PHONE_REG.test(value)) {
-        callback(new Error("请输入正确的手机号!"));
-      } else {
-        callback();
+      const PHONE_REG = /^1[34578]\d{9}$/
+      let validatePhone = (rule, value, callback) => {
+        if(value === "") {
+          callback(new Error("请输入手机号"));
+        } else if(!PHONE_REG.test(value)) {
+          callback(new Error("请输入正确的手机号!"));
+        } else {
+          callback();
+        }
       }
-    }
       return {
         data: {
           phone: '',
           pwd: '',
         },
+        identifyCode:'',
         rules2: {
           phone: [{
             validator: validatePhone,
-            trigger: "blur" 
+            trigger: "blur"
           }, ],
           pwd: [{
             required: true,
             message: '密码不能为空'
           }, ],
+          code:[
+            {required: true,message: '验证码不能为空'}
+          ]
         }
       }
     },
-    computed:{
-    	 
+    computed: {
+       
+    },
+    components:{
+    	  Validation
+    },
+    created(){
+    	  this.getCode()
     },
     methods: {
       //登录
       login() {
-      	this.$refs['ruleForm2'].validate((valid) => {
-      		if (valid) {
-             if(this.data.phone && this.data.pwd) { 
-        	      this.$http.post(this.$API.login,this.data,(res)=>{
-        	  	        if(res.data.code==200){
-        	  	        	    localStorage.setItem('cloudUser',JSON.stringify(res.data.data))
-        	  	        	    this.$router.push({
-				          path: '/userData'
-				        })
-        	  	        }
-		        	  })
-		         }
-            } else {
+        this.$refs['ruleForm2'].validate((valid) => {
+          if(valid) {
+            if(this.data.phone && this.data.pwd) {
+              this.$http.post(this.$API.login, this.data, (res) => {
+                if(res.data.code == 200) {
+                  localStorage.setItem('cloudUser', JSON.stringify(res.data.data))
+                  this.$router.push({
+                    path: '/userData'
+                  })
+                }else{
+                	  this.getCode()
+                }
+              })
+            }
+          } else {
             console.log('error submit!!');
             return false;
           }
-      	})
+        })
       },
-      a(){
-      	console.log('1')
+      getCode(){
+      	 this.$http.post(this.$API.code,{},(response)=>{
+      	    if(response.data.code==200){
+      	    	   this.identifyCode = response.data.data
+      	    }
+      	 })
       }
     }
   }
@@ -116,6 +139,14 @@
       button {
         width: 100%;
       }
+    }
+    .el-form-item__content{
+    	   display: flex;
+    	   align-items: center;
+    	   .login_validation{
+    	   	 height: 40px;
+    	   	 cursor: pointer;
+    	   }
     }
   }
 </style>

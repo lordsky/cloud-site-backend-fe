@@ -1,14 +1,14 @@
 <template>
   <div class="passwordChange">
     <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="旧密码:" prop="pass">
+      <el-form-item label="旧密码:" prop="oldpass">
+        <el-input type="password" v-model="ruleForm2.oldpass" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="新密码:" prop="pass">
         <el-input type="password" v-model="ruleForm2.pass" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="新密码:" prop="checkPass">
-        <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off"></el-input>
-      </el-form-item>
       <el-form-item label="确认新密码:" prop="checkPass">
-        <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off"></el-input>
+        <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off" placeholder=""></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm2')" class="password-submit">提交</el-button>
@@ -43,24 +43,29 @@
       };
       return {
         ruleForm2: {
+        	  oldpass:'',
           pass: '',
           checkPass: '',
         },
         rules2: {
+        	  oldpass:[
+        	  	 { required: true, message: '请输入旧密码', trigger: 'blur' }
+        	  ],
           pass: [{
             validator: validatePass,
             trigger: 'blur'
-          }],
+          },
+           { required: true, message: '请输入旧密码', trigger: 'blur' }],
           checkPass: [{
             validator: validatePass2,
             trigger: 'blur'
-          }],
+          }, { required: true, message: '请输入旧密码', trigger: 'blur' }],
         }
       }
     },
     methods: {
       submitForm() {
-
+         
       }
     }
   }

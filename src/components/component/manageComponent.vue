@@ -199,7 +199,7 @@
           path: '/componentEditor',
           query: {
             text: res.catName,
-            id: res.id
+            item:res.id
           }
         })
       },

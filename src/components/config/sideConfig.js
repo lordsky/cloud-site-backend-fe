@@ -167,18 +167,33 @@ const navHead = [{
     text: ['系统设置','平台基本信息设置']
   },
   {
-    path: 'workersManage',
+    path: 'systemMessage',
     index: '8-1',
+    text: ['消息管理','系统消息']
+  },
+  {
+    path: 'feedbackMessage',
+    index: '8-2',
+    text: ['消息管理','反馈消息']
+  },
+   {
+    path: 'feedbackItem',
+    index: '8-2',
+    text: ['消息管理','反馈消息','查看详情']
+  },
+  {
+    path: 'workersManage',
+    index: '9-1',
     text: ['权限管理','员工管理']
   },
   {
     path: 'roleManage',
-    index: '8-2',
+    index: '9-2',
     text: ['权限管理','角色管理']
   },
   {
     path: 'pictureManage',
-    index: '9',
+    index: '10',
     text: ['素材库']
   },
 ]
@@ -238,7 +253,6 @@ const sideText = [
    title: '活动管理',
    index: '5',
    ico: 'el-icon-menu',
-   // path: '/banner',
    list: [
      {
        name: 'banner管理',
@@ -256,7 +270,6 @@ const sideText = [
     title: '内容管理',
     index: '6',
     ico: 'el-icon-document',
-    // path: '/banner',
     list: [
       {
         name: '教程管理',
@@ -274,7 +287,6 @@ const sideText = [
     title: '系统设置',
     index: '7',
     ico: 'el-icon-setting',
-    // path: '/banner',
     list: [
       {
         name: '操作日志',
@@ -294,24 +306,49 @@ const sideText = [
     ]
   },
 {
- title: '权限管理',
- index: '8',
- ico: 'el-icon-refresh',
- list: [{
-     name: '员工管理',
-     index: '8-1',
-     path: '/workersManage'
-   },
-   {
-     name: '角色管理',
-     index: '8-2',
-     path: '/roleManage'
-   },
- ]
+ 
+    title: '消息管理',
+    index: '8',
+    ico: 'el-icon-bell',
+    state:false,
+    deter:false,
+    list: [{
+        name: '系统消息',
+        index: '8-1',
+        path: '/systemMessage',
+        state:false,
+      },
+      {
+        name: '反馈消息',
+        index: '8-2',
+        path: '/feedbackMessage',
+        state:false,
+      },
+    ]
+},
+{
+    title: '权限管理',
+    index: '9',
+    ico: 'el-icon-refresh',
+    state:false,
+    deter:false,
+    list: [{
+        name: '员工管理',
+        index: '9-1',
+        path: '/workersManage',
+        state:false,
+      },
+      {
+        name: '角色管理',
+        index: '9-2',
+        path: '/roleManage',
+        state:false,
+      },
+    ]
 },
   {
     title: '素材库',
-    index: '9',
+    index: '10',
     ico: 'el-icon-picture-outline',
     path: '/pictureManage',
     list: []

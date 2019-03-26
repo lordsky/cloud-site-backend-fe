@@ -3,7 +3,6 @@
  import axios from 'axios'
  import host from './host'
 
-
 const options = {
   lock: true,
   text: '加载中'
@@ -22,7 +21,7 @@ let closeLoading = ()=> {
 var instance = axios.create({
     baseURL:host.hostUrl,
 //  baseURL:'http://six-pulse-nerve-backend-dev.uworks.cc',
-//  withCredentials: true,
+    withCredentials: true,
     timeout: 1000 * 15,
     headers: {
         'Content-Type': 'application/json;charset=utf-8',
