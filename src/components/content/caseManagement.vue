@@ -166,7 +166,12 @@
         maxexpandId: api.maxexpandId,//新增节点开始id
         non_maxexpandId: api.maxexpandId,//新增节点开始id(不更改)
         isLoadingTree: true,//是否加载节点树
-        setTree: [],//节点树数据
+        setTree: [
+          {
+            id:'',
+            catName:'全部案例'
+          }
+        ],//节点树数据
         defaultProps: {
           children: 'children',
           label: 'catName'
@@ -289,7 +294,7 @@
           this.$message.error("此节点有子级，不可删除！")
           return false;
         }else{
-          this.$confirm('是否删除此节点？', '提示', {
+          this.$confirm('是否删除此目录？', '提示', {
             type: 'warning'
           }).then(() => {
             this.$api.apiDelCaseType(d.id).then(res=>{
@@ -364,7 +369,8 @@
         // console.log("右键被点击的element:", element);
       },
       handleNodeClick(d, n, s) { // 点击节点
-        // console.log(d,n)
+        this.filters.caseType = d.id
+        this.getCaseList()
         d.isEdit = false// 放弃编辑状态
       },
       //上线
@@ -491,7 +497,7 @@
       getCaseCat(val){
         this.$api.apiSelectCaseCat(val).then(res=>{
           if(res.msg === "success") {
-            this.setTree = res.data
+            this.setTree = this.setTree.concat(res.data)
             this.getCaseList()
           } else {
             this.$message.error(res.msg)

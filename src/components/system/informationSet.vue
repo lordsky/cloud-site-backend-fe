@@ -115,11 +115,11 @@
     <!--修改页面名称弹框-->
     <!--新增/编辑底部链接弹框-->
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="500px" center :show-close="false" :close-on-click-modal="false">
-      <el-form :inline="true" :model="formCompon2" class="demo-form-inline" ref="formCompon2">
-        <el-form-item label="友链名称:" prop="name" :rules="[{required: true, message: '友链名称不能为空'},{ max: 6, message: '不能超过6字符', trigger: 'blur' }]">
+      <el-form :inline="true" :model="formCompon2" :rules="rules2" class="demo-form-inline" ref="formCompon2">
+        <el-form-item label="友链名称:" prop="name">
         <el-input v-model="formCompon2.name" placeholder="请输入友链名称"></el-input>
       </el-form-item>
-        <el-form-item label="友链链接:" prop="url" :rules="[{required: true, message: '友链链接不能为空'}]">
+        <el-form-item label="友链链接:" prop="url">
           <el-input v-model="formCompon2.url" placeholder="请输入友链链接"></el-input>
         </el-form-item>
         <el-form-item>
@@ -142,6 +142,17 @@
   export default {
     name: "information",
     data() {
+      const URL_REG = '(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]'
+      const re=new RegExp(URL_REG);
+      let validateUrl = (rule, value, callback) => {
+        if (value === "") {
+          callback(new Error("请输入友情链接地址"));
+        } else if (!re.test(value)) {
+          callback(new Error("请输入正确的友情链接地址!"));
+        } else {
+          callback();
+        }
+      }
       return {
         host:host,
         imageUrl:'',
@@ -169,6 +180,19 @@
         sels:[],
         listLoading:false,
         activeName: 'navigation',
+        rules2:{
+          name: [
+            { required: true, message: '友链名称不能为空', trigger: 'blur' },
+            { max: 6, message: '不超过6个字符', trigger: 'blur' }
+          ],
+          url:[
+            {
+              required: true,
+              validator: validateUrl,
+              trigger: "blur"
+            },
+          ]
+        },
         informationList:[{
           id:1,
           name:'首页'
