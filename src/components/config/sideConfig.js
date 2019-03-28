@@ -10,6 +10,11 @@ const navHead = [{
     text: ['用户管理', '个人资料', '查看用户信息']
   },
   {
+    path: 'userWhite',
+    index: '1-2',
+    text: ['用户管理', '用户白名单']
+  },
+  {
     path: 'manageComponent',
     index: '2-1',
     text: ['模板管理', '组件管理']
@@ -207,6 +212,11 @@ const sideText = [
         name: '个人资料',
         index: '1-1',
         path: '/userData'
+      },
+      {
+        name: '用户白名单',
+        index: '1-2',
+        path: '/userWhite'
       },
     ]
 },

@@ -4,6 +4,7 @@ import Login from '@/components/login'//登录
 import Management from '@/components/management'//管理首页
 import UserData from '@/components/user/userData'//用户管理
 import UserInfo from '@/components/user/userInfo'//用户信息
+import UserWhite from '@/components/user/userWhite'//用户白名单
 import PasswordChange from '@/components/user/passwordChange'//密码修改
 import ManageComponent from '@/components/component/manageComponent'//组件管理
 import ComponentEditor from '@/components/component/componentEditor'//组件列表管理
@@ -74,6 +75,11 @@ export default new Router({
 		  name: 'userData',
 		  component: UserData,
 		 },
+     {
+      path: '/userWhite',
+      name: 'userWhite',
+      component: UserWhite,
+     },
 		 {
 		  path: '/passwordChange',
 		  name: 'passwordChange',

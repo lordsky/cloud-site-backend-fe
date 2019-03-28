@@ -629,6 +629,39 @@ const apiNavigationStatus = (data) => {
   })
 }
 
+//白名单列表
+const apiWhiteList = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/whitelist/list`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//新增白名单
+const apiWhiteAdd = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/whitelist/add?ip=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//删除白名单
+const apiWhiteDel = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/whitelist/remove?ip=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -684,5 +717,8 @@ export default {
   apiListSystemInfo,
   apiDelSystemInfo,
   apiEditSystemInfo,
-  apiNavigationStatus
+  apiNavigationStatus,
+  apiWhiteList,
+  apiWhiteAdd,
+  apiWhiteDel
 }
