@@ -162,7 +162,7 @@
           this.$api.apiOnlineOperate({
             catType: 3,
             id:row.id,
-            operateType:0
+            operateType:-1
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
