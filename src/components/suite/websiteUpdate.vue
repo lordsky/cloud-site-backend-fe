@@ -478,7 +478,8 @@
         getPageList(val){
           let parm = {
             catId:val,
-            name:''
+            name:'',
+            selectType:1
           }
           this.$api.apiPageList(parm).then(res => {
             if(res.msg === "success") {

@@ -24,7 +24,7 @@
             <div v-html="item.pageCode">{{item.pageCode}}</div>
             <div class="delItem3">{{item.name}}</div>
             <div :class="{'delItem':delShow == i}">
-            <div v-if="item.onlineStatus == 0 && delShow!=i" :class="{'delItem2': delShow!=i}" style="text-align: center;color: white;font-size: 24px">已下线</div>
+            <div v-if="item.onlineStatus == -1 && delShow!=i" :class="{'delItem2': delShow!=i}" style="text-align: center;color: white;font-size: 24px">已下线</div>
             <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
             <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}" @click="preview(item)"></i>
             <span v-if="item.onlineStatus == 1" class="iconfont icon-arrow-bottom template-edit-ico" :class="{'icoShow':delShow==i}" @click="offlineSuite(item.id)"></span>
@@ -148,7 +148,8 @@
       getPageList(){
         let parm = {
           catId:this.$store.state.templateData.id,
-          name:this.name
+          name:this.name,
+          selectType:0
         }
         this.$api.apiPageList(parm).then(res => {
           if(res.msg === "success") {
