@@ -223,13 +223,13 @@
             this.$api.apiAddCaseType(parm).then(res=>{
               if(res.msg === 'success'){
                 this.$message.success("添加成功！")
-                this.setTree.push({
-                  id: res.data,
-                  name: this.formCompon.name,
-                  pid: '',
-                  isEdit: false,
-                  children: []
-                })
+                // this.setTree.push({
+                //   id: res.data,
+                //   name: this.formCompon.name,
+                //   pid: '',
+                //   isEdit: false,
+                //   children: []
+                // })
                 this.dialogVisible2 = false
                 this.getCaseCat('')
               }else{
@@ -497,6 +497,10 @@
       getCaseCat(val){
         this.$api.apiSelectCaseCat(val).then(res=>{
           if(res.msg === "success") {
+            this.setTree = [{
+              id:'',
+              catName:'全部案例'
+            }]
             this.setTree = this.setTree.concat(res.data)
             this.getCaseList()
           } else {
