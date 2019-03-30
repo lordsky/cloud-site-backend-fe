@@ -43,29 +43,60 @@
       };
       return {
         ruleForm2: {
-        	  oldpass:'',
+          oldpass: '',
           pass: '',
           checkPass: '',
         },
         rules2: {
-        	  oldpass:[
-        	  	 { required: true, message: '请输入旧密码', trigger: 'blur' }
-        	  ],
-          pass: [{
-            validator: validatePass,
+          oldpass: [{
+            required: true,
+            message: '请输入旧密码',
             trigger: 'blur'
-          },
-           { required: true, message: '请输入旧密码', trigger: 'blur' }],
+          }],
+          pass: [{
+              validator: validatePass,
+              trigger: 'blur'
+            },
+            {
+              required: true,
+              message: '请输入旧密码',
+              trigger: 'blur'
+            }
+          ],
           checkPass: [{
             validator: validatePass2,
             trigger: 'blur'
-          }, { required: true, message: '请输入旧密码', trigger: 'blur' }],
+          }, {
+            required: true,
+            message: '请输入旧密码',
+            trigger: 'blur'
+          }],
         }
       }
     },
     methods: {
-      submitForm() {
-         
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if(valid) {
+            this.$http.post(this.$API.setPassword, {
+              newPwd: this.ruleForm2.pass,
+              oldPwd: this.ruleForm2.oldpass,
+              userId: this.$userInfo.id,
+            }, response => {
+              if(response.data.data) {
+              	this.$refs[formName].resetFields();
+                this.ruleForm2 = {}
+                this.$message({
+                  message: '修改成功',
+                  type: 'success'
+                });
+              }
+            })
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       }
     }
   }

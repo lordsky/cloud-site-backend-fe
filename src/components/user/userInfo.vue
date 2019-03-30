@@ -67,7 +67,7 @@
             </div>
             <div class="site-item-btn">
               <div class="site-item-btns">
-                 <div class="site_button">
+                 <div class="site_button" @click="lookSite()">
                  	<img src="../../assets/img/ic_cms_view.png" alt="" class="site_ico"/>
                  	<p>查看</p>
                  </div>
@@ -119,9 +119,10 @@
       	this.diaShow = true
       	this.dialogText = '确定要重置密码吗？'
       },
+      //重置密码请求
       resetPassword(){
       	this.$http.post(this.$API.resetUserPassword,{
-      		userId:''
+      		userId:this.list.id
       	},(response)=>{
       		console.log(response)
       	})
@@ -129,6 +130,18 @@
       jump(){
       	
       },
+      //查看站点
+      lookSite(val){
+        console.log('11')
+//    	window.open("http://"+val)
+      },
+      //获取站点信息
+      getSite(){
+      	this.$http.get(this.$API.querySite+'?userTemplateId='+this.list.id,response=>{
+      		console.log(response)
+      	})
+      },
+      //获取用户信息
       getUserList(){
       	this.$http.post(this.$API.userDetails+'?userId='+this.list.id,{
       	},(response)=>{
@@ -138,7 +151,9 @@
     },
     created(){
     	    this.list = this.$route.params.data
+    	    console.log(this.list)
     	    this.getUserList()
+    	    this.getSite()
     }
   }
 </script>
@@ -195,11 +210,13 @@
       margin-top: 20px;
       .site-list {
         margin-top: 20px;
-        display: flex;
-        justify-content: space-between;
+        width: 100%;
         .site-item {
-          width: 30%;
+          width: 32%;
           height: auto;
+          float: left;
+          margin-right: 10px;
+          margin-top: 30px;
           border:#f2f2f2 solid 1px;
           box-shadow: 0 0 8px #cbe0f9;
           .site-item-title {

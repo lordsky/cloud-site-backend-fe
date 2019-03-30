@@ -42,6 +42,7 @@ import InformationSet from '@/components/system/informationSet'//操作日志
 import WorkersManage from '@/components/rightsManage/workersManage'//员工管理
 import RoleManage from '@/components/rightsManage/roleManage'//角色管理
 import SystemMessage from '@/components/messageManage/system'//系统消息
+import SystemItem from '@/components/messageManage/systemItem'//系统消息列表
 import FeedbackMessage from '@/components/messageManage/feedback'//反馈消息
 import FeedbackItem from '@/components/messageManage/feedbackItem'//反馈消息
 
@@ -265,6 +266,11 @@ export default new Router({
         path: '/systemMessage',
         name: 'systemMessage',
         component: SystemMessage
+      },
+      {
+        path: '/systemItem',
+        name: 'systemItem',
+        component: SystemItem
       },
       {
         path: '/feedbackMessage',
