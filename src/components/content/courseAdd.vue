@@ -206,8 +206,8 @@
         ],
         rules:{
           title: [
-            { required: true, message: '请输入套件标题', trigger: 'blur' },
-            { max: 12, message: '不超过12个字符', trigger: 'blur' }
+            { required: true, message: '请输入教程标题', trigger: 'blur' },
+            { max: 12, message: '不超过24个字符', trigger: 'blur' }
           ],
           directory1: [
             { required: true, message: '请选择目录', trigger: 'change' }
