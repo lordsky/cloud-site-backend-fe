@@ -36,9 +36,8 @@ import navHead from './navHead';
   	height: calc(100vh - 60px);
   	background: #f0f2f5;
   	display: flex;
-  	
   	.content-text{
-  	   box-shadow: 0 10px 20px black;
+  	   box-shadow: 0 10px 20px #999;
   	   width: 95%;
   	   margin: 0 auto;
   	   margin-top: 10px;

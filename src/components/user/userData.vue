@@ -54,13 +54,14 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" align="center">
           <template slot-scope="scope">
-            <span>{{scope.row.status==1?'正常':'禁用'}}</span>
+            <span>{{scope.row.status==0?'正常':'禁用'}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="address" label="操作" align="center" width="180">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="lookUser(scope.row)">查看</el-button>
-            <el-button type="text" size="small" @click="disableUser(scope.row)">禁用</el-button>
+            <el-button type="text" size="small" @click="disableUser(scope.row)" v-show="scope.row.status==0">禁用</el-button>
+             <el-button type="text" size="small" @click="starUser(scope.row)" v-show="scope.row.status==1">启用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -120,6 +121,22 @@
           }
         })
       },
+      //启用
+      starUser(val){
+      	 this.$confirm('是否启用该用户?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        	   
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消禁用'
+          });
+        });
+      },
+      //禁用
       disableUser(val) {
         this.$confirm('是否禁用该用户?', '提示', {
           confirmButtonText: '确定',

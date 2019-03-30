@@ -28,7 +28,7 @@
         	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
         	  	<span class="el-icon-view" @click="lookItem(x)"></span>
-        	  	<!--<span class="el-icon-edit" @click="editItem"></span>-->
+        	  	<span class="el-icon-edit" @click="editItem(x,'pic')"></span>
         	  	<span class="el-icon-delete" @click="delItem(x,'pic')"></span>
         	  </div>
         </div>
@@ -55,7 +55,7 @@
         	  <div class="picture-list-item-hoverTop"  v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
         	  	<span class="el-icon-view"  @click="lookItem(x)"></span>
-        	  	<!--<span class="el-icon-edit" @click="editItem"></span>-->
+        	  	<span class="el-icon-edit" @click="editItem(x,'video')"></span>
         	  	<span class="el-icon-delete" @click="delItem(x,'video')"></span>
         	  </div>
         </div>
@@ -239,15 +239,18 @@
     	  },
     	 
     	  //修改
-    	  editItem(){
-    	  	this.$prompt('', '修改文件名', {
+    	  editItem(val,state){
+    	  	this.$prompt('修改文件名:', '提示', {
           confirmButtonText: '保存',
           cancelButtonText: '取消',
         }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '你的邮箱是: ' + value
-          });
+        	  this.$http.post(this.$API.setMaterials,{
+        	  	id:val.id,
+        	  	name:value
+        	  },response=>{
+        	  	response.data.data?state=='pic'?this.getpicList():this.getVideo():''
+        	  	response.data.data?this.$message({type:'success',message:'修改成功'}):''
+        	  })
         }).catch(() => {
           this.$message({
             type: 'info',

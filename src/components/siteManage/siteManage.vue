@@ -4,48 +4,58 @@
       <div class="site-head-left">
         <el-form :inline="true">
           <el-form-item label="域名:">
-            <el-input v-model="fromUser.account"></el-input>
+            <el-input v-model="fromUser.domain" placeholder="请输入域名"></el-input>
           </el-form-item>
           <el-form-item label="发布用户:">
-            <el-input v-model="fromUser.name"></el-input>
+            <el-input v-model="fromUser.userName" placeholder="请输入发布用户"></el-input>
           </el-form-item>
         </el-form>
         <el-form :inline="true" class="user-time">
           <el-form-item label="添加时间:">
-            <el-date-picker v-model="timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+            <el-date-picker v-model="fromUser.timeData" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
         </el-form>
       </div>
       <div class="site-head-right">
         <div class="site-head-right-btn">
-          <el-button type="primary" size="medium">查询</el-button>
-          <el-button size="medium">禁用</el-button>
+          <el-button type="primary" size="medium" @click="query()">查询</el-button>
+          <el-button size="medium" @click="disableAll">禁用</el-button>
         </div>
       </div>
     </div>
     <div class="site-table">
-      <el-table :data="tableData3" height="50" border style="width: 100%" tooltip-effect="dark" @selection-change="handleSelectionChange">
+      <el-table :data="tableData"  border style="width: 100%" tooltip-effect="dark" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center">
         </el-table-column>
-        <el-table-column prop="date" label="站点域名" align="center">
+        <el-table-column prop="domain" label="站点域名" align="center">
         </el-table-column>
-        <el-table-column prop="name" label="发布用户" align="center">
+        <el-table-column prop="userName" label="发布用户" align="center">
         </el-table-column>
-        <el-table-column prop="address" label="发布时间" align="center">
+        <el-table-column prop="createTime" label="发布时间" align="center">
         </el-table-column>
-        <el-table-column prop="address" label="状态" width="180" align="center">
+        <el-table-column prop="status" label="状态" width="180" align="center">
         	<template slot-scope="scope">
         		<span>未发布</span>
         	 </template>
         </el-table-column>
         <el-table-column prop="date" label="操作" align="center" width="180">
           <template slot-scope="scope">
-            <el-button type="text" @click="a(scope.row)">查看</el-button>
-            <el-button type="text" @click="open">启用</el-button>
+            <el-button type="text" @click="openPage(scope.row)">查看</el-button>
+            <el-button type="text" @click="disableSite(scope.row)">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
+    </div>
+    <div class="paging">
+    	 <el-pagination
+      @current-change="handleCurrentChange"
+      :current-page.sync="currentPage"
+      background
+      :page-size="pageSize"
+      layout="prev, pager, next, jumper"
+      :total="totalPage">
+    </el-pagination>
     </div>
   </div>
   </div>
@@ -56,55 +66,80 @@
     name: 'siteManage',
     data() {
       return {
-        timeData: '',
-        fromUser: {
-          account: '',
-          name: '',
-          state: ''
-        },
-        tableData3: [{
-          date: 'www.baidu.com',
-          name: '张三',
-          address: '2019-3-12'
-        }, {
-          date: 'www.baidu.com',
-          name: '李四',
-          address: '2019-3-12'
-        }, {
-           date: 'www.baidu.com',
-          name: '王五',
-          address: '2019-3-12'
-        }, {
-           date: 'www.baidu.com',
-          name: '小明',
-          address: '2019-3-12'
-        }, {
-           date: 'www.baidu.com',
-          name: '小红',
-          address: '2019-3-12'
-        }]
+        fromUser: {},
+        tableData: [],
+        title:[],
+        totalPage:0,
+        pageSize:10,
+        currentPage:0,
+        pageNum:1,
       }
     },
     methods: {
-    	  a(res){
-    	  	console.log(res)
-    	  	window.open("http://"+res.date)
+    	//打开站点
+    	  openPage(res){
+    	  	window.open("http://"+res.domain)
     	  },
       //全选按钮
       handleSelectionChange() {
-
+         
       },
-      open() {
+      //分页
+      handleCurrentChange(val){
+      	this.query(val)
+      },
+      //打开禁用站点
+      disableSite() {
         this.$confirm('是否要禁用该站点?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          
+           
         }).catch(() => {
-         
+           
         });
+      },
+      //禁用
+      disableAll(){
+      	
+      },
+      //查询
+      query(val){
+      	let data = {pageSize:this.pageSize}
+      	let domain = this.fromUser.domain?this.fromUser.domain:''
+      	let end = this.fromUser.timeData?this.fromUser.timeData[0]:''
+      	let start = this.fromUser.timeData?this.fromUser.timeData[1]:''
+      	let userName = this.fromUser.userName?this.fromUser.userName:''
+        val?data.pageNum = val:this.currentPage = 1
+      	domain?data.domain = domain:''
+      	userName?data.userName = userName:''
+      	start?data.start = start:''
+      	end?data.end = end:''
+      	this.getList(data)
+      },
+      //获取列表
+      getList(data){
+      	this.$http.post(this.$API.getSiteList,data,response=>{
+      		this.totalPage = response.data.data.totalElements
+      	    response.data.data.content.map(item=>{
+      	    	   let str = ''
+      	    	   str = item.createTime
+      	    	   str = str.replace('.000+0000',' ')
+      	    	   str = str.replace('T',' ')
+      	    	   item.createTime = str
+      	    })
+      	    this.tableData = response.data.data.content
+//    	    console.log(response)
+      	})
       }
+    },
+    created(){
+    	  let data = {
+    	  	 pageNum:1,
+    	  	 pageSize:this.pageSize
+    	  }
+    	  this.getList(data)
     }
   }
 </script>
@@ -127,8 +162,8 @@
     }
   }
   
-  .site-paging {
-    margin: 20px 0 10px 0;
+  .paging {
+    margin: 20px 0 20px 0;
     width: 100%;
   }
   

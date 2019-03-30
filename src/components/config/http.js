@@ -36,7 +36,7 @@ var AUTH_TOKEN = (function(){
 
 instance.interceptors.request.use(config => {
   showLoading()
-  if(config.url.indexOf('adminLogin') >-1||config.url.indexOf('showUserList')>-1){
+  if(config.url.indexOf('adminLogin') >-1||config.url.indexOf('showUserList')>-1||config.url.indexOf('displayTemplateOnBackend')>-1){
     	   console.log('不带token')
     }else{
       config.headers.Authorization = 'Bearer' + AUTH_TOKEN; 

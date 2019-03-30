@@ -177,6 +177,11 @@ const navHead = [{
     text: ['消息管理','系统消息']
   },
   {
+    path: 'systemItem',
+    index: '8-1',
+    text: ['消息管理','系统消息','查看消息']
+  },
+  {
     path: 'feedbackMessage',
     index: '8-2',
     text: ['消息管理','反馈消息']
