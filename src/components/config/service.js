@@ -35,7 +35,7 @@ const API = {
     //设置菜单
     menuList:'backend/setRoleMenu',
     //获取菜单
-    showMenu:'backend/displayAllRoleMenu',
+    showMenu:'backend/showAllMenus',
 	/*
 	 *   组件 
 	 */

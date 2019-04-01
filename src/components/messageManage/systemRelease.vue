@@ -143,10 +143,10 @@
         return isType && isLt10M;
       },
       submitText(){
-      	this.$http.post(this.$API.releaseMessage,{
-      		  catId: this.formMessage.id,
-			  content: this.formMessage.content,
-			  title: this.formMessage.name
+      	this.$http.post(this.$API.releaseMessage+'?catId='+this.formMessage.id+'&content='+this.formMessage.content+'&title='+this.formMessage.name,{
+//    		  catId: this.formMessage.id,
+//			  content: this.formMessage.content,
+//			  title: "string"
       	},response=>{
       		console.log(response)
       	})
