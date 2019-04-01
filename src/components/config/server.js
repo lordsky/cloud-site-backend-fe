@@ -379,7 +379,7 @@ const apiAddBanner = (data) => {
 //上线/下线banner
 const apiBannerOnlineOperate = (data) => {
   return new Promise((resolve, reject)=>{
-    instance.post(`backend/banOnlineOperate`,data).then((res)=> {
+    instance.post(`backend/banOnlineOperate?id=${data}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)

@@ -47,6 +47,51 @@
         <img width="100%" :src="suite.thumb" alt="">
       </el-dialog>
     </el-form-item>
+    <div class="topside" v-if="isPage == false ">
+      <label>顶部区</label>
+      <div class="topside-right" :class="{'side-right-border':topDate == ''}">
+        <div class="topside-right-list" :class="{'height_auto':topDate != ''}"  @mousemove="showTop = true" @mouseleave="showTop=false">
+          <el-button type="primary" v-if="topDate == ''" @click="addComponent('top')">+添加组件</el-button>
+          <div v-if="topDate != ''" v-html="topDate" style="width: 100%" id="topDate">
+            {{topDate}}
+          </div>
+          <div v-if="topDate != ''" :class="{'delItem':showTop}">
+            <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showTop}" @click="addComponent('top')"></i>
+            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showTop}" @click="delComponent('top')"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footerside" v-if="isPage == false ">
+      <label>页脚区</label>
+      <div class="footerside-right" :class="{'side-right-border':footerDate == ''}">
+        <div class="footerside-right-list" :class="{'height_auto':footerDate != ''}"  @mousemove="showFooter = true" @mouseleave="showFooter=false">
+          <el-button type="primary" v-if="footerDate == ''" @click="addComponent('footer')">+添加组件</el-button>
+          <div v-if="footerDate != ''" v-html="footerDate" style="width: 100%">
+            {{footerDate}}
+          </div>
+          <div v-if="footerDate != ''" :class="{'delItem':showFooter}">
+            <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFooter}" @click="addComponent('footer')"></i>
+            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFooter}" @click="delComponent('footer')"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--组件模版弹框-->
+    <el-dialog :title="componTitle" :visible.sync="dialogTemplate" width="80%" class="manage-dialog">
+      <div class="compon-edit-list">
+        <ul>
+          <li v-for="(item,i) in componentList" @click="btnType(i)" :class="{'active':activeShow==i}" :key="i" v-html="item.segmentCode">
+            {{item.segmentCode}}
+          </li>
+        </ul>
+      </div>
+      <div class="dialog-footer">
+        <div @click="dialogTemplate = false,componentList = ''">取消</div>
+        <div @click="completeDialog(type,activeShow)">完成</div>
+      </div>
+    </el-dialog>
+    <!--组件模版弹框-->
     <el-form-item>
       <el-button @click="back">返回</el-button>
       <el-button type="primary" @click="onSubmit" :loading="addLoading">下一步</el-button>
@@ -68,6 +113,15 @@
         host:host,
         suite: {},
         classification:[],
+        topDate:'',
+        footerDate:'',
+        showTop:false,
+        showFooter:false,
+        dialogTemplate:false,
+        componTitle:'',
+        activeShow:0,
+        componentList:[],
+        isPage:false,
         rules:{
           name: [
             { required: true, message: '请输入套件标题', trigger: 'blur' },
@@ -87,6 +141,10 @@
       }
     },
     methods: {
+      //选择模版
+      btnType(i){
+        this.activeShow = i
+      },
       handleRemove(file, fileList) {
         this.$refs.upload.clearFiles()
         this.suite.thumb = ''
@@ -138,6 +196,57 @@
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true
       },
+      //获取组件列表
+      getComponentList(val){
+        this.$api.apiComponentByName(val).then(res => {
+          if(res.msg === "success") {
+            this.componentList = res.data
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      },
+      //添加组件
+      addComponent(type){
+        this.type = type
+        switch(type) {
+          case 'top':
+            this.getComponentList("页头")
+            this.dialogTemplate = true
+            break;
+          case 'footer':
+            this.getComponentList("页脚")
+            this.dialogTemplate = true
+            break;
+        }
+      },
+      //完成选择模版
+      completeDialog(type,index){
+        switch(type) {
+          case 'top':
+            this.topDate = this.componentList[index].segmentCode
+            console.log('顶部区')
+            break;
+          case 'footer':
+            this.footerDate = this.componentList[index].segmentCode
+            console.log('页脚区')
+            break;
+        }
+        this.componentList = ''
+        this.dialogTemplate = false
+        this.activeShow = 0
+      },
+      //删除组件
+      delComponent(type) {
+        switch(type) {
+          case 'top':
+            this.topDate = ''
+            break;
+          case 'footer':
+            this.footerDate = ''
+            break;
+        }
+      },
       onSubmit : async function() {
         this.$refs.suite.validate((valid) => {
           if(this.suite.thumb == ''){
@@ -146,6 +255,15 @@
               message: '请选择上传背景图片!'
             });
             return
+          }
+          if(this.isPage == false){
+            if(this.topDate == '' || this.footerDate == ''){
+              this.$message({
+                type: 'warning',
+                message: '请选择页头和页脚!'
+              });
+              return
+            }
           }
           if (valid) {
             const index = this.classification.findIndex(d => d.catName === this.suite.catId);
@@ -161,6 +279,10 @@
               console.log(res)
               if(res.code === 200) {
                 this.editorLoading = false;
+                $("#silder").find("li").remove();
+                this.topDate = $('#topDate').html()
+                window.localStorage.setItem('suiteHeater',this.topDate)
+                window.localStorage.setItem('suiteFooter',this.footerDate)
                 this.$router.push({
                   path: '/websiteUpdate',
                   query:{text:'网站编辑器'
@@ -226,6 +348,15 @@
       })
       let oV1 =  document.getElementsByClassName('el-upload__input')
       this.suite = this.$route.query.suite
+      this.$api.apiTemplateComponentList(this.suite.id).then(res=>{
+        if(res.msg === 'success'){
+          if(res.data.length > 0){
+            this.isPage = true
+          }else{
+            this.isPage = false
+          }
+        }
+      })
       if(this.$route.query.suite.thumb != ''|| this.$route.query.suite.thumb != null){
         oV1[0].disabled = true
       }
@@ -233,45 +364,10 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .suiteEditor{
     margin: 20px;
     width: 90%;
-    .avatar-uploader .el-upload {
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    .avatar-uploader .el-upload:hover {
-      border-color: #409EFF;
-    }
-    .avatar-uploader-icon {
-      font-size: 28px;
-      color: #8c939d;
-      width: 275px;
-      height: 148px;
-      line-height: 148px;
-      text-align: center;
-    }
-    .avatar {
-      width: 275px;
-      height: 148px;
-      display: block;
-    }
-    .el-input-suite{
-      width: 55%;
-    }
-    .el-select-suite{
-      width: 55%;
-    }
-    .el-upload--picture-card{
-      width: 275px;
-    }
-    .el-upload-list--picture-card .el-upload-list__item{
-      width: 275px;
-    }
     .footerside-right-list{
       position: absolute;
       width: 275px;
@@ -300,5 +396,189 @@
         justify-content:space-evenly;
       }
     }
+    .topside{
+      display: flex;
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      align-items: center;
+      label{
+        white-space: nowrap;
+        width: 80px;
+      }
+      .topside-right{
+        width: 100%;
+        .topside-right-list{
+          width: 100%;
+          position: relative;
+          height: 60px;
+          list-style: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+        .height_auto{
+          height: auto;
+        }
+        img{
+          width: 100%;
+          border: 1px solid #cccccc;
+        }
+        .compon-edit-ico {
+          display: none;
+          font-size: 30px;
+          color: #ffffff;
+          margin-right: 30px;
+          cursor: pointer;
+        }
+        .icoShow {
+          display: block;
+        }
+      }
+    }
+    .footerside{
+      display: flex;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      align-items: center;
+      overflow: hidden;
+      label{
+        white-space: nowrap;
+        width: 80px;
+      }
+      .footerside-right{
+        width: 100%;
+        .footerside-right-list{
+          width: 100%;
+          position: relative;
+          height: 82px;
+          list-style: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+        .height_auto{
+          height: auto;
+        }
+        img{
+          width: 100%;
+          border: 1px solid #cccccc;
+        }
+        .compon-edit-ico {
+          display: none;
+          font-size: 30px;
+          color: #ffffff;
+          margin-right: 30px;
+          cursor: pointer;
+        }
+        .icoShow {
+          display: block;
+        }
+      }
+    }
+    .side-right-border{
+      border: 2px #4d78ff dashed;
+    }
+    .delItem {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .manage-dialog{
+      .compon-edit-list {
+        margin: 10px 0 10px 0;
+        height: 35vw;
+        overflow-y: auto;
+        padding-bottom: 45px;
+        ul {
+          width: 95%;
+          margin: 0 auto;
+          li {
+            height: auto;
+            border: 1px #cccccc solid;
+            list-style: none;
+            margin: 10px 0 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            /*&:hover{*/
+            /*border: 1px #4d78ff solid;*/
+            /*}*/
+          }
+          .active{
+            border: 3px #4d78ff solid;
+          }
+        }
+      }
+      .dialog-footer{
+        width: 100%;
+        height: 45px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        background-color: #e6e7e7;
+        box-shadow: 0 -2px 3px #676767;
+        div{
+          height: 45px;
+          line-height: 45px;
+          flex: 1;
+          text-align: center;
+          border-right: 1px solid #ffffff;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+</style>
+<style lang="scss">
+  .suiteEditor{
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 275px;
+    height: 148px;
+    line-height: 148px;
+    text-align: center;
+  }
+  .avatar {
+    width: 275px;
+    height: 148px;
+    display: block;
+  }
+  .el-input-suite{
+    width: 55%;
+  }
+  .el-select-suite{
+    width: 55%;
+  }
+  .el-upload--picture-card{
+    width: 275px;
+  }
+  .el-upload-list--picture-card .el-upload-list__item{
+    width: 275px;
+  }
   }
 </style>
