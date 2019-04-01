@@ -41,15 +41,6 @@ router.afterEach(transition => {
   NProgress.done();
 });
 
-let USERINFO = (function(){
-	if(localStorage.getItem('cloudUser')){
-		let user = localStorage.getItem('cloudUser')
-		return JSON.parse(user)
-	}else{
-		return ''
-	}
-})()
-Vue.prototype.$userInfo = USERINFO
 /* eslint-disable no-new */
 window.app = new Vue({
   el: '#app',

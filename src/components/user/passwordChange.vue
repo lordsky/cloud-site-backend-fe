@@ -76,12 +76,13 @@
     },
     methods: {
       submitForm(formName) {
+      	let user = JSON.parse(localStorage.getItem('cloudUser'))
         this.$refs[formName].validate((valid) => {
           if(valid) {
             this.$http.post(this.$API.setPassword, {
               newPwd: this.ruleForm2.pass,
               oldPwd: this.ruleForm2.oldpass,
-              userId: this.$userInfo.id,
+              userId: user.id,
             }, response => {
               if(response.data.data) {
               	this.$refs[formName].resetFields();
