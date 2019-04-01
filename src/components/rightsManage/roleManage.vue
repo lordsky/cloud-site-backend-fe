@@ -70,8 +70,8 @@
           cancelButtonText: '取消',
         }).then(({ value }) => {
         	  if(state=='add'){
-        	  	console.log(this.$userInfo)
-        	  	this.addRole({name:value,userId:this.$userInfo.id})
+        	  	let user = JSON.parse(localStorage.getItem('cloudUser'))
+        	  	this.addRole({name:value,userId:user.id})
         	  }
 //        this.$message({
 //          type: 'success',

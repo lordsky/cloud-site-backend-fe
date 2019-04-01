@@ -157,7 +157,7 @@
       height: auto !important;
     }
     th {
-      background: #add4ff;
+      background: #add4ff !important;
       color: white;
     }
   }

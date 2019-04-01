@@ -28,18 +28,18 @@ var instance = axios.create({
 //      "Accept":'application/json',
     },
 })
-var AUTH_TOKEN = (function(){
+var AUTH_TOKEN = function(){
 	   if(localStorage.cloudUser){
 	   	  return JSON.parse(localStorage.cloudUser).token
 	   }
-})()
+}
 
 instance.interceptors.request.use(config => {
   showLoading()
   if(config.url.indexOf('adminLogin') >-1||config.url.indexOf('showUserList')>-1||config.url.indexOf('displayTemplateOnBackend')>-1){
     	   console.log('不带token')
     }else{
-      config.headers.Authorization = 'Bearer' + AUTH_TOKEN; 
+      config.headers.Authorization = 'Bearer' + AUTH_TOKEN(); 
     }
     return config
 }, error => {

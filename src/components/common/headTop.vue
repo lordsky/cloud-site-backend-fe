@@ -48,10 +48,8 @@
       }
     },
     created(){
-    	   if(this.$userInfo){
-    	   	  this.user = this.$userInfo
-    	   	  console.log(this.user)
-    	   }
+    	   let user = JSON.parse(localStorage.getItem('cloudUser'))
+    	   this.user = user
     }
   }
 </script>
