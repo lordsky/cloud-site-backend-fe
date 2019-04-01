@@ -2,7 +2,7 @@
   <div class="role-manage">
     <div class="role-conetent">
       <div class="role-left">
-      	<el-button type="primary" class="left_addBtn" @click="addRole">添加角色</el-button>
+      	<el-button type="primary" class="left_addBtn" @click="addRoleBox">添加角色</el-button>
       	<el-input class="left_input" placeholder="通过关键词过滤"></el-input>
       	<ul class="role-left-list">
       		<li v-for="x in 10">产品经理<i class="el-icon-edit-outline" @click="setName"></i></li>
@@ -60,7 +60,7 @@
 	       this.setRole('编辑名称','角色名称 ：','设置成功')
 	    	},
 	    	//添加角色
-	    	addRole(){
+	    	addRoleBox(){
 	    	   this.setRole('角色名称','添加角色 ：','添加成功','add')
 	    	},
 	    	//弹框
@@ -71,9 +71,7 @@
         }).then(({ value }) => {
         	  if(state=='add'){
         	  	console.log(this.$userInfo)
-        	  	this.$http.post(this.$API.addRole,{name:value,userId:this.$userInfo.userId},response=>{
-        	  		console.log(response)
-        	  	})
+        	  	this.addRole({name:value,userId:this.$userInfo.id})
         	  }
 //        this.$message({
 //          type: 'success',
@@ -82,9 +80,20 @@
         }).catch(() => {
            
         });
+	    	},
+	    	getRoleList(){
+	    		this.$http.get(this.$API.showMenu,response=>{
+	    			console.log(response)
+	    		})
+	    	},
+	    	addRole(data){
+	    		this.$http.post(this.$API.addRole,data,response=>{
+	    			console.log(response)
+	    		})
 	    	}
     },
     created(){
+    	   this.getRoleList()
     	   sideText.map(item=>{
     	   	  let arr = []
     	   	   item.list.forEach((data,index)=>{
