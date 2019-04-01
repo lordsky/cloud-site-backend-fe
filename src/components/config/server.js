@@ -82,7 +82,7 @@ const apiTemplateList= (data) => {
 //查询模板
 const apiPageList= (data) => {
   return new Promise((resolve, reject)=>{
-    instance.get(`backend/page/list?catId=${data.catId}&name=${data.name}`).then((res)=> {
+    instance.get(`backend/page/list?catId=${data.catId}&name=${data.name}&selectType=${data.selectType}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -379,7 +379,7 @@ const apiAddBanner = (data) => {
 //上线/下线banner
 const apiBannerOnlineOperate = (data) => {
   return new Promise((resolve, reject)=>{
-    instance.post(`backend/banOnlineOperate`,data).then((res)=> {
+    instance.post(`backend/banOnlineOperate?id=${data}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)

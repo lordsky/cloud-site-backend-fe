@@ -14,7 +14,7 @@
           </el-col>
           <el-col :span="10">
             <div class="header-right" id="aa">
-              <span @click="saveWeb(1)">保存</span>
+              <!--<span @click="saveWeb(1)">保存</span>-->
               <!--<span @click="preview">预览</span>-->
               <span @click="exit">退出</span>
             </div>
@@ -478,7 +478,8 @@
         getPageList(val){
           let parm = {
             catId:val,
-            name:''
+            name:'',
+            selectType:1
           }
           this.$api.apiPageList(parm).then(res => {
             if(res.msg === "success") {
