@@ -104,7 +104,7 @@
               </el-table-column>
               <el-table-column label="是否首页" align="center">
                 <template slot-scope="scope">
-                  {{scope.row.isIndex == 0 ? '否' : '是'}}
+                  {{scope.row.isIndex == -1 ? '否' : '是'}}
                 </template>
               </el-table-column>
               <el-table-column label="状态" align="center">
@@ -116,7 +116,7 @@
                 <template slot-scope="scope">
                   <el-button type="text" @click="manageCase(scope.$index, scope.row)">查看</el-button>
                   <el-button type="text" @click="editcase(scope.$index, scope.row)">编辑</el-button>
-                  <el-button type="text" v-if="scope.row.isIndex == 0" @click="editIsIndex(scope.$index, scope.row)">设置首页</el-button>
+                  <el-button type="text" v-if="scope.row.isIndex == -1" @click="editIsIndex(scope.$index, scope.row)">设置首页</el-button>
                   <el-button type="text" v-if="scope.row.isIndex == 1" @click="editIsIndex2(scope.$index, scope.row)">取消首页</el-button>
                   <el-button type="text" v-if="scope.row.onlineStatus == -1" @click="popCase(scope.$index, scope.row)">上线</el-button>
                   <el-button type="text" v-if="scope.row.onlineStatus == 1" @click="offlineCase(scope.$index, scope.row)">下线</el-button>
