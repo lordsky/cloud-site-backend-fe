@@ -365,6 +365,17 @@ const apiCaseOnlineOperate = (data) => {
   })
 }
 
+//案例是否首页
+const apiCaseIsIndex = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/case/changeIndexStatus?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 //新增/修改banner
 const apiAddBanner = (data) => {
   return new Promise((resolve, reject)=>{
@@ -720,5 +731,6 @@ export default {
   apiNavigationStatus,
   apiWhiteList,
   apiWhiteAdd,
-  apiWhiteDel
+  apiWhiteDel,
+  apiCaseIsIndex
 }
