@@ -15,26 +15,36 @@
     <div class="workers-right">
       <el-button type="primary" class="addWorkers" @click="addRole">添加成员</el-button>
       <el-table :data="tableData" style="width: 99%" border>
-        <el-table-column prop="date" label="姓名" align="center">
+        <el-table-column prop="username" label="姓名" align="center">
         </el-table-column>
-        <el-table-column prop="name" label="手机号" align="center">
+        <el-table-column prop="phone" label="手机号" align="center">
         </el-table-column>
-        <el-table-column prop="name" label="邮箱" align="center">
+        <el-table-column prop="email" label="邮箱" align="center">
         </el-table-column>
-        <el-table-column prop="name" label="角色" align="center">
+        <el-table-column prop="roleName" label="角色" align="center">
         </el-table-column>
-        <el-table-column prop="name" label="部门" align="center">
+        <el-table-column prop="positions" label="部门" align="center">
         </el-table-column>
-        <el-table-column prop="name" label="职位" align="center">
+        <el-table-column prop="positions" label="职位" align="center">
         </el-table-column>
         <el-table-column prop="address" label="操作" width="180" align="center">
            <template slot-scope="scope">
            	  <el-button type="text" @click="editorRole">编辑</el-button>
-           	   <el-button type="text" @click="resetPassword">重置密码</el-button>
+           	   <!--<el-button type="text" @click="resetPassword">重置密码</el-button>-->
            	    <el-button type="text" @click="deleteRole">删除</el-button>
            </template>
         </el-table-column>
       </el-table>
+       <div class="paging">
+    	 <el-pagination
+      @current-change="handleCurrentChange"
+      :current-page.sync="currentPage"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="pageSize"
+      layout="sizes, prev, pager, next"
+      :total="totalPage">
+    </el-pagination>
+    </div>
     </div>
     <!--弹框表单-->
     <el-dialog title="添加成员" :visible.sync="dialogFormVisible" width="30%">
@@ -75,6 +85,7 @@
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
     </el-dialog>
+    
   </div>
 </template>
 
@@ -83,65 +94,20 @@
     name: "workersManage",
     data() {
       return {
-        data: [{
-          label: '中国移动集团总部',
-          children: [{
-            label: '中国移动企业客户',
-            children: [{
-              label: '产品部门'
-            }]
-          }]
-        }, {
-          label: '中国移动集团总部',
-          children: [{
-            label: '二级 2-1',
-            children: [{
-              label: '三级 2-1-1'
-            }]
-          }, {
-            label: '二级 2-2',
-            children: [{
-              label: '三级 2-2-1'
-            }]
-          }]
-        }, {
-          label: '一级 3',
-          children: [{
-            label: '二级 3-1',
-            children: [{
-              label: '三级 3-1-1'
-            }]
-          }, {
-            label: '二级 3-2',
-            children: [{
-              label: '三级 3-2-1'
-            }]
-          }]
-        }],
+        data: [],
         defaultProps: {
           children: 'children',
-          label: 'label'
+          label: 'departmentName'
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: ' 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: ' 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: ' 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: ' 1516 弄'
-        }],
+        worksInfo:{},
+        pageSize:10,
+        tableData: [],
         menuVisible: false,
         dialogFormVisible: false,
         editShow:true,
+        totalPage:0,
+        pageSize:10,
+        currentPage:0,
         options: [{
           value: '选项1',
           label: '黄金糕'
@@ -189,6 +155,12 @@
       //树点击
       handleNodeClick(val) {
           console.log(val)
+          this.worksInfo = val
+          this.getWorksTable(val.id)
+      },
+      //分页
+      handleCurrentChange(val){
+      	this.getWorksTable(this.worksInfo.id,val)
       },
       //删除
       deleteRole(){
@@ -208,6 +180,24 @@
           });          
         });
       },
+      //获取树状列表
+      getWorksList(){
+      	this.$http.post(this.$API.getWorksList,{},response=>{
+      		this.data = response.data.data
+      	})
+      },
+      //获取员工表格
+      getWorksTable(id,num){
+      	this.$http.post(this.$API.getWorksTable,{
+      		deptId:id,
+      		pageNum:num?num:1,
+      		pageSize:this.pageSize
+      	},response=>{
+      		console.log(response)
+      		this.tableData = response.data.data.content
+      		this.totalPage = response.data.data.totalElements
+      	})
+      },
       //编辑
       editorRole(){
       	this.editShow = false
@@ -217,6 +207,9 @@
       addRole(){
       	this.dialogFormVisible = true
       }
+    },
+    created(){
+    	   this.getWorksList()
     }
   }
 </script>
@@ -251,6 +244,9 @@
       padding: 30px 0 0 20px;
       .addWorkers {
         margin-bottom: 30px;
+      }
+      .paging{
+      	margin: 20px 0 20px 0;
       }
     }
     .menu__item {

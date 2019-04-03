@@ -4,6 +4,7 @@
       <el-menu default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
         <el-menu-item index="1">图片素材</el-menu-item>
         <el-menu-item index="2">视频素材</el-menu-item>
+        <el-menu-item index="3">文件素材</el-menu-item>
       </el-menu>
       <div class="line"></div>
       </el-menu>
@@ -15,8 +16,8 @@
       </div>
       <div class="picture-list" v-show="listLabel==1">
         <div class="picture-list-item update" >
-          <el-upload class="avatar-uploader" :action="host.hostUrl+'/common/upload'"  :on-success="imgSuccess" >
-            <i  class="el-icon-plus avatar-uploader-icon"></i>
+         <el-upload class="avatar-uploader"  :on-success="imgSuccess" :action="host.hostUrl+'/common/upload'">
+           <i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传图片支持jpg,png,gif等格式，不超过10M</i>
         </div>
@@ -25,7 +26,7 @@
         	  <div class="picture-list-item-check">
         	    <el-checkbox v-model="checkList[i]" v-show="checkShow[i]" disabled></el-checkbox>
         	  </div>
-        	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
+        	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.fileName}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
         	  	<span class="el-icon-view" @click="lookItem(x)"></span>
         	  	<span class="el-icon-edit" @click="editItem(x,'pic')"></span>
@@ -38,21 +39,21 @@
         <span class="check-item"><el-button type="primary" size="small" @click="allDel('video')">批量删除</el-button></span>
       </div>
       <div class="picture-list" v-show="listLabel==2">
-        <div class="picture-list-item update">
-          <el-upload class="avatar-uploader" :action="host.hostUrl+'/common/upload'" :on-success="videoSuccess" >
+        <div class="picture-list-item update" >
+          <el-upload class="avatar-uploader"  :on-success="videoSuccess" :action="host.hostUrl+'/common/upload'">
           	<i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传视频支持MP4,wma等格式，不超过10M</i>
         </div>
         <div class="picture-list-item" v-for="(x,i) in videoList"  :key="i"  @mouseleave="itemShow = null" @mouseenter="itemShow = i">
-        	 <div class="mask-list" @click="videoChoose(i,checkVideoShow[i],x)"></div>
-        	  <video :src="x.filePath" controls="controls"  style="width: 100%;height: 100%;">
+        	  <div class="mask-list" @click="videoChoose(i,checkVideoShow[i],x)"></div>
+        	  <video :src="x.filePath" controls="controls" style="width: 100%;height: 100%;z-index: 1;">
 			您的浏览器不支持 video 标签。
 		  </video>
         	  <div class="picture-list-item-check">
         	    <el-checkbox v-model="checkVideoList[i]" v-show="checkVideoShow[i]" disabled></el-checkbox>
         	  </div>
-        	  <div class="picture-list-item-hoverTop"  v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
+        	  <div class="picture-list-item-hoverTop"  v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.fileName}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
         	  	<span class="el-icon-view"  @click="lookItem(x)"></span>
         	  	<span class="el-icon-edit" @click="editItem(x,'video')"></span>
@@ -60,30 +61,63 @@
         	  </div>
         </div>
       </div>
-       
-      <!--<div class="pictrue-page" v-show="listLabel==1">
+       <div class="picture-check" v-show="listLabel==3">
+        <span class="check-item"><el-checkbox v-model="checkedText" :indeterminate="textAllStatu"  @change="textAllChange">全选</el-checkbox></span>
+        <span class="check-item"><el-button type="primary" size="small" @click="allDel('text')">批量删除</el-button></span>
+      </div>
+      <div class="picture-list" v-show="listLabel==3">
+        <div class="picture-list-item update" >
+         <el-upload class="avatar-uploader"  :on-success="textSuccess" :action="host.hostUrl+'/common/upload'">
+           <i  class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+          <i class="el-icon-warning picture-warning">上传文件支持doc、pdf、zip等格式</i>
+        </div>
+        <div class="picture-list-item" v-for="(x,i) in textList" @mouseleave="itemShow = null" @mouseenter="itemShow = i" :key="i">
+        	  <div class="list-text" @click="chooseText(i,checkTextShow[i],x)">
+        	  	 <img src="../../assets/img/test3.png"  id="text_ico"/>
+        	  </div>
+        	  <div class="picture-list-item-check">
+        	    <el-checkbox v-model="checkTextList[i]" v-show="checkTextShow[i]" disabled></el-checkbox>
+        	  </div>
+        	  <div class="picture-list-item-hoverTop"><span>{{x.fileName}}</span></div>
+        	  <div class="picture-list-item-hoverFoot">
+        	  	<!--<span class="el-icon-view" @click="lookItem(x)"></span>-->
+        	  	<span class="el-icon-edit" @click="editItem(x,'text')"></span>
+        	  	<span class="el-icon-delete" @click="delItem(x,'text')"></span>
+        	  </div>
+        </div>
+      </div>
+      <div class="pictrue-page" v-show="listLabel==1">
       	<el-pagination
-      @size-change="handleSizeChange"
-      background
-      @current-change="handleCurrentChange"
-      :current-page.sync="currentPage"
-      :page-size="10"
-      layout="prev, pager, next, jumper"
-      :total="10">
-        </el-pagination>
-      </div>-->
-       <!--<div class="pictrue-page"v-show="listLabel==2">
+		  background
+		  @current-change="handlePic"
+		  layout="prev, pager, next, jumper"
+		  :page-size="pageSize"
+		  :total="totalPic">
+		</el-pagination>
+      </div>
+       <div class="pictrue-page"v-show="listLabel==2">
       	<el-pagination
-      @size-change="handleSizeChange"
       background
-      @current-change="handleCurrentChange"
+      @current-change="handleVideo"
       :current-page.sync="currentPage"
-      :page-size="10"
+      :page-size="pageSize"
       layout="prev, pager, next, jumper"
-      :total="10">
+      :total="totalVideo">
         </el-pagination>
-      </div>-->
+      </div>
+       <div class="pictrue-page"v-show="listLabel==3">
+      	<el-pagination
+      background
+      @current-change="handleText"
+      :current-page.sync="currentPage"
+      :page-size="pageSize"
+      layout="prev, pager, next, jumper"
+      :total="totalText">
+        </el-pagination>
+      </div>
     </div>
+    
   </div>
 </template>
 
@@ -95,62 +129,84 @@
       return {
         checked: '',
         checkVideo:'',
+        checkedText:'',
         imageUrl: '',
         itemShow:null,
         checkShow:[],
         checkList:[],
+        checkTextList:[],
+        checkTextShow:[],
         listLabel:'1',
         currentPage:1,
         checkVideoShow:[],
         checkVideoList:[],
         picAllStatu:false,
         videoAllStatu:false,
+        textAllStatu:false,
         picList:[],
         videoList:[],
+        textList:[],
         host:host,
+        pageNumPic:1,
+        pageNumVideo:1,
+        pageNumText:1,
+        pageSize:7,
+        totalPic:0,
+        totalVideo:0,
+        totalText:0
       }
     },
     watch:{
     	
     },
     created(){
-    	   this.getpicList()
-    	   this.getVideo()
-    },
+    	    this.getpicList()
+    	    this.getVideo()
+    	    this.getText()
+    	 },
     methods: {
-    	  getpicList(){
-    	  	this.$http.get(this.$API.getMaterials+'?materialsType=1',(res)=>{
-    	  		console.log(res)
-    	  		if(res.data.code==200){
-    	  			this.picList = res.data.data
-    	  			this.checkShow = []
-    	  			this.checkList = []
-    	  			this.checked = ''
-    	  		}
+    	// 获取列表数据
+    	  getList(type,success){
+    	  	let pageNum 
+    	  	type===1?pageNum=this.pageNumPic:type===2?pageNum=this.pageNumVideo:pageNum=this.pageNumText
+    	  	this.$http.get(this.$API.getMaterials+'?materialsType='+type+'&pageNum='+pageNum+'&pageSize='+this.pageSize,(res)=>{
+    	  		success(res)
     	  	})
-    	  },
-    	  getVideo(){
-    	  	this.$http.get(this.$API.getMaterials+'?materialsType=2',(res)=>{
-    	  		console.log(res)
-    	  		if(res.data.code==200){
-    	  			this.videoList = res.data.data
-    	  			this.checkVideoShow=[]
-        			this.checkVideoList=[]
-        			this.checkVideo = ''
-    	  		}
-    	  	})
-    	  },
-    	  videoSuccess(file,fileList){
-    	  	   if(!this.videoUpload(fileList))return
-        	   this.$http.post(this.$API.materialsUpload,{
-        	   	filePath:fileList.response,
-        	   	materialsType:2
+    	  	},
+    	 //上传数据
+    	  uploadList(type,file,success){
+    	  	this.$http.post(this.$API.materialsUpload,{
+        	   	filePath:file.response,
+        	   	materialsType:type
         	   },(res)=>{
-	        	   	if(res.data.data){
-	        	   		this.getVideo()
-	        	   	}
+        	   	if(res.data.data){
+        	   		success(res)
+        	   	}
         	   })
     	  },
+    	  	//获取图片
+    	  getpicList(){
+          this.getList(1,(data)=>{
+          	 console.log(data)
+          	 this.totalPic = data.data.data.totalElements
+          	 this.picList = data.data.data.content
+          })
+    	  },
+    	  //获取视频
+    	  getVideo(){
+    	  	this.getList(2,(data)=>{
+          	 this.videoList = data.data.data.content
+          	 this.totalVideo = data.data.data.totalElements
+          })
+    	  },
+    	  //获取文本
+    	  getText(){
+    	  	this.getList(3,(data)=>{
+          	 this.textList = data.data.data.content
+          	 this.totalText = data.data.data.totalElements
+          })
+    	  },
+    	  //查看图片
     	  lookItem(val){
     	  	window.open(val.filePath)
     	  },
@@ -169,42 +225,58 @@
     	  	}
     	  	this.setcheckAll(val,'video',this.videoList)
     	  },
+    	  textAllChange(val){
+    	  	console.log(val)
+    	  	if(this.textAllStatu){
+    	  	    this.textAllStatu = false
+    	  	    this.checkedText = val
+    	  	}
+    	  	this.setcheckAll(val,'text',this.textList)
+    	  },
     	//批量删除
     	  allDel(val){
     	  	if(val==='pic'){
     	  		this.setDel(this.checked,val)
-    	  	}else{
+    	  	}else if(val=='video'){
     	  		this.setDel(this.checkVideo,val)
+    	  	}else if(val=='text'){
+    	  		this.setDel(this.checkedText,val)
     	  	}
     	  },
     	  setDel(stu,text){
-    	  	let a 
+    	  	let arr 
     	  	let id =[]
     	    if(text=='pic'){
-    	    	   a = this.picList
-    	    }else{
-    	    	   a = this.videoList
+    	    	   arr = this.picList
+    	    }else if(text=='video'){
+    	    	   arr = this.videoList
+    	    }else if(text=='text'){
+    	    	   arr = this.textList
     	    }
     	  	if(stu){
-    	  			for(var i =0;i<a.length;i++){
-    	  				id.push(a[i].id)
+    	  			for(var i =0;i<arr.length;i++){
+    	  				id.push(arr[i].id)
     	  			}
     	  		}else{
-    	  			for(var i =0;i<a.length;i++){
-    	  				if(a[i].idItem){
-    	  					id.push(a[i].idItem)
+    	  			for(var i =0;i<arr.length;i++){
+    	  				if(arr[i].idItem){
+    	  					id.push(arr[i].idItem)
     	  				}
     	  			}
     	  		}
     	    console.log(id)
 		this.$http.delete(this.$API.materialsAllDel+'?materialsIds='+id,{},(res)=>{
+			        console.log(res)
 					if(res.data.data){
 						if(text=='pic'){
 							this.getpicList()
-						}else{
+						}else if(text=='video'){
 							this.getVideo()
+						}else{
+							this.getText()
 						}
 					}
+					this.$message({ type: 'success',message:'删除成功!'})
 			})
     	  },
     	  
@@ -216,13 +288,15 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-        	  this.$http.delete(this.$API.materialsAllDel+'?materialsIds='+res.id,{},(res)=>{
-        	  	 console.log(res)
+        	  this.$http.delete(this.$API.materialsAllDel+'?materialsIds='+res.id,{},res=>{
+        	  	console.log(res)
         	  	 if(res.data.data){
         	  	 	if(val=='pic'){
         	  	 		this.getpicList()
-        	  	 	}else{
+        	  	 	}else if(val=='video'){
         	  	 		this.getVideo()
+        	  	 	}else{
+        	  	 		this.getText()
         	  	 	}
         	  	 	this.$message({
 	            type: 'success',
@@ -230,31 +304,39 @@
 	          });
         	  	 }
         	  })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-    	  },
-    	 
+    	   })
+    	 },
     	  //修改
-    	  editItem(val,state){
-    	  	this.$prompt('修改文件名:', '提示', {
-          confirmButtonText: '保存',
+    	  editItem(val,text){
+    	  	console.log(val)
+    	  	this.$prompt('文件名修改:', '提示', {
+          confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(({ value }) => {
         	  this.$http.post(this.$API.setMaterials,{
-        	  	id:val.id,
-        	  	name:value
-        	  },response=>{
-        	  	response.data.data?state=='pic'?this.getpicList():this.getVideo():''
-        	  	response.data.data?this.$message({type:'success',message:'修改成功'}):''
+        	  	fileId:val.id,
+        	  	fileName:value
+        	  },(response)=>{
+        	  	 console.log(response)
+        	  	 if(response.data.code===200){
+        	  	 	if(text=='pic'){
+        	  	 		this.getpicList()
+        	  	 	}else if(text=='video'){
+        	  	 		this.getVideo()
+        	  	 	}else{
+        	  	 		this.getText()
+        	  	 	}
+        	  	 	this.$message({
+		            type: 'success',
+		            message: '修改成功'
+		          });
+        	  	 }
         	  })
+          
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '取消输入'
+            message: '取消修改'
           });       
         });
     	  },
@@ -263,19 +345,26 @@
         this.listLabel = key
       },
       imgSuccess(res, file) {
-//      console.log(this.imgUpload(file))
-//      if(!this.imgUpload(file))return
-        if(file.status=='success'){
-        	   this.$http.post(this.$API.materialsUpload,{
-        	   	filePath:file.response,
-        	   	materialsType:1
-        	   },(res)=>{
-        	   	if(res.data.data){
-        	   		this.getpicList()
-        	   	}
-        	   })
-        }
+        if(!this.imgUpload(file))return
+        this.uploadList(1,file,(response)=>{
+        	    console.log(response)
+        	    this.getpicList()
+        })
       },
+      videoSuccess(file,fileList){
+    	  	   if(!this.videoUpload(fileList))return
+    	  	   this.uploadList(2,fileList,(response)=>{
+        	    console.log(response)
+        	    this.getVideo()
+           })
+    	  },
+    	  textSuccess(res,file){
+    	  	 if(!this.textUpload(file))return
+    	  	this.uploadList(3,file,(response)=>{
+        	    console.log(response)
+        	    this.getText()
+           })
+    	  },
       //图片上传
       imgUpload(file) {
       	console.log(file.raw.type)
@@ -283,6 +372,21 @@
         const isLt = file.size / 1024 / 1024 < 10;
         if (!imgType) {
           this.$message.error('上传头像图片只能是 jpg,png,gif 格式!');
+          return false
+        }
+        if (!isLt) {
+          this.$message.error('上传图片大小不能超过 10MB!');
+          return false
+        }
+        return true
+      },
+      //文本上传
+      textUpload(file) {
+      	console.log(file.raw.type)
+        const textType = file.raw.type === 'application/pdf'||file.raw.type === 'application/msword'||file.raw.type === 'application/zip';
+        const isLt = file.size / 1024 / 1024 < 10;
+        if (!textType) {
+          this.$message.error('上传文件只能是 doc、pdf、zip 格式!');
           return false
         }
         if (!isLt) {
@@ -305,7 +409,6 @@
           return false
         }
         return true
-       
       },
       //图片选择
       choose(key,stu,val){
@@ -316,7 +419,6 @@
       		this.setArray('pic',key,true)
       		this.picList[key].idItem = val.id
       	}
-      	console.log(this.picList)
       	this.picAllStatu = true
       	this.checked = false
       },
@@ -332,7 +434,18 @@
       	this.videoAllStatu = true
       	this.checkVideo = false
       },
-      
+      //文本选择
+      chooseText(key,stu,val){
+      	if(stu){
+      		this.setArray('text',key,false)
+      		this.textList[key].idItem = ''
+      	}else{
+      		this.setArray('text',key,true)
+      		this.textList[key].idItem = val.id
+      	}
+      	this.textAllStatu = true
+      	this.checkedText = false
+      },
       setArray(val,key,statu){
       	if(val=='pic'){
       		this.$set(this.checkShow,key,statu)
@@ -340,6 +453,9 @@
       	}else if(val=='video'){
       		this.$set(this.checkVideoShow,key,statu)
       	    this.$set(this.checkVideoList,key,statu)
+      	}else if(val =='text'){
+      		this.$set(this.checkTextShow,key,statu)
+      	    this.$set(this.checkTextList,key,statu)
       	}
       },
       setcheckAll(val,text,list){
@@ -353,12 +469,18 @@
     	     	}
     	      }
       },
-      //分页
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+      //当前页
+      handlePic(val) {
+      	this.pageNumPic = val
+      	this.getpicList()
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+       handleVideo(val) {
+      	this.pageNumVideo = val
+      	this.getVideo()
+      },
+      handleText(val){
+      	this.pageNumText = val
+      	this.getText()
       }
     }
   }
@@ -367,6 +489,14 @@
 <style lang="less">
   .picture-head {
     margin-top: 10px;
+  }
+  .pictureManage-content{
+  	width: 85%;
+  	min-height: 100vh;
+  	margin:auto;
+  	padding: 0 20px 0 20px;
+  	margin-top: 30px;
+  	box-shadow: -1px 5px 20px #e0e1e0;
   }
   .picture-box {
     margin-top: 10px;
@@ -380,6 +510,17 @@
     .pictrue-page{
      	margin-bottom: 20px;
     }
+  }
+  .list-text{
+  	width: 100%;
+  	height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #text_ico{
+  	width: 80px;
+  	height: 80px;
   }
   .picture-list{
   	width: 100%;
@@ -413,6 +554,13 @@
   			justify-content: center ;
   		    align-items: center ;
   		}
+  	   }
+  	   .mask-list{
+  	   	 width: 100%;
+  	   	 height: 100%;
+  	   	 position: absolute;
+  	   	 top: 0;
+  	   	 z-index: 10;
   	   }
   	   .picture-list-item-hoverTop{
   	   	height: 20%;
@@ -526,18 +674,15 @@
   	to{transform: translateY(0);}
   }
   .footBar{
-  	animation: bb .5s ease;
   	z-index: 20;
+  	animation: bb .5s ease;
   }
   @keyframes bb{
   	from{transform: translateY(50px);}
   	to{transform: translateY(0);}
   }
-  .mask-list{
-  	   	 width: 100%;
-  	   	 height: 100%;
-  	   	 position: absolute;
-  	   	 top: 0;
-  	   	 z-index: 10;
+  .head-mask{
+  	height: 62px;
+  	background: #4170f2;
   }
 </style>

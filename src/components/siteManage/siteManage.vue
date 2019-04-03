@@ -70,7 +70,7 @@
         tableData: [],
         title:[],
         totalPage:0,
-        pageSize:10,
+        pageSize:20,
         currentPage:0,
         pageNum:1,
       }
@@ -89,13 +89,17 @@
       	this.query(val)
       },
       //打开禁用站点
-      disableSite() {
+      disableSite(val) {
         this.$confirm('是否要禁用该站点?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-           
+           this.$http.post(this.$API.disableSite,{
+           	 userTemplateId:val.userTemplateId
+           },response=>{
+           	  console.log(response)
+           })
         }).catch(() => {
            
         });
@@ -121,7 +125,7 @@
       //获取列表
       getList(data){
       	this.$http.post(this.$API.getSiteList,data,response=>{
-      		this.totalPage = response.data.data.totalElements
+      		console.log(response)
       	    response.data.data.content.map(item=>{
       	    	   let str = ''
       	    	   str = item.createTime

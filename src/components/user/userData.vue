@@ -162,7 +162,10 @@
         });
       },
       getUserList(state) {
-        let obj = {}
+        let obj = {
+        	   pageNum:1,
+        	   pageSize:10
+        }
         let timeStatr = ''
         let timeEnd = ''
         let status = this.fromUser.state

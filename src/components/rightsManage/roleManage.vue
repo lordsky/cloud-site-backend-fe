@@ -70,15 +70,12 @@
           cancelButtonText: '取消',
         }).then(({ value }) => {
         	  if(state=='add'){
-<<<<<<< HEAD
         	  	console.log(this.$userInfo)
         	  	this.$http.post(this.$API.addRole,{name:value,userId:this.$userInfo.userId},response=>{
         	  		console.log(response)
         	  	})
-=======
         	  	let user = JSON.parse(localStorage.getItem('cloudUser'))
         	  	this.addRole({name:value,userId:user.id})
->>>>>>> c483b49c08118003113d121fa549ef0291b91d10
         	  }
 //        this.$message({
 //          type: 'success',
