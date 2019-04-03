@@ -29,9 +29,9 @@
         </el-table-column>
         <el-table-column prop="address" label="操作" width="180" align="center">
            <template slot-scope="scope">
-           	  <el-button type="text" @click="editorRole">编辑</el-button>
+           	  <el-button type="text" @click="editorRole(scope.row)">编辑</el-button>
            	   <!--<el-button type="text" @click="resetPassword">重置密码</el-button>-->
-           	    <el-button type="text" @click="deleteRole">删除</el-button>
+           	    <el-button type="text" @click="deleteRole(scope.row)">删除</el-button>
            </template>
         </el-table-column>
       </el-table>
@@ -39,6 +39,7 @@
     	 <el-pagination
       @current-change="handleCurrentChange"
       :current-page.sync="currentPage"
+      background
       :page-sizes="[100, 200, 300, 400]"
       :page-size="pageSize"
       layout="sizes, prev, pager, next"
@@ -47,42 +48,42 @@
     </div>
     </div>
     <!--弹框表单-->
-    <el-dialog title="添加成员" :visible.sync="dialogFormVisible" width="30%">
+    <el-dialog :title="titleDialog" :visible.sync="dialogFormVisible" width="30%">
       <el-form label-width="80px">
-        <el-form-item label="姓名:">
-          <el-input placeholder="请输入姓名"></el-input>
+        <el-form-item label="姓名:" :model="formText">
+          <el-input placeholder="请输入姓名" v-model="formText.username"></el-input>
         </el-form-item>
         <el-form-item label="手机号:">
-          <el-input placeholder="请输入手机号"></el-input>
+          <el-input placeholder="请输入手机号" v-model="formText.phone"></el-input>
         </el-form-item>
         <el-form-item label="邮箱:">
-          <el-input placeholder="请输入邮箱"></el-input>
+          <el-input placeholder="请输入邮箱" v-model="formText.email"></el-input>
         </el-form-item>
         <el-form-item label="密码:" v-show="editShow">
-          <el-input placeholder="请输入密码"></el-input>
+          <el-input placeholder="请输入密码" v-model="formText.pwd"></el-input>
         </el-form-item>
         <el-form-item label="确认密码:" v-show="editShow">
-          <el-input placeholder="请确认密码"></el-input>
+          <el-input placeholder="请确认密码" v-model="formText.pwdTwo"></el-input>
         </el-form-item>
         <el-form-item label="角色:">
-          <el-select v-model="value" placeholder="请选择">
+          <el-select v-model="formText.roleId" placeholder="请选择">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="部门:">
-          <el-select v-model="value" placeholder="请选择">
+          <el-select v-model="formText.deptId" placeholder="请选择">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="职位:">
-          <el-input placeholder="请输入职位"></el-input>
+          <el-input placeholder="请输入职位" v-model="formText.positions"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="saveWorks">确 定</el-button>
       </div>
     </el-dialog>
     
@@ -99,8 +100,11 @@
           children: 'children',
           label: 'departmentName'
         },
+        worksListInfo:{},
         worksInfo:{},
+        formText:{},
         pageSize:10,
+        titleDialog:'添加成员',
         tableData: [],
         menuVisible: false,
         dialogFormVisible: false,
@@ -155,12 +159,12 @@
       //树点击
       handleNodeClick(val) {
           console.log(val)
-          this.worksInfo = val
+          this.worksListInfo = val
           this.getWorksTable(val.id)
       },
       //分页
       handleCurrentChange(val){
-      	this.getWorksTable(this.worksInfo.id,val)
+      	this.getWorksTable(this.worksListInfo.id,val)
       },
       //删除
       deleteRole(){
@@ -198,14 +202,34 @@
       		this.totalPage = response.data.data.totalElements
       	})
       },
+      //添加成员
+      addWorksRequest(){
+      	this.$http.post(this.$API.addWorks,{},response=>{
+      		console.log(response)
+      	})
+      },
+      //编辑成员
+      setWorksRequest(){
+      	this.$http.post(this.$API.setWorks,{},response=>{
+      		console.log(response)
+      	})
+      },
       //编辑
-      editorRole(){
+      editorRole(val){
+      	this.worksInfo = val
       	this.editShow = false
+      	this.titleDialog = '编辑成员'
       	this.dialogFormVisible = true
       },
       //添加成员
       addRole(){
       	this.dialogFormVisible = true
+      	this.titleDialog = '添加成员'
+      },
+      
+      saveWorks(){
+      	 console.log(this.formText)
+      	 this.titleDialog ==='添加成员'
       }
     },
     created(){

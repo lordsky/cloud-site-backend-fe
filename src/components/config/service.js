@@ -46,9 +46,10 @@ const API = {
     //获取员工列表
     getWorksTable:'backend/select/adminuser',
     //设置员工
-    setWorks:'backend/update/department',
+    setWorks:'backend/update/adminusers',
     //增加员工
     addWorks:'backend/add/adminusers',
+   
 	/*
 	 *   组件 
 	 */
