@@ -33,25 +33,32 @@
               </el-table-column>
               <el-table-column prop="createTime" label="上传时间" align="center">
               </el-table-column>
+              <el-table-column label="是否首页" align="center">
+                <template slot-scope="scope">
+                  {{scope.row.isIndex == -1 ? '否' : '是'}}
+                </template>
+              </el-table-column>
               <el-table-column prop="status" label="状态" align="center">
                 <template slot-scope="scope">
                   {{scope.row.status == 1 ? '在线' : '下线'}}
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="200" align="center">
+              <el-table-column label="操作"  align="center">
                 <template slot-scope="scope">
                   <el-button type="text" v-if="scope.row.status == -1" @click="popCompon(scope.$index, scope.row)">上线</el-button>
                   <el-button type="text" v-if="scope.row.status == 1" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
+                  <el-button type="text" v-if="scope.row.isIndex == -1" @click="editIsIndex(scope.$index, scope.row)">设置首页</el-button>
+                  <el-button type="text" v-if="scope.row.isIndex == 1" @click="editIsIndex2(scope.$index, scope.row)">取消首页</el-button>
                   <el-button type="text" @click="manageBanner(scope.$index, scope.row)">查看</el-button>
                   <el-button type="text" @click="editBanner(scope.$index, scope.row)">编辑</el-button>
                   <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                 </template>
               </el-table-column>
-              <el-table-column label="Drag" align="center">
-                <template slot-scope="{}">
-                  <i class="el-icon-rank drag"></i>
-                </template>
-              </el-table-column>
+              <!--<el-table-column label="Drag" align="center">-->
+                <!--<template slot-scope="{}">-->
+                  <!--<i class="el-icon-rank drag"></i>-->
+                <!--</template>-->
+              <!--</el-table-column>-->
             </el-table>
           </div>
         </div>
@@ -168,6 +175,38 @@
 
           });
         },
+        editIsIndex(index, row){
+          this.$confirm('确认将该banner设置为首页吗?', '提示', {
+            type: 'warning'
+          }).then(() => {
+            this.$api.apiBannerIsIndex(row.id).then(res => {
+              console.log(res)
+              if(res.code === 200) {
+                this.getBannerList()
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }).catch(() => {
+
+          });
+        },
+        editIsIndex2(index, row){
+          this.$confirm('确认取消该banner首页吗?', '提示', {
+            type: 'warning'
+          }).then(() => {
+            this.$api.apiBannerIsIndex(row.id).then(res => {
+              console.log(res)
+              if(res.code === 200) {
+                this.getBannerList()
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }).catch(() => {
+
+          });
+        },
         //删除
         handleDel(index,data){
           this.$confirm('确认删除该banner吗?', '提示', {
@@ -239,19 +278,19 @@
           })
         },
         //行拖拽
-        rowDrop() {
-          const tbody = document.querySelector('.el-table__body-wrapper tbody')
-          const _this = this
-          Sortable.create(tbody, {
-            onEnd({ newIndex, oldIndex }) {
-              const currRow = _this.tableData.splice(oldIndex, 1)[0]
-              _this.tableData.splice(newIndex, 0, currRow)
-            }
-          })
-        },
+        // rowDrop() {
+        //   const tbody = document.querySelector('.el-table__body-wrapper tbody')
+        //   const _this = this
+        //   Sortable.create(tbody, {
+        //     onEnd({ newIndex, oldIndex }) {
+        //       const currRow = _this.tableData.splice(oldIndex, 1)[0]
+        //       _this.tableData.splice(newIndex, 0, currRow)
+        //     }
+        //   })
+        // },
       },
       mounted() {
-        this.rowDrop()
+        // this.rowDrop()
         this.getBannerList()
       },
     }

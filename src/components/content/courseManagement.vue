@@ -122,6 +122,11 @@
               </el-table-column>
               <el-table-column prop="creatTime" label="发布时间" align="center">
               </el-table-column>
+              <el-table-column label="是否首页" align="center">
+                <template slot-scope="scope">
+                  {{scope.row.isIndex == -1 ? '否' : '是'}}
+                </template>
+              </el-table-column>
               <el-table-column label="状态" align="center">
                 <template slot-scope="scope">
                   {{scope.row.onlineStatus == -1 ? '下线' : '上线'}}
@@ -133,6 +138,8 @@
                   <el-button type="text" @click="editcourse(scope.$index, scope.row)">编辑</el-button>
                   <el-button type="text" v-if="scope.row.onlineStatus == -1" @click="popCompon(scope.$index, scope.row)">上线</el-button>
                   <el-button type="text" v-if="scope.row.onlineStatus == 1" @click="offlineCompon(scope.$index, scope.row)">下线</el-button>
+                  <el-button type="text" v-if="scope.row.isIndex == -1" @click="editIsIndex(scope.$index, scope.row)">设置首页</el-button>
+                  <el-button type="text" v-if="scope.row.isIndex == 1" @click="editIsIndex2(scope.$index, scope.row)">取消首页</el-button>
                   <el-button type="text" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                 </template>
               </el-table-column>
@@ -458,6 +465,38 @@
           type: 'warning'
         }).then(() => {
           this.$api.apiCourseOnlineOperate(row.id).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getCourseList()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
+      },
+      editIsIndex(index, row){
+        this.$confirm('确认将该教程设置为首页吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.$api.apiCourseIsIndex(row.id).then(res => {
+            console.log(res)
+            if(res.code === 200) {
+              this.getCourseList()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
+      },
+      editIsIndex2(index, row){
+        this.$confirm('确认取消该教程首页吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.$api.apiCourseIsIndex(row.id).then(res => {
             console.log(res)
             if(res.code === 200) {
               this.getCourseList()
