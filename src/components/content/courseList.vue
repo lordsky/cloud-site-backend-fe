@@ -29,7 +29,7 @@
       	   	  		<i :class="isItemShow==i?'el-icon-arrow-down':'el-icon-arrow-right'"></i>
       	   	  	</li>
       	   	  	<ul class="main-content-item" :class="{'show':isItemShow==i}">
-                    <li v-for="(x,index) in setTree[i].children">{{x.catName}}</li>
+                    <li v-for="(x,index) in setTree[i].children" @click="getCourseList(x.id)">{{x.catName}}</li>
       	   	   </ul>
       	   	  </ul>
       	   </div>
@@ -53,7 +53,7 @@
         isItemShow:0,
         classText:'',
         setTree:[],
-        courseInfo:{}
+        courseInfo:{},
       }
     },
     components: {
@@ -90,6 +90,25 @@
           }
         })
       },
+      getCourseList(id){
+        let para = {
+          catId:id,
+          pageNum: 1,
+          pageSize: 20,
+          title: '',
+          state:'',
+          type:'',
+          startDate:'',
+          endDate:''
+        };
+        this.$api.apiCourseList(para).then(res=>{
+          if(res.msg === "success") {
+            this.getCatInfo(res.data.content[0].id)
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      }
     },
     mounted() {
       this.getCatList()
