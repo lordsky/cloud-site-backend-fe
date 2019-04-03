@@ -35,7 +35,21 @@ const API = {
     //设置菜单
     menuList:'backend/setRoleMenu',
     //获取菜单
-    showMenu:'backend/showAllMenus',
+    showMenu:'backend/displayAllRoleMenu',
+    /**
+     * 员工管理
+     */
+    //获取列表
+    getWorksList:'backend/select/departmentList',
+    //删除员工
+    delWorksList:'backend/delete/adminusers',
+    //获取员工列表
+    getWorksTable:'backend/select/adminuser',
+    //设置员工
+    setWorks:'backend/update/adminusers',
+    //增加员工
+    addWorks:'backend/add/adminusers',
+   
 	/*
 	 *   组件 
 	 */

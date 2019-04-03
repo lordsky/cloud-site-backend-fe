@@ -188,7 +188,7 @@
             this.tableData = res.data.data
           }
         }, {
-          params: obj
+            params: obj
         })
       }
     },

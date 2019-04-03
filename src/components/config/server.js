@@ -376,6 +376,28 @@ const apiCaseIsIndex = (data) => {
   })
 }
 
+//banner是否首页
+const apiBannerIsIndex = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/changeBannerIndexStatus?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//教程是否首页
+const apiCourseIsIndex = (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/changeCourseIndexStatus?id=${data}`).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 //新增/修改banner
 const apiAddBanner = (data) => {
   return new Promise((resolve, reject)=>{
@@ -732,5 +754,7 @@ export default {
   apiWhiteList,
   apiWhiteAdd,
   apiWhiteDel,
-  apiCaseIsIndex
+  apiCaseIsIndex,
+  apiBannerIsIndex,
+  apiCourseIsIndex
 }
