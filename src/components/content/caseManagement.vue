@@ -30,7 +30,7 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-col :span="5">
+      <el-col :span="4">
         <div class="case-left">
           <div style="text-align: center"><el-button type="primary" @click="dialogVisible2 = true">创建一级目录</el-button></div>
           <el-tree
@@ -67,24 +67,30 @@
           </el-tree>
           <!--鼠标右键点击出现页面-->
           <div v-show="menuVisible">
-            <el-menu
-              id = "rightClickMenu"
-              class="el-menu-vertical"
-              @select="handleRightSelect"
-              background-color="#545c64"
-              active-text-color="#fff"
-              text-color="#fff">
-              <el-menu-item index="2" class="menuItem">
-                <span slot="title">重命名</span>
-              </el-menu-item>
-              <el-menu-item index="3" class="menuItem">
-                <span slot="title">删除分类</span>
-              </el-menu-item>
-            </el-menu>
+            <ul id="rightClickMenu" class="menu">
+              <li class="menu__item" @click="NodeEdit">重命名</li>
+              <li class="menu__item" @click="NodeDel">删除分类</li>
+            </ul>
           </div>
+          <!--<div v-show="menuVisible">-->
+            <!--<el-menu-->
+              <!--id = "rightClickMenu"-->
+              <!--class="el-menu-vertical"-->
+              <!--@select="handleRightSelect"-->
+              <!--background-color="#545c64"-->
+              <!--active-text-color="#fff"-->
+              <!--text-color="#fff">-->
+              <!--<el-menu-item index="2" class="menuItem">-->
+                <!--<span slot="title">重命名</span>-->
+              <!--</el-menu-item>-->
+              <!--<el-menu-item index="3" class="menuItem">-->
+                <!--<span slot="title">删除分类</span>-->
+              <!--</el-menu-item>-->
+            <!--</el-menu>-->
+          <!--</div>-->
         </div>
       </el-col>
-      <el-col :span="19">
+      <el-col :span="20">
         <div>
           <div class="bannner-box">
             <el-table
@@ -268,7 +274,8 @@
       },
       //重命名时触发
       NodeBlur(n, d){//输入框失焦
-        console.log(n, d)
+        n = this.NODE
+        d = this.DATA
         if(n.isEdit){
           this.$set(n, 'isEdit', false)
         }
@@ -289,13 +296,15 @@
         })
       },
       NodeEdit(n, d){//编辑节点
-        console.log(n, d)
+        n = this.NODE
+        d = this.DATA
         if(!n.isEdit){//检测isEdit是否存在or是否为false
           this.$set(n, 'isEdit', true)
         }
       },
       NodeDel(n, d){//删除节点
-        console.log(n, d)
+        n = this.NODE
+        d = this.DATA
         let that = this;
         if(d.caseNum != null){
           this.$message.error("此节点有子级，不可删除！")
@@ -339,6 +348,10 @@
       },
       rihgtClick(event, object, value, element) {
         this.showAdd = object.pid == '' ? true : false
+        if(object.id == ''){
+          this.menuVisible = false
+          return
+        }
         if (this.objectID !== object.id) {
           this.objectID = object.id;
           this.menuVisible = true;
@@ -352,28 +365,29 @@
         })
         let menu = document.querySelector("#rightClickMenu");
         /* 菜单定位基于鼠标点击位置 */
-        if(event.clientX>300){
-          menu.style.left = event.clientX / 16 - 15 + "vw";
-        }else{
-          menu.style.left = event.clientX/16 - 5 + "vw";
-        }
-        if(event.clientX>400){
-          menu.style.left = event.clientX /16 - 20 + "vw";
-        }
-        if(event.clientX>500){
-          menu.style.left = event.clientX /16 - 25 + "vw";
-        }
-        menu.style.top = event.clientY / 16 - 6 + "vh";
-        menu.style.position = "absolute"; // 为新创建的DIV指定绝对定位
-        menu.style.width = 100 + "px";
-        // menu.style.backgroundColor = '#646464';
-        menu.style.zIndex = '1000'
-        // console.log("右键被点击的左侧:",menu.style.left);
-        // console.log("右键被点击的顶部:",menu.style.top);
-        // console.log("右键被点击的event:",event);
-        // console.log("右键被点击的object:", object);
-        // console.log("右键被点击的value:", value);
-        // console.log("右键被点击的element:", element);
+        menu.style.left = event.clientX - 280 + 'px'
+        document.addEventListener('click', this.foo) // 给整个document添加监听鼠标事件，点击任何位置执行foo方法
+        menu.style.top = event.clientY - 150 + 'px'
+        // if(event.clientX>300){
+        //   menu.style.left = event.clientX / 16 - 15 + "vw";
+        // }else{
+        //   menu.style.left = event.clientX/16 - 5 + "vw";
+        // }
+        // if(event.clientX>400){
+        //   menu.style.left = event.clientX /16 - 20 + "vw";
+        // }
+        // if(event.clientX>500){
+        //   menu.style.left = event.clientX /16 - 25 + "vw";
+        // }
+        // menu.style.top = event.clientY / 16 - 6 + "vh";
+        // menu.style.position = "absolute"; // 为新创建的DIV指定绝对定位
+        // menu.style.width = 100 + "px";
+        // // menu.style.backgroundColor = '#646464';
+        // menu.style.zIndex = '1000'
+      },
+      foo() { // 取消鼠标监听事件 菜单栏
+        this.menuVisible = false
+        document.removeEventListener('click', this.foo) // 要及时关掉监听，不关掉的是一个坑，不信你试试，虽然前台显示的时候没有啥毛病，加一个alert你就知道了
       },
       handleNodeClick(d, n, s) { // 点击节点
         this.filters.caseType = d.id
@@ -582,7 +596,7 @@
     margin-top: 10px;
     /*display: flex;*/
     .case-left{
-      width: 15vw;
+      width: 12vw;
       height: calc(100vh - 160px);
       box-shadow: 0 0 10px #cccccc;
       margin-right: 20px;
@@ -603,6 +617,26 @@
       display: flex;
       justify-content: center;
       margin-bottom: 10px;
+    }
+    .menu__item {
+      display: block;
+      line-height: 20px;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .menu {
+      height: 100px;
+      width: 100px;
+      position: absolute;
+      border-radius: 10px;
+      z-index: 999;
+      border: 1px solid #999999;
+      background-color: #f4f4f4;
+      cursor: pointer;
+      li:hover {
+        background-color: #1790ff;
+        color: white;
+      }
     }
   }
   .drag{
