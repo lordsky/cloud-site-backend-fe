@@ -281,13 +281,13 @@
       videoUpload(file) {
         console.log(file.type)
         const videoType = file.type === 'video/mp4'||file.type === 'video/wma';
-        const isLt = file.size / 1024 / 1024 < 10;
+        const isLt = file.size / 1024 / 1024 < 30;
         if (!videoType) {
-          this.$message.error('上传头像图片只能是 MP4,WMA 格式!');
+          this.$message.error('上传视频只能是 MP4,WMA 格式!');
           return false
         }
         if (!isLt) {
-          this.$message.error('上传图片大小不能超过 10MB!');
+          this.$message.error('上传视频大小不能超过 30MB!');
           return false
         }
         return true

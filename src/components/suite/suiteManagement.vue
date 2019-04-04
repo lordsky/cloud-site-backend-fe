@@ -215,7 +215,7 @@
       manageSuite(index, row) {
         let suiteData = {
           data:row,
-          catIndex:index
+          catIndex:index+(10*this.page)-this.pageSize
         }
         this.$store.commit('saveSuiteId', row.id)
         this.$store.commit('saveSuiteData', suiteData)

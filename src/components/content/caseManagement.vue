@@ -37,7 +37,7 @@
             :data="setTree"
             :props="defaultProps"
             node-key="id"
-            ref="SlotMenuList"
+            ref="treeBox"
             @node-click="handleNodeClick"
             :filter-node-method="filterNode"
             @node-contextmenu='rihgtClick'
@@ -46,10 +46,6 @@
           >
             <span class="slot-t-node" slot-scope="{ node, data }">
               <span v-show="!node.isEdit">
-                <span v-show="data.children && data.children.length >= 1">
-                  <i :class="{ 'fa fa-plus-square': !node.expanded, 'fa fa-minus-square':node.expanded}" />
-                  <span :class="[data.id >= maxexpandId ? 'slot-t-node--label' : '']">{{node.label}}</span>
-                </span>
                 <span v-show="!data.children || data.children.length == 0">
                   <i class='' style='margin-right:10px'></i>
                   <span :class="[data.id >= maxexpandId ? 'slot-t-node--label' : '']">{{node.label}}</span>
@@ -61,7 +57,7 @@
                           v-model="data.catName"
                           :ref="'slotTreeInput'+data.id"
                           @blur.stop="NodeBlur(node, data)"
-                          @keyup.enter.native="NodeBlur(node, data)"></el-input>
+                          @keyup.enter.native="NodeBlur2(node, data)"></el-input>
               </span>
             </span>
           </el-tree>
@@ -105,6 +101,8 @@
               <el-table-column prop="name" label="案例标题" align="center">
               </el-table-column>
               <el-table-column prop="caseCatsId" label="案例类型" align="center">
+              </el-table-column>
+              <el-table-column prop="link" label="链接" align="center">
               </el-table-column>
               <el-table-column prop="createTime" label="发布时间" align="center">
               </el-table-column>
@@ -213,6 +211,7 @@
         page:1,
         pageSize:10,
         activeShow:0,
+        oldName:'',
         activeState:'',//状态
         filters: {//存放查询数据
           name: '',
@@ -279,6 +278,11 @@
         if(n.isEdit){
           this.$set(n, 'isEdit', false)
         }
+        if(d.catName.length > 6){
+          this.$message.error("目录不得超过6个字符")
+          d.catName = this.oldName
+          return
+        }
         let parm = {
           id:d.id,
           catName: d.catName
@@ -295,12 +299,21 @@
           this.$refs['slotTreeInput'+d.id].$refs.input.focus()
         })
       },
+      NodeBlur2(n, d){
+        n = this.NODE
+        d = this.DATA
+        this.$refs['slotTreeInput'+d.id].$refs.input.blur()
+      },
       NodeEdit(n, d){//编辑节点
         n = this.NODE
         d = this.DATA
         if(!n.isEdit){//检测isEdit是否存在or是否为false
           this.$set(n, 'isEdit', true)
         }
+        let _this = this
+        setTimeout(function () {
+          _this.$refs['slotTreeInput' + d.id].$refs.input.focus()
+        }, 1)
       },
       NodeDel(n, d){//删除节点
         n = this.NODE
@@ -352,14 +365,16 @@
           this.menuVisible = false
           return
         }
-        if (this.objectID !== object.id) {
-          this.objectID = object.id;
-          this.menuVisible = true;
-          this.DATA = object;
-          this.NODE = value;
-        } else {
-          this.menuVisible = !this.menuVisible;
-        }
+        this.objectID = object.id;
+        this.menuVisible = true;
+        this.DATA = object;
+        this.NODE = value;
+        this.oldName = this.DATA.catName
+        // if (this.objectID !== object.id) {
+        //
+        // } else {
+        //   this.menuVisible = !this.menuVisible;
+        // }
         document.addEventListener('click',(e)=>{
           this.menuVisible = false;
         })
@@ -555,6 +570,9 @@
               catName:'全部案例'
             }]
             this.setTree = this.setTree.concat(res.data)
+            this.$nextTick(function(){
+              this.$refs.treeBox.setCurrentKey(this.setTree[0].id);
+            })
             this.getCaseList()
           } else {
             this.$message.error(res.msg)

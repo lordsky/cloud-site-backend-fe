@@ -148,7 +148,7 @@
         if (value === "") {
           callback(new Error("请输入友情链接地址"));
         } else if (!re.test(value)) {
-          callback(new Error("请输入正确的友情链接地址!"));
+          callback(new Error("请输入正确的友情链接地址,例如带http://前缀"));
         } else {
           callback();
         }

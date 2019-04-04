@@ -5,16 +5,16 @@
   	当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
   </video>
     <div class="foot-nav">
-        <span v-if="courseInfo.beforeId != null" @click="getCatInfo(courseInfo.beforeId)">
-          &lt;  {{courseInfo.beforeName}}
-        </span>
-      <span v-if="courseInfo.beforeId == null">
-          &lt;  暂无上一个
-        </span>
-      <span v-if="courseInfo.afterId != null" @click="getCatInfo(courseInfo.afterId)">
-          {{courseInfo.afterName}}  &gt;
+        <span v-if="courseInfo.afterId != null" @click="getCatInfo(courseInfo.afterId)">
+          &lt;  {{courseInfo.afterName}}
         </span>
       <span v-if="courseInfo.afterId == null">
+          &lt;  暂无上一个
+        </span>
+      <span v-if="courseInfo.beforeId != null" @click="getCatInfo(courseInfo.beforeId)">
+          {{courseInfo.beforeName}}  &gt;
+        </span>
+      <span v-if="courseInfo.beforeId == null">
          暂无下一个 &gt;
         </span>
     </div>

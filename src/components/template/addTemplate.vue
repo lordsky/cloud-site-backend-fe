@@ -137,7 +137,7 @@
         })
       }
     },
-    created() {
+    mounted() {
       if(this.$route.query.pageId == 1 && this.$store.state.templateData != null){
         this.template.templateId = this.$store.state.templateData.index
       }

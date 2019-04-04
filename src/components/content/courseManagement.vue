@@ -37,7 +37,7 @@
             :data="setTree"
             :props="defaultProps"
             node-key="id"
-            ref="SlotMenuList"
+            ref="treeBox"
             @node-click="handleNodeClick"
             :filter-node-method="filterNode"
             @node-contextmenu='rihgtClick'
@@ -61,7 +61,7 @@
                           v-model="data.catName"
                           :ref="'slotTreeInput'+data.id"
                           @blur.stop="NodeBlur(node, data)"
-                          @keyup.enter.native="NodeBlur(node, data)"></el-input>
+                          @keyup.enter.native="NodeBlur2(node, data)"></el-input>
               </span>
             </span>
           </el-tree>
@@ -198,7 +198,12 @@
         maxexpandId: api.maxexpandId,//新增节点开始id
         non_maxexpandId: api.maxexpandId,//新增节点开始id(不更改)
         isLoadingTree: true,//是否加载节点树
-        setTree: [],//节点树数据
+        setTree: [
+          {
+            id:'',
+            catName:'全部教程'
+          }
+        ],//节点树数据
         defaultProps: {
           children: 'children',
           label: 'catName'
@@ -214,6 +219,7 @@
         pageSize:10,
         activeShow:0,
         activeState:'',//状态
+        oldName:'',
         filters: {
           id:'',
           name: '',
@@ -248,6 +254,16 @@
         tableData: []
       }
     },
+    // directives: {
+    //   // 注册一个局部的自定义指令 v-focus
+    //   focus: {
+    //     // 指令的定义
+    //     inserted: function (el) {
+    //       // 聚焦元素
+    //       el.querySelector('input').focus()
+    //     }
+    //   }
+    // },
     methods: {
       //新增一级目录
       handleAddTop() {
@@ -315,25 +331,36 @@
         if(n.isEdit){
           this.$set(n, 'isEdit', false)
         }
-        let parm = {
-          id:d.id,
-          catName: d.catName,
-          catLevel:d.catLevel,
-          parentId:d.parentId
-        }
-        this.$nextTick(() => {
-          this.$api.apiAddCatType(parm).then(res=>{
-            if(res.msg === 'success'){
-              this.$message.success("修改成功！")
-              this.getCatList()
-              this.getCourseList()
-            }else{
-              this.$message.error(res.msg)
-              this.getCatList()
-            }
+        if(d.catName.length > 6){
+          this.$message.error("目录不得超过6个字符")
+          d.catName = this.oldName
+          return
+        }else{
+          let parm = {
+            id:d.id,
+            catName: d.catName,
+            catLevel:d.catLevel,
+            parentId:d.parentId
+          }
+          this.$nextTick(() => {
+            this.$api.apiAddCatType(parm).then(res=>{
+              if(res.msg === 'success'){
+                this.$message.success("修改成功！")
+                this.getCatList()
+                this.getCourseList()
+              }else{
+                this.$message.error(res.msg)
+                this.getCatList()
+              }
+            })
+            this.$refs['slotTreeInput'+d.id].$refs.input.focus()
           })
-          this.$refs['slotTreeInput'+d.id].$refs.input.focus()
-        })
+        }
+      },
+      NodeBlur2(n, d){
+        n = this.NODE
+        d = this.DATA
+        this.$refs['slotTreeInput'+d.id].$refs.input.blur()
       },
       NodeEdit(n, d){//编辑节点
         n = this.NODE
@@ -341,6 +368,10 @@
         if(!n.isEdit){//检测isEdit是否存在or是否为false
           this.$set(n, 'isEdit', true)
         }
+        let _this = this
+        setTimeout(function () {
+          _this.$refs['slotTreeInput' + d.id].$refs.input.focus()
+        }, 1)
       },
       NodeDel(n, d){//删除节点
         n = this.NODE
@@ -401,14 +432,20 @@
       },
       rihgtClick(event, object, value, element) {
         this.showAdd = object.parentId == 0 ? true : false
-        if (this.objectID !== object.id) {
-          this.objectID = object.id;
-          this.menuVisible = true;
-          this.DATA = object;
-          this.NODE = value;
-        } else {
-          this.menuVisible = !this.menuVisible;
+        if(object.id == ''){
+          this.menuVisible = false
+          return
         }
+        this.objectID = object.id;
+        this.menuVisible = true;
+        this.DATA = object;
+        this.NODE = value;
+        this.oldName = this.DATA.catName
+        // if (this.objectID !== object.id) {
+        //
+        // } else {
+        //   this.menuVisible = !this.menuVisible;
+        // }
         document.addEventListener('click',(e)=>{
           this.menuVisible = false;
         })
@@ -592,18 +629,24 @@
       //当前页码
       handleCurrentChange(val) {
         this.page = val;
-        this.getComponList();
+        this.getCourseList();
       },
       //当前条数
       handleSizeChange(val) {
         this.pageSize = val;
-        this.getComponList();
+        this.getCourseList();
       },
       getCatList(){
         this.$api.apiCatList().then(res=>{
           if(res.msg === "success") {
-            this.setTree = res.data
-
+            this.setTree = [{
+              id:'',
+              catName:'全部教程'
+            }]
+            this.setTree = this.setTree.concat(res.data)
+            this.$nextTick(function(){
+              this.$refs.treeBox.setCurrentKey(this.setTree[0].id);
+            })
           } else {
             this.$message.error(res.msg)
           }

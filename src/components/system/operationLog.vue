@@ -12,7 +12,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="small" @click="resetForm">清空</el-button>
-            <el-button type="primary" size="small" >查询</el-button>
+            <el-button type="primary" size="small" @click="getList">查询</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -20,13 +20,13 @@
     <div class="operation-box">
       <el-table :data="tableData"  border style="width: 100%" tooltip-effect="dark"
                 v-loading="listLoading" @selection-change="selsChange">
-        <el-table-column prop="operatingTime" label="操作时间"  align="center">
+        <el-table-column prop="createTime" label="操作时间"  align="center">
         </el-table-column>
-        <el-table-column prop="operationType" label="操作类型" align="center">
+        <el-table-column prop="type" label="操作类型" align="center">
         </el-table-column>
-        <el-table-column prop="operationContent" label="操作内容"  align="center">
+        <el-table-column prop="content" label="操作内容"  align="center">
         </el-table-column>
-        <el-table-column prop="IPAddress" label="IP地址"  align="center">
+        <el-table-column prop="ipAddress" label="IP地址"  align="center">
         </el-table-column>
       </el-table>
     </div>
@@ -82,6 +82,7 @@
       //清空查询
       resetForm(){
         this.$refs['filters'].resetFields();
+        this.getList()
       },
       selsChange: function (sels) {
         this.sels = sels;
@@ -89,10 +90,12 @@
       //当前页码
       handleCurrentChange(val) {
         this.page = val;
+        this.getList()
       },
       //当前条数
       handleSizeChange(val) {
         this.pageSize = val;
+        this.getList()
       },
       getList(){
         let pram = {
@@ -113,7 +116,7 @@
       }
     },
     mounted() {
-
+      this.getList()
     }
   }
 </script>

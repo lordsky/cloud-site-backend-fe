@@ -284,7 +284,7 @@
         this.$store.commit('saveTemplateData', row)
         this.$router.push({
           path: '/templateEditor',
-          query:{text:row.catName,pageId:1,catIndex:index}
+          query:{text:row.catName,pageId:1,catIndex:index+(10*this.page)-this.pageSize}
         })
       },
       //保存
