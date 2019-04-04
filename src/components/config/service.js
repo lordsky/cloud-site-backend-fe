@@ -105,6 +105,7 @@ const API = {
      * */
     //站点列表
     getSiteList:'backend/userTemplateBackend/displayTemplateTestOnBackend',
+    
 	disableSite:'backend/userTemplateBackend/hideuserTemplate'
 }
 
