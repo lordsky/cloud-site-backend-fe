@@ -48,7 +48,7 @@
     </div>
     </div>
     <!--弹框表单-->
-    <el-dialog :title="titleDialog" :visible.sync="dialogFormVisible" width="30%">
+    <el-dialog :title="titleDialog" :visible.sync="dialogFormVisible" width="500px">
       <el-form label-width="80px">
         <el-form-item label="姓名:" :model="formText">
           <el-input placeholder="请输入姓名" v-model="formText.username"></el-input>
@@ -66,16 +66,18 @@
           <el-input placeholder="请确认密码" v-model="formText.pwdTwo"></el-input>
         </el-form-item>
         <el-form-item label="角色:">
-          <el-select v-model="formText.roleId" placeholder="请选择">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
+            <el-cascader
+			  :options="data"
+			  :props="roleProps"
+			  :show-all-levels="false"
+			></el-cascader>
         </el-form-item>
         <el-form-item label="部门:">
-          <el-select v-model="formText.deptId" placeholder="请选择">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
+          <el-cascader
+			  :options="data"
+			  :props="roleProps"
+			  :show-all-levels="false"
+			></el-cascader>
         </el-form-item>
         <el-form-item label="职位:">
           <el-input placeholder="请输入职位" v-model="formText.positions"></el-input>
@@ -97,7 +99,7 @@
       return {
         data: [],
         defaultProps: {
-          children: 'children',
+          children: 'list',
           label: 'departmentName'
         },
         worksListInfo:{},
@@ -119,7 +121,12 @@
           value: '选项2',
           label: '双皮奶'
         }],
-        value:''
+        value:'',
+        roleProps:{
+        	   label:'departmentName',
+        	   value:'id',
+        	   children:'list'
+        }
       }
     },
     methods: {
@@ -246,8 +253,11 @@
     border: #F2F2F2 solid 1px;
     display: flex;
     .workers-left {
-      width: 200px;
+      width: 250px;
       border-right: #F2F2F2 solid 1px;
+      .menu{
+      	width: 100%;
+      }
     .el-tree-node__content{
       height: 40px;
     }

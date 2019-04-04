@@ -34,8 +34,11 @@ const API = {
     findRole:'backend/findRole',
     //设置菜单
     menuList:'backend/setRoleMenu',
+    //获取权限列表
+    getJsonList:'backend/displayRoleMenu',
     //获取菜单
     showMenu:'backend/displayAllRoleMenu',
+   
     /**
      * 员工管理
      */

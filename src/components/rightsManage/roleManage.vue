@@ -65,17 +65,15 @@
 	    	},
 	    	//弹框
 	    	setRole(title,content,msg,state){
+	    		let user = JSON.parse(localStorage.getItem('cloudUser'))
 	     this.$prompt(content, title, {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(({ value }) => {
         	  if(state=='add'){
-        	  	console.log(this.$userInfo)
-        	  	this.$http.post(this.$API.addRole,{name:value,userId:this.$userInfo.userId},response=>{
+        	  	this.$http.post(this.$API.addRole+'?name='+value+'&userId='+user.id,{},response=>{
         	  		console.log(response)
         	  	})
-        	  	let user = JSON.parse(localStorage.getItem('cloudUser'))
-        	  	this.addRole({name:value,userId:user.id})
         	  }
 //        this.$message({
 //          type: 'success',
@@ -84,6 +82,11 @@
         }).catch(() => {
            
         });
+	    	},
+	    	getList(){
+	    		this.$http.get(this.$API.showMenu,response=>{
+	    			console.log(response)
+	    		})
 	    	}
     },
     created(){
@@ -100,6 +103,7 @@
     	   	  	  	return data.name
     	   	  })
     	   })
+    	   this.getList()
     	   this.tableData = sideText
     	   console.log(this.tableData )
     }
