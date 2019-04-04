@@ -7,7 +7,7 @@
     <div class="userInfo-box">
       <p class="userInfo-title">基本信息</p>
       <div class="resetassword">
-        <el-button type="text" @click="resetPass">重置密码(默认为123456)</el-button>
+        <el-button type="text" @click="resetPass">重置密码</el-button>
       </div>
       <div class="userInfo-table">
         <table border="1" cellspacing="0" cellpadding="0">
@@ -151,7 +151,6 @@
     },
     created(){
     	    this.list = this.$route.params.data
-    	    console.log(this.list)
     	    this.getUserList()
     	    this.getSite()
     }

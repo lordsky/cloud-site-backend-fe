@@ -67,16 +67,15 @@
       </el-table>
     </div>
     <div class="user-paging">
-      <!--<el-pagination
-      @size-change="handleSizeChange"
+      <el-pagination
       background
       @current-change="handleCurrentChange"
-      :current-page="currentPage4"
+      :current-page="currentPage"
       :page-sizes="[20, 50, 100]"
-      :page-size="5"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="100">
-    </el-pagination>-->
+      :page-size="pageSize"
+      layout="prev, pager, next"
+      :total="totalPage">
+    </el-pagination>
     </div>
   </div>
 </template>
@@ -93,6 +92,10 @@
           timeData: ''
         },
         tableData: [],
+        totalPage:0,
+        currentPage:0,
+        pageSize:10,
+        pageNum:1,
         listState: [{
             value: '0',
             label: '启用'
@@ -109,7 +112,13 @@
       clear() {
         this.fromUser = {}
       },
+      //分页
+      handleCurrentChange(val){
+      	this.pageNum = val
+      	this.getUserList()
+      },
       queryUser() {
+      	this.currentPage = 1
         this.getUserList(true)
       },
       //用户信息
@@ -121,6 +130,13 @@
           }
         })
       },
+      //设置用户状态
+      setUserState(id){
+      	this.$http.post(this.$API.userDisable+'?userId='+id, {
+          }, res => {
+            console.log(res)
+          })
+      },
       //启用
       starUser(val){
       	 this.$confirm('是否启用该用户?', '提示', {
@@ -128,7 +144,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-        	   
+        	   this.setUserState(val.id)
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -143,17 +159,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          console.log(val)
-          this.$http.post(this.$API.userDisable, {
-            userId: val.id
-          }, res => {
-            if(res.data.code == 200) {
-              this.$message({
-                type: 'success',
-                message: '禁用成功!'
-              });
-            }
-          })
+          this.setUserState(val.id)
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -163,8 +169,8 @@
       },
       getUserList(state) {
         let obj = {
-        	   pageNum:1,
-        	   pageSize:10
+        	   pageNum:this.pageNum,
+        	   pageSize:this.pageSize
         }
         let timeStatr = ''
         let timeEnd = ''
@@ -185,10 +191,11 @@
         this.$http.get(url, (res) => {
           console.log(res)
           if(res.data.code === 200) {
-            this.tableData = res.data.data
+          	this.totalPage = res.data.data.content.totalElements
+            this.tableData = res.data.data.content.content
           }
-        }, {
-            params: obj
+        },{
+        	   params:obj
         })
       }
     },

@@ -105,7 +105,6 @@
     	   })
     	   this.getList()
     	   this.tableData = sideText
-    	   console.log(this.tableData )
     }
   }
 </script>

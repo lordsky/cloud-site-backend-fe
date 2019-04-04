@@ -104,8 +104,8 @@ const API = {
      * 站点管理
      * */
     //站点列表
-    getSiteList:'backend/userTemplateBackend/displayTemplateOnBackend',
-	
+    getSiteList:'backend/userTemplateBackend/displayTemplateTestOnBackend',
+	disableSite:'backend/userTemplateBackend/hideuserTemplate'
 }
 
 export default API

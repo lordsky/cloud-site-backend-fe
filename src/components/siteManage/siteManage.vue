@@ -70,7 +70,7 @@
         tableData: [],
         title:[],
         totalPage:0,
-        pageSize:20,
+        pageSize:10,
         currentPage:0,
         pageNum:1,
       }
@@ -95,8 +95,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-           this.$http.post(this.$API.disableSite,{
-           	 userTemplateId:val.userTemplateId
+           this.$http.post(this.$API.disableSite+'?userTemplateId='+val.userTemplateId,{
            },response=>{
            	  console.log(response)
            })
@@ -110,10 +109,10 @@
       },
       //查询
       query(val){
-      	let data = {pageSize:this.pageSize}
+      	let data = {pageSize:this.pageSize,pageNum:1}
       	let domain = this.fromUser.domain?this.fromUser.domain:''
-      	let end = this.fromUser.timeData?this.fromUser.timeData[0]:''
-      	let start = this.fromUser.timeData?this.fromUser.timeData[1]:''
+      	let end = this.fromUser.timeData?this.fromUser.timeData[1]:''
+      	let start = this.fromUser.timeData?this.fromUser.timeData[0]:''
       	let userName = this.fromUser.userName?this.fromUser.userName:''
         val?data.pageNum = val:this.currentPage = 1
       	domain?data.domain = domain:''
@@ -124,17 +123,17 @@
       },
       //获取列表
       getList(data){
+      	console.log(data)
       	this.$http.post(this.$API.getSiteList,data,response=>{
-      		console.log(response)
-      	    response.data.data.content.map(item=>{
+      	    response.data.data.pageinfo.content.map(item=>{
       	    	   let str = ''
       	    	   str = item.createTime
       	    	   str = str.replace('.000+0000',' ')
       	    	   str = str.replace('T',' ')
       	    	   item.createTime = str
       	    })
-      	    this.tableData = response.data.data.content
-//    	    console.log(response)
+      	    this.tableData = response.data.data.pageinfo.content
+      	    this.totalPage = response.data.data.pageinfo.totalElements
       	})
       }
     },

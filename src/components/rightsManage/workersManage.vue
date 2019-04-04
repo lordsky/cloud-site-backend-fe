@@ -49,8 +49,8 @@
     </div>
     <!--弹框表单-->
     <el-dialog :title="titleDialog" :visible.sync="dialogFormVisible" width="500px">
-      <el-form label-width="80px">
-        <el-form-item label="姓名:" :model="formText">
+      <el-form label-width="80px" :model="formText">
+        <el-form-item label="姓名:">
           <el-input placeholder="请输入姓名" v-model="formText.username"></el-input>
         </el-form-item>
         <el-form-item label="手机号:">
@@ -69,12 +69,14 @@
             <el-cascader
 			  :options="data"
 			  :props="roleProps"
+			  v-model="formText.roleId"
 			  :show-all-levels="false"
 			></el-cascader>
         </el-form-item>
         <el-form-item label="部门:">
           <el-cascader
 			  :options="data"
+			  v-model="formText.deptId"
 			  :props="roleProps"
 			  :show-all-levels="false"
 			></el-cascader>
@@ -114,13 +116,6 @@
         totalPage:0,
         pageSize:10,
         currentPage:0,
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }],
         value:'',
         roleProps:{
         	   label:'departmentName',
@@ -174,16 +169,17 @@
       	this.getWorksTable(this.worksListInfo.id,val)
       },
       //删除
-      deleteRole(){
+      deleteRole(val){
       	this.$confirm('确定要删除该部门吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
          
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+        	  this.$http.post(this.$API.delWorksList,
+        	  	val.id
+        	  ,response=>{
+        	  	 response.data.code==200?this.$message({ type: 'success',message: '删除成功!'}):''
+        	  })
         }).catch(() => {
           this.$message({
             type: 'warning',
@@ -224,6 +220,8 @@
       //编辑
       editorRole(val){
       	this.worksInfo = val
+        delete val.deptId
+        this.formText = val
       	this.editShow = false
       	this.titleDialog = '编辑成员'
       	this.dialogFormVisible = true

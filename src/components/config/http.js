@@ -34,10 +34,17 @@ var AUTH_TOKEN = function(){
 	   }
 }
 
+function testUrl(config,test){
+	return config.indexOf(test)
+}
 instance.interceptors.request.use(config => {
+  let res = config.url
   showLoading()
-  if(config.url.indexOf('adminLogin') >-1||config.url.indexOf('showUserList')>-1||config.url.indexOf('displayTemplateOnBackend')>-1){
+  if(testUrl(res,'adminLogin') >-1||testUrl(res,'showUserList')>-1||testUrl(res,'displayTemplateTestOnBackend')>-1){
     	   console.log('不带token')
+    	   if(testUrl(res,'showUserList')>-1||testUrl(res,'displayTemplateTestOnBackend')>-1){
+    	   	config.withCredentials = false
+    	   }
     }else{
       config.headers.Authorization = 'Bearer' + AUTH_TOKEN(); 
     }
@@ -49,7 +56,7 @@ instance.interceptors.request.use(config => {
 })
 
 instance.interceptors.response.use(data => {
-  closeLoading()
+    closeLoading()
 	if(data.data.code!==200){
 		Message({
         message: data.data.msg,
