@@ -389,7 +389,7 @@
           this.dialogVisibleManage = true
           this.$api.apiMaterials(1).then(res=>{
             if(res.code === 200){
-              this.materialsList = res.data
+              this.materialsList = res.data.content
             }
           })
         }

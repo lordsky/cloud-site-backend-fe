@@ -346,11 +346,11 @@
             this.$api.apiAddCatType(parm).then(res=>{
               if(res.msg === 'success'){
                 this.$message.success("修改成功！")
-                this.getCatList()
+                // this.getCatList()
                 this.getCourseList()
               }else{
                 this.$message.error(res.msg)
-                this.getCatList()
+                // this.getCatList()
               }
             })
             this.$refs['slotTreeInput'+d.id].$refs.input.focus()
