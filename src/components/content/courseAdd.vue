@@ -77,16 +77,16 @@
             <img width="100%" :src="item.filePath" alt="">
           </li>
         </ul>
-        <div class="pagination">
-          <el-pagination
-            background
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange"
-            :page-size="pageSize"
-            layout="prev, pager, next, jumper"
-            :total="pageAll">
-          </el-pagination>
-        </div>
+        <!--<div class="pagination">-->
+          <!--<el-pagination-->
+            <!--background-->
+            <!--@current-change="handleCurrentChange"-->
+            <!--@size-change="handleSizeChange"-->
+            <!--:page-size="pageSize"-->
+            <!--layout="prev, pager, next, jumper"-->
+            <!--:total="pageAll">-->
+          <!--</el-pagination>-->
+        <!--</div>-->
       </div>
       <div class="dialog-footer">
         <div @click="dialogVisibleManage = false">取消</div>

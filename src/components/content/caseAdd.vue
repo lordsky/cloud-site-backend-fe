@@ -61,7 +61,7 @@
         if (value === "") {
           callback(new Error("请输入案例链接地址"));
         } else if (!re.test(value)) {
-          callback(new Error("请输入正确的案例链接地址!"));
+          callback(new Error("请输入正确的案例链接地址，含http://前缀!"));
         } else {
           callback();
         }
