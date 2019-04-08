@@ -5,7 +5,7 @@
       	<el-button type="primary" class="left_addBtn" @click="addRole">添加角色</el-button>
       	<el-input class="left_input" placeholder="通过关键词过滤"></el-input>
       	<ul class="role-left-list">
-      		<li v-for="x in 10">产品经理<i class="el-icon-edit-outline" @click="setName"></i></li>
+      		<li v-for="(item,index) in 5" :key="index">产品经理<i class="el-icon-edit-outline" @click="setName(item)"></i></li>
       	</ul>
       </div>
       <div class="role-right">
@@ -56,7 +56,7 @@
 	    		val.checkList.length===0?(val.state = false,val.deter = false):val.checkList.length==val.checkAll.length?(val.state=true,val.deter=false):(val.deter=true,val.state=false)
 	    	},
 	    	//编辑角色
-	    	setName(){
+	    	setName(val){
 	       this.setRole('编辑名称','角色名称 ：','设置成功')
 	    	},
 	    	//添加角色
@@ -74,6 +74,15 @@
         	  	this.$http.post(this.$API.addRole+'?name='+value+'&userId='+user.id,{},response=>{
         	  		console.log(response)
         	  	})
+        	  }else{
+        	  	 this.$http.post(this.$API.editRole,{
+        	  	 	id:'',
+        	  	 	userId:user.id,
+        	  	 	name:value,
+        	  	 },response=>{
+        	  	 	console.log(response)
+        	  	 	
+        	  	 })
         	  }
 //        this.$message({
 //          type: 'success',

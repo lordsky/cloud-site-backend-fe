@@ -26,7 +26,7 @@
         	  <div class="picture-list-item-check">
         	    <el-checkbox v-model="checkList[i]" v-show="checkShow[i]" disabled></el-checkbox>
         	  </div>
-        	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.fileName}}</span></div>
+        	  <div class="picture-list-item-hoverTop" v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
         	  	<span class="el-icon-view" @click="lookItem(x)"></span>
         	  	<span class="el-icon-edit" @click="editItem(x,'pic')"></span>
@@ -53,7 +53,7 @@
         	  <div class="picture-list-item-check">
         	    <el-checkbox v-model="checkVideoList[i]" v-show="checkVideoShow[i]" disabled></el-checkbox>
         	  </div>
-        	  <div class="picture-list-item-hoverTop"  v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.fileName}}</span></div>
+        	  <div class="picture-list-item-hoverTop"  v-show="itemShow==i" :class="{topBar:itemShow==i}"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot" v-show="itemShow==i" :class="{footBar:itemShow==i}">
         	  	<span class="el-icon-view"  @click="lookItem(x)"></span>
         	  	<span class="el-icon-edit" @click="editItem(x,'video')"></span>
@@ -79,7 +79,7 @@
         	  <div class="picture-list-item-check">
         	    <el-checkbox v-model="checkTextList[i]" v-show="checkTextShow[i]" disabled></el-checkbox>
         	  </div>
-        	  <div class="picture-list-item-hoverTop"><span>{{x.fileName}}</span></div>
+        	  <div class="picture-list-item-hoverTop"><span>{{x.name}}</span></div>
         	  <div class="picture-list-item-hoverFoot">
         	  	<!--<span class="el-icon-view" @click="lookItem(x)"></span>-->
         	  	<span class="el-icon-edit" @click="editItem(x,'text')"></span>
@@ -314,8 +314,8 @@
           cancelButtonText: '取消',
         }).then(({ value }) => {
         	  this.$http.post(this.$API.setMaterials,{
-        	  	fileId:val.id,
-        	  	fileName:value
+        	  	id:val.id,
+        	  	name:value
         	  },(response)=>{
         	  	 console.log(response)
         	  	 if(response.data.code===200){

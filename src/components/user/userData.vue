@@ -178,7 +178,7 @@
         let account = this.fromUser.account
         let name = this.fromUser.name
         let url = this.$API.userList
-        console.log(this.fromUser)
+//      console.log(this.fromUser)
         if(this.fromUser.timeData) {
           timeStatr = this.$http.getLocalTime(this.fromUser.timeData[0])
           timeEnd = this.$http.getLocalTime(this.fromUser.timeData[1])
@@ -188,8 +188,9 @@
         status ? obj.status = status : ''
         account ? obj.account = account : ''
         name ? obj.name = name : ''
+//      console.log(this.$http.getLocalTime(timeStatr))
         this.$http.get(url, (res) => {
-          console.log(res)
+//        console.log(res)
           if(res.data.code === 200) {
           	this.totalPage = res.data.data.content.totalElements
             this.tableData = res.data.data.content.content

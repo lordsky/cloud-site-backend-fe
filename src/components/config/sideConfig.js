@@ -2,12 +2,12 @@
 const navHead = [{
     path: 'userData',
     index: '1-1',
-    text: ['用户管理', '个人资料']
+    text: ['用户管理', '用户资料']
   },
   {
     path: 'userInfo',
     index: '1-1',
-    text: ['用户管理', '个人资料', '查看用户信息']
+    text: ['用户管理', '用户资料', '查看用户信息']
   },
   {
     path: 'userWhite',
@@ -214,7 +214,7 @@ const sideText = [
     index: '1',
     ico: 'el-icon-tickets',
     list: [{
-        name: '个人资料',
+        name: '用户资料',
         index: '1-1',
         path: '/userData'
       },

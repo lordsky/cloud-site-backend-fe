@@ -208,6 +208,7 @@
     .site-info {
       margin-top: 20px;
       .site-list {
+      	display: flex;
         margin-top: 20px;
         width: 100%;
         .site-item {
