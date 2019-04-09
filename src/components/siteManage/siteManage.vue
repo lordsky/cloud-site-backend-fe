@@ -36,13 +36,14 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" width="180" align="center">
         	<template slot-scope="scope">
-        		<span>未发布</span>
+        		<span>{{scope.row.status==0?'启用':'禁用'}}</span>
         	 </template>
         </el-table-column>
         <el-table-column prop="date" label="操作" align="center" width="180">
           <template slot-scope="scope">
-            <el-button type="text" @click="openPage(scope.row)">查看</el-button>
-            <el-button type="text" @click="disableSite(scope.row)">禁用</el-button>
+            <el-button type="text" @click="openPage(scope.row)" v-show="scope.row.status==0">查看</el-button>
+            <el-button type="text" @click="disableSite(scope.row)" v-if="scope.row.status==0">禁用</el-button>
+             <el-button type="text" @click="disableSite(scope.row)" v-else>启用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -98,6 +99,7 @@
            this.$http.post(this.$API.disableSite+'?userTemplateId='+val.userTemplateId,{
            },response=>{
            	  console.log(response)
+           	  response.data.data?(this.$message({type:'success',message:'设置成功'}),this.query()):''
            })
         }).catch(() => {
            

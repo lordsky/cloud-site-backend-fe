@@ -288,13 +288,13 @@
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.3);
-      z-index: 100;
       display: none;
       justify-content: center;
       align-items: center;
     }
     .delItem {
       display: flex;
+      z-index: 999;
     }
     .compon-edit-seek {
       display: flex;

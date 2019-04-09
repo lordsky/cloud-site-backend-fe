@@ -10,7 +10,7 @@
             <el-input v-model="fromUser.name" placeholder="请输入用户昵称或姓名"></el-input>
           </el-form-item>
           <el-form-item label="企业名称:">
-            <el-input v-model="fromUser.name" placeholder="请输入企业名称"></el-input>
+            <el-input v-model="fromUser.companyName" placeholder="请输入企业名称"></el-input>
           </el-form-item>
         </el-form>
         <el-form :inline="true" class="user-time">
@@ -32,7 +32,7 @@
           </el-form>
         </div>
         <div class="user-head-right-btn">
-          <el-button type="primary" size="medium" @click="queryUser">查询</el-button>
+          <el-button type="primary" size="medium" @click="queryUser" :disabled="queryState">查询</el-button>
           <el-button size="medium" @click="clear">清空</el-button>
         </div>
       </div>
@@ -45,7 +45,7 @@
         </el-table-column>
         <el-table-column prop="username" label="用户姓名" align="center">
         </el-table-column>
-        <el-table-column prop="nickname" label="企业名称" align="center">
+        <el-table-column prop="companyName" label="企业名称" align="center">
         </el-table-column>
         <el-table-column prop="starTime" label="注册时间" align="center">
           <template slot-scope="scope">
@@ -54,14 +54,14 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" align="center">
           <template slot-scope="scope">
-            <span>{{scope.row.status==0?'正常':'禁用'}}</span>
+            <span>{{scope.row.status==1?'正常':'禁用'}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="address" label="操作" align="center" width="180">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="lookUser(scope.row)">查看</el-button>
-            <el-button type="text" size="small" @click="disableUser(scope.row)" v-show="scope.row.status==0">禁用</el-button>
-             <el-button type="text" size="small" @click="starUser(scope.row)" v-show="scope.row.status==1">启用</el-button>
+            <el-button type="text" size="small" @click="lookUser(scope.row)" v-show="scope.row.status==1">查看</el-button>
+            <el-button type="text" size="small" @click="disableUser(scope.row)" v-if="scope.row.status==1">禁用</el-button>
+             <el-button type="text" size="small" @click="starUser(scope.row)" v-else>启用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -97,17 +97,22 @@
         pageSize:10,
         pageNum:1,
         listState: [{
-            value: '0',
+            value: '1',
             label: '启用'
           },
           {
-            value: '1',
+            value: '-1',
             label: '禁用'
           }
-        ]
+        ],
+        queryState:false
       }
     },
-
+    watch:{
+    	  fromUser:function(val){
+    	  	val.name&&val.companyName?(this.queryState = true,this.$message({type:'warning',message:'企业和用户只能选一个查询'})):this.queryState = false
+    	  }
+    },
     methods: {
       clear() {
         this.fromUser = {}
@@ -135,6 +140,7 @@
       	this.$http.post(this.$API.userDisable+'?userId='+id, {
           }, res => {
             console.log(res)
+            this.getUserList()
           })
       },
       //启用
@@ -188,7 +194,6 @@
         status ? obj.status = status : ''
         account ? obj.account = account : ''
         name ? obj.name = name : ''
-//      console.log(this.$http.getLocalTime(timeStatr))
         this.$http.get(url, (res) => {
 //        console.log(res)
           if(res.data.code === 200) {

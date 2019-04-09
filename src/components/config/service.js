@@ -87,7 +87,7 @@ const API = {
 	//反馈消息
 	getFeedback:'backend/feedbackList',
 	//发布消息
-	releaseMessage:'backend/addMessage',
+	releaseMessage:'backend/addMessageV2',
 	//删除消息
 	delMessage:'backend/delMessage',
 	//获取消息

@@ -12,7 +12,7 @@
     <div class="picture-box">
       <div class="picture-check" v-show="listLabel==1">
         <span class="check-item"><el-checkbox v-model="checked" :indeterminate="picAllStatu"  @change="picAllChange">全选</el-checkbox></span>
-        <span class="check-item"><el-button type="primary" size="small" @click="allDel('pic')">批量删除</el-button></span>
+        <span class="check-item"><el-button type="primary" size="small" @click="allDel('pic')" :disabled="btnPic">批量删除</el-button></span>
       </div>
       <div class="picture-list" v-show="listLabel==1">
         <div class="picture-list-item update" >
@@ -36,7 +36,7 @@
       </div>
       <div class="picture-check" v-show="listLabel==2">
         <span class="check-item"><el-checkbox v-model="checkVideo":indeterminate="videoAllStatu"  @change="videoAllChange">全选</el-checkbox></span>
-        <span class="check-item"><el-button type="primary" size="small" @click="allDel('video')">批量删除</el-button></span>
+        <span class="check-item"><el-button type="primary" size="small" @click="allDel('video')" :disabled="checkVideoList.length==0">批量删除</el-button></span>
       </div>
       <div class="picture-list" v-show="listLabel==2">
         <div class="picture-list-item update" >
@@ -63,7 +63,7 @@
       </div>
        <div class="picture-check" v-show="listLabel==3">
         <span class="check-item"><el-checkbox v-model="checkedText" :indeterminate="textAllStatu"  @change="textAllChange">全选</el-checkbox></span>
-        <span class="check-item"><el-button type="primary" size="small" @click="allDel('text')">批量删除</el-button></span>
+        <span class="check-item"><el-button type="primary" size="small" @click="allDel('text')" :disabled="checkTextList.length==0">批量删除</el-button></span>
       </div>
       <div class="picture-list" v-show="listLabel==3">
         <div class="picture-list-item update" >
@@ -153,11 +153,26 @@
         pageSize:7,
         totalPic:0,
         totalVideo:0,
-        totalText:0
+        totalText:0,
+        btnPic:true,
       }
     },
     watch:{
-    	
+    	  checkList(val){
+    	  	for(let i =0;i<val.length;i++){
+    	  		if(val[i]){
+    	  			this.btnPic = false
+    	  			return
+    	  		}
+    	  	}
+    	  	this.btnPic = true
+    	  },
+    	  checkVideoList(val){
+    	  	
+    	  },
+    	  checkTextList(val){
+    	  	
+    	  }
     },
     created(){
     	    this.getpicList()
@@ -190,6 +205,8 @@
           	 console.log(data)
           	 this.totalPic = data.data.data.totalElements
           	 this.picList = data.data.data.content
+             this.checkShow = []
+             this.picAllStatu = false
           })
     	  },
     	  //获取视频
@@ -197,6 +214,8 @@
     	  	this.getList(2,(data)=>{
           	 this.videoList = data.data.data.content
           	 this.totalVideo = data.data.data.totalElements
+          	 this.checkVideoShow = []
+          	 this.videoAllStatu = false
           })
     	  },
     	  //获取文本
@@ -204,6 +223,8 @@
     	  	this.getList(3,(data)=>{
           	 this.textList = data.data.data.content
           	 this.totalText = data.data.data.totalElements
+          	 this.checkTextShow = []
+          	 this.textAllStatu = false
           })
     	  },
     	  //查看图片

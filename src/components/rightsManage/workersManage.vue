@@ -2,7 +2,7 @@
   <div class="workers-manage">
     <div class="workers-left">
       <el-input v-model="value" placeholder="通过关键词过滤"></el-input>
-      <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" @node-contextmenu="rightClick" :highlight-current="true"></el-tree>
+      <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" @node-contextmenu="rightClick" :highlight-current="true"        ref="tree" node-key="id" :default-expanded-keys="treeArr"></el-tree>
       <!--鼠标右键菜单栏-->
       <div v-show="menuVisible">
         <ul id="menu" class="menu">
@@ -104,6 +104,7 @@
           children: 'list',
           label: 'departmentName'
         },
+        treeArr:[],
         worksListInfo:{},
         worksInfo:{},
         formText:{},
@@ -190,7 +191,9 @@
       //获取树状列表
       getWorksList(){
       	this.$http.post(this.$API.getWorksList,{},response=>{
+      		console.log(response)
       		this.data = response.data.data
+      		this.treeArr.push(response.data.data[0].list[0].id)
       	})
       },
       //获取员工表格
@@ -239,6 +242,7 @@
     },
     created(){
     	   this.getWorksList()
+    	   this.getWorksTable()
     }
   }
 </script>

@@ -7,7 +7,7 @@
     <div class="userInfo-box">
       <p class="userInfo-title">基本信息</p>
       <div class="resetassword">
-        <el-button type="text" @click="resetPass">重置密码</el-button>
+        <el-button type="text" ></el-button>
       </div>
       <div class="userInfo-table">
         <table border="1" cellspacing="0" cellpadding="0">

@@ -40,7 +40,7 @@ function testUrl(config,test){
 instance.interceptors.request.use(config => {
   let res = config.url
   showLoading()
-  if(testUrl(res,'adminLogin') >-1||testUrl(res,'showUserList')>-1||testUrl(res,'displayTemplateTestOnBackend')>-1){
+  if(testUrl(res,'adminLogin') >-1||testUrl(res,'showUserList')>-1||testUrl(res,'displayTemplateTestOnBackend')>-1||testUrl(res,'userTemplateBackend')>-1||testUrl(res,'refuseLogin') >-1||testUrl(res,'showUserDetail') >-1){
     	   console.log('不带token')
     	   if(testUrl(res,'showUserList')>-1||testUrl(res,'displayTemplateTestOnBackend')>-1){
     	   	config.withCredentials = false
