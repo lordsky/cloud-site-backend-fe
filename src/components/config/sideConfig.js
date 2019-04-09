@@ -264,23 +264,23 @@ const sideText = [
    },
  ]
 },
-  {
-   title: '活动管理',
-   index: '5',
-   ico: 'el-icon-menu',
-   list: [
-     {
-       name: 'banner管理',
-       index: '5-1',
-       path: '/banner'
-     },
-     {
-       name: '活动配置',
-       index: '5-2',
-       path: '/activeConfiguration'
-     }
-   ]
-  },
+  // {
+  //  title: '活动管理',
+  //  index: '5',
+  //  ico: 'el-icon-menu',
+  //  list: [
+  //    {
+  //      name: 'banner管理',
+  //      index: '5-1',
+  //      path: '/banner'
+  //    },
+  //    {
+  //      name: '活动配置',
+  //      index: '5-2',
+  //      path: '/activeConfiguration'
+  //    }
+  //  ]
+  // },
   {
     title: '内容管理',
     index: '6',

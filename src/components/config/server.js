@@ -500,7 +500,7 @@ const apiDelActive= (data) => {
 //获取素材库图片/视频
 const apiMaterials= (data) => {
   return new Promise((resolve, reject)=>{
-    instance.get(`backend/getMaterials?materialsType=${data}`).then((res)=> {
+    instance.get(`backend/getMaterials?materialsType=${data.materialsType}&pageNum=${data.pageNum}&pageSize=${data.pageSize}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)
