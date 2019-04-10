@@ -30,7 +30,7 @@
           <web-page v-show="webPageList.content != ''" :webPageList="webPageList"></web-page>
         </el-col>
         <!--页面管理弹框-->
-        <div class="dialog" style="width: 340px;margin-top: 10vh;z-index: 500" v-if="dialogVisible==true">
+        <div class="dialog" style="width: 340px;margin-top: 10vh;z-index: 600" v-if="dialogVisible==true">
           <div class="el-dialog__header">
             <span class="el-dialog__title">页面管理</span>
             <button type="button" class="el-dialog__headerbtn" @click="dialogVisible=false">
@@ -85,16 +85,30 @@
               </div>
             </div>
             <div class="template-edit-list">
-              <ul>
-                <li v-for="(item,i) in pagetList" @mousemove="delShow = i" @mouseleave="delShow=null">
-                  <div v-if="item.thumb == ''" v-html="item.pageCode">{{item.pageCode}}</div>
-                  <img v-if="item.thumb != ''" :src="item.thumb">
-                  <div class="delItem3">{{item.name}}</div>
-                  <div :class="{'delItem':delShow == i}">
-                    <span class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage(item)">选择</span>
-                  </div>
-                </li>
-              </ul>
+              <div class="template-edit-list-div">
+                <ul>
+                  <li v-if="i%2 == 0" v-for="(item,i) in pagetList" @mousemove="delShow = i" @mouseleave="delShow=null" :key="i">
+                    <div v-if="item.thumb == ''" v-html="item.pageCode" style="height: 350px;">{{item.pageCode}}</div>
+                    <img v-if="item.thumb != ''" :src="item.thumb">
+                    <div class="delItem3">{{item.name}}</div>
+                    <div :class="{'delItem':delShow == i}">
+                      <span class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage(item)">选择</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="template-edit-list-div">
+                <ul>
+                  <li v-if="i%2 != 0" v-for="(item,i) in pagetList" @mousemove="delShow = i" @mouseleave="delShow=null" :key="i">
+                    <div v-if="item.thumb == ''" v-html="item.pageCode" style="height: 350px;">{{item.pageCode}}</div>
+                    <img v-if="item.thumb != ''" :src="item.thumb">
+                    <div class="delItem3">{{item.name}}</div>
+                    <div :class="{'delItem':delShow == i}">
+                      <span class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage(item)">选择</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
             <div style="clear: both"></div>
           </div>
@@ -124,6 +138,7 @@
       name: "websiteEditor",
       data(){
         return{
+          url1:document.location.origin.toString(),
           pageList: [],
           curPage:'',
           curPageTop: '',
@@ -449,7 +464,7 @@
               //   this.$set(this.data1, '关于我们', []);
               // }
               this.data1.push(newChild);
-              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="/'+data.catExt+'" style="text-decoration: none;color: #000000 ;">'+data.name+'</a></li>')
+              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="'+data.catExt+'.html" style="text-decoration: none;color: #000000 ;">'+data.name+'</a></li>')
               // let headerHtml = $('#headerHtml').html()
               // this.webPageList.header = headerHtml
               if(pageNum == 1){
@@ -694,65 +709,71 @@
           min-height: 500px;
           max-height: 550px;
           overflow-y: auto;
-          ul {
-            width: 95%;
-            margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            /*justify-content: space-around;*/
-            li {
-              position: relative;
-              width: 47%;
-              height: 300px;
-              border: 1px #cccccc solid;
-              list-style: none;
-              margin: .8vw;
-              display: flex;
-              align-items: center;
-              justify-content: space-evenly;
-              box-shadow: 0 0 10px rgb(90, 88, 88);
-              overflow: hidden;
-              img{
-                width: 100%;
-                height: 100%;
-                border: 1px solid #cccccc;
-              }
-              .delItem {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                background: rgba(0, 0, 0, 0.3);
-                display: flex;
-                align-items: center;
-                justify-content: space-evenly;
-                z-index: 100;
-              }
-              .delItem3 {
-                position: absolute;
-                width: 100%;
-                height: 60px;
-                bottom: 0;
-                left: 0;
-                background: rgba(0, 0, 0, 0.5);
-                display: flex;
-                align-items: center;
-                justify-content: space-evenly;
-                z-index: 9999;
-                box-sizing: border-box;
-                color: white;
-                font-size: 18px;
-              }
-              .template-edit-ico {
-                display: none;
-                font-size: 30px;
-                color: #ffffff;
-                cursor: pointer;
-                margin: 0 auto;
-              }
-              .icoShow {
-                display: block;
+          display: flex;
+          .template-edit-list-div{
+            width: 50%;
+            float: left;
+            padding-left: 20px;
+            ul {
+              width: 100%;
+              margin: 0 auto;
+              /*display: flex;*/
+              /*flex-wrap: wrap;*/
+              /*justify-content: space-around;*/
+              li {
+                position: relative;
+                /*width: 47%;*/
+                /*height: 300px;*/
+                border: 1px #cccccc solid;
+                list-style: none;
+                margin: .8vw;
+                /*display: flex;*/
+                /*align-items: center;*/
+                /*justify-content: space-evenly;*/
+                box-shadow: 0 0 10px rgb(90, 88, 88);
+                overflow: hidden;
+                img{
+                  width: 100%;
+                  height: 100%;
+                  border: 1px solid #cccccc;
+                }
+                .delItem {
+                  position: absolute;
+                  width: 100%;
+                  height: 100%;
+                  top: 0;
+                  left: 0;
+                  background: rgba(0, 0, 0, 0.3);
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-evenly;
+                  z-index: 100;
+                }
+                .delItem3 {
+                  position: absolute;
+                  width: 100%;
+                  height: 80px;
+                  bottom: 0;
+                  left: 0;
+                  background: rgba(0, 0, 0, 0.5);
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-evenly;
+                  z-index: 9999;
+                  box-sizing: border-box;
+                  color: white;
+                  font-size: 20px;
+                }
+                .template-edit-ico {
+                  display: none;
+                  font-size: 30px;
+                  color: #ffffff;
+                  cursor: pointer;
+                  margin: 0 auto;
+                }
+                .icoShow {
+                  display: block;
+                }
               }
             }
           }

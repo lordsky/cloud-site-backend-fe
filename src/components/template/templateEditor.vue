@@ -19,22 +19,44 @@
         </div>
       </div>
       <div class="template-edit-list">
-        <ul>
-          <li v-for="(item,i) in templateList" @mousemove="delShow = i" @mouseleave="delShow=null">
-            <div v-if="item.thumb == ''" v-html="item.pageCode">{{item.pageCode}}</div>
-            <img v-if="item.thumb != ''" :src="item.thumb">
-            <div class="delItem3">{{item.name}}</div>
-            <div :class="{'delItem':delShow == i}">
-            <div v-if="item.onlineStatus == -1 && delShow!=i" :class="{'delItem2': delShow!=i}" style="text-align: center;color: white;font-size: 24px">已下线</div>
-            <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
-            <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}" @click="preview(item)"></i>
-            <i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}" @click="editComponent(item)"></i>
-            <span v-if="item.onlineStatus == 1" class="iconfont icon-arrow-bottom template-edit-ico" :class="{'icoShow':delShow==i}" @click="offlineSuite(item.id)"></span>
-            <span v-if="item.onlineStatus == 0" class="iconfont icon-arrow-top template-edit-ico" :class="{'icoShow':delShow==i}" @click="popSuite(item.id)"></span>
-            <i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(item.id)"></i>
-            </div>
+        <div class="template-edit-list-div">
+          <ul>
+            <li v-if="i%2 == 0" v-for="(item,i) in templateList" @mousemove="delShow = i" @mouseleave="delShow=null" :key="i">
+              <div v-if="item.thumb == ''" v-html="item.pageCode" style="height: 350px;">{{item.pageCode}}</div>
+              <img v-if="item.thumb != ''" :src="item.thumb">
+              <div class="delItem3">{{item.name}}</div>
+              <div :class="{'delItem':delShow == i}">
+                <div v-if="item.onlineStatus == -1 && delShow!=i" :class="{'delItem2': delShow!=i}" style="text-align: center;color: white;font-size: 24px">已下线</div>
+                <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
+                <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}" @click="preview(item)"></i>
+                <i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}" @click="editComponent2(item)"></i>
+                <i class="el-icon-setting template-edit-ico" :class="{'icoShow':delShow==i}" @click="editComponent(item)"></i>
+                <span v-if="item.onlineStatus == 1" class="iconfont icon-arrow-bottom template-edit-ico" :class="{'icoShow':delShow==i}" @click="offlineSuite(item.id)"></span>
+                <span v-if="item.onlineStatus == 0" class="iconfont icon-arrow-top template-edit-ico" :class="{'icoShow':delShow==i}" @click="popSuite(item.id)"></span>
+                <i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(item.id)"></i>
+              </div>
             </li>
-        </ul>
+          </ul>
+        </div>
+        <div class="template-edit-list-div">
+          <ul>
+            <li v-if="i%2 != 0" v-for="(item,i) in templateList" @mousemove="delShow = i" @mouseleave="delShow=null" :key="i">
+              <div v-if="item.thumb == ''" v-html="item.pageCode" style="height: 350px;">{{item.pageCode}}</div>
+              <img v-if="item.thumb != ''" :src="item.thumb">
+              <div class="delItem3">{{item.name}}</div>
+              <div :class="{'delItem':delShow == i}">
+                <div v-if="item.onlineStatus == -1 && delShow!=i" :class="{'delItem2': delShow!=i}" style="text-align: center;color: white;font-size: 24px">已下线</div>
+                <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
+                <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}" @click="preview(item)"></i>
+                <i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}" @click="editComponent2(item)"></i>
+                <i class="el-icon-setting template-edit-ico" :class="{'icoShow':delShow==i}" @click="editComponent(item)"></i>
+                <span v-if="item.onlineStatus == 1" class="iconfont icon-arrow-bottom template-edit-ico" :class="{'icoShow':delShow==i}" @click="offlineSuite(item.id)"></span>
+                <span v-if="item.onlineStatus == 0" class="iconfont icon-arrow-top template-edit-ico" :class="{'icoShow':delShow==i}" @click="popSuite(item.id)"></span>
+                <i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(item.id)"></i>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
       <el-dialog :visible.sync="dialogAdd" width="500px" @close='closeDialog' :close-on-click-modal="false">
         <div class="el-dialog-componAdd">
@@ -186,6 +208,9 @@
         }).catch(() => {
 
         });
+      },
+      editComponent2(item){
+        window.location.href = host.editorUrl+'?catId='+item.id+'&name='+item.name+'&type=templateEditor'
       },
       beforeUpLoad(file) {
         return new Promise((resolve) => {
@@ -366,79 +391,85 @@
     }
     .template-edit-list {
       margin: 10px 0 10px 0;
-      ul {
-        width: 95%;
-        margin: 0 auto;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        li {
-          position: relative;
-          width: 49%;
-          height: 350px;
-          border: 1px #cccccc solid;
-          list-style: none;
-          margin: 10px 0 10px 0;
-          display: flex;
-          align-items: center;
-          justify-content: space-evenly;
-          box-shadow: 0 0 10px rgb(90, 88, 88);
-          overflow: hidden;
-          img{
-            width: 100%;
-            height: 100%;
-            border: 1px solid #cccccc;
-          }
-          .delItem {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background: rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: space-evenly;
-            z-index: 200;
-            box-sizing: border-box;
-          }
-          .delItem2 {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: space-evenly;
-            z-index: 100;
-            box-sizing: border-box;
-          }
-          .delItem3 {
-            position: absolute;
-            width: 100%;
-            height: 80px;
-            bottom: 0;
-            left: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: space-evenly;
-            z-index: 100;
-            box-sizing: border-box;
-            color: white;
-            font-size: 20px;
-          }
-          .template-edit-ico {
-            display: none;
-            font-size: 30px;
-            color: #ffffff;
-            cursor: pointer;
-            margin: 0 auto;
-          }
-          .icoShow {
-            display: block;
+      display: flex;
+      .template-edit-list-div{
+        width: 50%;
+        float: left;
+        padding-left: 20px;
+        ul {
+          width: 100%;
+          margin: 0 auto;
+          /*display: flex;*/
+          /*flex-wrap: wrap;*/
+          /*justify-content: space-between;*/
+          li {
+            position: relative;
+            /*width: 49%;*/
+            /*height: 350px;*/
+            border: 1px #cccccc solid;
+            list-style: none;
+            margin: 10px 0 10px 0;
+            /*display: flex;*/
+            /*align-items: center;*/
+            /*justify-content: space-evenly;*/
+            box-shadow: 0 0 10px rgb(90, 88, 88);
+            overflow: hidden;
+            img{
+              width: 100%;
+              height: 100%;
+              border: 1px solid #cccccc;
+            }
+            .delItem {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              top: 0;
+              left: 0;
+              background: rgba(0, 0, 0, 0.3);
+              display: flex;
+              align-items: center;
+              justify-content: space-evenly;
+              z-index: 200;
+              box-sizing: border-box;
+            }
+            .delItem2 {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              top: 0;
+              left: 0;
+              background: rgba(0, 0, 0, 0.5);
+              display: flex;
+              align-items: center;
+              justify-content: space-evenly;
+              z-index: 100;
+              box-sizing: border-box;
+            }
+            .delItem3 {
+              position: absolute;
+              width: 100%;
+              height: 80px;
+              bottom: 0;
+              left: 0;
+              background: rgba(0, 0, 0, 0.5);
+              display: flex;
+              align-items: center;
+              justify-content: space-evenly;
+              z-index: 100;
+              box-sizing: border-box;
+              color: white;
+              font-size: 20px;
+            }
+            .template-edit-ico {
+              display: none;
+              font-size: 30px;
+              color: #ffffff;
+              cursor: pointer;
+              margin: 0 auto;
+            }
+            .icoShow {
+              display: block;
+            }
           }
         }
       }
