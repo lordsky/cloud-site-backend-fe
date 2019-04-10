@@ -123,7 +123,7 @@
     [{'background': []}],          // dropdown with defaults from theme
     [{'font': []}],
     [{'align': []}],
-    ['link', 'image'],//, 'video'
+    ['image'],//, 'video''link',
     ['clean']                                         // remove formatting button
   ];
   // 标题
