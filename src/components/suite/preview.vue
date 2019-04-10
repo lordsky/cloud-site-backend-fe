@@ -34,6 +34,13 @@
         var navBtn = document.querySelectorAll('#silder li')
         for(let i = 0;i<navBtn.length;i++){
           navBtn[i].onclick = ()=>{
+            var evt = evt || window.event; //获取event对象
+            if (evt.preventDefault) {
+              evt.preventDefault(); //非IE浏览器
+            } else {
+              evt.returnValue = false; //在早期的IE版本中
+            }
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true); //阻止事件冒泡
             self.curPage = self.curPageTop + self.pageList[i].pageCode + self.curPageBottom
             setTimeout(()=>{
               NavSwitch()

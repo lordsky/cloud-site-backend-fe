@@ -449,7 +449,7 @@
               //   this.$set(this.data1, '关于我们', []);
               // }
               this.data1.push(newChild);
-              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="#"style="text-decoration: none;color: #000000 ;">'+data.name+'</a></li>')
+              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="/'+data.catExt+'" style="text-decoration: none;color: #000000 ;">'+data.name+'</a></li>')
               // let headerHtml = $('#headerHtml').html()
               // this.webPageList.header = headerHtml
               if(pageNum == 1){
@@ -544,12 +544,19 @@
             headerIndex = $(this).index();
             app.$store.commit('saveHeaderIndex',headerIndex)
           });
-        },2000)
+        },1000)
       },
       watch: {
         '$store.state.headerIndex': function(val) {
           if(val != null){
             this.webPageList.content = this.webPageAll[val].pageCode;
+            var evt = evt || window.event; //获取event对象
+            if (evt.preventDefault) {
+              evt.preventDefault(); //非IE浏览器
+            } else {
+              evt.returnValue = false; //在早期的IE版本中
+            }
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true); //阻止事件冒泡
           }
           this.$store.commit('saveHeaderIndex',null)
         }

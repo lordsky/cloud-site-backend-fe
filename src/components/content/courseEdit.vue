@@ -77,6 +77,16 @@
             <img width="100%" :src="item.filePath" alt="">
           </li>
         </ul>
+        <div class="pagination">
+          <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
+            :page-size="pageSize"
+            layout="prev, pager, next, jumper"
+            :total="pageAll">
+          </el-pagination>
+        </div>
       </div>
       <div class="dialog-footer">
         <div @click="dialogVisibleManage = false">取消</div>
@@ -146,6 +156,9 @@
     name: "courseEdit",
     data() {
       return {
+        pageAll:0,
+        page:1,
+        pageSize:6,
         content: '',
         editorOption: {
           placeholder: '请输入活动描述',
@@ -372,12 +385,28 @@
           }
         });
       },
+      //当前页码
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getPicture();
+      },
+      //当前条数
+      handleSizeChange(val) {
+        this.pageSize = val;
+        this.getPicture();
+      },
       getPicture(){
         if(this.course.coverUrl == ''){
           this.dialogVisibleManage = true
-          this.$api.apiMaterials(1).then(res=>{
+          let parm = {
+            materialsType : 1,
+            pageNum : this.page,
+            pageSize : this.pageSize
+          }
+          this.$api.apiMaterials(parm).then(res=>{
             if(res.code === 200){
-              this.materialsList = res.data
+              this.materialsList = res.data.content
+              this.pageAll = res.data.totalElements
             }
           })
         }
