@@ -1,7 +1,7 @@
 <template>
   <div class="course-item">
     <div v-html="courseInfo.content">{{courseInfo.content}}</div>
-  <video width="100%" height="">
+  <video v-if="courseInfo.videoUrl !=''" controls="controls" :src="courseInfo.videoUrl" style="width: 100%;height: 30vw;margin-top: 20px">
   	当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
   </video>
     <div class="foot-nav">
