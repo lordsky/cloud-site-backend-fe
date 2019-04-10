@@ -42,7 +42,7 @@
       },
       //退出
       exitUser(){
-      	this.$router.push({path:'/'})
+      	this.$router.push({path:'/login'})
     	 	localStorage.removeItem('cloudUser');
 //  	 	console.log(localStorage.cloudUser)
       }

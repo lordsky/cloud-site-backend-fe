@@ -21,12 +21,14 @@
       <div class="template-edit-list">
         <ul>
           <li v-for="(item,i) in templateList" @mousemove="delShow = i" @mouseleave="delShow=null">
-            <div v-html="item.pageCode">{{item.pageCode}}</div>
+            <div v-if="item.thumb == ''" v-html="item.pageCode">{{item.pageCode}}</div>
+            <img v-if="item.thumb != ''" :src="item.thumb">
             <div class="delItem3">{{item.name}}</div>
             <div :class="{'delItem':delShow == i}">
             <div v-if="item.onlineStatus == -1 && delShow!=i" :class="{'delItem2': delShow!=i}" style="text-align: center;color: white;font-size: 24px">已下线</div>
             <!--<i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}"></i>-->
             <i class="el-icon-view template-edit-ico" :class="{'icoShow':delShow==i}" @click="preview(item)"></i>
+            <i class="el-icon-edit-outline template-edit-ico" :class="{'icoShow':delShow==i}" @click="editComponent(item)"></i>
             <span v-if="item.onlineStatus == 1" class="iconfont icon-arrow-bottom template-edit-ico" :class="{'icoShow':delShow==i}" @click="offlineSuite(item.id)"></span>
             <span v-if="item.onlineStatus == 0" class="iconfont icon-arrow-top template-edit-ico" :class="{'icoShow':delShow==i}" @click="popSuite(item.id)"></span>
             <i class="el-icon-delete template-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(item.id)"></i>
@@ -34,25 +36,88 @@
             </li>
         </ul>
       </div>
+      <el-dialog :visible.sync="dialogAdd" width="500px" @close='closeDialog' :close-on-click-modal="false">
+        <div class="el-dialog-componAdd">
+          <el-form :inline="true" ref="template" :model="template" :rules="rules" class="demo-form-inline">
+            <el-form-item label="模板名称:" prop="templateName">
+              <el-input v-model="template.templateName" placeholder="请输入模板名称"></el-input>
+            </el-form-item>
+            <el-form-item label="上传缩略图:">
+              <el-upload
+                ref='upload'
+                class="avatar-uploader"
+                :action="host.hostUrl+'/common/upload'"
+                :show-file-list="false"
+                :on-change="handleChange"
+                :before-upload="beforeUpLoad">
+                <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
+                  <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
+                  <div v-if="template.imageUrl" :class="{'delItem':showDel}">
+                    <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible3=true"></i>
+                    <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
+                  </div>
+                </div>
+                <img v-if="template.imageUrl" :src="template.imageUrl" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                <div class="el-upload__tip" slot="tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
+              </el-upload>
+              <el-dialog :visible.sync="dialogVisible3" :modal="false">
+                <img width="100%" :src="template.imageUrl" alt="">
+              </el-dialog>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="el-dialog-componAdd-btn">
+          <el-button @click="dialogAdd = false">取 消</el-button>
+          <el-button type="primary" @click="saveTemplate">保存</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script scoped>
+  import host from '../config/host'
+  import fileUtil from '../config/fileUtil'
+  import '@/assets/js/jquery';
   export default {
     name: 'templateEditor',
     data() {
       return {
+        dialogVisible3:false,
+        host:host,
+        imageUrl:'',
+        showDel:false,
         name:'',
         delShow: null,
         dialogAdd: false,
         value: '',
         text:'',//模板分类名称
         num:0,//模板个数
-        templateList:[]
+        templateList:[],
+        templateName:'',
+        templateData:{},
+        template:{
+          templateName:'',
+          imageUrl:''
+        },
+        rules:{
+          templateName: [
+            { required: true, message: '请输入模板名称', trigger: 'blur' },
+            { max: 6, message: '不超过6个字符', trigger: 'blur' }
+          ]
+        },
       }
     },
     methods: {
+      handleRemove(file, fileList) {
+        this.$refs.upload.clearFiles()
+        this.template.imageUrl = ''
+        setTimeout(() => {
+          let oV1 =  document.getElementsByClassName('el-upload__input')
+          oV1[0].disabled=false
+        }, 100);
+      },
       //删除组件
       delComponent(index) {
         this.$confirm('是否删除该模板?', '提示', {
@@ -120,6 +185,94 @@
           })
         }).catch(() => {
 
+        });
+      },
+      beforeUpLoad(file) {
+        return new Promise((resolve) => {
+          fileUtil.getOrientation(file).then((orient) => {
+            if (orient && orient === 6) {
+              let reader = new FileReader()
+              let img = new Image()
+              reader.onload = (e) => {
+                img.src = e.target.result
+                img.onload = function () {
+                  const data = fileUtil.rotateImage(img, img.width, img.height)
+                  const newFile = fileUtil.dataURLtoFile(data, file.name)
+                  resolve(newFile)
+                }
+              }
+              reader.readAsDataURL(file)
+            } else {
+              resolve(file)
+            }
+          })
+        })
+      },
+      handleChange(file){
+        const isType = file.raw.type === 'image/jpeg' || file.raw.type === 'image/png';
+        const isLt10M = file.size / 1024 / 1024 < 10;
+
+        if (!isType) {
+          this.$message.error('上传背景图片只能是 JPG、PNG 格式!');
+        }
+        if (!isLt10M) {
+          this.$message.error('上传背景图片大小不能超过 10MB!');
+        }
+        let upload = isType && isLt10M
+        if(upload != true){
+          return
+        }
+        if(file.response != undefined){
+          this.template.imageUrl = file.response;
+        }else {
+          this.template.imageUrl = URL.createObjectURL(file.raw);
+        }
+        let oV1 =  document.getElementsByClassName('el-upload__input')
+        oV1[0].disabled=true
+      },
+      editComponent(item){
+        setTimeout(() => {
+          let oV1 =  document.getElementsByClassName('el-upload__input')
+          if(item.thumb != ''&& item.thumb != null){
+            oV1[0].disabled = true
+          }
+        }, 100);
+        this.dialogAdd = true
+        this.template.templateName = item.name
+        this.template.imageUrl = item.thumb
+        this.templateData = item
+      },
+      closeDialog(){
+        this.$refs.upload.clearFiles()
+        this.template.imageUrl = ''
+        setTimeout(() => {
+          let oV1 =  document.getElementsByClassName('el-upload__input')
+          oV1[0].disabled=false
+        }, 100);
+      },
+      saveTemplate(){
+        this.$refs.template.validate((valid) => {
+          if (valid) {
+            let parm = {
+              name: this.template.templateName,
+              catExt: this.templateData.catExt,
+              catId: this.templateData.catId,
+              pageCode: this.templateData.pageCode,
+              thumb: this.template.imageUrl,
+              id: this.templateData.id,
+            }
+            this.$api.apiUpdatePage(parm).then(res => {
+              console.log(res)
+              if (res.code === 200) {
+                this.dialogAdd = false
+                this.$message.success('修改成功')
+                this.getPageList()
+              } else {
+                this.$message.error(res.msg)
+              }
+
+            })
+          }
         });
       },
       //新增组件
@@ -233,6 +386,7 @@
           overflow: hidden;
           img{
             width: 100%;
+            height: 100%;
             border: 1px solid #cccccc;
           }
           .delItem {
@@ -287,6 +441,97 @@
             display: block;
           }
         }
+      }
+    }
+    .el-dialog-componAdd-btn {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .el-dialog-componAdd-update {
+      display: flex;
+      align-items: center;
+      height: 55px;
+      .addCom_input {
+        width: 171px;
+      }
+      .upload-demo {
+        display: flex;
+        ul {
+          margin-left: 10px;
+          li {
+            margin: 0;
+          }
+        }
+      }
+    }
+    .el-componAdd-update-title {
+      display: inline-block;
+      width: 100px;
+      text-align: end;
+      margin-right: 10px;
+    }
+    .el-dialog-componDel {
+      height: 60px;
+      font-size: 18px;
+    }
+    .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+      border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 275px;
+      height: 148px;
+      line-height: 148px;
+      text-align: center;
+      border-radius: 10px;
+    }
+    .avatar {
+      width: 275px;
+      height: 148px;
+      display: block;
+      border-radius: 10px;
+    }
+    .footerside-right-list{
+      position: absolute;
+      width: 275px;
+      height: 148px;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed;
+      border-radius: 10px;
+      cursor: pointer;
+      &:hover{
+        border: 1px dashed #409eff;
+      }
+      .compon-edit-ico {
+        display: none;
+        font-size: 30px;
+        color: #ffffff;
+      }
+      .icoShow {
+        display: block;
+      }
+      .delItem {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content:space-evenly;
       }
     }
   }

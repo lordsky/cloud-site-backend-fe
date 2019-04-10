@@ -23,15 +23,15 @@ Vue.prototype.$http = http
 Vue.prototype.$api = API
 
 router.beforeEach((to, from, next) => {
-  NProgress.start();//开启Progress
-  // if (to.path == '/login') {
-  //   sessionStorage.removeItem('user');
-  // }
-  let user = JSON.parse(sessionStorage.getItem('user'));
+  // NProgress.start();//开启Progress
+  if (to.path == '/login') {
+    localStorage.removeItem('cloudUser');
+  }
+  let user = JSON.parse(localStorage.getItem('cloudUser'));
   if (!user && to.path != '/login') {
-    //next({ path: '/login' })
-    next()
-    NProgress.done(); // router在hash模式下 手动改变hash 重定向回来 不会触发afterEach 暂时hack方案 ps：history模式下无问题，可删除该行！
+    next({ path: '/login' })
+    // next()
+    // NProgress.done(); // router在hash模式下 手动改变hash 重定向回来 不会触发afterEach 暂时hack方案 ps：history模式下无问题，可删除该行！
   } else {
     next()
   }

@@ -18,7 +18,7 @@
       <el-form-item label="套件介绍:" prop="introduce">
         <el-input type="textarea" v-model="suite.introduce" :rows="5" placeholder="请输入套件介绍，不超过40个字符"></el-input>
       </el-form-item>
-      <el-form-item label="上传背景图:">
+      <el-form-item label="上传缩略图:">
         <el-upload
           ref='upload'
           class="avatar-uploader"
@@ -186,10 +186,10 @@
         const isLt10M = file.size / 1024 / 1024 < 10;
 
         if (!isType) {
-          this.$message.error('上传背景图片只能是 JPG、PNG 格式!');
+          this.$message.error('上传缩略图片只能是 JPG、PNG 格式!');
         }
         if (!isLt10M) {
-          this.$message.error('上传背景图片大小不能超过 10MB!');
+          this.$message.error('上传缩略图片大小不能超过 10MB!');
         }
         let upload = isType && isLt10M
         if(upload != true){
@@ -263,7 +263,7 @@
           if(this.suite.imageUrl == ''){
             this.$message({
               type: 'warning',
-              message: '请选择上传背景图片!'
+              message: '请选择上传缩略图片!'
             });
             return
           }

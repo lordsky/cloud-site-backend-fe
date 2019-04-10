@@ -87,8 +87,8 @@
             <div class="template-edit-list">
               <ul>
                 <li v-for="(item,i) in pagetList" @mousemove="delShow = i" @mouseleave="delShow=null">
-                  <!--<img :src="item.url">-->
-                  <div v-html="item.pageCode">{{item.pageCode}}</div>
+                  <div v-if="item.thumb == ''" v-html="item.pageCode">{{item.pageCode}}</div>
+                  <img v-if="item.thumb != ''" :src="item.thumb">
                   <div class="delItem3">{{item.name}}</div>
                   <div :class="{'delItem':delShow == i}">
                     <span class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage(item)">选择</span>
@@ -696,7 +696,7 @@
             li {
               position: relative;
               width: 47%;
-              height: 250px;
+              height: 300px;
               border: 1px #cccccc solid;
               list-style: none;
               margin: .8vw;
@@ -707,6 +707,7 @@
               overflow: hidden;
               img{
                 width: 100%;
+                height: 100%;
                 border: 1px solid #cccccc;
               }
               .delItem {
