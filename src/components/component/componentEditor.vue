@@ -9,7 +9,7 @@
         <div class="compon-edit-seek">
           <span>查询组件：</span>
           <el-input type="text" placeholder="输入组件名称" v-model="queryItem" />
-          <el-button type="primary" size="small" @click="queryComponent" :disabled="!this.queryItem">查询</el-button>
+          <el-button type="primary" size="small" @click="queryComponent" >查询</el-button>
         </div>
       </p>
       <div class="compon-edit-add">
@@ -25,6 +25,7 @@
               <i class="el-icon-view compon-edit-ico" :class="{'icoShow':delShow==i}" @click="lookComponent(x)"></i>
             	  <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':delShow==i}" @click="editComponent(x)"></i>
               <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i>
+              <i class="el-icon-edit compon-edit-ico" :class="{'icoShow':delShow==i}" @click="SetComponent(x)"></i>
             </div>
             <div v-html="x.segmentCode"></div>
           </li>
@@ -45,6 +46,17 @@
             <span class="el-componAdd-update-title">上传文件：</span>
             <a href="javascript:void(0);" class="upload-text">选择文件<input name="file" type="file" ref="file" @change="uploadText"></a>
             <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件(.txt格式文件)'}}</span>
+          </div>
+          <div class="el-dialog-componAdd-update">
+            <span class="addCom-title warFater">上传缩略图：</span>
+            <el-upload
+			  class="upload-demo"
+			  :action="host.hostUrl+'/common/upload'"
+			  :on-success="handlePreview"
+			  :on-remove="handleRemove"
+			   >
+			  <el-button size="small" type="primary">选择图片</el-button>
+			</el-upload>
           </div>
         </el-form>
       </div>
@@ -71,7 +83,8 @@
         textData: '',
         componentName: '',
         queryItem: '',
-        host:host
+        host:host,
+        thumb:''
       }
     },
     created() {
@@ -81,6 +94,36 @@
       this.update()
     },
     methods: {
+	    	//上传缩略图
+	    	handlePreview(file) {
+	        console.log(file);
+	        this.thumb = file
+	      },
+    	  //删除图片
+    	  handleRemove(file, fileList) {
+        this.thumb = ''
+       
+      },
+      //修改名字
+      SetComponent(val){
+      	console.log(val.catId)
+      	this.$prompt('修改组件名：', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+           this.$http.post(this.$API.setComponentName,{
+	      		catId:val.catId,
+	      		name:value
+	      	},response=>{
+	      		console.log(response)
+	      	})
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消修改'
+          });       
+        });
+      },
     	  //查看组件
     	  lookComponent(item){
     	  	 window.localStorage.setItem('saveTemplateCode',item.segmentCode)
@@ -126,7 +169,8 @@
         formData.append('catExt', '1');
         formData.append('name', this.componentName);
         formData.append('catId', this.options.id);
-        this.$http.post(this.$API.componentAdd, formData, (res) => {
+        formData.append('thumb', this.thumb);
+                this.$http.post(this.$API.componentAdd, formData, (res) => {
           console.log(res)
           this.update()
           this.dialogAdd = false
@@ -259,6 +303,12 @@
       display: flex;
       align-items: center;
       height: 55px;
+      .el-button{
+    	   height: 30px;
+    	   width: 100px;
+    	   background:#00b3ee ;
+    	   border-radius: 4px;
+    }
       .addCom_input {
         width: 171px;
       }

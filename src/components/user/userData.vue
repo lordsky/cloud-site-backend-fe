@@ -44,8 +44,14 @@
         <el-table-column prop="nickname" label="用户昵称" align="center">
         </el-table-column>
         <el-table-column prop="username" label="用户姓名" align="center">
+        	 <template slot-scope="scope">
+            <span>{{scope.row.username?scope.row.username:'暂无'}}</span>
+          </template>
         </el-table-column>
         <el-table-column prop="companyName" label="企业名称" align="center">
+        	 <template slot-scope="scope">
+            <span>{{scope.row.companyName?scope.row.companyName:'暂无'}}</span>
+          </template>
         </el-table-column>
         <el-table-column prop="starTime" label="注册时间" align="center">
           <template slot-scope="scope">
@@ -96,9 +102,14 @@
         currentPage:0,
         pageSize:10,
         pageNum:1,
-        listState: [{
+        listState: [
+          {
+            value: '',
+            label: '全部'
+          },
+          {
             value: '1',
-            label: '启用'
+            label: '正常'
           },
           {
             value: '-1',
@@ -195,8 +206,15 @@
         account ? obj.account = account : ''
         name ? obj.name = name : ''
         this.$http.get(url, (res) => {
-//        console.log(res)
+//        console.log(window)
           if(res.data.code === 200) {
+           res.data.data.content.content.map(item=>{
+      	    	   let str = ''
+      	    	   str = item.createTime
+      	    	   str = str.replace('.000+0000',' ')
+      	    	   str = str.replace('T',' ')
+      	    	   item.createTime = str
+      	    })
           	this.totalPage = res.data.data.content.totalElements
             this.tableData = res.data.data.content.content
           }

@@ -38,7 +38,8 @@ const API = {
     getJsonList:'backend/displayRoleMenu',
     //获取菜单
     showMenu:'backend/displayAllRoleMenu',
-   
+    //保存角色菜单
+    setRoleJson:'backend/editRoleMenu',
     /**
      * 员工管理
      */
@@ -70,6 +71,10 @@ const API = {
     setComponent:'backend/updateCat',
    //删除组件
     delItems:'backend/component/delete',
+    //获取分类列表
+    getComponentClassList:'backend/findCatByTypeNoPage',
+    //修改名字
+    setComponentName:'backend/component/edit',
     /*
      *   素材
      * */
@@ -100,6 +105,8 @@ const API = {
 	delMessageType:'backend/delMessageCat',
 	//查询消息类型
 	getMessageType:'backend/messageCatList',
+	//导出信息
+	exportMessage:'backend/exportFeedback',
     /*
      * 站点管理
      * */

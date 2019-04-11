@@ -58,7 +58,7 @@
         <el-form :inline="true" class="demo-form-inline" ref="formAdd" :model="formAdd">
           <el-form-item label="选择组件分类:" prop="selectId" :rules="[{required: true,message: '组件分类不能为空'}]">
             <el-select v-model="formAdd.selectId" placeholder="请选择">
-              <el-option v-for="item in tableData3" :key="item.catName" :label="item.catName" :value="item.id">
+              <el-option v-for="item in classList" :key="item.catName" :label="item.catName" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -71,6 +71,17 @@
             <a href="javascript:void(0);" class="upload-text">选择文件
               <input name="file" type="file" ref="file" @change="uploadText"></a>
             <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件(.txt格式文件)'}}</span>
+          </div>
+           <div class="addCom">
+            <span class="addCom-title warFater">上传缩略图：<i class="war-ico" style="left: 15px;">*</i></span>
+            <el-upload
+			  class="upload-demo"
+			  :action="host.hostUrl+'/common/upload'"
+			  :on-success="handlePreview"
+			  :on-remove="handleRemove"
+			   >
+			  <el-button size="small" type="primary">选择图片</el-button>
+			</el-upload>
           </div>
         </el-form>
       </div>
@@ -120,6 +131,7 @@
         pageAll: 0,
         componentName: '',
         currentPage: 0,
+        classList:[]
       }
     },
     watch: {
@@ -131,9 +143,27 @@
     },
     created() {
       this.refreshTable()
+      this.getClassList()
     },
     
     methods: {
+    	  //获取分类列表
+    	  getClassList(){
+    	  	this.$http.get(this.$API.getComponentClassList+'?catType=1',response=>{
+    	  		console.log(response)
+    	  		this.classList = response.data.data
+    	  	})
+    	  },
+      //上传图片
+    	  handlePreview(file) {
+        console.log(file);
+        this.formAdd.thumb = file
+      },
+    	  //删除图片
+    	  handleRemove(file, fileList) {
+        this.formAdd.thumb = ''
+        console.log(this.formAdd)
+      },
       //分页
       handleCurrentChange(val) {
         this.pageNum = val
@@ -153,7 +183,6 @@
       uploadText(e) {
         var file = e.target.files[0]
         this.textData = file
-
       },
       //重置验证
       resetForm() {
@@ -260,11 +289,14 @@
           this.currentPage = 1
         }
         this.$http.get(url, res => {
+        	    console.log(res)
           if(res.data.data.content.length > 0) {
             this.tableData3 = res.data.data.content
             this.pageAll = res.data.data.totalElements
             this.currentPage = 0
           } else {
+          	this.tableData3 = res.data.data.content
+          	this.pageAll = res.data.data.totalElements
             this.$message({
               message: '抱歉，没有查询到该组件分类',
               type: 'warning'
@@ -335,6 +367,7 @@
                 formData.append('catExt', '1');
                 formData.append('name', this.componentName);
                 formData.append('catId', this.formAdd.selectId);
+                formData.append('thumb', this.formAdd.thumb);
                 this.$http.post(this.$API.componentAdd, formData, (res) => {
                   console.log(res)
                   if(res.data.data) {
@@ -413,11 +446,17 @@
   
   .addCom {
     display: flex;
-    align-items: center;
+    align-items: center ;
     height: 55px;
     .addCom_input {
       height: 35px;
       width: 190px;
+    }
+    .el-button{
+    	   height: 30px;
+    	   width: 100px;
+    	   background:#00b3ee ;
+    	   border-radius: 4px;
     }
     .upload-demo {
       display: flex;
@@ -485,6 +524,7 @@
     background: #00b3ee;
     color: white;
     border-radius: 4px;
+    font-size: 12px;
     z-index: 100;
     margin-right: 10px;
     &:hover {

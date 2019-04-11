@@ -155,6 +155,8 @@
         totalVideo:0,
         totalText:0,
         btnPic:true,
+        btnVideo:true,
+        btnText:true
       }
     },
     watch:{
@@ -168,10 +170,22 @@
     	  	this.btnPic = true
     	  },
     	  checkVideoList(val){
-    	  	
+    	  	for(let i =0;i<val.length;i++){
+    	  		if(val[i]){
+    	  			this.btnVideo = false
+    	  			return
+    	  		}
+    	  	}
+    	  	this.btnVideo = true
     	  },
     	  checkTextList(val){
-    	  	
+    	  	for(let i =0;i<val.length;i++){
+    	  		if(val[i]){
+    	  			this.btnText = false
+    	  			return
+    	  		}
+    	  	}
+    	  	this.btnText = true
     	  }
     },
     created(){
@@ -192,10 +206,14 @@
     	  uploadList(type,file,success){
     	  	this.$http.post(this.$API.materialsUpload,{
         	   	filePath:file.response,
-        	   	materialsType:type
+        	   	materialsType:type,
+        	   	name:file.name
         	   },(res)=>{
         	   	if(res.data.data){
+        	   		this.$message({type:'success',message:'添加成功'})
         	   		success(res)
+        	   	}else{
+        	   		this.$message({type:'warning',message:'添加失败'})
         	   	}
         	   })
     	  },
@@ -392,7 +410,7 @@
         const imgType = file.raw.type === 'image/jpeg'||file.raw.type === 'image/png'||file.raw.type === 'image/gif';
         const isLt = file.size / 1024 / 1024 < 10;
         if (!imgType) {
-          this.$message.error('上传头像图片只能是 jpg,png,gif 格式!');
+          this.$message.error('上传图片只能是 jpg,png,gif 格式!');
           return false
         }
         if (!isLt) {
@@ -411,7 +429,7 @@
           return false
         }
         if (!isLt) {
-          this.$message.error('上传图片大小不能超过 10MB!');
+          this.$message.error('上传文件大小不能超过 10MB!');
           return false
         }
         return true
@@ -422,11 +440,11 @@
         const videoType = file.raw.type === 'video/mp4'||file.raw.type === 'video/wma';
         const isLt = file.size / 1024 / 1024 < 10;
         if (!videoType) {
-          this.$message.error('上传头像图片只能是 MP4,WMA 格式!');
+          this.$message.error('上传视频只能是 MP4,WMA 格式!');
           return false
         }
         if (!isLt) {
-          this.$message.error('上传图片大小不能超过 10MB!');
+          this.$message.error('上传视频大小不能超过 10MB!');
           return false
         }
         return true

@@ -5,12 +5,12 @@
       	<el-button type="primary" class="left_addBtn" @click="addRole">添加角色</el-button>
       	<el-input class="left_input" placeholder="通过关键词过滤"></el-input>
       	<ul class="role-left-list">
-      		<li v-for="(item,index) in 5" :key="index">产品经理<i class="el-icon-edit-outline" @click="setName(item)"></i></li>
+      		<li v-for="(item,index) in menuList" :key="index" @click="getRoleList(item)">{{item.roleName}}<i class="el-icon-edit-outline" @click="setName(item)"></i></li>
       	</ul>
       </div>
       <div class="role-right">
       	<div class="role-right-table">
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  border>
+        <el-table ref="multipleTable" :data="roleJson" tooltip-effect="dark" style="width: 100%"  border>
           <el-table-column label="一级菜单权限" align="center" prop="title">
             <template slot-scope="scope">
             	<el-checkbox v-model="scope.row.state" @change="handAll(scope.row)" :indeterminate="scope.row.deter" >{{scope.row.title}}</el-checkbox>
@@ -24,7 +24,7 @@
           </el-table-column>
         </el-table>
         <div class="role-save_btn">
-        	 <el-button type="primary">保存</el-button>
+        	 <el-button type="primary" @click="saveRole">保存</el-button>
         </div>
       </div>
       </div>
@@ -38,7 +38,11 @@
     name: "roleManage",
     data() {
       return {
-         tableData:[],
+         menuList:[],
+         roleJson:[],
+         roleInfo:[],
+         userInfo:{},
+         
       }
     },
     methods:{
@@ -50,6 +54,13 @@
 	    		val.state?val.checkList = JSON.parse(JSON.stringify(val.checkAll)):val.checkList = []
 	    		val.deter = false
 	    	},
+	    	//获取权限列表
+	    	getRoleList(val){
+	    		this.roleInfo = val
+	    		this.roleJson = JSON.parse(JSON.stringify(this.setJson(JSON.parse(val.menuJs))))
+//	    		console.log(this.roleJson)
+	    		console.log(val)
+	    	},
 	    	//单选
 	    	handItem(val,item){
 	    		item.state?val.checkList.push(item.name):val.checkList.splice(val.checkList.indexOf(item.name),1)
@@ -57,16 +68,32 @@
 	    	},
 	    	//编辑角色
 	    	setName(val){
-	       this.setRole('编辑名称','角色名称 ：','设置成功')
+	    	   this.roleInfo = val
+	       this.setRole('编辑名称','角色名称 ：','设置成功','set',val)
 	    	},
 	    	//添加角色
 	    	addRole(){
 	    	   this.setRole('角色名称','添加角色 ：','添加成功','add')
 	    	},
+	    	//保存角色
+	    	saveRole(){
+	    		console.log(this.roleInfo)
+	    		let data = JSON.stringify(this.roleJson)
+	    		this.$http.post(this.$API.setRoleJson,{
+	    			id:this.userInfo.id,
+	    			menuJs:data,
+                updaterId:this.roleInfo.roleMenuid
+	    		},response=>{
+	    			console.log(response)
+	    			if(response.data.data){
+	    			    this.$message({type:'success',message:'保存成功'})
+	    			}
+	    		})
+	    	},
 	    	//弹框
-	    	setRole(title,content,msg,state){
-	    		let user = JSON.parse(localStorage.getItem('cloudUser'))
-	     this.$prompt(content, title, {
+	    	setRole(title,content,msg,state,listInfo){
+	    		let user =  this.userInfo
+	        this.$prompt(content, title, {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(({ value }) => {
@@ -75,10 +102,7 @@
         	  		console.log(response)
         	  	})
         	  }else{
-        	  	 this.$http.post(this.$API.editRole,{
-        	  	 	id:'',
-        	  	 	userId:user.id,
-        	  	 	name:value,
+        	  	 this.$http.post(this.$API.editRole+'?id='+user.id+'&userId='+listInfo.roleMenuid+'&name='+value,{
         	  	 },response=>{
         	  	 	console.log(response)
         	  	 	
@@ -92,28 +116,36 @@
            
         });
 	    	},
+	    	//获取角色列表
 	    	getList(){
 	    		this.$http.get(this.$API.showMenu,response=>{
 	    			console.log(response)
+	    			this.menuList = response.data.data
 	    		})
+	    	},
+	    	//设置角色Json
+	    	setJson(val){
+		    val.map(item=>{
+	    	   	  let arr = []
+	    	   	   item.list.forEach((data,index)=>{
+	    	   	  	  if(data.state){
+	    	   	  	  	arr.push(data.name)
+	    	   	  	  	item.deter = true
+	    	   	  	  }
+	    	   	  	  item.checkList = arr
+	    	   	  })
+	    	   	  item.checkAll = item.list.map(data=>{
+	    	   	  	  	return data.name
+	    	   	  })
+	    	      })
+		    return val
 	    	}
     },
     created(){
-    	   sideText.map(item=>{
-    	   	  let arr = []
-    	   	   item.list.forEach((data,index)=>{
-    	   	  	  if(data.state){
-    	   	  	  	arr.push(data.name)
-    	   	  	  	item.deter = true
-    	   	  	  }
-    	   	  	  item.checkList = arr
-    	   	  })
-    	   	  item.checkAll = item.list.map(data=>{
-    	   	  	  	return data.name
-    	   	  })
-    	   })
+    	   let user = JSON.parse(localStorage.getItem('cloudUser'))
+    	   this.userInfo = user
     	   this.getList()
-    	   this.tableData = sideText
+//  	   this.tableData = this.setJson()
     }
   }
 </script>
@@ -146,6 +178,7 @@
  					display: flex;
  					justify-content: space-between;
  					align-items: center;
+ 					cursor: pointer;
  					&:hover{
  					background: #add4ff;
  					color: white;

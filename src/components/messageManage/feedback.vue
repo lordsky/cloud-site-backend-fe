@@ -14,7 +14,7 @@
     <el-col :span="24" class="feedback_btn">
       <el-button type="primary" size="small" @click="queryList()">查询</el-button>
       <el-button type="primary" size="small" @click="clear">清空</el-button>
-      <el-button type="primary" size="small" @click="">导出Excel</el-button>
+      <el-button type="primary" size="small" @click="exportMessage">导出Excel</el-button>
     </el-col>
     <el-col :span="24">
       <el-table :data="tableData" style="width: 100%" border @selection-change="handleSelectionChange">
@@ -32,6 +32,8 @@
         <el-table-column prop="phone" label="电话" align="center">
         </el-table-column>
         <el-table-column prop="email" label="邮箱" align="center">
+        </el-table-column>
+        <el-table-column prop="createTime" label="反馈时间" align="center">
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
@@ -72,17 +74,43 @@
         }, {
           label: '举报问题',
           id: 4
-        }]
+        }],
+        list:[]
       }
     },
     methods: {
       //全选
       handleSelectionChange(val) {
-
+           this.list = val
+          
       },
       //分页
       handleCurrentChange(val) {
         this.queryList(val)
+      },
+      //信息导出
+      exportMessage(){
+      	let arr = []
+      	this.list.map(item=>{
+      		console.log(item)
+      		arr.push(item.id)
+      	})
+      	console.log(arr)
+      	this.$http.post(this.$API.exportMessage,{
+      		idList:arr
+      	},response=>{
+      		const blob = new Blob( [response.data], {type: 'application/xls'} )
+			     const url = window.URL || window.webkitURL || window.moxURL
+				const downloadHref = url.createObjectURL(blob)
+				let downloadLink = document.createElement('a')
+				downloadLink.href = downloadHref
+				downloadLink.download = "11.xls"
+				downloadLink.click()
+				this.$message({
+		            type: 'success',
+		            message: '导出成功!'
+		          });
+      	})
       },
       //查询
       queryList(val) {
