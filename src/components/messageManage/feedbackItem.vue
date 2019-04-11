@@ -15,8 +15,11 @@
     	  	<p>{{content.content}}</p>
     	  </el-col>
     	  <el-col>
-    	  	<p class="feedback_title">附件：</p>
-    	  	<p> <a :href="content.fileUrl" download="">下载</a></p>
+    	  	<!--<p class="feedback_title">附件：</p>-->
+    	  	<p class="feedback_title">附件：{{content.fileName}}
+            <a v-if="name == '.doc' || name == '.xls'" :href="'https://view.officeapps.live.com/op/view.aspx?src='+content.fileUrl" target="_blank" download="">查看</a>
+            <a v-if="name != '.doc' && name != '.xls'" :href="content.fileUrl" target="_blank" download="">查看</a>
+            <a :href="content.fileUrl" :download="content.fileName" style="margin-left: 10px">下载</a></p>
     	  </el-col>
     </el-row>
     <div class="feedback_btn">
@@ -30,7 +33,8 @@
 		name:"feedbackItem",
 		data(){
 			return{
-				content:{}
+				content:{},
+        name:''
 			}
 		},
 		methods:{
@@ -47,6 +51,8 @@
 			let content = this.$route.query.msg
 			console.log(JSON.parse(content))
 			this.content = JSON.parse(content)
+      let path = this.content.fileName
+      this.name = path.substr(path.lastIndexOf("."))
 		}
 	}
 </script>
