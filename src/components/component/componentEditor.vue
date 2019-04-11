@@ -6,11 +6,11 @@
     </div>
     <div class="compon-edit-box">
       <p>组件个数 ：{{comItem.length}}
-        <div class="compon-edit-seek">
-          <span>查询组件：</span>
-          <el-input type="text" placeholder="输入组件名称" v-model="queryItem" />
-          <el-button type="primary" size="small" @click="queryComponent" >查询</el-button>
-        </div>
+      <div class="compon-edit-seek">
+        <span>查询组件：</span>
+        <el-input type="text" placeholder="输入组件名称" v-model="queryItem" />
+        <el-button type="primary" size="small" @click="queryComponent" >查询</el-button>
+      </div>
       </p>
       <div class="compon-edit-add">
         <div class="compon-edit-add-btn" @click="addCompon">
@@ -23,7 +23,7 @@
             <p class="compon-name">组件名称:{{x.name}}</p>
             <div :class="{'delItem':delShow==i}" class="mask-compon">
               <i class="el-icon-view compon-edit-ico" :class="{'icoShow':delShow==i}" @click="lookComponent(x)"></i>
-            	  <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':delShow==i}" @click="editComponent(x)"></i>
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':delShow==i}" @click="editComponent(x)"></i>
               <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i>
               <i class="el-icon-edit compon-edit-ico" :class="{'icoShow':delShow==i}" @click="SetComponent(x)"></i>
             </div>
@@ -50,13 +50,13 @@
           <div class="el-dialog-componAdd-update">
             <span class="addCom-title warFater">上传缩略图：</span>
             <el-upload
-			  class="upload-demo"
-			  :action="host.hostUrl+'/common/upload'"
-			  :on-success="handlePreview"
-			  :on-remove="handleRemove"
-			   >
-			  <el-button size="small" type="primary">选择图片</el-button>
-			</el-upload>
+              class="upload-demo"
+              :action="host.hostUrl+'/common/upload'"
+              :on-success="handlePreview"
+              :on-remove="handleRemove"
+            >
+              <el-button size="small" type="primary">选择图片</el-button>
+            </el-upload>
           </div>
         </el-form>
       </div>
@@ -70,8 +70,8 @@
 </template>
 
 <script>
-	import host from '../config/host'
-		import Swiper from 'swiper';
+  import host from '../config/host'
+  import Swiper from 'swiper';
 
   export default {
     name: 'componentEditor',
@@ -91,47 +91,47 @@
       }
     },
     created() {
-    	  let id = JSON.parse(this.$route.query.item)
+      let id = JSON.parse(this.$route.query.item)
       this.options.id = id
       this.options.catName = this.$route.query.text
       this.update()
     },
     mounted(){
-      	console.log('11')
-     new Swiper ('.swiper-container', {
-		 effect : 'coverflow',
-		slidesPerView: 3,
-		centeredSlides: true,
-   
-  })
-     },
+      console.log('11')
+      new Swiper ('.swiper-container', {
+        effect : 'coverflow',
+        slidesPerView: 3,
+        centeredSlides: true,
+
+      })
+    },
     methods: {
-	    	//上传缩略图
-	    	handlePreview(file) {
-	        console.log(file);
-	        this.thumb = file
-	      },
-    	  //删除图片
-    	  handleRemove(file, fileList) {
+      //上传缩略图
+      handlePreview(file) {
+        console.log(file);
+        this.thumb = file
+      },
+      //删除图片
+      handleRemove(file, fileList) {
         this.thumb = ''
-       
+
       },
       //修改名字
       SetComponent(val){
-      	this.dialogAdd = true
-      	this.childId = val.id
-      	this.componentName = ''
-      	this.textData = ''
+        this.dialogAdd = true
+        this.childId = val.id
+        this.componentName = ''
+        this.textData = ''
       },
-    	  //查看组件
-    	  lookComponent(item){
-    	  	 window.localStorage.setItem('saveTemplateCode',item.segmentCode)
-    	  	 this.$router.push({path:'/PreviewTemplate'})
-    	  },
-    	  //编辑组件
-    	  editComponent(item){
-    	  	 window.location.href = host.editorUrl+'?catId='+item.id+'&name='+item.name+'&type=componentEditor'
-    	  },
+      //查看组件
+      lookComponent(item){
+        window.localStorage.setItem('saveTemplateCode',item.segmentCode)
+        this.$router.push({path:'/PreviewTemplate'})
+      },
+      //编辑组件
+      editComponent(item){
+        window.location.href = host.editorUrl+'?catId='+item.id+'&name='+item.name+'&type=componentEditor'
+      },
       //查询组件
       queryComponent() {
         this.$http.get(this.$API.componentList + '?catId=' + this.options.id + '&name=' + this.queryItem, (res) => {
@@ -160,13 +160,13 @@
       //保存组件
       saveCompon() {
         if(this.componentName === ''){
-        	   this.$message.error('请填写文件名称')
-        	   return
+          this.$message.error('请填写文件名称')
+          return
         }
         if(!this.childId){
-        	  if(this.textData===''){
-        	    this.$message.error('请上传文件')
-        	    return
+          if(this.textData===''){
+            this.$message.error('请上传文件')
+            return
           }
         }
         let formData = new FormData();
@@ -192,8 +192,8 @@
         })
       },
       uploadText(e) {
-      	 let file = e.target.files[0]
-      	 if(file.type !== 'text/plain') {
+        let file = e.target.files[0]
+        if(file.type !== 'text/plain') {
           return this.$message.error('文件类型不对，请上传.txt文件格式')
         }
         this.textData = file
@@ -230,7 +230,7 @@
       addCompon() {
         this.dialogAdd = true
         this.componentName = ''
-      	this.textData = ''
+        this.textData = ''
       },
       //返回
       backCompon() {
@@ -316,16 +316,16 @@
       align-items: center;
       height: 55px;
       .upload-prompt{
-      	width: 120px;
-      	height: 30px;
-      	overflow: hidden;
+        width: 120px;
+        height: 30px;
+        overflow: hidden;
       }
       .el-button{
-    	   height: 30px;
-    	   width: 100px;
-    	   background:#00b3ee ;
-    	   border-radius: 4px;
-    }
+        height: 30px;
+        width: 100px;
+        background:#00b3ee ;
+        border-radius: 4px;
+      }
       .addCom_input {
         width: 171px;
       }
