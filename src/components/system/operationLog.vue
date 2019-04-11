@@ -12,6 +12,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="small" @click="resetForm">清空</el-button>
+            <el-button type="primary" size="small" @click="batchRemove" :disabled="this.sels.length===0" >批量删除</el-button>
             <el-button type="primary" size="small" @click="getList">查询</el-button>
           </el-form-item>
         </div>
@@ -20,6 +21,8 @@
     <div class="operation-box">
       <el-table :data="tableData"  border style="width: 100%" tooltip-effect="dark"
                 v-loading="listLoading" @selection-change="selsChange">
+        <el-table-column type="selection" width="55" align="center">
+        </el-table-column>
         <el-table-column prop="createTime" label="操作时间"  align="center">
         </el-table-column>
         <el-table-column prop="type" label="操作类型" align="center">
@@ -86,6 +89,29 @@
       },
       selsChange: function (sels) {
         this.sels = sels;
+      },
+      //批量删除
+      batchRemove: function () {
+        let ids = this.sels.map(item => item.id);
+        this.$confirm('确认删除选中日志吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          console.log(ids)
+          let a = []
+          a.push(ids)
+          this.$api.apiDelSystemLog({
+            idList:ids
+          }).then(res=>{
+            if(res.code ===200){
+              this.$message.success("删除成功！")
+              this.getList()
+            }else {
+              this.$message.error(res.msg)
+            }
+          })
+        }).catch(() => {
+
+        });
       },
       //当前页码
       handleCurrentChange(val) {

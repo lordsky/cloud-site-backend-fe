@@ -695,6 +695,17 @@ const apiWhiteDel = (data) => {
   })
 }
 
+//删除日志
+const apiDelSystemLog= (data) => {
+  return new Promise((resolve, reject)=>{
+    instance.post(`backend/deleteSystemLog`,data).then((res)=> {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 export default {
   apiAddCat,
   apiCatType,
@@ -756,5 +767,6 @@ export default {
   apiWhiteDel,
   apiCaseIsIndex,
   apiBannerIsIndex,
-  apiCourseIsIndex
+  apiCourseIsIndex,
+  apiDelSystemLog
 }
