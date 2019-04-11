@@ -363,6 +363,7 @@
         display: flex;
         align-items: center;
         justify-content:space-evenly;
+        z-index: 999;
       }
     }
     .topside{
@@ -462,6 +463,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 999;
     }
     .manage-dialog{
       .compon-edit-list {

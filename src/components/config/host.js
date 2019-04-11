@@ -13,6 +13,6 @@ hostConfig.editorUrl='http://cloud-site-fe-dev.uworks.cc/editor.html'
 }else{
 hostConfig.hostUrl = 'http://six-pulse-nerve-gateway-test.uworks.cc'
 hostConfig.editorUrl='http://cloud-site-fe-dev.uworks.cc/editor.html'
-//hostConfig.hostUrl = 'http://192.168.4.97:9001'
+// hostConfig.hostUrl = 'http://192.168.4.97:9001'
 }
 export default hostConfig

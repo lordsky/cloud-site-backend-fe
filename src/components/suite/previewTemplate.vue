@@ -1,12 +1,11 @@
 <template>
   <div class="preview">
     <div v-html="preview.content">{{preview.content}}</div>
-        
-    </div>
   </div>
 </template>
 
 <script>
+  import Swiper from 'swiper';
     export default {
       name: "preview",
       data() {
@@ -16,7 +15,28 @@
           }
         }
       },
-     
+      mounted() {
+        new Swiper ('.swiper-container', {
+          direction: 'vertical', // 垂直切换选项
+          loop: true, // 循环模式选项
+
+          // 如果需要分页器
+          pagination: {
+            el: '.swiper-pagination',
+          },
+
+          // 如果需要前进后退按钮
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+
+          // 如果需要滚动条
+          scrollbar: {
+            el: '.swiper-scrollbar',
+          },
+        })
+      }
     }
 </script>
 
@@ -34,13 +54,27 @@
   }
 </style>
 <style scoped>
- .swiper-container {
-        width: 100%;
-        height: 300px;
-        margin: 20px auto;
-        img{
-        	   width: 100%;
-        	   height: 100%;
-        }
-    }
+  .swiper-container {
+    width: 100%;
+    height: 100%;
+  }
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+
+    /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+  }
 </style>
