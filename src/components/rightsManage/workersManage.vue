@@ -36,42 +36,44 @@
         </el-table-column>
       </el-table>
        <div class="paging">
-    	 <el-pagination
+    	 
+   <el-pagination
+      background
       @current-change="handleCurrentChange"
       :current-page.sync="currentPage"
-      background
-      :page-sizes="[100, 200, 300, 400]"
       :page-size="pageSize"
-      layout="sizes, prev, pager, next"
+      layout="prev, pager, next, jumper"
       :total="totalPage">
     </el-pagination>
     </div>
     </div>
     <!--弹框表单-->
     <el-dialog :title="titleDialog" :visible.sync="dialogFormVisible" width="500px">
-      <el-form label-width="80px" :model="formText">
-        <el-form-item label="姓名:">
+      <el-form label-width="100px" :model="formText" :rules="rules" ref="ruleForm">
+        <el-form-item label="姓名:" prop="username">
           <el-input placeholder="请输入姓名" v-model="formText.username"></el-input>
         </el-form-item>
-        <el-form-item label="手机号:">
+        <el-form-item label="手机号:" prop="phone">
           <el-input placeholder="请输入手机号" v-model="formText.phone"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱:">
+        <el-form-item label="邮箱:" prop="email">
           <el-input placeholder="请输入邮箱" v-model="formText.email"></el-input>
         </el-form-item>
-        <el-form-item label="密码:" v-show="editShow">
+        <el-form-item label="密码:" v-show="editShow" prop="pwd">
           <el-input placeholder="请输入密码" v-model="formText.pwd"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码:" v-show="editShow">
+        <el-form-item label="确认密码:" v-show="editShow" prop="pwdTwo">
           <el-input placeholder="请确认密码" v-model="formText.pwdTwo"></el-input>
         </el-form-item>
         <el-form-item label="角色:">
-            <el-cascader
-			  :options="data"
-			  :props="roleProps"
-			  v-model="formText.roleId"
-			  :show-all-levels="false"
-			></el-cascader>
+            <el-select v-model="formText.roleId" placeholder="请选择">
+			    <el-option
+			      v-for="item in roleList"
+			      :key="item.roleMenuid"
+			      :label="item.roleName"
+			      :value="item.roleMenuid">
+			    </el-option>
+			  </el-select>
         </el-form-item>
         <el-form-item label="部门:">
           <el-cascader
@@ -81,7 +83,7 @@
 			  :show-all-levels="false"
 			></el-cascader>
         </el-form-item>
-        <el-form-item label="职位:">
+        <el-form-item label="职位:" prop="positions">
           <el-input placeholder="请输入职位" v-model="formText.positions"></el-input>
         </el-form-item>
       </el-form>
@@ -122,7 +124,28 @@
         	   label:'departmentName',
         	   value:'id',
         	   children:'list'
-        }
+        },
+        roleList:[],
+       rules:{
+      	username: [
+            { required: true, message: '请输入姓名', trigger: 'blur' },
+          ],
+          phone: [
+            { required: true, message: '请输入手机号', trigger: 'blur' },
+          ],
+          email: [
+            { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          ],
+          pwd: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+          ],
+          pwdTwo: [
+            { required: true, message: '请再次输入密码', trigger: 'blur' },
+          ],
+          positions: [
+            { required: true, message: '请输入职位', trigger: 'blur' },
+          ],
+      }
       }
     },
     methods: {
@@ -179,7 +202,7 @@
         	  this.$http.post(this.$API.delWorksList,
         	  	val.id
         	  ,response=>{
-        	  	 response.data.code==200?this.$message({ type: 'success',message: '删除成功!'}):''
+        	  	 response.data.code==200?(this.$message({ type: 'success',message: '删除成功!'}),this.getWorksTable(this.worksListInfo.id)):''
         	  })
         }).catch(() => {
           this.$message({
@@ -209,8 +232,8 @@
       	})
       },
       //添加成员
-      addWorksRequest(){
-      	this.$http.post(this.$API.addWorks,{},response=>{
+      addWorksRequest(data){
+      	this.$http.post(this.$API.addWorks,data,response=>{
       		console.log(response)
       	})
       },
@@ -232,17 +255,32 @@
       //添加成员
       addRole(){
       	this.dialogFormVisible = true
+      	this.editShow = true
       	this.titleDialog = '添加成员'
+      	this.formText = {}
       },
-      
+      //获取角色列表
+      	getList(){
+	    		this.$http.get(this.$API.showMenu,response=>{
+	    			console.log(response)
+	    			this.roleList = response.data.data
+	    		})
+	    	},
+      //保存成员
       saveWorks(){
       	 console.log(this.formText)
-      	 this.titleDialog ==='添加成员'
+      	 if(this.editShow){
+      	   
+//    	 	this.addWorksRequest()
+      	 }else{
+      	 	this.setWorksRequest()
+      	 }
       }
     },
     created(){
     	   this.getWorksList()
     	   this.getWorksTable()
+    	   this.getList()
     }
   }
 </script>
@@ -257,9 +295,7 @@
     .workers-left {
       width: 250px;
       border-right: #F2F2F2 solid 1px;
-      .menu{
-      	width: 100%;
-      }
+      
     .el-tree-node__content{
       height: 40px;
     }

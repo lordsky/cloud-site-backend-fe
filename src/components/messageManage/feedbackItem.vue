@@ -11,11 +11,12 @@
     	  		<li>电话：{{content.phone}}</li>
     	  		<li>邮箱：{{content.email}}</li>
     	  	</ul>
-    	  	<p class="feedback_title">反馈内容：{{content.content}}</p>
-    	  	<p></p>
+    	  	<p class="feedback_title">反馈内容：</p>
+    	  	<p>{{content.content}}</p>
     	  </el-col>
     	  <el-col>
     	  	<p class="feedback_title">附件：</p>
+    	  	<p> <a :href="content.fileUrl" download="">下载</a></p>
     	  </el-col>
     </el-row>
     <div class="feedback_btn">
@@ -33,8 +34,13 @@
 			}
 		},
 		methods:{
+			//返回
 			goBack(){
 				this.$router.push({path:'/feedbackMessage'})
+			},
+			//下载
+			download(){
+				
 			}
 		},
 		created(){

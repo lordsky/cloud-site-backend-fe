@@ -39,13 +39,13 @@
             <input type="text" :value="options.catName" disabled/>
           </el-form-item>
           <div class="el-dialog-componAdd-update">
-            <span class="el-componAdd-update-title">组件名字：</span>
+            <span class="el-componAdd-update-title">组件名称：</span>
             <el-input type="text" class="addCom_input" v-model="componentName" placeholder="请输入组件名称" />
           </div>
           <div class="el-dialog-componAdd-update">
             <span class="el-componAdd-update-title">上传文件：</span>
             <a href="javascript:void(0);" class="upload-text">选择文件<input name="file" type="file" ref="file" @change="uploadText"></a>
-            <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件(.txt格式文件)'}}</span>
+            <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件.txt格式文件'}}</span>
           </div>
           <div class="el-dialog-componAdd-update">
             <span class="addCom-title warFater">上传缩略图：</span>
@@ -71,6 +71,8 @@
 
 <script>
 	import host from '../config/host'
+		import Swiper from 'swiper';
+
   export default {
     name: 'componentEditor',
     data() {
@@ -84,7 +86,8 @@
         componentName: '',
         queryItem: '',
         host:host,
-        thumb:''
+        thumb:'',
+        childId:''
       }
     },
     created() {
@@ -93,6 +96,15 @@
       this.options.catName = this.$route.query.text
       this.update()
     },
+    mounted(){
+      	console.log('11')
+     new Swiper ('.swiper-container', {
+		 effect : 'coverflow',
+		slidesPerView: 3,
+		centeredSlides: true,
+   
+  })
+     },
     methods: {
 	    	//上传缩略图
 	    	handlePreview(file) {
@@ -106,23 +118,10 @@
       },
       //修改名字
       SetComponent(val){
-      	console.log(val.catId)
-      	this.$prompt('修改组件名：', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-        }).then(({ value }) => {
-           this.$http.post(this.$API.setComponentName,{
-	      		catId:val.catId,
-	      		name:value
-	      	},response=>{
-	      		console.log(response)
-	      	})
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消修改'
-          });       
-        });
+      	this.dialogAdd = true
+      	this.childId = val.id
+      	this.componentName = ''
+      	this.textData = ''
       },
     	  //查看组件
     	  lookComponent(item){
@@ -154,23 +153,31 @@
           console.log(res)
           if(res.data.code == 200) {
             this.comItem = res.data.data
+            this.childId = ''
           }
         })
       },
       //保存组件
       saveCompon() {
-        if(this.value === '' || this.textData === '') return
-        if(this.textData.type !== 'text/plain') {
-          return this.$message.error('文件类型不对，请上传.txt文件格式')
+        if(this.componentName === ''){
+        	   this.$message.error('请填写文件名称')
+        	   return
+        }
+        if(!this.childId){
+        	  if(this.textData===''){
+        	    this.$message.error('请上传文件')
+        	    return
+          }
         }
         let formData = new FormData();
         console.log(this.textData)
-        formData.append('file', this.textData);
+        !this.childId?formData.append('file', this.textData):''
         formData.append('catExt', '1');
         formData.append('name', this.componentName);
         formData.append('catId', this.options.id);
         formData.append('thumb', this.thumb);
-                this.$http.post(this.$API.componentAdd, formData, (res) => {
+        this.childId?formData.append('id', this.childId):''
+        this.$http.post(this.$API.componentAdd, formData, (res) => {
           console.log(res)
           this.update()
           this.dialogAdd = false
@@ -185,7 +192,10 @@
         })
       },
       uploadText(e) {
-        var file = e.target.files[0]
+      	 let file = e.target.files[0]
+      	 if(file.type !== 'text/plain') {
+          return this.$message.error('文件类型不对，请上传.txt文件格式')
+        }
         this.textData = file
       },
       //删除组件
@@ -219,6 +229,8 @@
       //新增组件
       addCompon() {
         this.dialogAdd = true
+        this.componentName = ''
+      	this.textData = ''
       },
       //返回
       backCompon() {
@@ -303,6 +315,11 @@
       display: flex;
       align-items: center;
       height: 55px;
+      .upload-prompt{
+      	width: 120px;
+      	height: 30px;
+      	overflow: hidden;
+      }
       .el-button{
     	   height: 30px;
     	   width: 100px;
@@ -316,6 +333,7 @@
         display: flex;
         ul {
           margin-left: 10px;
+          width: 120px;
           li {
             margin: 0;
           }

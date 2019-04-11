@@ -23,6 +23,7 @@ Vue.prototype.$http = http
 Vue.prototype.$api = API
 
 router.beforeEach((to, from, next) => {
+	
   // NProgress.start();//开启Progress
   if (to.path == '/login') {
     localStorage.removeItem('cloudUser');
@@ -39,6 +40,7 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach(transition => {
   NProgress.done();
+  
 });
 
 /* eslint-disable no-new */

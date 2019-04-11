@@ -152,7 +152,7 @@
       },
       //查询
       queryMessage(val){
-      	let data = {}
+      	let data = {pageNum:1}
       	let formData = this.formInline
       	formData.title?data.title = formData.title:''
       	formData.type?data.catId = formData.type:''

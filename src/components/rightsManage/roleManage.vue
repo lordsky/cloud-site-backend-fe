@@ -58,13 +58,12 @@
 	    	getRoleList(val){
 	    		this.roleInfo = val
 	    		this.roleJson = JSON.parse(JSON.stringify(this.setJson(JSON.parse(val.menuJs))))
-//	    		console.log(this.roleJson)
-	    		console.log(val)
 	    	},
 	    	//单选
 	    	handItem(val,item){
 	    		item.state?val.checkList.push(item.name):val.checkList.splice(val.checkList.indexOf(item.name),1)
 	    		val.checkList.length===0?(val.state = false,val.deter = false):val.checkList.length==val.checkAll.length?(val.state=true,val.deter=false):(val.deter=true,val.state=false)
+	    		console.log(this.roleJson)
 	    	},
 	    	//编辑角色
 	    	setName(val){
@@ -78,15 +77,19 @@
 	    	//保存角色
 	    	saveRole(){
 	    		console.log(this.roleInfo)
-	    		let data = JSON.stringify(this.roleJson)
+	    		let data = this.roleJson
+	    		console.log(data)
+//	    		return
 	    		this.$http.post(this.$API.setRoleJson,{
-	    			id:this.userInfo.id,
-	    			menuJs:data,
-                updaterId:this.roleInfo.roleMenuid
+	    			id:this.roleInfo.roleMenuid,
+	    			menuJs:JSON.stringify(data),
+                updaterId:this.userInfo.id
+//              updaterId:2
 	    		},response=>{
 	    			console.log(response)
 	    			if(response.data.data){
 	    			    this.$message({type:'success',message:'保存成功'})
+	    			    this.roleJson = []
 	    			}
 	    		})
 	    	},
@@ -99,19 +102,17 @@
         }).then(({ value }) => {
         	  if(state=='add'){
         	  	this.$http.post(this.$API.addRole+'?name='+value+'&userId='+user.id,{},response=>{
-        	  		console.log(response)
+        	  		response.data.data?(this.$message({type:'success',message:'添加成功'}),this.getList()):''
         	  	})
         	  }else{
-        	  	 this.$http.post(this.$API.editRole+'?id='+user.id+'&userId='+listInfo.roleMenuid+'&name='+value,{
+        	  	 this.$http.post(this.$API.editRole,{
+        	  	 	id:listInfo.roleMenuid,
+        	  	 	userId:user.id,
+        	  	 	name:value
         	  	 },response=>{
-        	  	 	console.log(response)
-        	  	 	
+        	  	 	response.data.data?(this.$message({type:'success',message:'编辑成功'}),this.getList()):''
         	  	 })
         	  }
-//        this.$message({
-//          type: 'success',
-//          message: msg 
-//        });
         }).catch(() => {
            
         });
@@ -122,6 +123,10 @@
 	    			console.log(response)
 	    			this.menuList = response.data.data
 	    		})
+	    	},
+	    	//搜索角色
+	    	searchRole(){
+	    		
 	    	},
 	    	//设置角色Json
 	    	setJson(val){
@@ -145,7 +150,8 @@
     	   let user = JSON.parse(localStorage.getItem('cloudUser'))
     	   this.userInfo = user
     	   this.getList()
-//  	   this.tableData = this.setJson()
+//  	   this.roleJson = this.setJson(sideText)
+//     console.log(JSON.stringify(sideText))
     }
   }
 </script>

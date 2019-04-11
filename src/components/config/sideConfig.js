@@ -213,6 +213,8 @@ const sideText = [
     title: '用户管理',
     index: '1',
     ico: 'el-icon-tickets',
+     state:false,
+    deter:false,
     list: [{
         name: '用户资料',
         index: '1-1',
@@ -229,6 +231,8 @@ const sideText = [
     title: '模板管理',
     index: '2',
     ico: 'el-icon-edit-outline',
+     state:false,
+    deter:false,
     list: [{
         name: '组件管理',
         index: '2-1',
@@ -251,12 +255,15 @@ const sideText = [
     index: '3',
     ico: 'el-icon-share',
     path: '/siteManage',
+    state:false,
     list: []
 },
 {
  title: '安全设置',
  index: '4',
  ico: 'el-icon-view',
+  state:false,
+    deter:false,
  list: [{
      name: '登陆密码设置',
      index: '4-1',
@@ -264,27 +271,31 @@ const sideText = [
    },
  ]
 },
-     // {
-     //  title: '活动管理',
-     //  index: '5',
-     //  ico: 'el-icon-menu',
-     //  list: [
-     //    {
-     //      name: 'banner管理',
-     //      index: '5-1',
-     //      path: '/banner'
-     //    },
-     //    {
-     //      name: '活动配置',
-     //      index: '5-2',
-     //      path: '/activeConfiguration'
-     //    }
-     //  ]
-     // },
+     {
+      title: '活动管理',
+      index: '5',
+      ico: 'el-icon-menu',
+       state:false,
+    deter:false,
+      list: [
+        {
+          name: 'banner管理',
+          index: '5-1',
+          path: '/banner'
+        },
+        {
+          name: '活动配置',
+          index: '5-2',
+          path: '/activeConfiguration'
+        }
+      ]
+     },
   {
     title: '内容管理',
     index: '6',
     ico: 'el-icon-document',
+    state:false,
+    deter:false,
     list: [
       {
         name: '教程管理',
@@ -302,6 +313,8 @@ const sideText = [
     title: '系统设置',
     index: '7',
     ico: 'el-icon-setting',
+    state:false,
+    deter:false,
     list: [
       {
         name: '操作日志',
@@ -366,6 +379,7 @@ const sideText = [
     index: '10',
     ico: 'el-icon-picture-outline',
     path: '/pictureManage',
+    state:false,
     list: []
   },
 ]

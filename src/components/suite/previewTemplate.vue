@@ -1,6 +1,8 @@
 <template>
   <div class="preview">
     <div v-html="preview.content">{{preview.content}}</div>
+        
+    </div>
   </div>
 </template>
 
@@ -13,7 +15,8 @@
             content:window.localStorage.getItem('saveTemplateCode')
           }
         }
-      }
+      },
+     
     }
 </script>
 
@@ -29,4 +32,15 @@
       margin-top: 10px;
     }
   }
+</style>
+<style scoped>
+ .swiper-container {
+        width: 100%;
+        height: 300px;
+        margin: 20px auto;
+        img{
+        	   width: 100%;
+        	   height: 100%;
+        }
+    }
 </style>

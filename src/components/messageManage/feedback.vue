@@ -14,7 +14,7 @@
     <el-col :span="24" class="feedback_btn">
       <el-button type="primary" size="small" @click="queryList()">查询</el-button>
       <el-button type="primary" size="small" @click="clear">清空</el-button>
-      <el-button type="primary" size="small" @click="exportMessage">导出Excel</el-button>
+      <el-button type="primary" size="small" @click="exportMessage" :disabled="delList.length==0">导出Excel</el-button>
     </el-col>
     <el-col :span="24">
       <el-table :data="tableData" style="width: 100%" border @selection-change="handleSelectionChange">
@@ -25,7 +25,7 @@
             <span>{{scope.row.type==1?'功能建议':scope.row.type==2?'服务投诉':scope.row.type==3?'申诉情况':'举报问题'}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="content" label="反馈内容" align="center">
+        <el-table-column prop="content" label="反馈内容" align="center" show-overflow-tooltip>
         </el-table-column>
         <el-table-column prop="name" label="姓名" align="center">
         </el-table-column>
@@ -75,14 +75,13 @@
           label: '举报问题',
           id: 4
         }],
-        list:[]
+        delList:[]
       }
     },
     methods: {
       //全选
       handleSelectionChange(val) {
-           this.list = val
-          
+           this.delList = val
       },
       //分页
       handleCurrentChange(val) {
@@ -91,20 +90,19 @@
       //信息导出
       exportMessage(){
       	let arr = []
-      	this.list.map(item=>{
-      		console.log(item)
+      	this.delList.map(item=>{
       		arr.push(item.id)
       	})
-      	console.log(arr)
       	this.$http.post(this.$API.exportMessage,{
       		idList:arr
       	},response=>{
-      		const blob = new Blob( [response.data], {type: 'application/xls'} )
+      		console.log(response)
+      		const blob = new Blob( [response.data],{type: 'application/vnd.ms-excel'})
 			     const url = window.URL || window.webkitURL || window.moxURL
 				const downloadHref = url.createObjectURL(blob)
 				let downloadLink = document.createElement('a')
 				downloadLink.href = downloadHref
-				downloadLink.download = "11.xls"
+				downloadLink.download = "反馈消息.xls"
 				downloadLink.click()
 				this.$message({
 		            type: 'success',
