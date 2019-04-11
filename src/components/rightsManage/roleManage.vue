@@ -3,7 +3,7 @@
     <div class="role-conetent">
       <div class="role-left">
       	<el-button type="primary" class="left_addBtn" @click="addRole">添加角色</el-button>
-      	<el-input class="left_input" placeholder="通过关键词过滤"></el-input>
+      	<el-input class="left_input" placeholder="通过关键词过滤" @keyup.enter.native="searchRole" v-model="roleText"></el-input>
       	<ul class="role-left-list">
       		<li v-for="(item,index) in menuList" :key="index" @click="getRoleList(item)">{{item.roleName}}<i class="el-icon-edit-outline" @click="setName(item)"></i></li>
       	</ul>
@@ -42,7 +42,7 @@
          roleJson:[],
          roleInfo:[],
          userInfo:{},
-         
+         roleText:''
       }
     },
     methods:{
@@ -126,7 +126,10 @@
 	    	},
 	    	//搜索角色
 	    	searchRole(){
-	    		
+	    		this.$http.get(this.$API.findRole+'?name='+this.roleText,response=>{
+	    			console.log(response)
+	    			response.data.code==200?this.menuList = response.data.data:''
+	    		})
 	    	},
 	    	//设置角色Json
 	    	setJson(val){
@@ -150,8 +153,6 @@
     	   let user = JSON.parse(localStorage.getItem('cloudUser'))
     	   this.userInfo = user
     	   this.getList()
-//  	   this.roleJson = this.setJson(sideText)
-//     console.log(JSON.stringify(sideText))
     }
   }
 </script>

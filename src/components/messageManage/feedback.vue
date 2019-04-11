@@ -112,10 +112,9 @@
       },
       //查询
       queryList(val) {
-        console.log(this.formInline)
         let data = {}
         this.formInline.type ? data.type = this.formInline.type : ''
-        this.formInline.time ? (data.startDate = this.formInline.time[0], data.endDate = this.formInline.time[1]) : ''
+        this.formInline.time ? (data.startDate = this.$http.getLocalTime(this.formInline.time[0]), data.endDate = this.$http.getLocalTime(this.formInline.time[1])) : ''
         val ? data.pageNum = val : this.currentPage = 1
         this.getList(data)
       },

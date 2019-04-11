@@ -100,6 +100,16 @@
   export default {
     name: "workersManage",
     data() {
+    	  const PHONE_REG = /^1[34578]\d{9}$/
+      let validatePhone = (rule, value, callback) => {
+        if(value === "") {
+          callback(new Error("请输入手机号"));
+        } else if(!PHONE_REG.test(value)) {
+          callback(new Error("请输入正确的手机号!"));
+        } else {
+          callback();
+        }
+      }
       return {
         data: [],
         defaultProps: {
@@ -131,7 +141,8 @@
             { required: true, message: '请输入姓名', trigger: 'blur' },
           ],
           phone: [
-            { required: true, message: '请输入手机号', trigger: 'blur' },
+             {validator: validatePhone, trigger: "blur"},
+             { required: true,message: '请输入手机号', trigger: 'blur' },
           ],
           email: [
             { required: true, message: '请输入邮箱地址', trigger: 'blur' },
@@ -232,13 +243,22 @@
       	})
       },
       //添加成员
-      addWorksRequest(data){
+      addWorksRequest(){
+      	let data = this.formText
+      	let index = data.deptId.length - 1
+      	let id = data.deptId[index]
+      	delete data.pwdTwo
+      	delete data.deptId
+      	data.deptId = id
       	this.$http.post(this.$API.addWorks,data,response=>{
       		console.log(response)
       	})
       },
       //编辑成员
       setWorksRequest(){
+      	let data = this.formText
+      	
+      	console.log(data)
       	this.$http.post(this.$API.setWorks,{},response=>{
       		console.log(response)
       	})
@@ -268,13 +288,22 @@
 	    	},
       //保存成员
       saveWorks(){
-      	 console.log(this.formText)
-      	 if(this.editShow){
-      	   
-//    	 	this.addWorksRequest()
-      	 }else{
-      	 	this.setWorksRequest()
+      	 if(!this.formText.roleId||!this.formText.deptId){
+      	 	this.$message({type:'warning',message:'11'})
+      	 	return
       	 }
+      	 this.$refs['ruleForm'].validate((valid) => {
+          if (valid) {
+            if(this.editShow){
+      	 		this.addWorksRequest()
+	      	 }else{
+	      	 	this.setWorksRequest()
+	      	 }
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       }
     },
     created(){
