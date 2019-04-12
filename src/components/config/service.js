@@ -54,7 +54,14 @@ const API = {
     setWorks:'backend/update/adminusers',
     //增加员工
     addWorks:'backend/add/adminusers',
-   
+    //检测电话
+    checkPhone:'backend/checkAccount',
+    //增加树级成员
+    addWorksTree:'backend/add/department',
+    //删除树级成员
+    delWorksTree:'backend/delete/department',
+    //修改树级成员
+    setWorksTree:'backend/update/department',
 	/*
 	 *   组件 
 	 */

@@ -37,10 +37,11 @@ var AUTH_TOKEN = function(){
 function testUrl(config,test){
 	return config.indexOf(test)
 }
+
 instance.interceptors.request.use(config => {
   let res = config.url
-  showLoading()
-  if(testUrl(res,'adminLogin') >-1||testUrl(res,'showUserList')>-1||testUrl(res,'displayTemplateTestOnBackend')>-1||testUrl(res,'userTemplateBackend')>-1||testUrl(res,'refuseLogin') >-1||testUrl(res,'showUserDetail') >-1){
+testUrl(res,'/checkAccount') >-1?'':showLoading()
+  if(testUrl(res,'adminLogin') >-1||testUrl(res,'showUserList')>-1||testUrl(res,'displayTemplateTestOnBackend')>-1||testUrl(res,'userTemplateBackend')>-1||testUrl(res,'refuseLogin') >-1||testUrl(res,'showUserDetail') >-1||testUrl(res,'stopUserTemplate') >-1){
     	   console.log('不带token')
     	   if(testUrl(res,'showUserList')>-1||testUrl(res,'displayTemplateTestOnBackend')>-1){
     	   	config.withCredentials = false
@@ -50,13 +51,13 @@ instance.interceptors.request.use(config => {
     }
     return config
 }, error => {
-  closeLoading()
+    closeLoading()
 	console.log(error)
    Promise.reject(error)
 })
 
 instance.interceptors.response.use(data => {
-    closeLoading()
+	 closeLoading()
 	if(data.data.code!==200){
 		Message({
         message: data.data.msg,
@@ -65,7 +66,7 @@ instance.interceptors.response.use(data => {
 	}
     return data
 }, error => {
-  closeLoading()
+	closeLoading()
     Message({
         message: '服务器端错误，请稍后重试',
         type: 'error'
@@ -75,36 +76,27 @@ instance.interceptors.response.use(data => {
 
 const http = {
 	post:function(url,data,success,headers){
-		let loadingInstance = Loading.service(options);
 		var config = {}
 		if(headers){
 			config.headers = headers
 		}
 		instance.post(url, data, config).then((res)=>{
-			loadingInstance.close();
 			success(res)
 		}).catch((error)=>{
 			console.log(error)
-		    loadingInstance.close();
 		})
 	},
 	get:function(url,success,data){
-		let loadingInstance = Loading.service(options);
 		instance.get(url,data).then((res)=>{
-			loadingInstance.close();
 			success(res)
 		}).catch((e)=>{
-			loadingInstance.close();
 			console.log(e)
 		})
 	},
 	delete:function(url,data,success){
-		let loadingInstance = Loading.service(options);
 		instance.delete(url,data).then((res)=>{
-			loadingInstance.close();
 			success(res)
 		}).catch((e)=>{
-			loadingInstance.close();
 			console.log(e)
 		})
 	},

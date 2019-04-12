@@ -93,8 +93,7 @@
       	this.delList.map(item=>{
       		arr.push(item.id)
       	})
-      	this.$http.post(this.$API.exportMessage,{
-      		idList:arr
+      	this.$http.get(this.$API.exportMessage+'?ids='+arr,{
       	},response=>{
       		console.log(response)
       		const blob = new Blob( [response.data],{type: 'application/vnd.ms-excel'})

@@ -84,7 +84,6 @@
 	    			id:this.roleInfo.roleMenuid,
 	    			menuJs:JSON.stringify(data),
                 updaterId:this.userInfo.id
-//              updaterId:2
 	    		},response=>{
 	    			console.log(response)
 	    			if(response.data.data){
@@ -118,18 +117,17 @@
         });
 	    	},
 	    	//获取角色列表
-	    	getList(){
-	    		this.$http.get(this.$API.showMenu,response=>{
+	    	getList(val){
+	    		let url
+	    		val?url = this.$API.showMenu+'?roleName='+val:url = this.$API.showMenu
+	    		this.$http.get(url,response=>{
 	    			console.log(response)
 	    			this.menuList = response.data.data
 	    		})
 	    	},
 	    	//搜索角色
 	    	searchRole(){
-	    		this.$http.get(this.$API.findRole+'?name='+this.roleText,response=>{
-	    			console.log(response)
-	    			response.data.code==200?this.menuList = response.data.data:''
-	    		})
+	    		this.getList(this.roleText)
 	    	},
 	    	//设置角色Json
 	    	setJson(val){

@@ -42,7 +42,7 @@
             <span class="el-componAdd-update-title">组件名称：</span>
             <el-input type="text" class="addCom_input" v-model="componentName" placeholder="请输入组件名称" />
           </div>
-          <div class="el-dialog-componAdd-update">
+          <div class="el-dialog-componAdd-update" v-show="showCompon">
             <span class="el-componAdd-update-title">上传文件：</span>
             <a href="javascript:void(0);" class="upload-text">选择文件<input name="file" type="file" ref="file" @change="uploadText"></a>
             <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件.txt格式文件'}}</span>
@@ -87,7 +87,8 @@
         queryItem: '',
         host:host,
         thumb:'',
-        childId:''
+        childId:'',
+        showCompon:true,
       }
     },
     created() {
@@ -120,13 +121,14 @@
       SetComponent(val){
         this.dialogAdd = true
         this.childId = val.id
-        this.componentName = ''
+        this.componentName = val.name
+        this.showCompon = false
         this.textData = ''
       },
       //查看组件
       lookComponent(item){
         window.localStorage.setItem('saveTemplateCode',item.segmentCode)
-        this.$router.push({path:'/PreviewTemplate'})
+        this.$router.push({path:'/previewTemplate'})
       },
       //编辑组件
       editComponent(item){
@@ -229,6 +231,7 @@
       //新增组件
       addCompon() {
         this.dialogAdd = true
+        this.showCompon = true
         this.componentName = ''
         this.textData = ''
       },

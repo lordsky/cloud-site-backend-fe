@@ -13,19 +13,19 @@
         <table border="1" cellspacing="0" cellpadding="0">
           <tr>
             <td class="gray">头像</td>
-            <td><img src="" alt="" class="grayIco"/></td>
+            <td><img :src="userInfo.avatar" alt="" class="grayIco"/></td>
             <td class="gray">手机号</td>
-            <td>{{list.account}}</td>
+            <td>{{userInfo.account}}</td>
           </tr>
           <tr>
             <td class="gray">用户昵称</td>
-            <td>{{list.name}}</td>
+            <td>{{userInfo.nickname}}</td>
             <td class="gray">注册时间</td>
-            <td>{{list.starTime}}</td>
+            <td>{{userInfo.starTime}}</td>
           </tr>
           <tr>
             <td class="gray">用户名称</td>
-            <td></td>
+            <td>{{userInfo.username}}</td>
             <td class="gray"></td>
             <td></td>
           </tr>
@@ -36,15 +36,15 @@
         <table border="1" cellspacing="0" cellpadding="0">
           <tr>
             <td class="gray">公司名称</td>
-            <td>1111</td>
+            <td>{{userInfo.name}}</td>
             <td class="gray">联系电话</td>
-            <td>{{list.account}}</td>
+            <td>{{userInfo.companyAccount}}</td>
           </tr>
           <tr>
             <td class="gray">所在行业</td>
-            <td>{{list.name}}</td>
+            <td>{{userInfo.industry}}</td>
             <td class="gray">邮箱</td>
-            <td>{{list.starTime}}</td>
+            <td>{{userInfo.email}}</td>
           </tr>
           <tr>
             <td class="gray">网站负责人</td>
@@ -57,23 +57,24 @@
       <div class="site-info">
         <p class="userInfo-title">站点信息</p>
         <div class="site-list">
-          <div class="site-item" v-for="x in 3">
+        	  <div style="clear: both;"></div>
+          <div class="site-item" v-for="item in siteList">
             <div class="site-item-title">
               <div class="site-item-title-text">
-                <p>xxx的网站</p>
-                <p>状态：未发布</p>
-                <p>http://www.baidu.com</p>
+                <p>{{item.siteName}}</p>
+                <p>状态：{{item.status==0?'未发布':item.status==1?'已发布':'已禁用'}}</p>
+                <p>{{item.siteDomain}}</p>
               </div>
             </div>
             <div class="site-item-btn">
               <div class="site-item-btns">
-                 <div class="site_button" @click="lookSite()">
+                 <div class="site_button" @click="lookSite(item.siteDomain)">
                  	<img src="../../assets/img/ic_cms_view.png" alt="" class="site_ico"/>
                  	<p>查看</p>
                  </div>
               </div>
               <div class="site-item-btns">
-                <div class="site_button">
+                <div class="site_button" @click="disableSite(item)">
                  	<img src="../../assets/img/ic_cms_design.png" alt="" class="site_ico"/>
                  	<p>禁用</p>
                  </div>
@@ -101,6 +102,8 @@
       return {
          diaShow:false,
          dialogText:'',
+         userInfo:{},
+         siteList:[],
          list:{}
       }
     },
@@ -109,11 +112,7 @@
       goBack() {
         this.$router.push({path:'/userData'})
       },
-      //禁用
-      disable(){
-      	this.diaShow = true
-      	this.dialogText = '是否确定禁用该站点？'
-      },
+      
       //重置密码
       resetPass(){
       	this.diaShow = true
@@ -121,31 +120,42 @@
       },
       //重置密码请求
       resetPassword(){
-      	this.$http.post(this.$API.resetUserPassword,{
-      		userId:this.list.id
-      	},(response)=>{
-      		console.log(response)
-      	})
+      	
       },
-      jump(){
+      //禁用站点
+      disableSite(val){
+      	this.$confirm('是否禁用站点?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        	   this.$http.post(this.$API.siteDetails+'?userTemplateId='+val.id,{
+	      	},response=>{
+	      		response.data.code==200?(this.getUserList(),this.$message({type:'success',message:'禁用成功'})):''
+	      	})
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       	
       },
       //查看站点
       lookSite(val){
-        console.log('11')
-//    	window.open("http://"+val)
+      	val?window.open("http://"+val):''
       },
       //获取站点信息
       getSite(){
-      	this.$http.get(this.$API.querySite+'?userTemplateId='+this.list.id,response=>{
-      		console.log(response)
-      	})
       },
       //获取用户信息
       getUserList(){
       	this.$http.post(this.$API.userDetails+'?userId='+this.list.id,{
       	},(response)=>{
-      		console.log(response)
+      		if(response.data.code==200){
+      			this.userInfo = response.data.data
+      		    this.siteList = response.data.data.userDomianDOS
+      		}
       	})
       }
     },
@@ -208,9 +218,7 @@
     .site-info {
       margin-top: 20px;
       .site-list {
-      	display: flex;
         margin-top: 20px;
-        width: 100%;
         .site-item {
           width: 32%;
           height: auto;
@@ -221,7 +229,7 @@
           box-shadow: 0 0 8px #cbe0f9;
           .site-item-title {
             .site-item-title-text {
-              margin: 20px 0 0 30px;
+              margin: 20px 20px 0 20px;
               p {
                 margin-bottom: 5px;
                 font-size: 13px;

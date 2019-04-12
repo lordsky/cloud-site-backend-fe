@@ -1,14 +1,15 @@
 <template>
   <div class="workers-manage">
     <div class="workers-left">
-      <el-input v-model="value" placeholder="通过关键词过滤"></el-input>
+      <el-input placeholder="通过关键词过滤" @keyup.enter.native="searchWorks" v-model="worksText"></el-input>
       <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" @node-contextmenu="rightClick" :highlight-current="true"        ref="tree" node-key="id" :default-expanded-keys="treeArr"></el-tree>
       <!--鼠标右键菜单栏-->
       <div v-show="menuVisible">
         <ul id="menu" class="menu">
-          <li class="menu__item" @click="editorRole">编辑</li>
-          <li class="menu__item" @click="resetPassword">重置密码</li>
-          <li class="menu__item" @click="deleteRole">删除</li>
+          <li class="menu__item" @click="renameList">重命名</li>
+          <li class="menu__item" @click="addRole">添加成员</li>
+          <li class="menu__item" @click="createList">创建子部门</li>
+          <li class="menu__item" @click="delList">删除部门</li>
         </ul>
       </div>
     </div>
@@ -54,7 +55,7 @@
           <el-input placeholder="请输入姓名" v-model="formText.username"></el-input>
         </el-form-item>
         <el-form-item label="手机号:" prop="phone">
-          <el-input placeholder="请输入手机号" v-model="formText.phone"></el-input>
+          <el-input placeholder="请输入手机号" v-model="formText.phone" @blur="checkPhone(formText.phone)"></el-input>
         </el-form-item>
         <el-form-item label="邮箱:" prop="email">
           <el-input placeholder="请输入邮箱" v-model="formText.email"></el-input>
@@ -100,7 +101,7 @@
   export default {
     name: "workersManage",
     data() {
-    	  const PHONE_REG = /^1[34578]\d{9}$/
+    	  const PHONE_REG = /^1[345678]\d{9}$/
       let validatePhone = (rule, value, callback) => {
         if(value === "") {
           callback(new Error("请输入手机号"));
@@ -136,6 +137,8 @@
         	   children:'list'
         },
         roleList:[],
+        treeInfo:{},
+        worksText:'',
        rules:{
       	username: [
             { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -169,6 +172,7 @@
         document.addEventListener('click', this.foo) // 给整个document添加监听鼠标事件，点击任何位置执行foo方法
         menu.style.top = MouseEvent.clientY - 150 + 'px'
         console.log(object)
+        this.treeInfo = object
       },
      
      foo() { // 取消鼠标监听事件 菜单栏
@@ -180,7 +184,6 @@
       	this.$confirm('确定要重置密码吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          
         }).then(() => {
           this.$message({
             type: 'success',
@@ -192,6 +195,70 @@
             message: '已取消删除'
           });          
         });
+      },
+      //检查电话
+      checkPhone(val){
+      	this.$http.post(this.$API.checkPhone+'?account='+val,{
+      	},response=>{
+      		console.log(response)
+      	})
+      },
+      //重命名
+      renameList(){
+      	this.$prompt('部门名称：', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+           this.$http.post(this.$API.setWorksTree,{
+           	departmentName:value,
+           	id:'',
+           	parentId:''
+           },response=>{
+           	console.log(response)
+           })
+        }).catch(() => {
+              
+        });
+      },
+      //创建部门
+      createList(){
+      	this.$prompt('部门名称：', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+           this.$http.post(this.$API.addWorksTree,{
+           	departmentName:value,
+           	id:'',
+           	parentId:''
+           },response=>{
+           	console.log(response)
+           })
+        }).catch(() => {
+               
+        });
+      },
+      //删除部门
+      delList(){
+      	 this.$confirm('确定删除该部门吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+           this.$http.post(this.$API.delWorksTree,{
+              
+           },response=>{
+           	console.log(response)
+           })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      },
+      //搜索
+      searchWorks(){
+      	this.getWorksList(this.worksText)
       },
       //树点击
       handleNodeClick(val) {
@@ -223,7 +290,7 @@
         });
       },
       //获取树状列表
-      getWorksList(){
+      getWorksList(val){
       	this.$http.post(this.$API.getWorksList,{},response=>{
       		console.log(response)
       		this.data = response.data.data
@@ -274,9 +341,11 @@
       },
       //添加成员
       addRole(){
+      	console.log('123')
       	this.dialogFormVisible = true
       	this.editShow = true
       	this.titleDialog = '添加成员'
+      	this.$refs['formName'].resetFields();
       	this.formText = {}
       },
       //获取角色列表
@@ -357,7 +426,7 @@
       margin-top: 10px;
     }
     .menu {
-      height: 100px;
+      height: 130px;
       width: 100px;
       position: absolute;
       border-radius: 10px;

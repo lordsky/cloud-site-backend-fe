@@ -120,8 +120,11 @@
       }
     },
     watch:{
-    	  fromUser:function(val){
-    	  	val.name&&val.companyName?(this.queryState = true,this.$message({type:'warning',message:'企业和用户只能选一个查询'})):this.queryState = false
+    	  fromUser:{
+    	  	     deep:true,
+             handler: function (val) {
+             	val.name&&val.companyName?(this.queryState = true,this.$message({type:'warning',message:'企业和用户只能选一个查询'})):this.queryState = false
+               }
     	  }
     },
     methods: {
@@ -193,27 +196,25 @@
         let timeEnd = ''
         let status = this.fromUser.state
         let account = this.fromUser.account
-        let name = this.fromUser.name
+        let username = this.fromUser.name
+        let companyName = this.fromUser.companyName
         let url = this.$API.userList
 //      console.log(this.fromUser)
         if(this.fromUser.timeData) {
           timeStatr = this.$http.getLocalTime(this.fromUser.timeData[0])
           timeEnd = this.$http.getLocalTime(this.fromUser.timeData[1])
-          obj.timeStatr = timeStatr
-          obj.timeEnd = timeEnd
+          obj.start = timeStatr
+          obj.end = timeEnd
         }
         status ? obj.status = status : ''
         account ? obj.account = account : ''
-        name ? obj.name = name : ''
+        username ? obj.username = username : ''
+        companyName ? obj.companyName = companyName :''
         this.$http.get(url, (res) => {
 //        console.log(window)
           if(res.data.code === 200) {
            res.data.data.content.content.map(item=>{
-      	    	   let str = ''
-      	    	   str = item.createTime
-      	    	   str = str.replace('.000+0000',' ')
-      	    	   str = str.replace('T',' ')
-      	    	   item.createTime = str
+      	    	   console.log(item.createTime)
       	    })
           	this.totalPage = res.data.data.content.totalElements
             this.tableData = res.data.data.content.content

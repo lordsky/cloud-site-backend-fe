@@ -36,7 +36,7 @@
       </div>
       <div class="picture-check" v-show="listLabel==2">
         <span class="check-item"><el-checkbox v-model="checkVideo":indeterminate="videoAllStatu"  @change="videoAllChange">全选</el-checkbox></span>
-        <span class="check-item"><el-button type="primary" size="small" @click="allDel('video')" :disabled="checkVideoList.length==0">批量删除</el-button></span>
+        <span class="check-item"><el-button type="primary" size="small" @click="allDel('video')" :disabled="btnVideo">批量删除</el-button></span>
       </div>
       <div class="picture-list" v-show="listLabel==2">
         <div class="picture-list-item update" >
@@ -63,7 +63,7 @@
       </div>
        <div class="picture-check" v-show="listLabel==3">
         <span class="check-item"><el-checkbox v-model="checkedText" :indeterminate="textAllStatu"  @change="textAllChange">全选</el-checkbox></span>
-        <span class="check-item"><el-button type="primary" size="small" @click="allDel('text')" :disabled="checkTextList.length==0">批量删除</el-button></span>
+        <span class="check-item"><el-button type="primary" size="small" @click="allDel('text')" :disabled="btnText">批量删除</el-button></span>
       </div>
       <div class="picture-list" v-show="listLabel==3">
         <div class="picture-list-item update" >
