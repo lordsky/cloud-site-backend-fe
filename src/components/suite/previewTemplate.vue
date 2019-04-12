@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import '@/assets/js/swiper.min.js';
+  import Swiper from "swiper"
     export default {
       name: "preview",
       data() {
@@ -16,8 +16,9 @@
         }
       },
       mounted() {
-        const mySwiper = new window.Swiper ('.swiper-container', {
+        const mySwiper = new Swiper('.swiper-container', {
           loop: true,
+          observer:true,
           // 如果需要分页器
           pagination: '.swiper-pagination',
           // 如果需要前进后退按钮
@@ -26,6 +27,21 @@
           // 如果需要滚动条
           scrollbar: '.swiper-scrollbar',
         })
+      },
+      methods:{
+        aa(){
+          const mySwiper = new Swiper ('.swiper-container', {
+            loop: true,
+            observeParents:true,
+            observer:true,
+            autoplay:true,
+            // 如果需要分页器
+            pagination: '.swiper-pagination',
+            // 如果需要前进后退按钮
+            nextButton: '.swiper-button-next',
+            prevButton: '.swiper-button-prev',
+          })
+        }
       }
     }
 </script>
@@ -43,7 +59,7 @@
     }
   }
 </style>
-<style scoped>
+<style>
   .swiper-container {
     width: 100%;
     height: 100%;
