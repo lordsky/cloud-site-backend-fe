@@ -16,6 +16,7 @@ import 'bootstrap/dist/js/bootstrap.min'
 import './assets/css/swiper.min.css'
 import './assets/js/swiper.min.js'
 import './assets/icon/iconfont.css'
+import './assets/swiper.css'
 import service from './components/config/service'
 Vue.prototype.$API = service
 Vue.use(ElementUI)

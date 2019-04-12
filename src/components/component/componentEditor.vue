@@ -97,13 +97,6 @@
       this.update()
     },
     mounted(){
-      console.log('11')
-      new Swiper ('.swiper-container', {
-        effect : 'coverflow',
-        slidesPerView: 3,
-        centeredSlides: true,
-
-      })
     },
     methods: {
       //上传缩略图
