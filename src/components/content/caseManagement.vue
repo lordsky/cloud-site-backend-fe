@@ -8,8 +8,8 @@
               <el-input v-model="filters.name" placeholder="请输入关键字" clearable></el-input>
             </el-form-item>
             <el-form-item label="案例类型" prop="caseType">
-              <el-select v-model="filters.caseType" placeholder="全部" class="el-select-banner">
-                <el-option :label="x.catName" :value="x.id" v-for="(x,i) in setTree" :key="i"></el-option>
+              <el-select v-model="filters.caseIndex" placeholder="全部" class="el-select-banner">
+                <el-option :label="x.catName" :value="i" v-for="(x,i) in setTree" :key="i"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="状态" prop="state">
@@ -165,6 +165,7 @@
     name: "case",
     data() {
       return {
+        caseIndex:'',
         formCompon:{
           name : '',
         },
@@ -217,7 +218,8 @@
           name: '',
           timeData:[],
           caseType:'',
-          state:''
+          state:'',
+          caseIndex:0
         },
         caseList:['首页','模板','教程中心','案例','关于我们'],
         tableData: []//案例表单列表
@@ -406,6 +408,8 @@
       },
       handleNodeClick(d, n, s) { // 点击节点
         this.filters.caseType = d.id
+        const index = this.setTree.findIndex(d => d.id === this.filters.caseType);
+        this.filters.caseIndex = index
         this.getCaseList()
         d.isEdit = false// 放弃编辑状态
       },
@@ -581,7 +585,7 @@
       },
       getCaseList(){
         let para = {
-          caseCatsId:this.filters.caseType,
+          caseCatsId:this.setTree[this.filters.caseIndex].id,
           pageNum: this.page,
           pageSize: this.pageSize,
           name: this.filters.name,
@@ -597,6 +601,9 @@
               const index =  this.setTree.findIndex(d => d.id === this.tableData[i].caseCatsId);
               this.tableData[i].caseCatsId = this.setTree[index].catName
             }
+            this.$nextTick(function(){
+              this.$refs.treeBox.setCurrentKey(this.setTree[this.filters.caseIndex].id);
+            })
           } else {
             this.$message.error(res.msg)
           }

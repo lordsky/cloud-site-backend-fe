@@ -19,7 +19,7 @@
         <el-upload
           ref='upload'
           class="avatar-uploader"
-          :action="host.hostUrl+'/common/upload'"
+          :action="host.imgurl"
           :show-file-list="false"
           :on-change="handleChange"
           :before-upload="beforeUpLoad">

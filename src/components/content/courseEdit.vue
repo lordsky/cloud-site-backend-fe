@@ -40,7 +40,7 @@
         <!-- 图片上传组件辅助-->
         <el-upload
           class="avatar-uploader"
-          :action="host.hostUrl+'/common/upload'"
+          :action="host.imgurl"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
@@ -52,7 +52,7 @@
         <el-upload
           ref='video'
           class="avatar-uploader"
-          :action="host.hostUrl+'/common/upload'"
+          :action="host.imgurl"
           :show-file-list="false"
           :on-success="videoSuccess"
           :before-upload="videoUpload">
