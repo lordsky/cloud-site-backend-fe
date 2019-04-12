@@ -35,23 +35,24 @@
     <el-dialog :visible.sync="dialogAdd" width="500px">
       <div class="el-dialog-componAdd">
         <el-form :inline="true" class="demo-form-inline">
-          <el-form-item label="选择组件分类：">
+          <el-form-item label="选择组件分类：" v-show="showCompon">
             <input type="text" :value="options.catName" disabled/>
           </el-form-item>
           <div class="el-dialog-componAdd-update">
             <span class="el-componAdd-update-title">组件名称：</span>
             <el-input type="text" class="addCom_input" v-model="componentName" placeholder="请输入组件名称" />
           </div>
-          <div class="el-dialog-componAdd-update" v-show="showCompon">
-            <span class="el-componAdd-update-title">上传文件：</span>
-            <a href="javascript:void(0);" class="upload-text">选择文件<input name="file" type="file" ref="file" @change="uploadText"></a>
-            <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件.txt格式文件'}}</span>
+          <div class="el-dialog-componAdd-update" >
+             <span class="el-componAdd-update-title">组件类型：</span>
+            <a href="javascript:void(0);" class="upload-text">选择文件
+              <input name="file" type="file" ref="file" @change="uploadText"></a>
+            <span class="upload-prompt">{{this.textData.name?this.textData.name:'未选择文件(.txt格式文件)'}}</span>
           </div>
           <div class="el-dialog-componAdd-update">
-            <span class="addCom-title warFater">上传缩略图：</span>
+            <span class="el-componAdd-update-title">上传缩略图：</span>
             <el-upload
               class="upload-demo"
-              :action="host.hostUrl+'/common/upload'"
+              :action="host.imgurl"
               :on-success="handlePreview"
               :on-remove="handleRemove"
             >
@@ -110,7 +111,7 @@
         this.thumb = ''
 
       },
-      //修改名字
+      //修改组件
       SetComponent(val){
         this.dialogAdd = true
         this.childId = val.id
@@ -154,25 +155,30 @@
       },
       //保存组件
       saveCompon() {
+      	let url 
         if(this.componentName === ''){
           this.$message.error('请填写文件名称')
           return
         }
-        if(!this.childId){
+          
+        if(this.childId===''){
+          	url = this.$API.componentAdd
           if(this.textData===''){
             this.$message.error('请上传文件')
             return
           }
+        }else{
+        	    url = this.$API.setComponentName
         }
         let formData = new FormData();
         console.log(this.textData)
-        !this.childId?formData.append('file', this.textData):''
-        formData.append('catExt', '1');
+        formData.append('file', this.textData);
+        !this.childId?formData.append('catExt', '1'):'';
         formData.append('name', this.componentName);
         formData.append('catId', this.options.id);
         formData.append('thumb', this.thumb);
         this.childId?formData.append('id', this.childId):''
-        this.$http.post(this.$API.componentAdd, formData, (res) => {
+        this.$http.post(url, formData, (res) => {
           console.log(res)
           this.update()
           this.dialogAdd = false
@@ -227,6 +233,7 @@
         this.showCompon = true
         this.componentName = ''
         this.textData = ''
+        this.childId = ''
       },
       //返回
       backCompon() {
@@ -335,6 +342,41 @@
           }
         }
       }
+    .upload-text {
+    text-decoration: none;
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    position: relative;
+    text-align: center;
+    line-height: 30px;
+    background: #00b3ee;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 100;
+    margin-right: 10px;
+    &:hover {
+      text-decoration: none;
+      color: white;
+    }
+    input {
+      position: absolute;
+      left: 0;
+      color: black;
+      width: 100px;
+      height: 30px;
+      opacity: 0;
+    }
+  }
+   .upload-prompt {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 30px;
+    /*width: 100px;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
     }
     .el-componAdd-update-title {
       display: inline-block;
@@ -374,5 +416,6 @@
     .compon-name {
       color: black;
     }
+   
   }
 </style>

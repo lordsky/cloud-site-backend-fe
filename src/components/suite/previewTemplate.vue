@@ -2,7 +2,7 @@
   <div class="preview">
   	<div class="header">
       <div class="wrap">
-        <div class="btn" @click="exitPreview"><i class="el-icon-circle-close"></i> 退出预览模式</div>
+        <div class="btn" @click="back"><i class="el-icon-circle-close"></i> 退出预览模式</div>
       </div>
     </div>
     <div v-html="preview.content">{{preview.content}}</div>
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import '@/assets/js/swiper.min.js';
+  import Swiper from "swiper"
     export default {
       name: "preview",
       data() {
@@ -22,13 +22,23 @@
       },
       methods:{
       	//退出预览
-      	exitPreview(){
+      	back(){
       		window.history.back(-1)
       	}
       },
       mounted() {
-       
-      }
+        const mySwiper = new Swiper('.swiper-container', {
+          loop: true,
+          observer:true,
+          // 如果需要分页器
+          pagination: '.swiper-pagination',
+          // 如果需要前进后退按钮
+          nextButton: '.swiper-button-next',
+          prevButton: '.swiper-button-prev',
+          // 如果需要滚动条
+          scrollbar: '.swiper-scrollbar',
+        })
+      },
     }
 </script>
 
@@ -69,7 +79,7 @@
     }
   }
 </style>
-<style scoped>
+<style>
   .swiper-container {
     width: 100%;
     height: 100%;

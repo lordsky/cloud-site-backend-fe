@@ -76,7 +76,7 @@
             <span class="addCom-title warFater">上传缩略图：<i class="war-ico" style="left: 15px;">*</i></span>
             <el-upload
 			  class="upload-demo"
-			  :action="host.hostUrl+'/common/upload'"
+			  :action="host.imgurl"
 			  :on-success="handlePreview"
 			  :on-remove="handleRemove"
 			   >

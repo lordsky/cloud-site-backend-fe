@@ -214,7 +214,10 @@
 //        console.log(window)
           if(res.data.code === 200) {
            res.data.data.content.content.map(item=>{
-      	    	   console.log(item.createTime)
+      	    	   let time = item.createTime
+			   let d = new Date(time);
+			let times=d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + 			d.getSeconds();
+			item.createTime = times
       	    })
           	this.totalPage = res.data.data.content.totalElements
             this.tableData = res.data.data.content.content

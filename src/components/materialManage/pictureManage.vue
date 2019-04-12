@@ -16,7 +16,7 @@
       </div>
       <div class="picture-list" v-show="listLabel==1">
         <div class="picture-list-item update" >
-         <el-upload class="avatar-uploader"  :on-success="imgSuccess" :action="host.hostUrl+'/common/upload'">
+         <el-upload class="avatar-uploader"  :on-success="imgSuccess" :action="host.imgurl">
            <i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传图片支持jpg,png,gif等格式，不超过10M</i>
@@ -40,7 +40,7 @@
       </div>
       <div class="picture-list" v-show="listLabel==2">
         <div class="picture-list-item update" >
-          <el-upload class="avatar-uploader"  :on-success="videoSuccess" :action="host.hostUrl+'/common/upload'">
+          <el-upload class="avatar-uploader"  :on-success="videoSuccess" :action="host.imgurl">
           	<i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传视频支持MP4,wma等格式，不超过10M</i>
@@ -67,7 +67,7 @@
       </div>
       <div class="picture-list" v-show="listLabel==3">
         <div class="picture-list-item update" >
-         <el-upload class="avatar-uploader"  :on-success="textSuccess" :action="host.hostUrl+'/common/upload'">
+         <el-upload class="avatar-uploader"  :on-success="textSuccess" :action="host.imgurl">
            <i  class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <i class="el-icon-warning picture-warning">上传文件支持doc、pdf、zip等格式</i>
@@ -304,7 +304,9 @@
     	  			}
     	  		}
     	    console.log(id)
-		this.$http.delete(this.$API.materialsAllDel+'?materialsIds='+id,{},(res)=>{
+		this.$http.post(this.$API.materialsAllDel,{
+			idList:id
+		},(res)=>{
 			        console.log(res)
 					if(res.data.data){
 						if(text=='pic'){
@@ -322,12 +324,16 @@
     	  //删除
     	  delItem(res,val){
     	  	console.log(res)
+    	  	let arr = []
+    	  	arr.push(res.id)
     	  	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-        	  this.$http.delete(this.$API.materialsAllDel+'?materialsIds='+res.id,{},res=>{
+        	  this.$http.post(this.$API.materialsAllDel,{
+        	  	idList:arr
+        	  },res=>{
         	  	console.log(res)
         	  	 if(res.data.data){
         	  	 	if(val=='pic'){
