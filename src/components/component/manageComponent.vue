@@ -86,7 +86,7 @@
         </el-form>
       </div>
       <div class="el-componClassBtn">
-        <el-button @click="dialogVisible = false" size="medium">取 消</el-button>
+        <el-button @click="cancel" size="medium">取 消</el-button>
         <el-button type="primary" @click="saveCompon" size="medium">确 定</el-button>
       </div>
     </el-dialog>
@@ -184,6 +184,11 @@
         var file = e.target.files[0]
         this.textData = file
       },
+      cancel(){
+      	this.dialogVisible = false
+      	this.classBtn = 1
+      	this.clear()
+      },
       //重置验证
       resetForm() {
         this.$refs['formCompon'].resetFields();
@@ -200,6 +205,8 @@
       clear() {
         this.formCompon.name = ''
         this.formAdd.selectText = ''
+        this.componentName = ''
+        this.formAdd.thumb = ''
       },
       //编辑
       editCompon(res) {
