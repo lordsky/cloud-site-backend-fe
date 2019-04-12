@@ -120,8 +120,8 @@ const API = {
      * */
     //站点列表
     getSiteList:'backend/userTemplateBackend/displayTemplateTestOnBackend',
-    
-	disableSite:'backend/userTemplateBackend/hideuserTemplate'
+    //禁用站点
+	disableSite:'backend/userTemplateBackend/batchUpdateStatusOnBackend'
 }
 
 export default API

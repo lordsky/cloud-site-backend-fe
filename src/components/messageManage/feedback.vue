@@ -14,7 +14,7 @@
     <el-col :span="24" class="feedback_btn">
       <el-button type="primary" size="small" @click="queryList()">查询</el-button>
       <el-button type="primary" size="small" @click="clear">清空</el-button>
-      <el-button type="primary" size="small" @click="exportMessage" :disabled="delList.length==0">导出Excel</el-button>
+      <el-button type="primary" size="small" @click="aa" :disabled="delList.length==0">导出Excel</el-button>
     </el-col>
     <el-col :span="24">
       <el-table :data="tableData" style="width: 100%" border @selection-change="handleSelectionChange">
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   export default {
     name: "feedbackMessage",
     data() {
@@ -93,7 +94,7 @@
       	this.delList.map(item=>{
       		arr.push(item.id)
       	})
-      	this.$http.get(this.$API.exportMessage+'?ids='+arr,{
+      	this.$http.post(this.$API.exportMessage+'?ids='+arr,{
       	},response=>{
       		console.log(response)
       		const blob = new Blob( [response.data],{type: 'application/vnd.ms-excel'})
@@ -108,6 +109,45 @@
 		            message: '导出成功!'
 		          });
       	})
+      },
+      
+      aa(){
+//    	let arr = []
+//    	this.delList.map(item=>{
+//    		arr.push(item.id)
+//    	})
+      	console.log(axios.create({
+          method: 'post',
+          responseType: 'blob',
+          url: this.$API.exportMessage,
+          data: {
+            ids: 11
+          },
+        }).then(response => {
+           console.log(response)
+        }))
+
+//    	axios.create({
+//        method: 'post',
+//        responseType: 'blob',
+//        url: this.$API.exportMessage,
+//        data: {
+//          ids: arr
+//        },
+//      }).then(response => {
+//       console.log(response)
+//       const blob = new Blob( [response.data],{type: 'application/vnd.ms-excel;charset=utf-8'})
+//         const url = window.URL || window.webkitURL || window.moxURL
+//      const downloadHref = url.createObjectURL(blob)
+//      let downloadLink = document.createElement('a')
+//      downloadLink.href = downloadHref
+//      downloadLink.download = "反馈消息.xls"
+//      downloadLink.click()
+//      this.$message({
+//              type: 'success',
+//              message: '导出成功!'
+//            });
+//      })
       },
       //查询
       queryList(val) {

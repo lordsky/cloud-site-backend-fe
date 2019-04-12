@@ -62,7 +62,7 @@
         </el-form>
       </div>
       <div class="el-dialog-componAdd-btn">
-        <el-button @click="dialogAdd = false">取 消</el-button>
+        <el-button @click="(dialogAdd = false,this.thumb = '')">取 消</el-button>
         <el-button type="primary" @click="saveCompon">保存</el-button>
       </div>
       </span>
@@ -105,6 +105,7 @@
       handlePreview(file) {
         console.log(file);
         this.thumb = file
+        this.$message({type:'success',message:'上传成功'})
       },
       //删除图片
       handleRemove(file, fileList) {
@@ -182,6 +183,7 @@
           console.log(res)
           this.update()
           this.dialogAdd = false
+          this.thumb = ''
           if(res.data.data) {
             this.$message({
               type: 'success',
@@ -206,10 +208,8 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$http.delete(this.$API.delItems, {
-            params: {
-              componentId: val.id
-            }
+          this.$http.post(this.$API.delItems+'?componentId='+val.id, {
+            
           }, (res) => {
             this.update()
             if(res.data.data) {
@@ -219,7 +219,6 @@
               });
             }
           })
-
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -247,6 +246,9 @@
 
 <style lang="less">
   .componentEditor {
+  	.el-upload-list{
+  		display: none;
+  	}
     .compon-edit-head {
       button {
         font-size: 16px;

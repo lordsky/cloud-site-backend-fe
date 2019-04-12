@@ -85,8 +85,8 @@
 	    			menuJs:JSON.stringify(data),
                 updaterId:this.userInfo.id
 	    		},response=>{
-	    			console.log(response)
 	    			if(response.data.data){
+	    				this.getList()
 	    			    this.$message({type:'success',message:'保存成功'})
 	    			    this.roleJson = []
 	    			}
@@ -121,7 +121,6 @@
 	    		let url
 	    		val?url = this.$API.showMenu+'?roleName='+val:url = this.$API.showMenu
 	    		this.$http.get(url,response=>{
-	    			console.log(response)
 	    			this.menuList = response.data.data
 	    		})
 	    	},

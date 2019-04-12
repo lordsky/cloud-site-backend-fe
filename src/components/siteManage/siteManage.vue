@@ -20,7 +20,7 @@
       <div class="site-head-right">
         <div class="site-head-right-btn">
           <el-button type="primary" size="medium" @click="query()">查询</el-button>
-          <el-button size="medium" @click="disableAll">禁用</el-button>
+          <el-button size="medium" @click="disableAll('',false)">禁用</el-button>
         </div>
       </div>
     </div>
@@ -39,14 +39,14 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" width="180" align="center">
         	<template slot-scope="scope">
-        		<span>{{scope.row.status==0?'启用':'禁用'}}</span>
+        		<span>{{scope.row.status==0?'未启用':scope.row.status.status==1?'启用':'已禁用'}}</span>
         	 </template>
         </el-table-column>
         <el-table-column prop="date" label="操作" align="center" width="180">
           <template slot-scope="scope">
             <el-button type="text" @click="openPage(scope.row)" v-show="scope.row.status==0">查看</el-button>
-            <el-button type="text" @click="disableSite(scope.row)" v-if="scope.row.status==0">禁用</el-button>
-             <el-button type="text" @click="disableSite(scope.row)" v-else>启用</el-button>
+            <el-button type="text" @click="disableSite(scope.row,false)" v-if="scope.row.status==0">禁用</el-button>
+             <el-button type="text" @click="disableSite(scope.row,true)" v-else>启用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -77,6 +77,7 @@
         pageSize:10,
         currentPage:0,
         pageNum:1,
+        delList:[]
       }
     },
     methods: {
@@ -85,32 +86,42 @@
     	  	window.open("http://"+res.domain)
     	  },
       //全选按钮
-      handleSelectionChange() {
-         
+      handleSelectionChange(val) {
+      	let arr = []
+      	val.map(item=>{
+      		arr.push(item.userTemplateId)
+      	})
+      	this.delList = arr
+        console.log(val)
       },
       //分页
       handleCurrentChange(val){
       	this.query(val)
       },
       //打开禁用站点
-      disableSite(val) {
+      disableSite(val,state) {
+      	console.log(val)
         this.$confirm('是否要禁用该站点?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-           this.$http.post(this.$API.disableSite+'?userTemplateId='+val.userTemplateId,{
-           },response=>{
-           	  console.log(response)
-           	  response.data.data?(this.$message({type:'success',message:'设置成功'}),this.query()):''
-           })
+          this.disableAll(val.userTemplateId,state)
         }).catch(() => {
            
         });
       },
       //禁用
-      disableAll(){
-      	
+      disableAll(val,state){
+      	 let arr = []
+      	 val?arr.push(val):arr = this.delList 
+      	 this.$http.post(this.$API.disableSite,{
+      	 	status: state,
+      	 	userTemplateIds:arr
+           },response=>{
+           	  console.log(response)
+           	  response.data.data?(this.$message({type:'success',message:'设置成功'}),this.query()):''
+           })
       },
       //查询
       query(val){
@@ -131,11 +142,10 @@
       	console.log(data)
       	this.$http.post(this.$API.getSiteList,data,response=>{
       	    response.data.data.pageinfo.content.map(item=>{
-      	    	   let str = ''
-      	    	   str = item.createTime
-      	    	   str = str.replace('.000+0000',' ')
-      	    	   str = str.replace('T',' ')
-      	    	   item.createTime = str
+      	    	   let time = item.createTime
+			   let d = new Date(time);
+			let times=d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + 			d.getSeconds();
+			item.createTime = times
       	    })
       	    this.tableData = response.data.data.pageinfo.content
       	    this.totalPage = response.data.data.pageinfo.totalElements

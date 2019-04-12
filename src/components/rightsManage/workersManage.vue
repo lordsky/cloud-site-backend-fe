@@ -341,7 +341,6 @@
       },
       //添加成员
       addRole(){
-      	console.log('123')
       	this.dialogFormVisible = true
       	this.editShow = true
       	this.titleDialog = '添加成员'
@@ -357,10 +356,8 @@
 	    	},
       //保存成员
       saveWorks(){
-      	 if(!this.formText.roleId||!this.formText.deptId){
-//    	 	this.$message({type:'warning',message:''})
-      	 	return
-      	 }
+      	 if(!this.formText.roleId)return this.$message({type:'warning',message:'请选择角色'})
+      	 if(!this.formText.deptId)return this.$message({type:'warning',message:'请选择部门'})
       	 this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
             if(this.editShow){
@@ -377,7 +374,7 @@
     },
     created(){
     	   this.getWorksList()
-    	   this.getWorksTable()
+    	   this.getWorksTable(1)
     	   this.getList()
     }
   }
