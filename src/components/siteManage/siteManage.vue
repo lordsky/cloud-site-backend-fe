@@ -30,7 +30,10 @@
         </el-table-column>
         <el-table-column prop="domain" label="站点域名" align="center">
         </el-table-column>
-        <el-table-column prop="accunt" label="发布用户" align="center">
+        <el-table-column prop="username" label="发布用户" align="center">
+        	 	<template slot-scope="scope">
+        		<span>{{scope.row.username?scope.row.username:'----'}}</span>
+        	 </template>
         </el-table-column>
         <el-table-column prop="createTime" label="发布时间" align="center">
         </el-table-column>
