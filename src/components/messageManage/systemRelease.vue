@@ -148,6 +148,10 @@
 			  content: this.formMessage.content,
 			  title: this.formMessage.name
       	},response=>{
+      	  if(response.data.code === 200){
+            this.$message.success('发布成功!');
+            this.$router.push({path:'/courseManagement'})
+          }
       		console.log(response)
       	})
       }

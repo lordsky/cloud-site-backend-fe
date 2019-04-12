@@ -18,6 +18,32 @@
           </div>
       		<CourseItem @getCatInfo="getCatInfo" :courseInfo="courseInfo"/>
       	</div>
+        <div class="main-content-left" v-if="courseId != ''">
+          <!--<CourseSeek :titleList="titleList" :searchList="searchList"  @getSeek="getSeek"></CourseSeek>-->
+          <div class="main-content-left-list">
+            <div class="main-content-left-item" v-for="(item,index) in contentList" :key="index">
+              <img :src="item.coverUrl" alt="" />
+              <div class="main-content-left-item-text">
+                <div class="main-content-left-item-text-title">
+                  <p>{{item.title}}</p>
+                  <span>发布日期：{{item.creatTime}}</span><span>分类：{{item.firstCat}} {{item.secondCat}}</span>
+                </div>
+                <p class="main-content-left-item-text__detail">{{item.description}}</p>
+                <span class="main-content-left-item-text__btn" @click="jumpDetail(item)">阅读正文&gt;</span>
+              </div>
+            </div>
+            <!--<div class="contList_paging">-->
+              <!--<el-pagination-->
+                <!--@current-change="handleCurrentChange"-->
+                <!--:current-page.sync="currentPage"-->
+                <!--:page-size="pageSize"-->
+                <!--background-->
+                <!--layout="prev, pager, next, jumper"-->
+                <!--:total="totalPage">-->
+              <!--</el-pagination>-->
+            <!--</div>-->
+          </div>
+        </div>
       	<div class="main-content-right">
       	 <div class="main-right-tutorial">
       	   <div class="main-content-right-head">
@@ -54,6 +80,8 @@
         classText:'',
         setTree:[],
         courseInfo:{},
+        courseId:'',
+        contentList:[]
       }
     },
     components: {
@@ -90,6 +118,9 @@
           }
         })
       },
+      jumpDetail(){
+
+      },
       getCourseList(id){
         let para = {
           catId:id,
@@ -103,6 +134,8 @@
         };
         this.$api.apiCourseList(para).then(res=>{
           if(res.msg === "success") {
+            this.contentList = res.data.data.content
+            this.totalPage = res.data.data.totalElements
             this.getCatInfo(res.data.content[0].id)
           } else {
             this.$message.error(res.msg)
@@ -193,48 +226,51 @@
     	  		margin-right: 22px;
     	  		box-shadow: -1px 5px 20px #e0e1e0;
     	  		position: relative;
-    	  		.main-content-left-list{
-    	  			width: 100%;
-    	  			.main-content-left-item{
-    	  				padding: 0 30px 30px 30px;
-    	  				margin-top: 32px;
-    	  				border-bottom:1px solid #F2DEDE;
-    	  				display:flex;
-    	  				.main-content-left-item-text{
-    	  					font-size: 14px;
-    	  					flex:1;
-    	  					.main-content-left-item-text-title{
-    	  						p{
-    	  							padding-top: 3px;
-    	  							padding-bottom: 8px;
-    	  							color: #6B6B6B;
-    	  							font-size: 20px;
-    	  						}
-    	  						span{
-    	  							color: #DCDCDC;
-    	  							padding-right: 10px;
-    	  						}
-    	  					}
-    	  					.main-content-left-item-text__detail{
-    	  						padding-top: 15px;
-    	  						color: #959595;
-    	  						overflow: hidden;
-						   text-overflow: ellipsis;
-						   display: -webkit-box;
-						  -webkit-line-clamp: 2;
-						  -webkit-box-orient: vertical;
-						   margin-top: 7px;
-    	  					}
-    	  					.main-content-left-item-text__btn{
-    	  						color: #3b89f8;
-    	  						font-size: 16px;
-    	  						display: block;
-    	  						margin-top: 40px;
-    	  						cursor: pointer;
-    	  					}
-    	  				}
-    	  			}
-    	  		}
+            .main-content-left-list{
+              width: 100%;
+              min-height: 100vh;
+              overflow-y: auto;
+              .main-content-left-item{
+                padding: 0 30px 30px 30px;
+                margin-top: 32px;
+                border-bottom:1px solid #F2DEDE;
+                display:flex;
+                .main-content-left-item-text{
+                  font-size: 14px;
+                  flex:1;
+                  .main-content-left-item-text-title{
+                    p{
+                      padding-top: 3px;
+                      padding-bottom: 8px;
+                      color: #6B6B6B;
+                      font-size: 20px;
+                    }
+                    span{
+                      color: #DCDCDC;
+                      padding-right: 10px;
+                    }
+                  }
+                  .main-content-left-item-text__detail{
+                    padding-top: 15px;
+                    color: #959595;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    margin-top: 7px;
+                  }
+                  .main-content-left-item-text__btn{
+                    color: #3b89f8;
+                    font-size: 16px;
+                    display: block;
+                    width: 100px;
+                    margin-top: 40px;
+                    cursor: pointer;
+                  }
+                }
+              }
+            }
     	  	}
     	  	.main-content-right{
     	  		width: 20%;

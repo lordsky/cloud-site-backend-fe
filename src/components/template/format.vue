@@ -4,6 +4,55 @@
     <table border="0" cellspacing="0" cellpadding="0" v-if="typographyId==0">
       <tr>
         <td :class="{'side-right-border':formatDate == ''}">
+          <div class="formatside-right-list2" @mousemove="showFormat = true" @mouseleave="showFormat=false">
+            <el-button type="primary" v-if="formatDate == ''" @click="addComponent('formatDate')">+添加组件</el-button>
+            <div v-if="formatDate != ''" v-html="formatDate" style="width: 100%">
+              {{formatDate}}
+            </div>
+            <!--<img src="@/assets/img/topside.png">-->
+            <div v-if="formatDate != ''" :class="{'delItem':showFormat}">
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat}" @click="addComponent('formatDate')"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat}" @click="delComponent('formatDate')"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <table border="0" cellspacing="0" cellpadding="0" v-if="typographyId==1">
+      <tr>
+        <td :class="{'side-right-border':formatDate == ''}">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate != ''}" @mousemove="showFormat = true" @mouseleave="showFormat=false">
+            <el-button type="primary" v-if="formatDate == ''" @click="addComponent('formatDate')">+添加组件</el-button>
+            <div v-if="formatDate != ''" v-html="formatDate" style="width: 100%">
+              {{formatDate}}
+            </div>
+            <!--<img src="@/assets/img/topside.png">-->
+            <div v-if="formatDate != ''" :class="{'delItem':showFormat}">
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat}" @click="addComponent('formatDate')"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat}" @click="delComponent('formatDate')"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td :class="{'side-right-border':formatDate2 == ''}">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate2 != ''}" @mousemove="showFormat2 = true" @mouseleave="showFormat2=false">
+            <el-button type="primary" v-if="formatDate2 == ''" @click="addComponent('formatDate2')">+添加组件</el-button>
+            <div v-if="formatDate2 != ''" v-html="formatDate2" style="width: 100%">
+              {{formatDate2}}
+            </div>
+            <!--<img src="@/assets/img/topside.png">-->
+            <div v-if="formatDate2 != ''" :class="{'delItem':showFormat2}">
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat2}" @click="addComponent('formatDate2')"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat2}" @click="delComponent('formatDate2')"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <table border="0" cellspacing="0" cellpadding="0" v-if="typographyId==2">
+      <tr>
+        <td :class="{'side-right-border':formatDate == ''}">
           <div class="formatside-right-list" :class="{'height_auto':formatDate != ''}" @mousemove="showFormat = true" @mouseleave="showFormat=false">
             <el-button type="primary" v-if="formatDate == ''" @click="addComponent('formatDate')">+添加组件</el-button>
             <div v-if="formatDate != ''" v-html="formatDate" style="width: 100%">
@@ -48,10 +97,10 @@
         </td>
       </tr>
     </table>
-    <table border="0" cellspacing="0" cellpadding="0" v-if="typographyId==1">
+    <table border="0" cellspacing="0" cellpadding="0" v-if="typographyId==3">
       <tr>
         <td :class="{'side-right-border':formatDate == ''}">
-          <div class="formatside-right-list2" @mousemove="showFormat = true" @mouseleave="showFormat=false">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate != ''}" @mousemove="showFormat = true" @mouseleave="showFormat=false">
             <el-button type="primary" v-if="formatDate == ''" @click="addComponent('formatDate')">+添加组件</el-button>
             <div v-if="formatDate != ''" v-html="formatDate" style="width: 100%">
               {{formatDate}}
@@ -60,6 +109,36 @@
             <div v-if="formatDate != ''" :class="{'delItem':showFormat}">
               <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat}" @click="addComponent('formatDate')"></i>
               <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat}" @click="delComponent('formatDate')"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td :class="{'side-right-border':formatDate2 == ''}">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate2 != ''}" @mousemove="showFormat2 = true" @mouseleave="showFormat2=false">
+            <el-button type="primary" v-if="formatDate2 == ''" @click="addComponent('formatDate2')">+添加组件</el-button>
+            <div v-if="formatDate2 != ''" v-html="formatDate2" style="width: 100%">
+              {{formatDate2}}
+            </div>
+            <!--<img src="@/assets/img/topside.png">-->
+            <div v-if="formatDate2 != ''" :class="{'delItem':showFormat2}">
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat2}" @click="addComponent('formatDate2')"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat2}" @click="delComponent('formatDate2')"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td :class="{'side-right-border':formatDate3 == ''}">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate3 != ''}" @mousemove="showFormat2 = true" @mouseleave="showFormat2=false">
+            <el-button type="primary" v-if="formatDate3 == ''" @click="addComponent('formatDate3')">+添加组件</el-button>
+            <div v-if="formatDate3 != ''" v-html="formatDate3" style="width: 100%">
+              {{formatDate3}}
+            </div>
+            <!--<img src="@/assets/img/topside.png">-->
+            <div v-if="formatDate3 != ''" :class="{'delItem':showFormat3}">
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat3}" @click="addComponent('formatDate3')"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat3}" @click="delComponent('formatDate3')"></i>
             </div>
           </div>
         </td>

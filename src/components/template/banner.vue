@@ -1,5 +1,5 @@
 <template>
-  <div class="bannerside" v-if="typographyId == 0">
+  <div class="bannerside" v-if="typographyId == 3">
     <label>横幅区</label>
     <div class="bannerside-right" :class="{'side-right-border':bannnerDate == ''}">
       <div class="bannerside-right-list" :class="{'height_auto':bannnerDate != ''}" @mousemove="showBanner = true" @mouseleave="showBanner=false">

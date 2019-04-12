@@ -68,12 +68,20 @@
         templateTypeList:[],
         templateList:[
           {
-            name:'模版1',
-            imgs: require('../../assets/img/template1.png')
+            name:'版式1',
+            imgs: require('../../assets/img/template2.png')
           },
           {
-            name:'模版2',
+            name:'版式2',
             imgs: require('../../assets/img/template2.png')
+          },
+          {
+            name:'版式3',
+            imgs: require('../../assets/img/template2.png')
+          },
+          {
+            name:'版式4',
+            imgs: require('../../assets/img/template1.png')
           }
         ],
       }
