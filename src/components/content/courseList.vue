@@ -6,7 +6,7 @@
     </div>
     <div class="main">
       <div class="main-content">
-      	<div class="main-content-left">
+      	<div class="main-content-left" v-if="courseId == ''">
           <div class="course-header">
             <div class="main_title">
               <span>{{courseInfo.title}}</span>
@@ -32,16 +32,16 @@
                 <span class="main-content-left-item-text__btn" @click="jumpDetail(item)">阅读正文&gt;</span>
               </div>
             </div>
-            <!--<div class="contList_paging">-->
-              <!--<el-pagination-->
-                <!--@current-change="handleCurrentChange"-->
-                <!--:current-page.sync="currentPage"-->
-                <!--:page-size="pageSize"-->
-                <!--background-->
-                <!--layout="prev, pager, next, jumper"-->
-                <!--:total="totalPage">-->
-              <!--</el-pagination>-->
-            <!--</div>-->
+            <div class="contList_paging">
+              <el-pagination
+                @current-change="handleCurrentChange"
+                @size-change="handleSizeChange"
+                :page-size="pageSize"
+                background
+                layout="prev, pager, next, jumper"
+                :total="totalPage">
+              </el-pagination>
+            </div>
           </div>
         </div>
       	<div class="main-content-right">
@@ -69,23 +69,32 @@
 
 <script>
   import CourseItem from './courseItems'
+  import CourseSeek from './courseHeader'
   export default {
     name: "CourseList",
     data() {
       return {
+        seek:'',
         textList: ['教程中心', '教程列表'],
-        titleList:{title:'我已经有一个域名了，如何绑定到云建站？（视频教程）'},
+        titleList:{
+          title:''
+        },
         listShow:true,
         isItemShow:0,
         classText:'',
         setTree:[],
         courseInfo:{},
         courseId:'',
-        contentList:[]
+        contentList:[],
+        pageSize:5,
+        currentPage:0,
+        totalPage:0,
+        page:1,
       }
     },
     components: {
-      CourseItem
+      CourseItem,
+      CourseSeek
     },
     methods:{
       backCompon(){
@@ -93,10 +102,7 @@
       },
     	//详情页面
     	 jumpDetail(){
-    	 	this.listShow = false
-    	 	this.textList =['教程中心', '教程列表','视频教程']
-    	 	this.titleList.title = '我已经有一个域名了，如何绑定到云建站？（视频教程）'
-    	 	this.titleList.list = '11'
+    	 	this.courseId = ''
     	 },
       getCatList(){
         this.$api.apiCatList().then(res=>{
@@ -106,6 +112,21 @@
           } else {
             this.$message.error(res.msg)
           }
+        })
+      },
+      getSeek(val){
+        this.seek = val
+      },
+      //搜索
+      searchList(text){
+        this.getList(text).then(response=>{
+          this.listShow = true
+          this.titleList.time = false
+          this.titleList.title = '建站列表'
+          this.$set(this.textList,1,'教程列表')
+          this.contentList = response.data.data.content
+          this.totalPage = response.data.data.totalElements
+          this.$router.push({path:'/courseList'})
         })
       },
       getCatInfo(val){
@@ -118,14 +139,26 @@
           }
         })
       },
-      jumpDetail(){
-
+      jumpDetail(item){
+        this.courseId = ''
+        this.getCatInfo(item.id)
+      },
+      //当前页码
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getCourseList(this.courseId);
+      },
+      //当前条数
+      handleSizeChange(val) {
+        this.pageSize = val;
+        this.getCourseList(this.courseId);
       },
       getCourseList(id){
+        this.courseId = id
         let para = {
           catId:id,
-          pageNum: 1,
-          pageSize: 20,
+          pageNum: this.page,
+          pageSize: this.pageSize,
           title: '',
           state:'',
           type:'',
@@ -134,8 +167,9 @@
         };
         this.$api.apiCourseList(para).then(res=>{
           if(res.msg === "success") {
-            this.contentList = res.data.data.content
-            this.totalPage = res.data.data.totalElements
+            this.contentList = res.data.content
+            this.totalPage = res.data.totalElements
+            this.titleList.title = this.contentList[0].secondCat
             this.getCatInfo(res.data.content[0].id)
           } else {
             this.$message.error(res.msg)

@@ -164,6 +164,7 @@
       //清空数据
       clear(){
       	this.formInline = {}
+      	this.getList()
       },
       //管理消息类型
       messageManage() {

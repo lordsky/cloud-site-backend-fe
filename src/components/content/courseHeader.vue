@@ -1,9 +1,7 @@
 <template>
   <div class="course-header">
     <div class="main_title">
-     <span>{{titleList.title?titleList.title:'---'}}</span>
-     <p v-show="titleList.time"><span>发布日期: {{titleList.time}}</span>
-     	<!--<span>浏览次数：123123</span>-->
+     <span>{{titleList.title}}</span>
      </p>
     </div>
     <div class="main__input">
@@ -24,9 +22,9 @@
     	  seekText(val){
     	  	  this.$emit('getSeek',this.seekText)
     	  },
-    	  $route(val){
-    	     val.path=='/courseList'?this.titleList.time = false:''
-    	  }
+    	  // $route(val){
+    	  //    val.path=='/courseList'?this.titleList.time = false:''
+    	  // }
     },
     methods:{
     	  

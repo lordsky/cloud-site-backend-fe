@@ -203,7 +203,7 @@ const apiDelPage= (data) => {
 //删除套件模板
 const apiDelTemplate= (data) => {
   return new Promise((resolve, reject)=>{
-    instance.delete(`backend/template/delete?id=${data}`).then((res)=> {
+    instance.post(`backend/template/delete?id=${data}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -324,7 +324,7 @@ const apiAddCase = (data) => {
 //删除案例分类
 const apiDelCaseType= (data) => {
   return new Promise((resolve, reject)=>{
-    instance.delete(`backend/caseCat/delCase?id=${data}`).then((res)=> {
+    instance.post(`backend/caseCat/delCase?id=${data}`).then((res)=> {
       resolve(res.data)
     }).catch(err => {
       reject(err)

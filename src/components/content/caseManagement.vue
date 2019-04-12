@@ -521,6 +521,7 @@
           }).then(res=>{
             if(res.code ===200){
               this.$message.success("删除成功！")
+              this.page = 1
               this.getCaseList()
             }else {
               this.$message.error(res.msg)
@@ -547,6 +548,7 @@
           }).then(res=>{
             if(res.code ===200){
               this.$message.success("删除成功！")
+              this.page = 1
               this.getCaseList()
             }else {
               this.$message.error(res.msg)
