@@ -1,19 +1,6 @@
 const hostConfig = {
-  hostUrl: 'admin.zhengqi.10086.cn',
-  editorUrl: 'editor.zhengqi.10086.cn/editor.html'
-}
-var domain = window.location.host;
-domain = domain.split(".")[0];
-if (domain.indexOf("test") >= 0) {
-hostConfig.hostUrl = 'admin.zhengqi.10086.cn'
-hostConfig.editorUrl='editor.zhengqi.10086.cn/editor.html'
-} else if (domain.indexOf("dev") >= 0) {
-hostConfig.hostUrl = 'admin.zhengqi.10086.cn'
-hostConfig.editorUrl='editor.zhengqi.10086.cn/editor.html'
-}else{
-hostConfig.hostUrl = 'admin.zhengqi.10086.cn'
-hostConfig.editorUrl='editor.zhengqi.10086.cn/editor.html'
-// hostConfig.hostUrl = 'http://192.168.4.97:9001'
+  hostUrl: 'http://admin.zhengqi.10086.cn',
+  editorUrl: 'http://editor.zhengqi.10086.cn/editor.html'
 }
 export default hostConfig
 
