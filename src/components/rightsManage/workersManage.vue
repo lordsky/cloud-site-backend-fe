@@ -2,7 +2,7 @@
   <div class="workers-manage">
     <div class="workers-left">
       <el-input placeholder="通过关键词过滤" @keyup.enter.native="searchWorks" v-model="worksText"></el-input>
-      <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" @node-contextmenu="rightClick" :highlight-current="true"        ref="tree" node-key="id" :default-expanded-keys="treeArr"></el-tree>
+      <el-tree :data="departmentList" :props="defaultProps" @node-click="handleNodeClick" @node-contextmenu="rightClick" :highlight-current="true"  ref="tree" node-key="id" :default-expanded-keys="treeArr"></el-tree>
       <!--鼠标右键菜单栏-->
       <div v-show="menuVisible">
         <ul id="menu" class="menu">
@@ -36,8 +36,7 @@
            </template>
         </el-table-column>
       </el-table>
-       <div class="paging">
-    	 
+       <div class="paging">   	 
    <el-pagination
       background
       @current-change="handleCurrentChange"
@@ -78,9 +77,9 @@
         </el-form-item>
         <el-form-item label="部门:">
           <el-cascader
-			  :options="data"
+			  :options="departmentList"
 			  v-model="formText.deptId"
-			  :props="roleProps"
+			  :props="departmentProps"
 			  :show-all-levels="false"
 			></el-cascader>
         </el-form-item>
@@ -112,7 +111,7 @@
         }
       }
       return {
-        data: [],
+        departmentList: [],
         defaultProps: {
           children: 'list',
           label: 'departmentName'
@@ -131,7 +130,7 @@
         pageSize:10,
         currentPage:0,
         value:'',
-        roleProps:{
+        departmentProps:{
         	   label:'departmentName',
         	   value:'id',
         	   children:'list'
@@ -205,9 +204,11 @@
       },
       //取消保存
       cancelForm(){
+      	if(this.titleDialog=='添加成员'){
+      	    this.formText = {}
+      	}
       	this.$refs['ruleForm'].resetFields();
       	this.dialogFormVisible = false
-      	this.formText = ''
       },
       //重命名
       renameList(){
@@ -217,10 +218,11 @@
         }).then(({ value }) => {
            this.$http.post(this.$API.setWorksTree,{
            	departmentName:value,
-           	id:'',
-           	parentId:''
+           	id:this.treeInfo.id,
+           	parentId:this.treeInfo.parentId
            },response=>{
-           	console.log(response)
+//         	console.log(response)
+           	response.data.code==200?(this.$message({type:'success',message:'设置成功'}),this.getWorksList()):''
            })
         }).catch(() => {
               
@@ -235,9 +237,10 @@
            this.$http.post(this.$API.addWorksTree,{
            	departmentName:value,
            	id:'',
-           	parentId:''
+           	parentId:this.treeInfo.id
            },response=>{
-           	console.log(response)
+//         	console.log(response)
+           	response.data.code==200?(this.$message({type:'success',message:'设置成功'}),this.getWorksList()):''
            })
         }).catch(() => {
                
@@ -245,13 +248,16 @@
       },
       //删除部门
       delList(){
+      	 console.log(this.treeInfo)
       	 this.$confirm('确定删除该部门吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
            this.$http.post(this.$API.delWorksTree,{
-              
+              departmentName:this.treeInfo.departmentName,
+              id: this.treeInfo.id,
+   			  parentId: this.treeInfo.parentId
            },response=>{
            	console.log(response)
            })
@@ -286,6 +292,7 @@
         	  this.$http.post(this.$API.delWorksList,
         	  	val.id
         	  ,response=>{
+        	  	 console.log(this.formText.deptId)
         	  	 response.data.code==200?(this.$message({ type: 'success',message: '删除成功!'}),this.getWorksTable(this.worksListInfo.id)):''
         	  })
         }).catch(() => {
@@ -297,22 +304,25 @@
       },
       //获取树状列表
       getWorksList(val){
-      	this.$http.post(this.$API.getWorksList,{},response=>{
-      		console.log(response)
-      		this.data = response.data.data
+      	let data = {}
+      	val?data.searchContext = val:''
+      	this.$http.post(this.$API.getWorksList,data,response=>{
+      		console.log('123123123123',response)
+      		this.departmentList = response.data.data
       		this.treeArr.push(response.data.data[0].list[0].id)
       	})
       },
       //获取员工表格
       getWorksTable(id,num){
+      	let pageNum = num?num:1
       	this.$http.post(this.$API.getWorksTable,{
       		deptId:id,
-      		pageNum:num?num:1,
+      		pageNum:pageNum,
       		pageSize:this.pageSize
       	},response=>{
       		console.log(response)
       		this.tableData = response.data.data.content
-      		this.totalPage = response.data.data.totalElements
+//    		this.totalPage = response.data.data.totalElements
       	})
       },
       //添加成员
@@ -330,10 +340,16 @@
       //编辑成员
       setWorksRequest(){
       	let data = this.formText
-      	
+      	let index = data.deptId.length - 1
+      	let id = data.deptId[index]
+      	delete data.pwd
+      	delete data.pwdTwo
+      	delete data.deptId
+        data.deptId = id
       	console.log(data)
-      	this.$http.post(this.$API.setWorks,{},response=>{
+      	this.$http.post(this.$API.setWorks,data,response=>{
       		console.log(response)
+//    		response.data.code==200?(this.$message({type:'success',message:'编辑成功'}),this.dialogFormVisible = false,this.tableData=[]):''
       	})
       },
       //编辑
@@ -344,19 +360,20 @@
       	this.editShow = false
       	this.titleDialog = '编辑成员'
       	this.dialogFormVisible = true
+      	this.formText.pwd = '123'
+      	this.formText.pwdTwo = '123'
       },
       //添加成员
       addRole(){
       	this.dialogFormVisible = true
       	this.editShow = true
       	this.titleDialog = '添加成员'
-      	
       	this.formText = {}
       },
       //获取角色列表
       	getList(){
 	    		this.$http.get(this.$API.showMenu,response=>{
-	    			console.log(response)
+	    			console.log('角色列表',response)
 	    			this.roleList = response.data.data
 	    		})
 	    	},
@@ -380,7 +397,7 @@
     },
     created(){
     	   this.getWorksList()
-    	   this.getWorksTable(1)
+//  	   this.getWorksTable()
     	   this.getList()
     }
   }
