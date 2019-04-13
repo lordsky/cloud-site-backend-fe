@@ -42,10 +42,16 @@
               :props="defaultProps"
               @node-click="handleNodeClick"
               node-key="id"
-              default-expand-all
+              accordion
               :expand-on-click-node="false">
               <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span>{{ node.label }}</span>
+                <span v-show="data.children && data.children.length >= 1">
+                  <span>{{node.label}}</span>
+                </span>
+                <span v-show="!data.children || data.children.length == 0">
+                  <span>{{node.label}}</span>
+                </span>
+              <!--<span>{{ node.label }}</span>-->
               <span>
                 <i class="el-icon-edit-outline ico-size" @click="() => editor(node, data)"></i>
                 <i class="el-icon-delete ico-size" @click="() => remove(node, data)" v-if="data1.length>1"></i>
@@ -442,12 +448,14 @@
             pageName:data.name,
             templateId:this.templateId,
             pageCode:this.webPageList.content,
-            pageAlias:data.catExt})
+            pageAlias:data.catExt,
+            pageParent:0,})
           this.$api.apiAddTemplatePage({
             pageName: data.name,
             templateId: this.templateId,
             pageCode:data.pageCode,
-            pageAlias:data.catExt
+            pageAlias:data.catExt,
+            pageParent:0,
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
@@ -456,7 +464,7 @@
               //   this.$set(this.data1, '关于我们', []);
               // }
               this.data1.push(newChild);
-              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="'+data.catExt+'.html" style="text-decoration: none;">'+data.name+'</a></li>')
+              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="'+data.catExt+'.html" style="text-decoration: none;" onmouseover="this.style.borderBottom = \'0.2vw solid #409EFF\'" onmouseout="this.style.borderBottom = \'0.2vw solid transparent\'">'+data.name+'</a></li>')
               // let headerHtml = $('#headerHtml').html()
               // this.webPageList.header = headerHtml
               if(pageNum == 1){

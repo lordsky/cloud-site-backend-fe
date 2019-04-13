@@ -47,6 +47,7 @@
               <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>{{ node.label }}</span>
               <span>
+                <!--<i class="el-icon-circle-plus-outline ico-size" @click="() => append(node, data)"></i>-->
                 <i class="el-icon-edit-outline ico-size" @click="() => editor(node, data)"></i>
                 <i class="el-icon-delete ico-size" @click="() => remove(node, data)" v-if="data1.length>1"></i>
               </span>
@@ -321,12 +322,43 @@
           //   this.dialogVisible4 = true
           // }
         },
+        NodeAdd(n, d){//新增节点
+              let parm = {
+                pageName: data.name,
+                templateId: this.templateId,
+                pageCode:data.pageCode,
+                pageAlias:data.catExt,
+                pageParent:0,
+              }
+          this.$api.apiAddTemplatePage(parm).then(res=>{
+                if(res.msg === 'success'){
+                  this.$message.success("添加成功！")
+                  d.children.push({
+                    id: res.data,
+                    name: this.formCompon.name,
+                    parentId: d.id,
+                    isEdit: false,
+                    children: []
+                  })
+                  this.dialogVisible2 = false
+                  this.resetForm2()
+                  this.getCatList()
+                  //同时展开节点
+                  // if(!n.expanded){
+                  //   n.expanded = true
+                  // }
+                }else{
+                  this.$message.error(res.msg)
+                }
+              })
+        },
         append(data) {
-          const newChild = { id: id++, label: '关于我们', children: [] };
-          if (!data.children) {
-            this.$set(data, 'children', []);
-          }
-          data.children.push(newChild);
+          this.dialogVisible3 = true
+          // const newChild = { id: id++, label: '关于我们', children: [] };
+          // if (!data.children) {
+          //   this.$set(data, 'children', []);
+          // }
+          // data.children.push(newChild);
         },
         editor(node, data) {
           this.data2 = data
@@ -450,12 +482,14 @@
             pageName:data.name,
             templateId:this.templateId,
             pageCode:this.webPageList.content,
-            pageAlias:data.catExt})
+            pageAlias:data.catExt,
+            pageParent:0,})
           this.$api.apiAddTemplatePage({
             pageName: data.name,
             templateId: this.templateId,
             pageCode:data.pageCode,
-            pageAlias:data.catExt
+            pageAlias:data.catExt,
+            pageParent:0,
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
@@ -464,7 +498,7 @@
               //   this.$set(this.data1, '关于我们', []);
               // }
               this.data1.push(newChild);
-              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="'+data.catExt+'.html" style="text-decoration: none;">'+data.name+'</a></li>')
+              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="'+data.catExt+'.html" style="padding: 1.4vw 0;text-decoration: none;" onmouseover="this.style.borderBottom = \'0.2vw solid #409EFF\'" onmouseout="this.style.borderBottom = \'0.2vw solid transparent\'">'+data.name+'</a></li>')
               // let headerHtml = $('#headerHtml').html()
               // this.webPageList.header = headerHtml
               if(pageNum == 1){
