@@ -197,6 +197,7 @@
             componentCat: 1,
             componentCode: $('#headerHtml').html(),
             templateId:this.templateId,
+            componentParent:0
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
@@ -214,6 +215,7 @@
             componentCat: 2,
             componentCode: this.webPageList.footer,
             templateId:this.templateId,
+            componentParent:0
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
