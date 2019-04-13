@@ -11,8 +11,8 @@
         </el-select>
       </el-form-item>
       <el-form-item label="发布人员：">
-        <el-select v-model="formInline.operatorName" placeholder="全部">
-          <el-option :label="item.operatorName" :value="item.id" v-for="(item,index) in tableData" :key="index"></el-option>
+        <el-select v-model="formInline.operatorName" filterable placeholder="全部">
+          <el-option :label="item.username" :value="item.id" v-for="(item,index) in userList" :key="index"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -101,6 +101,7 @@
         operatorName:[],
         deleteArr:[],
         deleteState:true,
+        userList:[],
       }
     },
     components: {
@@ -179,6 +180,12 @@
     	  		params:val
     	  	})
     	    },
+      //获取发布人列表
+      getUserList(){
+        this.$http.get('backend/userListNoPage',response=>{
+          response.data.code===200?this.userList = response.data.data:''
+        })
+      },
     	   //获取消息类型
     	  getListType(){
     	  	this.$http.get(this.$API.getMessageType,response=>{
@@ -204,6 +211,7 @@
     created(){
     	   this.getList()
     	   this.getListType()
+         this.getUserList()
     }
   }
 </script>
