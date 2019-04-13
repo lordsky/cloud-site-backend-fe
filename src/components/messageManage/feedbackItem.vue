@@ -16,10 +16,12 @@
     	  </el-col>
     	  <el-col>
     	  	<!--<p class="feedback_title">附件：</p>-->
-    	  	<p class="feedback_title">附件：{{content.fileName}}
+    	  	<p class="feedback_title">附件：{{content.fileName?content.fileName:'无附件'}}
+    	  	 <div class="seeFeedback">
             <a v-if="name == '.doc' || name == '.xls'" :href="'https://view.officeapps.live.com/op/view.aspx?src='+content.fileUrl" target="_blank" download="">查看</a>
             <a v-if="name != '.doc' && name != '.xls'" :href="content.fileUrl" target="_blank" download="">查看</a>
-            <a :href="content.fileUrl" :download="content.fileName" style="margin-left: 10px">下载</a></p>
+            <a :href="content.fileUrl" :download="content.fileName" style="margin-left: 10px">下载</a>
+            </div></p>
     	  </el-col>
     </el-row>
     <div class="feedback_btn">
@@ -34,7 +36,7 @@
 		data(){
 			return{
 				content:{},
-        name:''
+                name:''
 			}
 		},
 		methods:{
@@ -51,8 +53,9 @@
 			let content = this.$route.query.msg
 			console.log(JSON.parse(content))
 			this.content = JSON.parse(content)
-      let path = this.content.fileName
-      this.name = path.substr(path.lastIndexOf("."))
+            let path = this.content.fileName
+            path?this.name = path.substr(path.lastIndexOf(".")):this.name =''
+            
 		}
 	}
 </script>
@@ -76,6 +79,9 @@
   		font-size: 18px;
   		font-weight: 400;
   		margin: 20px 0 20px 0;
+  	}
+  	.seeFeedback{
+  	  
   	}
   }
 </style>

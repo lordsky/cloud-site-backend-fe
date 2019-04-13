@@ -220,8 +220,9 @@
       .site-list {
         margin-top: 20px;
         .site-item {
+        	 position: relative;
           width: 32%;
-          height: auto;
+          height: 300px;
           float: left;
           margin-right: 10px;
           margin-top: 30px;
@@ -242,7 +243,8 @@
           }
           .site-item-btn {
             width: 100%;
-            margin-top: 80px;
+            position: absolute;
+            bottom: 0;
             display: flex;
             .site-item-btns {
             	  padding: 30px 0 30px 0;

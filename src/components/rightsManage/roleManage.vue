@@ -5,7 +5,13 @@
       	<el-button type="primary" class="left_addBtn" @click="addRole">添加角色</el-button>
       	<el-input class="left_input" placeholder="通过关键词过滤" @keyup.enter.native="searchRole" v-model="roleText"></el-input>
       	<ul class="role-left-list">
-      		<li v-for="(item,index) in menuList" :key="index" @click="getRoleList(item)">{{item.roleName}}<i class="el-icon-edit-outline" @click="setName(item)"></i></li>
+      		<li v-for="(item,index) in menuList" :key="index" @click="getRoleList(item)">
+      			<el-tooltip class="item" effect="dark" :content="item.roleName" placement="top">
+			     <span>{{item.roleName}}</span>
+			    </el-tooltip>
+      		<div class="role-left-list-ico"><i class="el-icon-edit-outline" @click="setName(item)"></i><i class="el-icon-delete"
+      			@click="delRole(item)"></i></div>
+      		</li>
       	</ul>
       </div>
       <div class="role-right">
@@ -24,7 +30,7 @@
           </el-table-column>
         </el-table>
         <div class="role-save_btn">
-        	 <el-button type="primary" @click="saveRole">保存</el-button>
+        	 <el-button type="primary" @click="saveRole" :disabled="roleJson.length==0">保存</el-button>
         </div>
       </div>
       </div>
@@ -91,6 +97,25 @@
 	    			    this.roleJson = []
 	    			}
 	    		})
+	    	},
+	    	//删除角色
+	    	delRole(val){
+	    	  console.log(val)
+	    	this.$confirm('是否要删除该角色?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        	  this.$http.post(this.$API.delRole+'?roleId='+val.roleId,{},response=>{
+        	  	console.log(response)
+        	  	response.data.code==200?(this.$message({type: 'success', message: '删除成功!'}),this.getList(),this.roleJson=[]):''
+        	  })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
 	    	},
 	    	//弹框
 	    	setRole(title,content,msg,state,listInfo){
@@ -178,7 +203,7 @@
  				font-size: 15px;
  				font-weight: 400;
  				li{
- 					padding: 10px 20px 10px 20px ;
+ 					padding: 10px 10px 10px 10px ;
  					display: flex;
  					justify-content: space-between;
  					align-items: center;
@@ -186,6 +211,13 @@
  					&:hover{
  					background: #add4ff;
  					color: white;
+ 				 }
+ 				 span{
+ 				 	width: 50%;
+ 				 	overflow: hidden;
+ 				 }
+ 				 .role-left-list-ico{
+ 				 	i{padding-right: 8px;}
  				 }
  				}
  			}

@@ -42,7 +42,7 @@ function testUrl(config,test){
 instance.interceptors.request.use(config => {
   let res = config.url
 testUrl(res,'/checkAccount') >-1?'':showLoading()
-testUrl(res,'/exportFeedback') >-1?config.headers.responseType='blob':''
+//testUrl(res,'/exportFeedback') >-1?config.headers.responseType='blob':''
   if(testUrl(res,'adminLogin') >-1||testUrl(res,'showUserList')>-1||testUrl(res,'displayTemplateTestOnBackend')>-1||testUrl(res,'userTemplateBackend')>-1||testUrl(res,'refuseLogin') >-1||testUrl(res,'showUserDetail') >-1||testUrl(res,'stopUserTemplate') >-1){
     	   console.log('不带token')
     	   if(testUrl(res,'showUserList')>-1||testUrl(res,'displayTemplateTestOnBackend')>-1){

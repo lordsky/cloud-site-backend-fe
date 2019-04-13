@@ -89,7 +89,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="cancelForm">取 消</el-button>
         <el-button type="primary" @click="saveWorks">确 定</el-button>
       </div>
     </el-dialog>
@@ -202,6 +202,12 @@
       	},response=>{
       		console.log(response)
       	})
+      },
+      //取消保存
+      cancelForm(){
+      	this.$refs['ruleForm'].resetFields();
+      	this.dialogFormVisible = false
+      	this.formText = ''
       },
       //重命名
       renameList(){
@@ -344,7 +350,7 @@
       	this.dialogFormVisible = true
       	this.editShow = true
       	this.titleDialog = '添加成员'
-      	this.$refs['formName'].resetFields();
+      	
       	this.formText = {}
       },
       //获取角色列表
