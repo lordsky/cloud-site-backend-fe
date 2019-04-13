@@ -40,7 +40,9 @@ const API = {
     showMenu:'backend/displayAllRoleMenu',
     //保存角色菜单
     setRoleJson:'backend/editRoleMenu',
-    
+    //删除角色
+    delRole:'backend/delRole',
+
     /**
      * 员工管理
      */
