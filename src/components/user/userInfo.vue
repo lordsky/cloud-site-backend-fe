@@ -204,7 +204,8 @@
       table {
         width: 100%;
         border-collapse: collapse;
-        border: 1px solid #999;
+        border: 1px solid #BEBEBE;
+        
       }
       td {
         width: 100px;
@@ -212,14 +213,15 @@
         text-align: center;
       }
       .gray {
-        background: #add4ff;
+        background: #EBEBEB;
         color: white;
+        color: #333;
       }
       .grayIco{
       	width: 50px;
       	height: 50px;
       	border-radius: 50%;
-      	border: 1px solid black;
+      	border: 1px solid #999;
       	margin: 0 auto;
       }
     }
