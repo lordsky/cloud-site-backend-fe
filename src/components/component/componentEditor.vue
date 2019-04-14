@@ -123,6 +123,7 @@
       //查看组件
       lookComponent(item){
         window.localStorage.setItem('saveTemplateCode',item.segmentCode)
+        window.open()
         this.$router.push({path:'/previewTemplate'})
       },
       //编辑组件
@@ -157,16 +158,19 @@
       //保存组件
       saveCompon() {
       	let url 
+      	let msg = ''
         if(this.componentName === ''){
           this.$message.error('请填写文件名称')
           return
         }
         if(this.childId===''){
           	url = this.$API.componentAdd
+          	msg = '添加成功'
           if(!this.thumb)return this.$message({type:'warning',message:'请上传缩略图'})
           if(this.textData==='')return  this.$message.error('请上传文件')
         }else{
         	    url = this.$API.setComponentName
+        	    msg = '编辑成功'
         }
         let formData = new FormData();
         console.log(this.textData)
@@ -184,7 +188,7 @@
           if(res.data.data) {
             this.$message({
               type: 'success',
-              message: '添加成功!'
+              message: msg
             });
           }
         }, {
