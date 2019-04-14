@@ -123,8 +123,8 @@
       //查看组件
       lookComponent(item){
         window.localStorage.setItem('saveTemplateCode',item.segmentCode)
-        window.open()
-        this.$router.push({path:'/previewTemplate'})
+       window.open(window.location.origin+'#/previewTemplate')
+//      this.$router.push({path:'/previewTemplate'})
       },
       //编辑组件
       editComponent(item){

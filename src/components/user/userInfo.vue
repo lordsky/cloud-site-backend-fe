@@ -47,7 +47,7 @@
             <td>{{userInfo.email}}</td>
           </tr>
           <tr>
-            <td class="gray">网站负责人</td>
+            <td class="gray"></td>
             <td></td>
             <td class="gray"></td>
             <td></td>
@@ -76,7 +76,8 @@
               <div class="site-item-btns">
                 <div class="site_button" @click="disableSite(item)">
                  	<img src="../../assets/img/ic_cms_design.png" alt="" class="site_ico"/>
-                 	<p>禁用</p>
+                 	<p v-if="item.status==0||item.status==1">禁用</p>
+                 	<p v-else>启用</p>
                  </div>
               </div>
             </div>

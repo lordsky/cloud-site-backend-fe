@@ -1,10 +1,10 @@
 <template>
   <div class="preview">
-  	<div class="header">
+  	<!--<div class="header">
       <div class="wrap">
         &lt;!&ndash;<div class="btn" @click="back"><i class="el-icon-circle-close"></i> 退出预览模式</div>&ndash;&gt;
       </div>
-    </div>
+    </div>-->
     <div v-html="preview.content">{{preview.content}}</div>
   </div>
 </template>
