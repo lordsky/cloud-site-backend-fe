@@ -102,7 +102,7 @@
               </el-table-column>
               <el-table-column prop="caseCatsId" label="案例类型" align="center">
               </el-table-column>
-              <el-table-column prop="link" label="链接" align="center">
+              <el-table-column prop="link" label="链接" align="center" show-overflow-tooltip>
               </el-table-column>
               <el-table-column prop="createTime" label="发布时间" align="center">
               </el-table-column>
