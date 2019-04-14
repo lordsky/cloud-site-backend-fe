@@ -153,6 +153,7 @@
         worksText:'',
         fromDeptId:[],
         newDeptId:'',
+        user:{},
        rules:{
       	username: [
             { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -360,9 +361,11 @@
       },
       //添加成员
       addWorksRequest(){
+      	
       	let data = this.formText
       	delete data.pwdTwo
       	data.deptId = this.newDeptId
+      	data.operator = this.user.id
       	this.fromDeptId
       	console.log(data)
       	this.$http.post(this.$API.addWorks,data,response=>{
@@ -425,6 +428,9 @@
       }
     },
     created(){
+    	   let user = JSON.parse(localStorage.getItem('cloudUser'))
+    	   this.user = user
+    	   console.log(user)
     	   this.getWorksList()
 //  	   this.getWorksTable()
     	   this.getList()

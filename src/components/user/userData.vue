@@ -192,8 +192,8 @@
         	   pageNum:this.pageNum,
         	   pageSize:this.pageSize
         }
-        let timeStatr = ''
-        let timeEnd = ''
+        let start = ''
+        let end = ''
         let status = this.fromUser.state
         let account = this.fromUser.account
         let username = this.fromUser.name
@@ -201,10 +201,10 @@
         let url = this.$API.userList
 //      console.log(this.fromUser)
         if(this.fromUser.timeData) {
-          timeStatr = this.$http.getLocalTime(this.fromUser.timeData[0])
-          timeEnd = this.$http.getLocalTime(this.fromUser.timeData[1])
-          obj.start = timeStatr
-          obj.end = timeEnd
+          start = this.fromUser.timeData[0]
+          end = this.fromUser.timeData[1]
+          obj.start = start
+          obj.end = end
         }
         status ? obj.status = status : ''
         account ? obj.account = account : ''
