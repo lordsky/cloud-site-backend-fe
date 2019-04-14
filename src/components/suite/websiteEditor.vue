@@ -466,7 +466,7 @@
               //   this.$set(this.data1, '关于我们', []);
               // }
               this.data1.push(newChild);
-              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="'+data.catExt+'.html" style="text-decoration: none;" onmouseover="this.style.borderBottom = \'0.2vw solid #409EFF\'" onmouseout="this.style.borderBottom = \'0.2vw solid transparent\'">'+data.name+'</a></li>')
+              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="'+data.catExt+'.html" style="padding: 1.4vw 0;text-decoration: none;" onmouseover="this.style.borderBottom = \'0.2vw solid #409EFF\'" onmouseout="this.style.borderBottom = \'0.2vw solid transparent\'">'+data.name+'</a></li>')
               // let headerHtml = $('#headerHtml').html()
               // this.webPageList.header = headerHtml
               if(pageNum == 1){
