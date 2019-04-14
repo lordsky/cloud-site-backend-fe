@@ -68,8 +68,8 @@
 	    	//单选
 	    	handItem(val,item){
 	    		item.state?val.checkList.push(item.name):val.checkList.splice(val.checkList.indexOf(item.name),1)
-	    		val.checkList.length===0?(val.state = false,val.deter = false):val.checkList.length==val.checkAll.length?(val.state=true,val.deter=false):(val.deter=true,val.state=false)
-	    		console.log(this.roleJson)
+	    		val.checkList.length===0?(val.state = false,val.deter = false):val.checkList.length==val.checkAll.length?(val.state=true,val.deter=false):(val.deter=true,val.state=true)
+//	    		console.log(sideText)
 	    	},
 	    	//编辑角色
 	    	setName(val){
@@ -160,13 +160,14 @@
 	    	   	   item.list.forEach((data,index)=>{
 	    	   	  	  if(data.state){
 	    	   	  	  	arr.push(data.name)
-	    	   	  	  	item.deter = true
+//	    	   	  	  	item.deter = true
 	    	   	  	  }
 	    	   	  	  item.checkList = arr
 	    	   	  })
 	    	   	  item.checkAll = item.list.map(data=>{
 	    	   	  	  	return data.name
 	    	   	  })
+	    	   	  
 	    	      })
 		    return val
 	    	}
@@ -175,6 +176,8 @@
     	   let user = JSON.parse(localStorage.getItem('cloudUser'))
     	   this.userInfo = user
     	   this.getList()
+//  	   console.log(JSON.stringify(sideText))
+//  	   this.roleJson = this.setJson(sideText)
     }
   }
 </script>

@@ -213,17 +213,19 @@ const sideText = [
     title: '用户管理',
     index: '1',
     ico: 'el-icon-tickets',
-     state:false,
+     state:true,
     deter:false,
     list: [{
         name: '用户资料',
         index: '1-1',
-        path: '/userData'
+        path: '/userData',
+        state:true,
       },
       {
         name: '用户白名单',
         index: '1-2',
-        path: '/userWhite'
+        path: '/userWhite',
+        state:true,
       },
     ]
 },
@@ -231,22 +233,25 @@ const sideText = [
     title: '模板管理',
     index: '2',
     ico: 'el-icon-edit-outline',
-     state:false,
+     state:true,
     deter:false,
     list: [{
         name: '组件管理',
         index: '2-1',
-        path: '/manageComponent'
+        path: '/manageComponent',
+         state:true,
       },
       {
         name: '页面模板',
         index: '2-2',
-        path: '/allTemplate'
+        path: '/allTemplate',
+         state:true,
       },
       {
         name: '模板套件',
         index: '2-3',
-        path: '/suiteManagement'
+        path: '/suiteManagement',
+         state:true,
       }
     ]
   },
@@ -255,19 +260,20 @@ const sideText = [
     index: '3',
     ico: 'el-icon-share',
     path: '/siteManage',
-    state:false,
+    state:true,
     list: []
 },
 {
  title: '安全设置',
  index: '4',
  ico: 'el-icon-view',
-  state:false,
+  state:true,
     deter:false,
  list: [{
      name: '登陆密码设置',
      index: '4-1',
-     path: '/passwordChange'
+     path: '/passwordChange',
+      state:true,
    },
  ]
 },
@@ -294,18 +300,20 @@ const sideText = [
     title: '内容管理',
     index: '6',
     ico: 'el-icon-document',
-    state:false,
+    state:true,
     deter:false,
     list: [
       {
         name: '教程管理',
         index: '6-1',
-        path: '/courseManagement'
+        path: '/courseManagement',
+         state:true,
       },
       {
         name: '案例配置',
         index: '6-2',
-        path: '/caseManagement'
+        path: '/caseManagement',
+         state:true,
       }
     ]
   },
@@ -313,23 +321,26 @@ const sideText = [
     title: '系统设置',
     index: '7',
     ico: 'el-icon-setting',
-    state:false,
+    state:true,
     deter:false,
     list: [
       {
         name: '操作日志',
         index: '7-1',
-        path: '/operationLog'
+        path: '/operationLog',
+        state:true,
       },
       {
         name: '数据备份',
         index: '7-2',
-        path: '/backup'
+        path: '/backup',
+        state:true,
       },
       {
         name: '平台基本信息设置',
         index: '7-3',
-        path: '/informationSet'
+        path: '/informationSet',
+        state:true,
       }
     ]
   },
@@ -338,19 +349,19 @@ const sideText = [
     title: '消息管理',
     index: '8',
     ico: 'el-icon-bell',
-    state:false,
+    state:true,
     deter:false,
     list: [{
         name: '系统消息',
         index: '8-1',
         path: '/systemMessage',
-        state:false,
+        state:true,
       },
       {
         name: '反馈消息',
         index: '8-2',
         path: '/feedbackMessage',
-        state:false,
+       state:true,
       },
     ]
 },
@@ -358,19 +369,19 @@ const sideText = [
     title: '权限管理',
     index: '9',
     ico: 'el-icon-refresh',
-    state:false,
+    state:true,
     deter:false,
     list: [{
         name: '员工管理',
         index: '9-1',
         path: '/workersManage',
-        state:false,
+        state:true,
       },
       {
         name: '角色管理',
         index: '9-2',
         path: '/roleManage',
-        state:false,
+        state:true,
       },
     ]
 },
@@ -379,7 +390,7 @@ const sideText = [
     index: '10',
     ico: 'el-icon-picture-outline',
     path: '/pictureManage',
-    state:false,
+    state:true,
     list: []
   },
 ]
