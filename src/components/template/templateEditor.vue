@@ -91,7 +91,7 @@
         </div>
         <div class="el-dialog-componAdd-btn">
           <el-button @click="dialogAdd = false">取 消</el-button>
-          <el-button type="primary" @click="saveTemplate">保存</el-button>
+          <el-button type="primary" @click="saveTemplate" :disabled="disabled1">保存</el-button>
         </div>
       </el-dialog>
     </div>
@@ -106,6 +106,7 @@
     name: 'templateEditor',
     data() {
       return {
+        disabled1:false,
         dialogVisible3:false,
         host:host,
         imageUrl:'',
@@ -249,8 +250,10 @@
         }
         if(file.response != undefined){
           this.template.imageUrl = file.response;
+          this.disabled1 = false
         }else {
           this.template.imageUrl = URL.createObjectURL(file.raw);
+          this.disabled1 = true
         }
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true

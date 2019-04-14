@@ -94,8 +94,8 @@
     <!--组件模版弹框-->
     <el-form-item>
       <el-button @click="back">返回</el-button>
-      <el-button type="primary" @click="onSubmit" :loading="addLoading">下一步</el-button>
-      <el-button type="primary" @click="suiteSave" :loading="editorLoading">保存</el-button>
+      <el-button type="primary" @click="onSubmit" :loading="addLoading" :disabled="disabled1">下一步</el-button>
+      <el-button type="primary" @click="suiteSave" :loading="editorLoading" :disabled="disabled1">保存</el-button>
     </el-form-item>
   </el-form>
   </div>
@@ -109,6 +109,7 @@
     name: "suiteEditor",
     data() {
       return {
+        disabled1:false,
         aaa:'',
         host:host,
         suite: {},
@@ -190,8 +191,10 @@
         }
         if(file.response != undefined){
           this.suite.thumb = file.response;
+          this.disabled1 = false
         }else {
           this.suite.thumb = URL.createObjectURL(file.raw);
+          this.disabled1 = true
         }
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true

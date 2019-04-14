@@ -50,7 +50,7 @@
       </el-table>
     </el-col>
     </div>
-    <SystemRelease :back="goBack" :messageType="messageType" v-else></SystemRelease>
+    <SystemRelease :back="goBack" @getList="getList" :messageType="messageType" :releaseShow="releaseShow" v-else></SystemRelease>
     <el-col :span="24" v-show="releaseShow" style="margin-top: 20px;">
     	<el-pagination
       @current-change="handleCurrentChange"

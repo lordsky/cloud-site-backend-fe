@@ -14,7 +14,7 @@
       	 <!-- 图片上传组件辅助-->
         <el-upload
           class="avatar-uploader"
-          :action="host.imgUrl"
+          :action="host.imgurl"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
@@ -55,7 +55,7 @@
     [{'background': []}],          // dropdown with defaults from theme
     [{'font': []}],
     [{'align': []}],
-    ['link', 'image'],//, 'video'
+    ['image'],//, 'video'
     ['clean']                                         // remove formatting button
   ];
   // 标题
@@ -150,13 +150,15 @@
       	},response=>{
       	  if(response.data.code === 200){
             this.$message.success('发布成功!');
-            this.$router.push({path:'/courseManagement'})
+            this.$emit('releaseShow', true)
+            this.$emit('getList', 'on')
+            this.back()
           }
       		console.log(response)
       	})
       }
     },
-    props:['back','messageType'],
+    props:['back','messageType','releaseShow','getList'],
     components: {
       quillEditor
     },

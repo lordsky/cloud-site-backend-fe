@@ -41,7 +41,7 @@
       <el-form-item>
         <div style="text-align: center">
           <el-button @click="back">返回</el-button>
-          <el-button type="primary" @click="onSubmit" :loading="addLoading">保存</el-button>
+          <el-button type="primary" @click="onSubmit" :loading="addLoading" :disabled="disabled1">保存</el-button>
         </div>
       </el-form-item>
     </el-form>
@@ -56,6 +56,7 @@
     name: "case2Add",
     data() {
       return {
+        disabled1:false,
         content: '',
         editorOption: {
           placeholder: 'Hello World',
@@ -145,8 +146,10 @@
         }
         if(file.response != undefined){
           this.case2.thumb = file.response;
+          this.disabled1 = false
         }else {
           this.case2.thumb = URL.createObjectURL(file.raw);
+          this.disabled1 = true
         }
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true

@@ -88,7 +88,7 @@
       <!--组件模版弹框-->
       <el-form-item>
         <el-button @click="back">返回</el-button>
-        <el-button type="primary" @click="onSubmit(suite.classification)" :loading="addLoading">下一步</el-button>
+        <el-button type="primary" @click="onSubmit(suite.classification)" :loading="addLoading" :disabled="disabled1">下一步</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -102,6 +102,7 @@
     name: "suiteAdd",
     data() {
       return {
+        disabled1:false,
         catType:this.$route.query.catType,
         pageId:this.$route.query.pageId,
         host:host,
@@ -197,8 +198,10 @@
         }
         if(file.response != undefined){
           this.suite.imageUrl = file.response;
+          this.disabled1 = false
         }else {
           this.suite.imageUrl = URL.createObjectURL(file.raw);
+          this.disabled1 = true
         }
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true

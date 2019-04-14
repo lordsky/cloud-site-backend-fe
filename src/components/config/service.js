@@ -102,9 +102,9 @@ const API = {
 	//反馈消息
 	getFeedback:'backend/feedbackList',
 	//发布消息
-	releaseMessage:'backend/addMessageV2',
+	releaseMessage:'backend/addMessageN1',
 	//删除消息
-	delMessage:'backend/delMessage',
+	delMessage:'backend/delMessageN1',
 	//获取消息
 	getMessage:'backend/getMessageList',
 	//查看消息
