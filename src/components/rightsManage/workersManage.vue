@@ -235,7 +235,7 @@
         	  this.$http.post(this.$API.checkPhone+'?account='+val,{
 	      	},response=>{
 	      		console.log(response)
-	      		!response.data.code==200?this.$message({type:'warning',message:'手机号已注册，请重新输入！'}):''
+	      		!response.data.data?(this.$message({type:'warning',message:'手机号已注册，请重新输入！'}),this.formText.phone = ''):''
 	      	})
         }
       },

@@ -125,6 +125,8 @@
       },
       //禁用站点
       disableSite(val){
+      	let msg = ''
+      	val.status===0||val.status==1?msg= '禁用成功':msg= '启用成功'
       	this.$confirm('是否禁用站点?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -132,7 +134,7 @@
         }).then(() => {
         	   this.$http.post(this.$API.siteDetails+'?userTemplateId='+val.id,{
 	      	},response=>{
-	      		response.data.code==200?(this.getUserList(),this.$message({type:'success',message:'禁用成功'})):''
+	      		response.data.code==200?(this.getUserList(),this.$message({type:'success',message:msg})):''
 	      	})
         }).catch(() => {
           this.$message({
