@@ -35,7 +35,7 @@
       return {
          showItem:'1-1',
          one:true,
-         sideText:[]
+         sideText:sideText
       }
     },
     watch:{
@@ -48,7 +48,8 @@
     	   let site = window.location.hash
     	   let url = site.split("/")[1]
        let arr = url.split("?")[0]
-    	   this.sideText = JSON.parse(data)
+//  	   this.sideText = JSON.parse(data)
+    	   console.log(this.sideText)
     	    setTimeout(()=>{
     	    	  this.getIndex(arr)
     	    },100)

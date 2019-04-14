@@ -107,6 +107,7 @@
       	,response=>{
       		if(response.data.code==200){
       			localStorage.setItem('sidebarJson',response.data.data)
+      			
       			 this.$router.push({
                     path: '/userData'
                   })
