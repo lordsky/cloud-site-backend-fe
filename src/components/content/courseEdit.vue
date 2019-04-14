@@ -8,15 +8,24 @@
         <el-input type="textarea" v-model="course.description" :rows="5" placeholder="请输入教程介绍，不超过40个字符"></el-input>
       </el-form-item>
       <el-form-item label="教程封面:">
-        <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false" @click="getPicture">
-          <div v-if="course.coverUrl" :class="{'delItem':showDel}">
-            <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible=true"></i>
-            <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
+        <el-upload
+          ref='upload'
+          class="avatar-uploader"
+          :action="host.imgurl"
+          :show-file-list="false"
+          :on-change="handleChange"
+          :before-upload="beforeUpLoad">
+          <div class="footerside-right-list" @mousemove="showDel = true" @mouseleave="showDel=false">
+            <!--<img v-if="suite.imageUrl" :src="suite.imageUrl" class="avatar">-->
+            <div v-if="course.coverUrl" :class="{'delItem':showDel}">
+              <i class="el-icon-view compon-edit-ico" :class="{'icoShow':showDel}" @click="dialogVisible=true"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showDel}" @click="handleRemove"></i>
+            </div>
           </div>
-        </div>
-        <img v-if="course.coverUrl" :src="course.coverUrl" class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        <div class="el-upload__tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
+          <img v-if="course.coverUrl" :src="course.coverUrl" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <div class="el-upload__tip" slot="tip">请选择jpg或者png图片，单个文件请不要超过10M，建议尺寸比例：(750 x 400)</div>
+        </el-upload>
         <el-dialog :visible.sync="dialogVisible">
           <img width="100%" :src="course.coverUrl" alt="">
         </el-dialog>
@@ -65,7 +74,7 @@
       <el-form-item>
         <div style="text-align: center">
           <el-button @click="back">返回</el-button>
-          <el-button type="primary" @click="onSubmit(course.classification)" :loading="addLoading">保存</el-button>
+          <el-button type="primary" @click="onSubmit(course.classification)" :loading="addLoading" :disabled="disabled1">保存</el-button>
         </div>
       </el-form-item>
     </el-form>
@@ -156,6 +165,7 @@
     name: "courseEdit",
     data() {
       return {
+        disabled1:false,
         pageAll:0,
         page:1,
         pageSize:6,
@@ -241,8 +251,11 @@
         this.dialogVisibleManage = false
       },
       handleRemove(file, fileList) {
+        this.$refs.upload.clearFiles()
+        this.course.coverUrl = ''
         setTimeout(() => {
-          this.course.coverUrl = ''
+          let oV1 =  document.getElementsByClassName('el-upload__input')
+          oV1[0].disabled=false
         }, 100);
       },
       handleAvatarSuccess(res, file) {
@@ -330,8 +343,10 @@
         }
         if(file.response != undefined){
           this.course.coverUrl = file.response;
+          this.disabled1 = false
         }else {
           this.course.coverUrl = URL.createObjectURL(file.raw);
+          this.disabled1 = true
         }
         let oV1 =  document.getElementsByClassName('el-upload__input')
         oV1[0].disabled=true
@@ -455,6 +470,10 @@
       this.course = this.$route.query.data
       this.addQuillTitle()
       this.getCatList()
+      let oV1 =  document.getElementsByClassName('el-upload__input')
+      if(this.course.thumb != null || this.course.thumb != ''){
+        oV1[0].disabled = true
+      }
     },
     watch:{
       'course.type' : function(val) {
