@@ -78,7 +78,7 @@
         <el-form-item label="部门:">
           <el-cascader
 			  :options="departmentList"
-			  v-model="formText.deptId"
+			  v-model="fromDeptId"
 			  :props="departmentProps"
 			  @change="handleChange"
 			  filterable
@@ -151,7 +151,8 @@
         roleList:[],
         treeInfo:{},
         worksText:'',
-        fromDeptId:'',
+        fromDeptId:[],
+        newDeptId:'',
        rules:{
       	username: [
             { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -179,6 +180,7 @@
     watch:{
     	  dialogFormVisible(val){
     	  	!val?(this.$refs['ruleForm'].resetFields(),this.cancelForm()):''
+    	  	
     	  }
     },
     computed:{
@@ -205,8 +207,7 @@
       handleChange(val){
       	if(val.length>1){
     	  	   let id = val.length - 1 
-    	  	   this.fromDeptId = val[id]
-    	  	   console.log( this.fromDeptId)
+    	  	   this.newDeptId = val[id]
     	  	}
       },
       //重置密码
@@ -233,7 +234,7 @@
         	  this.$http.post(this.$API.checkPhone+'?account='+val,{
 	      	},response=>{
 	      		console.log(response)
-	      		!response.data.data?this.$message({type:'warning',message:'手机号已注册，请重新输入！'}):''
+	      		!response.data.code==200?this.$message({type:'warning',message:'手机号已注册，请重新输入！'}):''
 	      	})
         }
       },
@@ -241,6 +242,7 @@
       cancelForm(){
       	if(this.titleDialog=='添加成员'){
       	    this.formText = {}
+      	    this.fromDeptId = []
       	}
       	this.dialogFormVisible = false
       },
@@ -360,12 +362,13 @@
       addWorksRequest(){
       	let data = this.formText
       	delete data.pwdTwo
-      	data.deptId = this.fromDeptId
+      	data.deptId = this.newDeptId
       	this.fromDeptId
       	console.log(data)
       	this.$http.post(this.$API.addWorks,data,response=>{
       		console.log(response)
-      		response.data.data?(this.$message({type:'success',message:'删除成功'})):''
+      		this.formText = {}
+      		response.data.data?(this.$message({type:'success',message:'添加成功'}),this.dialogFormVisible = false):''
       	})
       },
       //编辑成员
@@ -373,24 +376,24 @@
       	let data = this.formText
       	delete data.pwd
       	delete data.pwdTwo
-      	data.deptId = this.worksDeptId
+      	data.deptId = this.newDeptId
       	this.$http.post(this.$API.setWorks,data,response=>{
       		 console.log(response)
       		 this.formText = {}
-      		response.data.code==200?(this.$message({type:'success',message:'编辑成功'}),this.dialogFormVisible = false,this.tableData=[]):''
+      		 console.log(this.departmentList)
+      		response.data.code==200?(this.$message({type:'success',message:'编辑成功'}),this.dialogFormVisible = false,this.getWorksTable(this.worksInfo.id)):''
       	})
       },
       //编辑
       editorRole(val){
       	this.worksInfo = val
-        delete val.deptId
         this.formText = val
       	this.editShow = false
       	this.titleDialog = '编辑成员'
       	this.dialogFormVisible = true
       	this.formText.pwd = '123'
       	this.formText.pwdTwo = '123'
-      	
+      	this.formText.deptId = ''
       },
       //添加成员
       addRole(){
@@ -398,7 +401,6 @@
       	this.editShow = true
       	this.titleDialog = '添加成员'
       	this.formText = {}
-      	
       },
       //获取角色列表
       	getList(){
@@ -409,8 +411,8 @@
 	    	},
       //保存成员
       saveWorks(){
-      	 if(!this.formText.roleId)return this.$message({type:'warning',message:'请选择角色'})
-      	 if(!this.formText.deptId)return this.$message({type:'warning',message:'请选择部门'})
+//    	 if(!this.formText.roleId)return this.$message({type:'warning',message:'请选择角色'})
+//    	 if(!this.formText.deptId)return this.$message({type:'warning',message:'请选择部门'})
       	 this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
             if(this.editShow){
