@@ -167,6 +167,7 @@
     	  			return
     	  		}
     	  	}
+    	  	this.picAllStatu = false
     	  	this.btnPic = true
     	  },
     	  checkVideoList(val){
@@ -176,6 +177,7 @@
     	  			return
     	  		}
     	  	}
+    	  	this.videoAllStatu = false
     	  	this.btnVideo = true
     	  },
     	  checkTextList(val){
@@ -185,6 +187,7 @@
     	  			return
     	  		}
     	  	}
+    	  	this.textAllStatu = false
     	  	this.btnText = true
     	  }
     },

@@ -82,9 +82,7 @@
               this.$http.post(this.$API.login, this.data, (res) => {
                 if(res.data.code == 200) {
                   localStorage.setItem('cloudUser', JSON.stringify(res.data.data))
-                  this.$router.push({
-                    path: '/userData'
-                  })
+                  this.getJson(res.data.data)
                 }else{
                 	  this.getCode()
                 }
@@ -102,6 +100,18 @@
       	    	   this.identifyCode = response.data.data
       	    }
       	 })
+      },
+      getJson(val){
+//    	console.log(val)
+      	this.$http.get(this.$API.getJsonList+'?roleId='+val.roleId
+      	,response=>{
+      		if(response.data.code==200){
+      			localStorage.setItem('sidebarJson',response.data.data)
+      			 this.$router.push({
+                    path: '/userData'
+                  })
+      		}
+      	})
       }
     }
   }

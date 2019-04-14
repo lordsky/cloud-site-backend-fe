@@ -42,7 +42,7 @@ const API = {
     setRoleJson:'backend/editRoleMenu',
     //删除角色
     delRole:'backend/delRole',
-
+    
     /**
      * 员工管理
      */
@@ -57,7 +57,7 @@ const API = {
     //增加员工
     addWorks:'backend/add/adminusers',
     //检测电话
-    checkPhone:'backend/checkAccount',
+    checkPhone:'backend/checkAccountBackend',
     //增加树级成员
     addWorksTree:'backend/add/department',
     //删除树级成员

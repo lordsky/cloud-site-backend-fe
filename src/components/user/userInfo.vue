@@ -21,7 +21,7 @@
             <td class="gray">用户昵称</td>
             <td>{{userInfo.nickname}}</td>
             <td class="gray">注册时间</td>
-            <td>{{userInfo.starTime}}</td>
+            <td>{{userInfo.createTime}}</td>
           </tr>
           <tr>
             <td class="gray">用户名称</td>
@@ -143,7 +143,7 @@
       },
       //查看站点
       lookSite(val){
-      	val?window.open("http://"+val):''
+      	val?window.open("http://"+val):this.$message({type:'warning',message:'该网站未发布'})
       },
       //获取站点信息
       getSite(){
@@ -153,6 +153,10 @@
       	this.$http.post(this.$API.userDetails+'?userId='+this.list.id,{
       	},(response)=>{
       		if(response.data.code==200){
+      			let time = response.data.data.createTime
+			   let d = new Date(time);
+			let times=d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + 			d.getSeconds()
+			response.data.data.createTime = times
       			this.userInfo = response.data.data
       		    this.siteList = response.data.data.userDomianDOS
       		}

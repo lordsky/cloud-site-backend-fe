@@ -3,7 +3,7 @@
     <div class="sidebar-head"><div class="sidebar-logo" :class="{'logoOff':switchLeft}"></div></div>
     <el-menu   class="el-menu-vertical-demo" 
     	:collapse="switchLeft" 
-    	:default-active="showItem"
+    :default-active="showItem"
     	@select="jump"
     	:unique-opened="one"
     	background-color="#001529" 
@@ -35,7 +35,7 @@
       return {
          showItem:'1-1',
          one:true,
-         sideText:sideText
+         sideText:[]
       }
     },
     watch:{
@@ -44,11 +44,15 @@
 	  },
     },
     created(){
+    	  let data = localStorage.getItem('sidebarJson')
     	   let site = window.location.hash
     	   let url = site.split("/")[1]
-       let arr = url.split("?")[0];
-    	   this.getIndex(arr)
-    },
+       let arr = url.split("?")[0]
+    	   this.sideText = JSON.parse(data)
+    	    setTimeout(()=>{
+    	    	  this.getIndex(arr)
+    	    },100)
+    	  },
     
     props:['switchLeft'],
     methods: {

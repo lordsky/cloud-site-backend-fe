@@ -13,7 +13,7 @@ const store = new Vuex.Store({
     templateData:null,
     catType:null,
     suiteData:null,
-    headerIndex:null //顶部导航切换
+    headerIndex:null ,//顶部导航切换,
 	},
 	mutations: {
 		// save user data
@@ -42,6 +42,7 @@ const store = new Vuex.Store({
     saveHeaderIndex(state, data){
       state.headerIndex = data
     }
+    
 	}
 })
 
