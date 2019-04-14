@@ -104,7 +104,7 @@
           ],
           description: [
             { required: true, message: '请输入案例简介标题', trigger: 'blur' },
-            { max: 40,message: '不超过40个字符', trigger: 'change' }
+            { max: 20,message: '不超过20个字符', trigger: 'blur' }
           ],
           link:[
             {
