@@ -126,8 +126,9 @@
       //禁用站点
       disableSite(val){
       	let msg = ''
-      	val.status===0||val.status==1?msg= '禁用成功':msg= '启用成功'
-      	this.$confirm('是否禁用站点?', '提示', {
+      	let text =''
+      	val.status===0||val.status==1?(msg= '禁用成功',text = '是否禁用站点'):(msg= '启用成功',text='是否启用站点')
+      	this.$confirm(text, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

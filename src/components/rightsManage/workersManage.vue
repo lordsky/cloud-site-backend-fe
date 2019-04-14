@@ -320,7 +320,7 @@
       },
       //删除
       deleteRole(val){
-      	this.$confirm('确定要删除该部门吗？', '提示', {
+      	this.$confirm('确定要删除该人员吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(() => {
