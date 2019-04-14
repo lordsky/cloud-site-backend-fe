@@ -1,6 +1,6 @@
    const hostConfig = {
    hostUrl: 'http://192.168.50.17:11000',
-   imgurl:'http://192.168.50.17:22122',
+   imgurl:'http://192.168.50.17:11000',
    editorUrl: 'http://editor.zhengqi.10086.cn/editor.html'
    }
 
