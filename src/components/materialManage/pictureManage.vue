@@ -226,6 +226,10 @@
           	 console.log(data)
           	 this.totalPic = data.data.data.totalElements
           	 this.picList = data.data.data.content
+          	 if(data.data.data.content.length==0){
+          	 	this.pageNumPic--
+          	 	this.getpicList()
+          	 }
              this.checkShow = []
              this.picAllStatu = false
           })
@@ -235,6 +239,10 @@
     	  	this.getList(2,(data)=>{
           	 this.videoList = data.data.data.content
           	 this.totalVideo = data.data.data.totalElements
+          	 if(data.data.data.content.length==0){
+          	 	this.pageNumVideo--
+          	 	this.getVideo()
+          	 }
           	 this.checkVideoShow = []
           	 this.videoAllStatu = false
           })
@@ -244,6 +252,10 @@
     	  	this.getList(3,(data)=>{
           	 this.textList = data.data.data.content
           	 this.totalText = data.data.data.totalElements
+          	  if(data.data.data.content.length==0){
+          	 	this.pageNumText--
+          	 	this.getText()
+          	 }
           	 this.checkTextShow = []
           	 this.textAllStatu = false
           })
