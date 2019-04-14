@@ -210,7 +210,7 @@
         account ? obj.account = account : ''
         username ? obj.username = username : ''
         companyName ? obj.companyName = companyName :''
-        this.$http.get(url, (res) => {
+        this.$http.post(url,obj, (res) => {
 //        console.log(window)
           if(res.data.code === 200) {
            res.data.data.content.content.map(item=>{
@@ -222,8 +222,6 @@
           	this.totalPage = res.data.data.content.totalElements
             this.tableData = res.data.data.content.content
           }
-        },{
-        	   params:obj
         })
       }
     },
