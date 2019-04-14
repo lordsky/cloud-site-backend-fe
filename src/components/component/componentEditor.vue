@@ -27,7 +27,7 @@
               <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':delShow==i}" @click="delComponent(x)"></i>
               <i class="el-icon-edit compon-edit-ico" :class="{'icoShow':delShow==i}" @click="SetComponent(x)"></i>
             </div>
-            <div v-html="x.segmentCode"></div>
+            <div ><img :src="x.thumb" style="max-width: 100%;"/></div>
           </li>
         </ul>
       </div>
@@ -105,7 +105,7 @@
       handlePreview(file) {
         console.log(file);
         this.thumb = file
-        this.$message({type:'success',message:'上传成功'})
+        this.$message({type:'success',message:'上传图片成功'})
       },
       //删除图片
       handleRemove(file, fileList) {
@@ -161,13 +161,10 @@
           this.$message.error('请填写文件名称')
           return
         }
-          
         if(this.childId===''){
           	url = this.$API.componentAdd
-          if(this.textData===''){
-            this.$message.error('请上传文件')
-            return
-          }
+          if(!this.thumb)return this.$message({type:'warning',message:'请上传缩略图'})
+          if(this.textData==='')return  this.$message.error('请上传文件')
         }else{
         	    url = this.$API.setComponentName
         }
@@ -199,6 +196,7 @@
         if(file.type !== 'text/plain') {
           return this.$message.error('文件类型不对，请上传.txt文件格式')
         }
+        this.$message({type:'success',message:'上传文件成功'})
         this.textData = file
       },
       //删除组件

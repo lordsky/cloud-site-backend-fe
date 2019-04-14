@@ -60,10 +60,10 @@
           <el-input placeholder="请输入邮箱" v-model="formText.email"></el-input>
         </el-form-item>
         <el-form-item label="密码:" v-show="editShow" prop="pwd">
-          <el-input placeholder="请输入密码" v-model="formText.pwd"></el-input>
+          <el-input placeholder="请输入密码" v-model="formText.pwd" type="password"></el-input>
         </el-form-item>
         <el-form-item label="确认密码:" v-show="editShow" prop="pwdTwo">
-          <el-input placeholder="请确认密码" v-model="formText.pwdTwo"></el-input>
+          <el-input placeholder="请确认密码" v-model="formText.pwdTwo" type="password"></el-input>
         </el-form-item>
         <el-form-item label="角色:">
             <el-select v-model="formText.roleId" placeholder="请选择">
@@ -80,6 +80,8 @@
 			  :options="departmentList"
 			  v-model="formText.deptId"
 			  :props="departmentProps"
+			  @change="handleChange"
+			  filterable
 			  :show-all-levels="false"
 			></el-cascader>
         </el-form-item>
@@ -109,7 +111,17 @@
         } else {
           callback();
         }
-      }
+      };
+     
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.formText.pwd) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
       return {
         departmentList: [],
         defaultProps: {
@@ -117,6 +129,7 @@
           label: 'departmentName'
         },
         treeArr:[],
+        worksDeptId:'',
         worksListInfo:{},
         worksInfo:{},
         formText:{},
@@ -138,6 +151,7 @@
         roleList:[],
         treeInfo:{},
         worksText:'',
+        fromDeptId:'',
        rules:{
       	username: [
             { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -153,13 +167,22 @@
             { required: true, message: '请输入密码', trigger: 'blur' },
           ],
           pwdTwo: [
-            { required: true, message: '请再次输入密码', trigger: 'blur' },
+//          { required: true, message: '请再次输入密码', trigger: 'blur' },
+            { validator: validatePass2, trigger: "blur" }
           ],
           positions: [
             { required: true, message: '请输入职位', trigger: 'blur' },
           ],
       }
       }
+    },
+    watch:{
+    	  dialogFormVisible(val){
+    	  	!val?(this.$refs['ruleForm'].resetFields(),this.cancelForm()):''
+    	  }
+    },
+    computed:{
+    	  
     },
     methods: {
     	// 树右键点击
@@ -170,13 +193,21 @@
         menu.style.left = MouseEvent.clientX - 220 + 'px'
         document.addEventListener('click', this.foo) // 给整个document添加监听鼠标事件，点击任何位置执行foo方法
         menu.style.top = MouseEvent.clientY - 150 + 'px'
-        console.log(object)
+//      console.log(object)
         this.treeInfo = object
       },
      
      foo() { // 取消鼠标监听事件 菜单栏
         this.menuVisible = false
         document.removeEventListener('click', this.foo) // 要及时关掉监听，不关掉的是一个坑，不信你试试，虽然前台显示的时候没有啥毛病，加一个alert你就知道了
+      },
+      //选择部门
+      handleChange(val){
+      	if(val.length>1){
+    	  	   let id = val.length - 1 
+    	  	   this.fromDeptId = val[id]
+    	  	   console.log( this.fromDeptId)
+    	  	}
       },
       //重置密码
       resetPassword(){
@@ -197,17 +228,20 @@
       },
       //检查电话
       checkPhone(val){
-      	this.$http.post(this.$API.checkPhone+'?account='+val,{
-      	},response=>{
-      		console.log(response)
-      	})
+        if(!val)return
+        if(val.length==11){
+        	  this.$http.post(this.$API.checkPhone+'?account='+val,{
+	      	},response=>{
+	      		console.log(response)
+	      		!response.data.data?this.$message({type:'warning',message:'手机号已注册，请重新输入！'}):''
+	      	})
+        }
       },
       //取消保存
       cancelForm(){
       	if(this.titleDialog=='添加成员'){
       	    this.formText = {}
       	}
-      	this.$refs['ruleForm'].resetFields();
       	this.dialogFormVisible = false
       },
       //重命名
@@ -254,12 +288,11 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-           this.$http.post(this.$API.delWorksTree,{
-              departmentName:this.treeInfo.departmentName,
-              id: this.treeInfo.id,
-   			  parentId: this.treeInfo.parentId
-           },response=>{
+           this.$http.post(this.$API.delWorksTree,
+            this.treeInfo.id
+           ,response=>{
            	console.log(response)
+           	response.data.data?(this.$message({type:'success',message:'删除成功'}),this.getWorksList()):''
            })
         }).catch(() => {
           this.$message({
@@ -287,12 +320,10 @@
       	this.$confirm('确定要删除该部门吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-         
         }).then(() => {
         	  this.$http.post(this.$API.delWorksList,
         	  	val.id
         	  ,response=>{
-        	  	 console.log(this.formText.deptId)
         	  	 response.data.code==200?(this.$message({ type: 'success',message: '删除成功!'}),this.getWorksTable(this.worksListInfo.id)):''
         	  })
         }).catch(() => {
@@ -307,7 +338,7 @@
       	let data = {}
       	val?data.searchContext = val:''
       	this.$http.post(this.$API.getWorksList,data,response=>{
-      		console.log('123123123123',response)
+//    		console.log('123123123123',response)
       		this.departmentList = response.data.data
       		this.treeArr.push(response.data.data[0].list[0].id)
       	})
@@ -322,34 +353,31 @@
       	},response=>{
       		console.log(response)
       		this.tableData = response.data.data.content
-//    		this.totalPage = response.data.data.totalElements
+      		this.totalPage = response.data.data.totalElements
       	})
       },
       //添加成员
       addWorksRequest(){
       	let data = this.formText
-      	let index = data.deptId.length - 1
-      	let id = data.deptId[index]
       	delete data.pwdTwo
-      	delete data.deptId
-      	data.deptId = id
+      	data.deptId = this.fromDeptId
+      	this.fromDeptId
+      	console.log(data)
       	this.$http.post(this.$API.addWorks,data,response=>{
       		console.log(response)
+      		response.data.data?(this.$message({type:'success',message:'删除成功'})):''
       	})
       },
       //编辑成员
       setWorksRequest(){
       	let data = this.formText
-      	let index = data.deptId.length - 1
-      	let id = data.deptId[index]
       	delete data.pwd
       	delete data.pwdTwo
-      	delete data.deptId
-        data.deptId = id
-      	console.log(data)
+      	data.deptId = this.worksDeptId
       	this.$http.post(this.$API.setWorks,data,response=>{
-      		console.log(response)
-//    		response.data.code==200?(this.$message({type:'success',message:'编辑成功'}),this.dialogFormVisible = false,this.tableData=[]):''
+      		 console.log(response)
+      		 this.formText = {}
+      		response.data.code==200?(this.$message({type:'success',message:'编辑成功'}),this.dialogFormVisible = false,this.tableData=[]):''
       	})
       },
       //编辑
@@ -362,6 +390,7 @@
       	this.dialogFormVisible = true
       	this.formText.pwd = '123'
       	this.formText.pwdTwo = '123'
+      	
       },
       //添加成员
       addRole(){
@@ -369,6 +398,7 @@
       	this.editShow = true
       	this.titleDialog = '添加成员'
       	this.formText = {}
+      	
       },
       //获取角色列表
       	getList(){
@@ -388,10 +418,7 @@
 	      	 }else{
 	      	 	this.setWorksRequest()
 	      	 }
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
+         }
         });
       }
     },

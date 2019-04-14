@@ -130,7 +130,7 @@
         	  	})
         	  }else{
         	  	 this.$http.post(this.$API.editRole,{
-        	  	 	id:listInfo.roleMenuid,
+        	  	 	id:listInfo.roleId,
         	  	 	userId:user.id,
         	  	 	name:value
         	  	 },response=>{
