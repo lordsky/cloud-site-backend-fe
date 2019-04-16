@@ -44,7 +44,7 @@
       },
     }
 </script>
-<style lang="less" src="../../assets/css/style.less"></style>   
+<!--<style lang="less" src="../../assets/css/style.less"></style>-->   
 <style lang="less" scoped>
   
   .preview{

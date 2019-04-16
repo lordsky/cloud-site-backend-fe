@@ -133,7 +133,6 @@
       //查询组件
       queryComponent() {
         this.$http.get(this.$API.componentList + '?catId=' + this.options.id + '&name=' + this.queryItem, (res) => {
-          console.log(res)
           if(res.data.code == 200) {
             if(res.data.data.length == 0) {
               this.$message({
