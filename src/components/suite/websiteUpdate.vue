@@ -324,7 +324,8 @@
           //   this.dialogVisible4 = true
           // }
         },
-        NodeAdd(n, d){//新增节点
+        //新增二级页面
+        NodeAdd(n, d){
               let parm = {
                 pageName: data.name,
                 templateId: this.templateId,
@@ -500,7 +501,7 @@
               //   this.$set(this.data1, '关于我们', []);
               // }
               this.data1.push(newChild);
-              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="'+data.catExt+'.html" style="padding: 1.4vw 0;text-decoration: none;color: inherit;" onmouseover="this.style.borderBottom = \'0.2vw solid #409EFF\'" onmouseout="this.style.borderBottom = \'0.2vw solid transparent\'">'+data.name+'</a></li>')
+              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="'+data.catExt+'.html" class="padding_a" style="text-decoration: none;color: inherit;" onmouseover="this.style.borderBottom = \'0.2vw solid #409EFF\'" onmouseout="this.style.borderBottom = \'0.2vw solid transparent\'">'+data.name+'</a></li>')
               // let headerHtml = $('#headerHtml').html()
               // this.webPageList.header = headerHtml
               if(pageNum == 1){
@@ -511,6 +512,7 @@
               }
             } else {
               this.$message.error(res.msg)
+              this.webPageList.content = ''
             }
           })
         },
@@ -578,6 +580,9 @@
           })
           return
         }
+        setTimeout(()=>{
+          $('.header-hsw') .css('position','absolute')
+        },1000)
         pageNum = 1
         this.templateId = this.$route.query.data.templateId
         this.$api.apiByCatType(2).then(res => {
@@ -621,6 +626,9 @@
     top: 40px;
     bottom: 0px;
     width: 100%;
+    .main{
+      padding: 0;
+    }
     .header {
       height: 60px;
       line-height: 60px;

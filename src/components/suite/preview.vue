@@ -43,10 +43,17 @@
             event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true); //阻止事件冒泡
             self.curPage = self.curPageTop + self.pageList[i].pageCode + self.curPageBottom
             setTimeout(()=>{
+              setTimeout(()=>{
+                $('.header-hsw') .css('position','absolute')
+              },10)
               NavSwitch()
+               setTimeout(()=>{
+		     	 $('.header-hsw') .css('position','absolute')
+		     },10)
             },100)
           }
         }
+       
       }
       return {
         curId: "",
@@ -80,6 +87,7 @@
         getList = this.$api.apiTemplateComponentList
 
         let getContent = getPage(key).then(res => {
+          console.log(res)
           this.pageList = res.data;
           if(res.data.length > 0) {
             this.curPageConetent = res.data[0].pageCode
@@ -90,6 +98,7 @@
           if(res.data.length > 0) {
             this.curPageTop = res.data[0].componentCode
             this.curPageBottom = res.data[1].componentCode
+            
           }
         });
         await Promise.all([getContent, getHeaderFooter]).then(res => {
@@ -101,14 +110,21 @@
     mounted(){
       this.curId = this.$route.query.id;
       this.curTitle = this.$route.query.title;
+     setTimeout(()=>{
+     	 $('.header-hsw') .css('position','absolute')
+     },1000)
       this.getTemplatePage()
       setTimeout(function () {
+      	 
         $(".question").on("click",".question1",function(){
           $(this.children[0]).fadeToggle()
           $(this.children[1]).fadeToggle()
           $(this.children[2]).fadeToggle()
         })
       },0)
+      setTimeout(()=>{
+        $('.header-hsw') .css('position','absolute')
+      },1000)
     }
   };
 </script>
