@@ -44,9 +44,13 @@
             self.curPage = self.curPageTop + self.pageList[i].pageCode + self.curPageBottom
             setTimeout(()=>{
               NavSwitch()
+               setTimeout(()=>{
+		     	 $('.header-hsw') .css('position','absolute')
+		     },10)
             },100)
           }
         }
+       
       }
       return {
         curId: "",
