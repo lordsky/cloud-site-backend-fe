@@ -46,7 +46,7 @@
         <div class="topside-right" :class="{'side-right-border':topDate == ''}">
           <div class="topside-right-list" :class="{'height_auto':topDate != ''}"  @mousemove="showTop = true" @mouseleave="showTop=false">
             <el-button type="primary" v-if="topDate == ''" @click="addComponent('top')">+添加组件</el-button>
-            <div v-if="topDate != ''" v-html="topDate" style="width: 100%" id="topDate">
+            <div v-if="topDate != ''" v-html="topDate" style="width: 100%;position: relative;" id="topDate">
               {{topDate}}
             </div>
             <div v-if="topDate != ''" :class="{'delItem':showTop}">

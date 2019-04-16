@@ -24,6 +24,7 @@
       	//退出预览
       	back(){
       		window.history.back(-1)
+      		
       	}
       },
       mounted() {
@@ -38,11 +39,12 @@
           // 如果需要滚动条
           scrollbar: '.swiper-scrollbar',
         })
+        
+        
       },
     }
 </script>
 <style lang="less" src="../../assets/css/style.less"></style>   
-
 <style lang="less" scoped>
   
   .preview{
@@ -78,9 +80,6 @@
           cursor: pointer;
         }
       }
-    }
-    /deep/.row{
-    	  margin: 0 !important;
     }
   }
 </style>

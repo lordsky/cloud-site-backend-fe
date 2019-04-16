@@ -233,11 +233,11 @@
         width: 250px;
         height: 360px;
         border-radius: 10px;
-        box-shadow: 0 0 20px rgba(15,45,160,0.1);
+        box-shadow: 0 0 20px rgba(15,45,160,0.06);
         text-align: center;
         margin: 50px auto 0;
         &:hover{
-            box-shadow: 0 0 50px rgba(15,45,160,0.1);
+            box-shadow: 0 0 50px rgba(15,45,160,0.16);
         }
         img{
             margin: 60px auto 45px;
@@ -282,7 +282,17 @@
        margin-top: 0;
     }
 }
-
+.swiper_business{
+        width: 100%;
+        height: 1000px;
+        img{
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: all .5s ease;
+            position: absolute;
+        }
+    }
 //为什么选择我们
 .why{
     background: linear-gradient(0deg,rgba(46,39,196,1),rgba(56,77,227,1));
@@ -364,7 +374,7 @@
             display: block;
             cursor: pointer;
             &:hover{
-                background: #EBEBEB;
+                background: #FAFAFA;
             }
             img{
                 height: 40px;
@@ -391,11 +401,24 @@
             }
         }
     }
+    
+    .swiper_business{
+        width: 100%;
+        height: 1000px;
+        img{
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: all .5s ease;
+            position: absolute;
+        }
+    }
     .wrap{
         width: 100%;
         height: 1px;
         position: absolute;
         top: 0;
+        z-index: 20;
         .container{
             max-width: 800px;
             .main{
