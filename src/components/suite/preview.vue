@@ -127,6 +127,21 @@
       },1000)
     }
   };
+  function showImg(id, index){
+    let url = ''
+    var time = new Date().getTime()
+    if(index==2){
+      url = 'https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1cDaAJ7OFAAMwwjfmuGc692.gif?'
+    }else if(index==3){
+      url = 'https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1cD6AfCCIAARkdxn27zE048.gif?'
+    }else{
+      url = 'https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1cC2AeZnJAAD-qCJNxAY475.gif?'
+    }
+    // console.log($(id).length)
+    if($(id).length>0){
+      $("#box-"+index).css("background-image",`url(${url}+${time})`);
+    }
+  }
 </script>
 
 
