@@ -69,7 +69,7 @@
     },
     methods: {
       exitPreview() {
-        window.history.go(-1)
+      	window.history.go(-1)
       },
       changePage(command) {
         this.curPageConetent = this.pageList[command].pageCode
