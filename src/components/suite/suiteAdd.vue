@@ -337,9 +337,6 @@
       this.getSuiteTypeList(3)
     },
     mounted() {
-      setTimeout(()=>{
-        $('.header-hsw').css('position','static')
-      },1000)
     }
   }
 </script>

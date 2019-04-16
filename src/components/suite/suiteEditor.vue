@@ -345,9 +345,6 @@
       }
     },
     mounted() {
-      setTimeout(()=>{
-        $('.header-hsw').css('position','static')
-      },1000)
       this.$api.apiByCatType(3).then(res => {
         if(res.msg === "success") {
           this.classification = res.data
