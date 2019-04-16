@@ -31,7 +31,7 @@ import navHead from './navHead';
 	}
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .content{
   	height: calc(100vh - 60px);
   	background: #f0f2f5;
