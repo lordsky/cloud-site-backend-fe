@@ -23,7 +23,7 @@
       <!--</div>-->
     <!--</div>-->
     <Banner @addComponent="addComponent('banner')" @delComponent="delComponent('banner')"  :typographyId="typographyId" :bannnerDate="bannnerDate"></Banner>
-    <Format @addComponent="addComponent" @delComponent="delComponent" :typographyId="typographyId" :formatDate="formatDate" :formatDate2="formatDate2" :formatDate3="formatDate3"></Format>
+    <Format @addComponent="addComponent" @delComponent="delComponent" :typographyId="typographyId" :formatDate="formatDate" :formatDate2="formatDate2" :formatDate3="formatDate3" :formatDate4="formatDate4" :formatDate5="formatDate5" :formatDate6="formatDate6"></Format>
     <!--<div class="footerside">-->
       <!--<label>页脚区</label>-->
       <!--<div class="footerside-right" :class="{'side-right-border':footerDate == ''}">-->
@@ -106,6 +106,9 @@
             formatDate:'',//版式代码
             formatDate2:'',//版式代码
             formatDate3:'',//版式代码
+            formatDate4:'',//版式代码
+            formatDate5:'',//版式代码
+            formatDate6:'',
             footerDate:'',//页脚代码
             showTop:false,
             showBanner:false,
@@ -181,6 +184,15 @@
             case 'formatDate3':
               this.formatDate3 = this.componentList[index].segmentCode
               break;
+            case 'formatDate4':
+              this.formatDate4 = this.componentList[index].segmentCode
+              break;
+            case 'formatDate5':
+              this.formatDate5 = this.componentList[index].segmentCode
+              break;
+            case 'formatDate6':
+              this.formatDate6 = this.componentList[index].segmentCode
+              break;
             case 'footer':
               this.footerDate = this.componentList[index].segmentCode
               console.log('页脚区')
@@ -192,7 +204,7 @@
         },
         saveTemplate(){
           this.loading = true;
-          this.pageCode = this.bannnerDate + this.formatDate + this.formatDate2 + this.formatDate3
+          this.pageCode = this.bannnerDate + this.formatDate + this.formatDate2 + this.formatDate3 + this.formatDate4 + this.formatDate5 + this.formatDate6
           if(this.name == '' ){
             this.$message({
               type: 'warning',
@@ -248,6 +260,15 @@
               break;
             case 'formatDate3':
               this.formatDate3 = ''
+              break;
+            case 'formatDate4':
+              this.formatDate4 = ''
+              break;
+            case 'formatDate5':
+              this.formatDate5 = ''
+              break;
+            case 'formatDate6':
+              this.formatDate6 = ''
               break;
             case 'footer':
               this.footerDate = ''

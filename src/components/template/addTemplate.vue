@@ -82,6 +82,10 @@
           {
             name:'版式4',
             imgs: require('../../assets/img/template1.png')
+          },
+          {
+            name:'版式5',
+            imgs: require('../../assets/img/template2.png')
           }
         ],
       }
