@@ -41,8 +41,10 @@
       },
     }
 </script>
+<style lang="less" src="../../assets/css/style.less"></style>   
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
+  
   .preview{
     width: 100%;
     height: 100vh;
@@ -77,9 +79,13 @@
         }
       }
     }
+    /deep/.row{
+    	  margin: 0 !important;
+    }
   }
 </style>
 <style>
+	
   .swiper-container {
     width: 100%;
     height: 100%;

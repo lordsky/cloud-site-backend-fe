@@ -247,6 +247,7 @@
 </script>
 
 <style lang="less">
+   /*@import url("../../assets/css/style.less")*/
   .componentEditor {
   	.el-upload-list{
   		display: none;

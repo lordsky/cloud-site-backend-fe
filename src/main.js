@@ -13,6 +13,7 @@ import "nprogress/nprogress.css"; // Progress 进度条样式
 
 import 'jquery'
 import 'bootstrap/dist/js/bootstrap.min'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './assets/css/swiper.min.css'
 import './assets/js/swiper.min.js'
 import './assets/icon/iconfont.css'
