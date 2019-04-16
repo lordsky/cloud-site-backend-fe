@@ -211,6 +211,9 @@
         this.$api.apiComponentByName(val).then(res => {
           if(res.msg === "success") {
             this.componentList = res.data
+            setTimeout(()=>{
+              $('.header-hsw').css('position','static')
+            },10)
           } else {
             this.$message.error(res.msg)
           }
@@ -332,6 +335,11 @@
     },
     created() {
       this.getSuiteTypeList(3)
+    },
+    mounted() {
+      setTimeout(()=>{
+        $('.header-hsw').css('position','static')
+      },1000)
     }
   }
 </script>

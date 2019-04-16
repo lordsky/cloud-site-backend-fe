@@ -43,6 +43,9 @@
             event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true); //阻止事件冒泡
             self.curPage = self.curPageTop + self.pageList[i].pageCode + self.curPageBottom
             setTimeout(()=>{
+              setTimeout(()=>{
+                $('.header-hsw') .css('position','absolute')
+              },10)
               NavSwitch()
                setTimeout(()=>{
 		     	 $('.header-hsw') .css('position','absolute')
@@ -119,6 +122,9 @@
           $(this.children[2]).fadeToggle()
         })
       },0)
+      setTimeout(()=>{
+        $('.header-hsw') .css('position','absolute')
+      },1000)
     }
   };
 </script>

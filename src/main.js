@@ -21,6 +21,7 @@ import './assets/js/js.js'
 import './assets/icon/iconfont.css'
 import './assets/css/style.less'
 import './assets/swiper.css'
+import './assets/css/style.less'
 import service from './components/config/service'
 Vue.prototype.$API = service
 Vue.use(ElementUI)

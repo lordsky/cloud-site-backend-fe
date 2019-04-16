@@ -1,5 +1,4 @@
-
-    function showText(id, scroH, viewH){
+function showText(id, scroH, viewH){
         if($(id).length > 0){
             if($(id).offset().top - scroH < viewH * 0.5){
                 $(id + " .text").addClass("show-text");
@@ -25,7 +24,10 @@
         $("#navToggler").click(function () {
             $("#navLink").toggle();
         });    
-        $("#navLink a").click(function () {
-            $("#navLink").hide();
-        });
+        // $("#navLink a").click(function () {
+        //     $("#navLink").hide();
+        // });
     })
+
+
+export default {showText,showImg,headerScroll}
