@@ -181,7 +181,6 @@
     watch:{
     	  dialogFormVisible(val){
     	  	!val?(this.$refs['ruleForm'].resetFields(),this.cancelForm()):''
-    	  	
     	  }
     },
     computed:{
@@ -230,18 +229,21 @@
       },
       //检查电话
       checkPhone(val){
+      	console.log(this.worksInfo)
+      	let data = '?account='+val
         if(!val)return
+        !this.editShow?data = '?account='+val+'&userId='+this.worksInfo.id:''
         if(val.length==11){
-        	  this.$http.post(this.$API.checkPhone+'?account='+val,{
+        	  this.$http.post(this.$API.checkPhone+data,{
 	      	},response=>{
 	      		console.log(response)
-	      		!response.data.data?(this.$message({type:'warning',message:'手机号已注册，请重新输入！'}),this.formText.phone = ''):''
+	      		response.data.data?(this.$message({type:'warning',message:'手机号已注册，请重新输入！'}),this.formText.phone = ''):''
 	      	})
         }
       },
       //取消保存
       cancelForm(){
-      	if(this.titleDialog=='添加成员'){
+      	if(this.editShow){
       	    this.formText = {}
       	    this.fromDeptId = []
       	}
@@ -324,8 +326,9 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(() => {
-        	  this.$http.post(this.$API.delWorksList,
-        	  	val.id
+        	  this.$http.post(this.$API.delWorksList,{
+        	  	adminUserId:val.id
+        	  }
         	  ,response=>{
         	  	 response.data.code==200?(this.$message({ type: 'success',message: '删除成功!'}),this.getWorksTable(this.worksListInfo.id)):''
         	  })
@@ -382,14 +385,13 @@
       	data.deptId = this.newDeptId
       	this.$http.post(this.$API.setWorks,data,response=>{
       		 console.log(response)
-      		 this.formText = {}
       		 console.log(this.departmentList)
       		response.data.code==200?(this.$message({type:'success',message:'编辑成功'}),this.dialogFormVisible = false,this.getWorksTable(this.worksInfo.id)):''
       	})
       },
       //编辑
       editorRole(val){
-      	this.worksInfo = val
+      	this.worksInfo = JSON.parse(JSON.stringify(val))
         this.formText = val
       	this.editShow = false
       	this.titleDialog = '编辑成员'
