@@ -235,6 +235,36 @@
           </div>
         </td>
       </tr>
+      <tr>
+        <td :class="{'side-right-border':formatDate7 == ''}">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate7 != ''}" @mousemove="showFormat7 = true" @mouseleave="showFormat7=false">
+            <el-button type="primary" v-if="formatDate7 == ''" @click="addComponent('formatDate7')">+添加组件</el-button>
+            <div v-if="formatDate7 != ''" v-html="formatDate6" style="width: 100%">
+              {{formatDate7}}
+            </div>
+            <!--<img src="@/assets/img/topside.png">-->
+            <div v-if="formatDate7 != ''" :class="{'delItem':showFormat7}">
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat7}" @click="addComponent('formatDate7')"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat7}" @click="delComponent('formatDate7')"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td :class="{'side-right-border':formatDate8 == ''}">
+          <div class="formatside-right-list" :class="{'height_auto':formatDate8 != ''}" @mousemove="showFormat8 = true" @mouseleave="showFormat8=false">
+            <el-button type="primary" v-if="formatDate8 == ''" @click="addComponent('formatDate8')">+添加组件</el-button>
+            <div v-if="formatDate8 != ''" v-html="formatDate8" style="width: 100%">
+              {{formatDate8}}
+            </div>
+            <!--<img src="@/assets/img/topside.png">-->
+            <div v-if="formatDate8 != ''" :class="{'delItem':showFormat8}">
+              <i class="el-icon-edit-outline compon-edit-ico" :class="{'icoShow':showFormat8}" @click="addComponent('formatDate8')"></i>
+              <i class="el-icon-delete compon-edit-ico" :class="{'icoShow':showFormat8}" @click="delComponent('formatDate8')"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
     </table>
   </div>
 </template>
@@ -250,10 +280,12 @@
           showFormat4:false,
           showFormat5:false,
           showFormat6:false,
+          showFormat7:false,
+          showFormat8:false,
           type:''
         }
       },
-      props:['typographyId','formatDate','formatDate2','formatDate3','formatDate4','formatDate5','formatDate6'],
+      props:['typographyId','formatDate','formatDate2','formatDate3','formatDate4','formatDate5','formatDate6','formatDate7','formatDate8'],
       methods:{
         addComponent(type) {
           this.type=type
