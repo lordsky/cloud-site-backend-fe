@@ -2,7 +2,7 @@
   <div class="webPage">
     <div v-html="webPageList.header" id="headerHtml">{{webPageList.header}}</div>
     <div v-html="webPageList.content" class="content">{{webPageList.content}}</div>
-    <div v-html="webPageList.footer" class="footer">{{webPageList.footer}}</div>
+    <div v-html="webPageList.footer">{{webPageList.footer}}</div>
   </div>
 </template>
 
