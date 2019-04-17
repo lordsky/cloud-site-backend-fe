@@ -54,7 +54,7 @@
           <el-input placeholder="请输入姓名" v-model="formText.username"></el-input>
         </el-form-item>
         <el-form-item label="手机号:" prop="phone">
-          <el-input placeholder="请输入手机号" v-model="formText.phone" @blur="checkPhone(formText.phone)"></el-input>
+          <el-input placeholder="请输入手机号" v-model="formText.phone" maxlength="11"></el-input>
         </el-form-item>
         <el-form-item label="邮箱:" prop="email">
           <el-input placeholder="请输入邮箱" v-model="formText.email"></el-input>
@@ -181,10 +181,16 @@
     watch:{
     	  dialogFormVisible(val){
     	  	!val?(this.$refs['ruleForm'].resetFields(),this.cancelForm()):''
+    	  },
+    	  getPhone(val){
+//  	  	console.log(val)
+    	  	val?val.length==11?this.checkPhone(val):'':''
     	  }
     },
     computed:{
-    	  
+    	  getPhone(){
+    	  	return this.formText.phone
+    	  }
     },
     methods: {
     	// 树右键点击
@@ -382,17 +388,19 @@
       	let data = this.formText
       	delete data.pwd
       	delete data.pwdTwo
+      	delete data.roleName
+      	delete data.deptName
       	data.deptId = this.newDeptId
       	this.$http.post(this.$API.setWorks,data,response=>{
-      		 console.log(response)
-      		 console.log(this.departmentList)
-      		response.data.code==200?(this.$message({type:'success',message:'编辑成功'}),this.dialogFormVisible = false,this.getWorksTable(this.worksInfo.id)):''
+//    		 console.log(response)
+//    		 console.log(this.departmentList)
+      		response.data.code==200?(this.$message({type:'success',message:'编辑成功'}),this.dialogFormVisible = false,this.getWorksTable(this.worksListInfo.id)):''
       	})
       },
       //编辑
       editorRole(val){
-      	this.worksInfo = JSON.parse(JSON.stringify(val))
-        this.formText = val
+      	this.worksInfo = val
+      	this.formText = JSON.parse(JSON.stringify(val))
       	this.editShow = false
       	this.titleDialog = '编辑成员'
       	this.dialogFormVisible = true
@@ -416,8 +424,8 @@
 	    	},
       //保存成员
       saveWorks(){
-//    	 if(!this.formText.roleId)return this.$message({type:'warning',message:'请选择角色'})
-//    	 if(!this.formText.deptId)return this.$message({type:'warning',message:'请选择部门'})
+      	 if(!this.formText.roleId)return this.$message({type:'warning',message:'请选择角色'})
+      	 if(!this.fromDeptId)return this.$message({type:'warning',message:'请选择部门'})
       	 this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
             if(this.editShow){

@@ -7,7 +7,8 @@
             }
         }
     }
-   function showImg(id, index){
+	 console.log('触发')
+   function showImg(index){
      let url = ''
      var time = new Date().getTime()
      if(index==2){
@@ -17,21 +18,28 @@
      }else{
        url = 'https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1cC2AeZnJAAD-qCJNxAY475.gif?'
      }
-     // console.log($(id).length)
-     if($(id).length>0){
+       console.log(url)
        $("#box-"+index).css("background-image",`url(${url}+${time})`);
-     }
    }
-   function headerScroll(scroH){
-     if(scroH >50){  //距离顶部大于50px时
-       $("#header").addClass("white");
-       $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1b4KAJE5dAAAJTp8Jyh8278.png');
-     }else{
-       $("#header").removeClass("white");
-       $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/15/wKgB7Fy2xZuALSJTAAAINAO5Mwg530.png');
+    function headerScroll(scroH){ 
+         if(scroH >50){  //距离顶部大于50px时
+            $("#header").addClass("white"); 
+            $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1b4KAJE5dAAAJTp8Jyh8278.png'); 
+        }else{
+            $("#header").removeClass("white"); 
+            $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/15/wKgB7Fy2xZuALSJTAAAINAO5Mwg530.png'); 
+        }
+    }
+    window.onload = function(){
+    	  for(let i=1;i<=3;i++){
+    	   $('.content-wrap').on('mouseover','#box-'+i,function(){
+    	   	    showImg(i)
+    	   })
+    	    $('.container').on('mouseover','#box-'+i,function(){
+    	   	    showImg(i)
+    	   })
      }
-   }
-   
+    }
     $(function () {     
     	   var num = 0
         $("#navToggler").click(function () {
@@ -40,8 +48,8 @@
         $("#navLink a").click(function () {
             $("#navLink").hide();
         });
-        $(document).scroll(function() {
-        var scroH = $(document).scrollTop();  //滚动高度
+        $('.content').scroll(function() {
+        var scroH = $('.content').scrollTop();  //滚动高度
         var viewH = $(window).height();  //可见高度 
         headerScroll(scroH);
         showText("#intro",scroH,viewH);
