@@ -19,9 +19,7 @@
       </div>
     </div>
     <div class="content-wrap">
-      <div class="content"  v-html="curPage">
-
-      </div>
+      <div class="content"  v-html="curPage"></div>
     </div>
   </div>
 </template>
@@ -163,6 +161,7 @@
       }
       setTimeout(()=>{
         $('.header-hsw') .css('position','absolute')
+        // $('.header-hsw') .css('top','0')
       },1000)
     }
   };
@@ -260,5 +259,11 @@
         }
       }
     }
+  }
+  .banner{
+    margin-top: 0;
+  }
+  .case {
+    margin-top: 0;
   }
 </style>
