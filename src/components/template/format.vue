@@ -239,7 +239,7 @@
         <td :class="{'side-right-border':formatDate7 == ''}">
           <div class="formatside-right-list" :class="{'height_auto':formatDate7 != ''}" @mousemove="showFormat7 = true" @mouseleave="showFormat7=false">
             <el-button type="primary" v-if="formatDate7 == ''" @click="addComponent('formatDate7')">+添加组件</el-button>
-            <div v-if="formatDate7 != ''" v-html="formatDate6" style="width: 100%">
+            <div v-if="formatDate7 != ''" v-html="formatDate7" style="width: 100%">
               {{formatDate7}}
             </div>
             <!--<img src="@/assets/img/topside.png">-->
