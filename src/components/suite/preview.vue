@@ -261,9 +261,9 @@
     }
   }
   .banner{
-    margin-top: 0;
+    margin-top: 0 !important;
   }
   .case {
-    margin-top: 0;
+    margin-top: 0 !important;
   }
 </style>
