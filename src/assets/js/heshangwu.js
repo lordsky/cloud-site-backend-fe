@@ -22,13 +22,15 @@
        $("#box-"+index).css("background-image",`url(${url}+${time})`);
      }
    }
-    function headerScroll(scroH){ 
-        if(scroH >50){  //距离顶部大于50px时
-            $("#header").addClass("white"); 
-        }else{
-            $("#header").removeClass("white"); 
-        }
-    }
+   function headerScroll(scroH){
+     if(scroH >50){  //距离顶部大于50px时
+       $("#header").addClass("white");
+       $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1b4KAJE5dAAAJTp8Jyh8278.png');
+     }else{
+       $("#header").removeClass("white");
+       $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/15/wKgB7Fy2xZuALSJTAAAINAO5Mwg530.png');
+     }
+   }
    
     $(function () {     
     	   var num = 0
