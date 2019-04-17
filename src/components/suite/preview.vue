@@ -20,7 +20,7 @@
     </div>
     <div class="content-wrap">
       <div class="content"  v-html="curPage">
-        {{curPage}}
+
       </div>
     </div>
   </div>
@@ -113,6 +113,11 @@
      setTimeout(()=>{
      	 $('.header-hsw') .css('position','absolute')
      },1000)
+      setTimeout(()=>{
+      $(".question dt").click(function() {
+        $(this).parent().toggleClass("active");
+      });
+      },1000)
       this.getTemplatePage()
       setTimeout(function () {
       	 
@@ -122,6 +127,40 @@
           $(this.children[2]).fadeToggle()
         })
       },0)
+      $(".content").scroll(function() {
+        var scroH = $(".content").scrollTop();  //滚动高度
+        var viewH = $(window).height();  //可见高度
+        headerScroll(scroH);
+        showText("#intro",scroH,viewH);
+        showText("#why",scroH,viewH);
+        showText("#company",scroH,viewH);
+        showText("#case",scroH,viewH);
+        showText("#service",scroH,viewH);
+        showText("#wifi",scroH,viewH);
+        showText("#hotel",scroH,viewH);
+        showText("#video",scroH,viewH);
+        showText("#room",scroH,viewH);
+        showText("#tour",scroH,viewH);
+
+      });
+      function showText(id, scroH, viewH){
+        if($(id).length > 0){
+          if($(id).offset().top - scroH < viewH * 0.5){
+            $(id + " .text").addClass("show-text");
+          }else if($(id).offset().top - scroH > viewH){
+            $(id + " .text").removeClass("show-text");
+          }
+        }
+      }
+      function headerScroll(scroH){
+        if(scroH >50){  //距离顶部大于50px时
+          $("#header").addClass("white");
+          $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1b4KAJE5dAAAJTp8Jyh8278.png');
+        }else{
+          $("#header").removeClass("white");
+          $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/15/wKgB7Fy2xZuALSJTAAAINAO5Mwg530.png');
+        }
+      }
       setTimeout(()=>{
         $('.header-hsw') .css('position','absolute')
       },1000)
@@ -194,13 +233,13 @@
       width: 100%;
       height: 90vh;
       padding: 0 0 20px;
+      /*overflow: auto;*/
       .content {
         width: 100%;
         height: 100%;
         overflow: scroll;
         box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 5px;
         background-color: #fff;
-        display: inline;
       }
       .selected-wrap {
         position: absolute;

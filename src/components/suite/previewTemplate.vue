@@ -1,10 +1,10 @@
 <template>
   <div class="preview">
-  	<!--<div class="header">
+  	<div class="header">
       <div class="wrap">
-        &lt;!&ndash;<div class="btn" @click="back"><i class="el-icon-circle-close"></i> 退出预览模式</div>&ndash;&gt;
+        <div class="btn" @click="back"><i class="el-icon-circle-close"></i> 退出预览模式</div>
       </div>
-    </div>-->
+    </div>
     <div v-html="preview.content">{{preview.content}}</div>
   </div>
 </template>
@@ -23,7 +23,8 @@
       methods:{
       	//退出预览
       	back(){
-      		window.history.back(-1)
+      		// window.history.back(-1)
+          window.close()
       	},
       },
       mounted() {
@@ -84,8 +85,10 @@
   function headerScroll(scroH){
     if(scroH >50){  //距离顶部大于50px时
       $("#header").addClass("white");
+      $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1b4KAJE5dAAAJTp8Jyh8278.png');
     }else{
       $("#header").removeClass("white");
+      $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/15/wKgB7Fy2xZuALSJTAAAINAO5Mwg530.png');
     }
   }
 </script>
