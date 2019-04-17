@@ -20,7 +20,7 @@
             </div>
           </el-col>
         </el-col>
-        <el-col :span="24" class="main">
+        <el-col :span="24" class="main1">
           <div class="main-info" v-if="webPageList.content == ''">
             <div class="add-btn">
               <div>请先添加一个页面</div>
@@ -142,6 +142,7 @@
   let pageNum = 1
   let headerIndex = 0
   let pageIndex = 1
+  let catExt = ''
     export default {
       name: "websiteEditor",
       data(){
@@ -319,26 +320,11 @@
                 this.webPageList.content = this.webPageAll[index1].children[index2].pageCode
             }
           }
-          // if(index != -1){
-          //   this.headerIndex = index
-          //   if(!data.children){
-          //     this.webPageList.content = this.webPageAll[index].children[index2].pageCode
-          //   }else{
-          //     this.webPageList.content = this.webPageAll[index].pageCode
-          //   }
-          // }
         },
         exit(){
           this.$router.push({
             path:'/suiteClassification'
           })
-          // if(this.savePage  == true){
-          //   this.$router.push({
-          //     path:'/suiteClassification'
-          //   })
-          // }else {
-          //   this.dialogVisible4 = true
-          // }
         },
         //新增二级页面
         selectPageTwo(data,n,d){
@@ -346,7 +332,7 @@
           const parent = n.parent;
           const children = parent.data.children || parent.data;
           const index = children.findIndex(x => x.id === d.id);
-          var catExt = ''
+          //防止网名重复
           for(let i=0;i<this.webPageAll.length;i++){
             if(this.webPageAll[i].pageAlias == data.catExt){
               catExt = data.catExt + '-' + pageIndex
@@ -448,8 +434,15 @@
         //删除导航和页面
         remove(node, data) {
           const parent = node.parent;
-          const children = parent.data.children || parent.data;
           const index = children.findIndex(d => d.id === data.id);
+          const children =  parent.data.children || parent.data;
+          const children2 = parent.data.children;
+          // if(parent.data.children == undefined){
+          //   const index = children.findIndex(d => d.id === data.id);
+          // }else{
+          //   const index1 = this.webPageAll.findIndex(d => d.pageAlias === children.pageAlias);
+          //   const index2 = children2.findIndex(d => d.id === data.id);
+          // }
           this.$api.apiDelTemplatePage(data.id).then(res => {
             if(res.msg === "success") {
               children.splice(index, 1);
@@ -665,7 +658,7 @@
         }
       }
     }
-    .main {
+    .main1 {
       .main-info{
         display: flex;
         position: relative;
