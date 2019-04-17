@@ -5,7 +5,9 @@
         <div class="btn" @click="back"><i class="el-icon-circle-close"></i> 退出预览模式</div>
       </div>
     </div>
-    <div v-html="preview.content">{{preview.content}}</div>
+    <div class="content-wrap">
+    	 <div class="content"  v-html="preview.content"></div>
+   </div>
   </div>
 </template>
 
@@ -39,70 +41,79 @@
           // 如果需要滚动条
           scrollbar: '.swiper-scrollbar',
         })
-        $("#navToggler").click(function () {
-          $("#navLink").toggle();
-        });
-        setTimeout(()=>{
-          $('.header-hsw') .css('position','absolute')
-        },1000)
-        $(document).scroll(function() {
-          var scroH = $(document).scrollTop();  //滚动高度
-          var viewH = $(window).height();  //可见高度
-          headerScroll(scroH);
-          showText("#service",scroH,viewH);
-          showText("#wifi",scroH,viewH);
-          showText("#hotel",scroH,viewH);
-          showText("#video",scroH,viewH);
-          showText("#room",scroH,viewH);
-          showText("#tour",scroH,viewH);
-        });
+//      $("#navToggler").click(function () {
+//        $("#navLink").toggle();
+//      });
+//      setTimeout(()=>{
+//        $('.header-hsw') .css('position','absolute')
+//      },1000)
+//      $(document).scroll(function() {
+//        var scroH = $(document).scrollTop();  //滚动高度
+//        var viewH = $(window).height();  //可见高度
+//        headerScroll(scroH);
+//        showText("#service",scroH,viewH);
+//        showText("#wifi",scroH,viewH);
+//        showText("#hotel",scroH,viewH);
+//        showText("#video",scroH,viewH);
+//        showText("#room",scroH,viewH);
+//        showText("#tour",scroH,viewH);
+//      });
       },
     }
-  function showText(id, scroH, viewH){
-    if($(id).length > 0){
-      if($(id).offset().top - scroH < viewH * 0.5){
-        $(id + " .text").addClass("show-text");
-      }else if($(id).offset().top - scroH > viewH){
-        $(id + " .text").removeClass("show-text");
-      }
-    }
-  }
-  function showImg(id, index){
-    let url = ''
-    var time = new Date().getTime()
-    if(index==2){
-      url = 'https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1cDaAJ7OFAAMwwjfmuGc692.gif?'
-    }else if(index==3){
-      url = 'https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1cD6AfCCIAARkdxn27zE048.gif?'
-    }else{
-      url = 'https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1cC2AeZnJAAD-qCJNxAY475.gif?'
-    }
-    // console.log($(id).length)
-    if($(id).length>0){
-      $("#box-"+index).css("background-image",`url(${url}+${time})`);
-    }
-  }
-  function headerScroll(scroH){
-    if(scroH >50){  //距离顶部大于50px时
-      $("#header").addClass("white");
-      $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1b4KAJE5dAAAJTp8Jyh8278.png');
-    }else{
-      $("#header").removeClass("white");
-      $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/15/wKgB7Fy2xZuALSJTAAAINAO5Mwg530.png');
-    }
-  }
+//function showText(id, scroH, viewH){
+//  if($(id).length > 0){
+//    if($(id).offset().top - scroH < viewH * 0.5){
+//      $(id + " .text").addClass("show-text");
+//    }else if($(id).offset().top - scroH > viewH){
+//      $(id + " .text").removeClass("show-text");
+//    }
+//  }
+//}
+//function showImg(id, index){
+//  let url = ''
+//  var time = new Date().getTime()
+//  if(index==2){
+//    url = 'https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1cDaAJ7OFAAMwwjfmuGc692.gif?'
+//  }else if(index==3){
+//    url = 'https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1cD6AfCCIAARkdxn27zE048.gif?'
+//  }else{
+//    url = 'https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1cC2AeZnJAAD-qCJNxAY475.gif?'
+//  }
+//  // console.log($(id).length)
+//  if($(id).length>0){
+//    $("#box-"+index).css("background-image",`url(${url}+${time})`);
+//  }
+//}
+//function headerScroll(scroH){
+//  if(scroH >50){  //距离顶部大于50px时
+//    $("#header").addClass("white");
+//    $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/13/wKgB7Fy1b4KAJE5dAAAJTp8Jyh8278.png');
+//  }else{
+//    $("#header").removeClass("white");
+//    $("#header img").attr('src','https://fastdfs-dev-test.uworks.cc/group1/M00/00/15/wKgB7Fy2xZuALSJTAAAINAO5Mwg530.png');
+//  }
+//}
 </script>
 <style lang="less" src="../../assets/css/style.less"></style>   
-
 <style lang="less" scoped>
-  
   .preview{
     width: 100%;
     height: 100vh;
     position: relative;
-    .content{
-      margin-top: 10px;
-    }
+    .content-wrap {
+      position: relative;
+      width: 100%;
+      height: 90vh;
+      padding: 0 0 20px;
+      /*overflow: auto;*/
+      .content {
+        width: 100%;
+        height: 100%;
+        overflow: scroll;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 5px;
+        background-color: #fff;
+      }
+      }
     .footer{
       margin-top: 10px;
     }

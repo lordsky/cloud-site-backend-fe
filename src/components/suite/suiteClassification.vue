@@ -115,13 +115,14 @@
       },
       //预览套件页面
       previewSuite(index,row){
-        this.$router.push({
-          path:'/preview',
-          query:{
-            id:row.id,
-            title:row.name
-          }
-        })
+       window.open(window.location.origin+'#/preview?id='+row.id+'&title='+row.name)
+//      this.$router.push({
+//        path:'/preview',
+//        query:{
+//          id:row.id,
+//          title:row.name
+//        }
+//      })
       },
       //编辑
       editSuite(index, row) {
