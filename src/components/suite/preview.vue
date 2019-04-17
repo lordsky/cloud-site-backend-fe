@@ -20,7 +20,6 @@
     </div>
     <div class="content-wrap">
       <div class="content"  v-html="curPage">
-
       </div>
     </div>
   </div>
@@ -69,7 +68,7 @@
     },
     methods: {
       exitPreview() {
-      	window.history.go(-1)
+      	window.close()
       },
       changePage(command) {
         this.curPageConetent = this.pageList[command].pageCode
@@ -113,45 +112,45 @@
      setTimeout(()=>{
      	 $('.header-hsw') .css('position','absolute')
      },1000)
-      setTimeout(()=>{
-      $(".question dt").click(function() {
-        $(this).parent().toggleClass("active");
-      });
-      },1000)
+//    setTimeout(()=>{
+//    $(".question dt").click(function() {
+//      $(this).parent().toggleClass("active");
+//    });
+//    },1000)
       this.getTemplatePage()
-      setTimeout(function () {
+//    setTimeout(function () {
       	 
-        $(".question").on("click",".question1",function(){
-          $(this.children[0]).fadeToggle()
-          $(this.children[1]).fadeToggle()
-          $(this.children[2]).fadeToggle()
-        })
-      },0)
-      $(".content").scroll(function() {
-        var scroH = $(".content").scrollTop();  //滚动高度
-        var viewH = $(window).height();  //可见高度
-        headerScroll(scroH);
-        showText("#intro",scroH,viewH);
-        showText("#why",scroH,viewH);
-        showText("#company",scroH,viewH);
-        showText("#case",scroH,viewH);
-        showText("#service",scroH,viewH);
-        showText("#wifi",scroH,viewH);
-        showText("#hotel",scroH,viewH);
-        showText("#video",scroH,viewH);
-        showText("#room",scroH,viewH);
-        showText("#tour",scroH,viewH);
-
-      });
-      function showText(id, scroH, viewH){
-        if($(id).length > 0){
-          if($(id).offset().top - scroH < viewH * 0.5){
-            $(id + " .text").addClass("show-text");
-          }else if($(id).offset().top - scroH > viewH){
-            $(id + " .text").removeClass("show-text");
-          }
-        }
-      }
+//      $(".question").on("click",".question1",function(){
+//        $(this.children[0]).fadeToggle()
+//        $(this.children[1]).fadeToggle()
+//        $(this.children[2]).fadeToggle()
+//      })
+//    },0)
+//    $(".content").scroll(function() {
+//      var scroH = $(".content").scrollTop();  //滚动高度
+//      var viewH = $(window).height();  //可见高度
+//      headerScroll(scroH);
+//      showText("#intro",scroH,viewH);
+//      showText("#why",scroH,viewH);
+//      showText("#company",scroH,viewH);
+//      showText("#case",scroH,viewH);
+//      showText("#service",scroH,viewH);
+//      showText("#wifi",scroH,viewH);
+//      showText("#hotel",scroH,viewH);
+//      showText("#video",scroH,viewH);
+//      showText("#room",scroH,viewH);
+//      showText("#tour",scroH,viewH);
+//
+//    });
+//    function showText(id, scroH, viewH){
+//      if($(id).length > 0){
+//        if($(id).offset().top - scroH < viewH * 0.5){
+//          $(id + " .text").addClass("show-text");
+//        }else if($(id).offset().top - scroH > viewH){
+//          $(id + " .text").removeClass("show-text");
+//        }
+//      }
+//    }
       function headerScroll(scroH){
         if(scroH >50){  //距离顶部大于50px时
           $("#header").addClass("white");
