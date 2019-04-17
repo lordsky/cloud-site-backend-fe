@@ -131,6 +131,12 @@
       }
     }
   }
+  .banner{
+    margin-top: 0;
+  }
+  .case {
+    margin-top: 0;
+  }
 </style>
 <style>
 	

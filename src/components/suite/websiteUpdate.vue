@@ -20,7 +20,7 @@
             </div>
           </el-col>
         </el-col>
-        <el-col :span="24" class="main">
+        <el-col :span="24" class="main1">
           <div class="main-info" v-if="webPageList.content == ''">
             <div class="add-btn">
               <div>请先添加一个页面</div>
@@ -626,7 +626,7 @@
     top: 40px;
     bottom: 0px;
     width: 100%;
-    .main{
+    .main1{
       padding: 0;
     }
     .header {
@@ -664,7 +664,7 @@
         }
       }
     }
-    .main {
+    .main1 {
       .main-info{
         display: flex;
         position: relative;
