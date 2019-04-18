@@ -32,7 +32,7 @@ router.beforeEach((to, from, next) => {
 //	console.log(to)
   // NProgress.start();//开启Progress
   if (to.path == '/') {
-    // localStorage.removeItem('cloudUser');
+    localStorage.removeItem('cloudUser');
   }
   let user = JSON.parse(localStorage.getItem('cloudUser'));
   if (!user && to.path != '/') {

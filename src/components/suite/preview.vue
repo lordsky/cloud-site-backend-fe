@@ -3,15 +3,16 @@
     <div class="title-wrap">
       {{curTitle}}
     </div>
-    <div class="manage-wrap">
-      <el-dropdown @command="changePage" v-if="pageList.length > 0">
-        <span class="el-dropdown-link">
-          <i class="el-icon-document"></i>页面管理<i class="el-icon-arrow-down el-icon--right"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item,index) of pageList" :key="index" :command="index">{{item.pageName}}</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+    <div class="manage-wrap" @click="dialogVisible=true">
+      <i class="el-icon-document"></i>页面管理<i class="el-icon-arrow-down el-icon--right"></i>
+      <!--<el-dropdown @command="changePage" v-if="pageList.length > 0">-->
+        <!--<span class="el-dropdown-link">-->
+          <!--<i class="el-icon-document"></i>页面管理<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
+        <!--</span>-->
+        <!--<el-dropdown-menu slot="dropdown">-->
+          <!--<el-dropdown-item v-for="(item,index) of pageList" :key="index" :command="index">{{item.pageName}}</el-dropdown-item>-->
+        <!--</el-dropdown-menu>-->
+      <!--</el-dropdown>-->
     </div>
     <div class="header-wrap">
       <div class="handle-wrap">
@@ -21,6 +22,36 @@
     <div class="content-wrap">
       <div class="content"  v-html="curPage"></div>
     </div>
+    <!--页面管理弹框-->
+    <div class="dialog" style="width: 240px;margin-top: 10vh;z-index: 600" v-if="dialogVisible==true">
+      <div class="el-dialog__header">
+        <span class="el-dialog__title">页面管理</span>
+        <button type="button" class="el-dialog__headerbtn" @click="dialogVisible=false">
+          <i class="el-dialog__close el-icon el-icon-close"></i></button>
+      </div>
+      <div class="el-dialog__body">
+        <el-tree
+          :data="data1"
+          :props="defaultProps"
+          @node-click="handleNodeClick"
+          node-key="id"
+          default-expand-all
+          accordion
+          :expand-on-click-node="false">
+              <span class="custom-tree-node" slot-scope="{ node, data }">
+                <span v-show="data.children && data.children.length >= 1">
+                  <span>{{node.label}}</span>
+                </span>
+                <span v-show="!data.children || data.children.length == 0">
+                  <span>{{node.label}}</span>
+                </span>
+              <span>
+              </span>
+            </span>
+        </el-tree>
+      </div>
+    </div>
+    <!--页面管理弹框-->
   </div>
 </template>
 
@@ -78,6 +109,7 @@
         }
       }
       return {
+        data1:[],
         curId: "",
         curTitle: "",
         pageList: [],
@@ -86,7 +118,12 @@
         curPageConetent: "<div style='height: 300px;'></div>",
         curPageBottom:'',
         useShow:true,
+        dialogVisible:false,
         NavSwitch:NavSwitch,
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        }
       };
     },
     methods: {
@@ -99,6 +136,28 @@
         setTimeout(()=>{
           this.NavSwitch()
         },10)
+      },
+      //点击切换页面
+      handleNodeClick(data,node) {
+        const parent = node.parent;
+        const children =  parent.data;
+        const children2 = parent.data.children;
+        if(parent.data.children == undefined){
+          const index = children.findIndex(d => d.id === data.id);
+          if(index != -1){
+            this.curPageConetent = this.pageList[index].pageCode
+            this.curPage = this.curPageTop + this.curPageConetent + this.curPageBottom
+            // this.webPageList.content = this.pageList[index].pageCode
+          }
+        }else{
+          const index1 = this.pageList.findIndex(d => d.pageAlias === children.pageAlias);
+          const index2 = children2.findIndex(d => d.id === data.id);
+          if(index1 != -1){
+            this.curPageConetent = this.pageList[index1].children[index2].pageCode
+            this.curPage = this.curPageTop + this.curPageConetent + this.curPageBottom
+            // this.webPageList.content = this.pageList[index1].children[index2].pageCode
+          }
+        }
       },
       // get template page code
       getTemplatePage : async function(statu) {
@@ -113,6 +172,21 @@
           this.pageList = res.data;
           if(res.data.length > 0) {
             this.curPageConetent = res.data[0].pageCode
+          }
+          for (let i = 0;i<res.data.length;i++){
+            const newChild = { id: res.data[i].id,pageAlias: res.data[i].pageAlias,label: res.data[i].pageName, children: [] };
+            this.data1.push(newChild);
+            for(let j = 0;j<res.data[i].children.length;j++){
+              const newChild2 = {
+                id: res.data[i].children[j].id,
+                label: res.data[i].children[j].pageName,
+                pageParent: res.data[i].children[j].pageParent,
+                pageAlias:res.data[i].children[j].pageAlias,
+                isEdit: false,
+                children: []
+              }
+              this.data1[i].children.push(newChild2);
+            }
           }
         });
 
@@ -217,6 +291,36 @@
     height:auto;
     background-color: #f2f2f2;
     padding: 0 28px;
+    position: relative;
+    .dialog{
+      position: absolute;
+      margin: 0 auto 50px;
+      border-radius: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.3);
+      box-sizing: border-box;
+      width: 50%;
+      background-color: #fff;
+      top: -3%;
+      .el-dialog__body{
+        padding: 0 20px 10px;
+        .custom-tree-node {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 14px;
+          padding-right: 8px;
+        }
+        .ico-size{
+          font-size: 20px;
+        }
+      }
+      .dialog-footer{
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+      }
+    }
     .title-wrap {
       float: left;
       line-height: 62px;
