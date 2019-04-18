@@ -29,7 +29,7 @@
     data() {
       var self = this
       var NavSwitch = function(){
-        var navBtn = document.querySelectorAll('#silder li')
+        var navBtn = document.querySelectorAll('#silder .drop-down')
         for(let i = 0;i<navBtn.length;i++){
           navBtn[i].onclick = ()=>{
             var evt = evt || window.event; //获取event对象
@@ -51,7 +51,31 @@
             },100)
           }
         }
-       
+        var navBtn2 = document.querySelectorAll('.drop-down-content li')
+        for(let i = 0;i<navBtn2.length;i++){
+          navBtn2[i].onclick = ()=>{
+            var evt = evt || window.event; //获取event对象
+            let ejId = $("#"+parseInt(window.event.currentTarget.id)).parent().parent().attr("id")
+            let hIndex = self.pageList.findIndex(d => d.id === parseInt(ejId));
+            let hIndex2 = self.pageList[hIndex].children.findIndex(d => d.id === parseInt(window.event.currentTarget.id));
+            if (evt.preventDefault) {
+              evt.preventDefault(); //非IE浏览器
+            } else {
+              evt.returnValue = false; //在早期的IE版本中
+            }
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true); //阻止事件冒泡
+            self.curPage = self.curPageTop + self.pageList[hIndex].children[hIndex2].pageCode + self.curPageBottom
+            setTimeout(()=>{
+              setTimeout(()=>{
+                $('.header-hsw') .css('position','absolute')
+              },10)
+              NavSwitch()
+              setTimeout(()=>{
+                $('.header-hsw') .css('position','absolute')
+              },10)
+            },100)
+          }
+        }
       }
       return {
         curId: "",

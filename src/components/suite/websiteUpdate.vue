@@ -24,7 +24,7 @@
           <div class="main-info" v-if="webPageList.content == ''">
             <div class="add-btn">
               <div>请先添加一个页面</div>
-              <div class="margin-top"><el-button type="primary" @click="dialogVisible3=true">+添加页面</el-button></div>
+              <div class="margin-top"><el-button type="primary" @click="dialogVisible3=true,level=1">+添加页面</el-button></div>
             </div>
           </div>
           <web-page v-show="webPageList.content != ''" :webPageList="webPageList"></web-page>
@@ -45,17 +45,23 @@
               default-expand-all
               :expand-on-click-node="false">
               <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span>{{ node.label }}</span>
+                <span v-show="data.children && data.children.length >= 1">
+                  <span>{{node.label}}</span>
+                </span>
+                <span v-show="!data.children || data.children.length == 0">
+                  <span>{{node.label}}</span>
+                </span>
+                <!--<span>{{ node.label }}</span>-->
               <span>
-                <!--<i class="el-icon-circle-plus-outline ico-size" @click="() => append(node, data)"></i>-->
+                <i class="el-icon-circle-plus-outline ico-size" v-if="data.children" @click="() => append(node, data)"></i>
                 <i class="el-icon-edit-outline ico-size" @click="() => editor(node, data)"></i>
-                <i class="el-icon-delete ico-size" @click="() => remove(node, data)" v-if="data1.length>1"></i>
+                <i class="el-icon-delete ico-size" @click="() => remove(node, data)" v-if="data1.length>1 && data.children.length<1"></i>
               </span>
             </span>
             </el-tree>
           </div>
           <span class="dialog-footer">
-            <el-button type="primary" @click="dialogVisible3=true" style="z-index: 1">+添加新页面</el-button>
+            <el-button type="primary" @click="dialogVisible3=true,level=1" style="z-index: 1">+添加新页面</el-button>
           </span>
         </div>
         <!--页面管理弹框-->
@@ -93,7 +99,8 @@
                     <img v-if="item.thumb != ''" :src="item.thumb">
                     <div class="delItem3">{{item.name}}</div>
                     <div :class="{'delItem':delShow == i}">
-                      <span class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage(item)">选择</span>
+                      <span v-if="level == 1" class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage(item)">选择</span>
+                      <span v-if="level == 2" class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPageTwo(item,NODE,DATA)">选择</span>
                     </div>
                   </li>
                 </ul>
@@ -105,7 +112,8 @@
                     <img v-if="item.thumb != ''" :src="item.thumb">
                     <div class="delItem3">{{item.name}}</div>
                     <div :class="{'delItem':delShow == i}">
-                      <span class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage(item)">选择</span>
+                      <span v-if="level == 1" class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPage(item)">选择</span>
+                      <span v-if="level == 2" class="template-edit-ico" :class="{'icoShow':delShow==i}" @click="selectPageTwo(item,NODE,DATA)">选择</span>
                     </div>
                   </li>
                 </ul>
@@ -134,11 +142,18 @@
   let id = 1;
   let pageNum = 1
   let headerIndex = 0
+  let headerId = 0
   let pageIndex = 1
+  let catExt =''
+  let hIndex =null
+  let hIndex2 =null
     export default {
       name: "websiteEditor",
       data(){
         return{
+          level:'',
+          DATA: null,
+          NODE: null,
           url1:document.location.origin.toString(),
           pageList: [],
           curPage:'',
@@ -151,12 +166,6 @@
             header: window.localStorage.getItem('suiteHeater'),
             footer: window.localStorage.getItem('suiteFooter'),
             content: '',
-            // header:'<div style="width:100%;height:6.25vw;background:rgba(255,255,255,1);box-shadow:0px 2px 4px 0px rgba(0,0,0,0.05);display: flex;box-sizing: border-box;">\n' +
-            //   '\t\t\t<div style="display: flex;width: 100%;">\n' +
-            //   '\t\t\t<ul id="silder" style="display: flex;list-style: none;white-space: nowrap;padding: 0;;justify-content: center;align-items: center;width: 100%;margin: 0;">\n' +
-            //   '\t\t\t</ul>\n' +
-            //   '\t\t\t</div>\n' +
-            //   '\t\t</div>',
           },
           formCompon: {
             name: ''
@@ -305,11 +314,19 @@
         //点击切换页面
         handleNodeClick(data,node) {
           const parent = node.parent;
-          const children = parent.data.children || parent.data;
-          const index = children.findIndex(d => d.id === data.id);
-          if(index != -1){
-            this.headerIndex = index
-            this.webPageList.content = this.webPageAll[index].pageCode
+          const children =  parent.data;
+          const children2 = parent.data.children;
+          if(parent.data.children == undefined){
+            const index = children.findIndex(d => d.id === data.id);
+            if(index != -1){
+              this.webPageList.content = this.webPageAll[index].pageCode
+            }
+          }else{
+            const index1 = this.webPageAll.findIndex(d => d.pageAlias === children.pageAlias);
+            const index2 = children2.findIndex(d => d.id === data.id);
+            if(index1 != -1){
+              this.webPageList.content = this.webPageAll[index1].children[index2].pageCode
+            }
           }
         },
         exit(){
@@ -325,43 +342,91 @@
           // }
         },
         //新增二级页面
-        NodeAdd(n, d){
-              let parm = {
-                pageName: data.name,
-                templateId: this.templateId,
-                pageCode:data.pageCode,
-                pageAlias:data.catExt,
-                pageParent:0,
+        selectPageTwo(data,n,d){
+          this.webPageList.content = data.pageCode
+          const parent = n.parent;
+          const children = parent.data.children || parent.data;
+          const index = children.findIndex(x => x.id === d.id);
+          //防止网名重复
+          for(let i=0;i<this.webPageAll.length;i++){
+            if(this.webPageAll[i].pageAlias == data.catExt){
+              catExt = data.catExt + '-' + pageIndex
+              pageIndex++
+            }
+            for(let j=0;j<this.webPageAll[i].children.length;j++){
+              if(this.webPageAll[j].children.pageAlias == data.catExt){
+                catExt = data.catExt + '-' + pageIndex
+                pageIndex++
               }
+            }
+          }
+          let parm = {
+            pageName: data.name,
+            templateId: this.templateId,
+            pageCode:data.pageCode,
+            pageAlias:catExt,
+            pageParent:d.id,
+          }
           this.$api.apiAddTemplatePage(parm).then(res=>{
-                if(res.msg === 'success'){
-                  this.$message.success("添加成功！")
-                  d.children.push({
-                    id: res.data,
-                    name: this.formCompon.name,
-                    parentId: d.id,
-                    isEdit: false,
-                    children: []
-                  })
-                  this.dialogVisible2 = false
-                  this.resetForm2()
-                  this.getCatList()
-                  //同时展开节点
-                  // if(!n.expanded){
-                  //   n.expanded = true
-                  // }
-                }else{
-                  this.$message.error(res.msg)
-                }
+            if(res.msg === 'success'){
+              this.$message.success("添加成功！")
+              this.webPageAll[index].children.push({
+                id:res.data.id,
+                pageName:data.name,
+                templateId:this.templateId,
+                pageCode:data.pageCode,
+                pageAlias:catExt,
+                pageParent:d.id,
+                children: []
               })
+              d.children.push({
+                id: res.data.id,
+                label: res.data.pageName,
+                pageParent: res.data.pageParent,
+                pageAlias:catExt,
+                isEdit: false,
+                children: []
+              })
+              const newChild = {
+                id: res.data.id,
+                label: res.data.pageName,
+                pageParent: res.data.pageParent,
+                pageAlias:catExt,
+                isEdit: false
+              };
+              if($("#"+d.id).children(".drop-down-content").length == 0){
+                $("#silder .drop-down").eq(index).append('<ul class="drop-down-content">' +
+                  '<li id="'+newChild.id+'"><a href="'+catExt+'.html">'+data.name+'</a></li>' +
+                  '</ul>')
+              }else{
+                $("#silder .drop-down").eq(index).children(".drop-down-content").append('<li id="'+newChild.id+'"><a href="'+catExt+'.html">'+data.name+'</a></li>')
+              }
+              // console.log($("#"+d.id).children(".drop-down-content").length)
+
+              // $('#silder').append('<ul class="drop-down-content">' +
+              //   '<li><a href="#">二级菜单</a></li>' +
+              //   '</ul>')
+              if(pageNum == 1){
+                //上次页头代码
+                this.saveHeaderPage()
+              }else {
+                this.updateHeaderPage()
+              }
+              this.dialogVisible3 = false
+              //同时展开节点
+              // if(!n.expanded){
+              //   n.expanded = true
+              // }
+            }else{
+              this.$message.error(res.msg)
+            }
+          })
         },
-        append(data) {
+        append(n,d) {
+          this.NODE = n
+          this.DATA = d
           this.dialogVisible3 = true
-          // const newChild = { id: id++, label: '关于我们', children: [] };
-          // if (!data.children) {
-          //   this.$set(data, 'children', []);
-          // }
-          // data.children.push(newChild);
+          this.level = 2
         },
         editor(node, data) {
           this.data2 = data
@@ -375,8 +440,18 @@
           this.$refs.formCompon.validate((valid) => {
             if (valid) {
               const parent = this.node.parent;
-              const children = parent.data.children || parent.data;
-              const index = children.findIndex(d => d.id === this.data2.id);
+              // const children = parent.data.children || parent.data;
+              const children =  parent.data;
+              const children2 = parent.data.children;
+              let index = ''
+              let index1 = ''
+              let index2 = ''
+              if(parent.data.children == undefined){
+                index = children.findIndex(d => d.id === this.data2.id);
+              }else{
+                index1 = this.webPageAll.findIndex(d => d.pageAlias === children.pageAlias);
+                index2 = children2.findIndex(d => d.id === this.data2.id);
+              }
               this.$api.apiUpdateTemplatePage({
                 pageName: this.formCompon.name,
                 id: this.data2.id,
@@ -384,12 +459,17 @@
                 console.log(res)
                 if(res.code === 200) {
                   this.dialogVisible2=false
-                  children[index].label = this.formCompon.name
-                  this.webPageAll[index].pageName = this.formCompon.name
-                  $("#silder li").eq(index).html(this.formCompon.name);
+                  if(parent.data.children == undefined){
+                    children[index].label = this.formCompon.name
+                    this.webPageAll[index].pageName = this.formCompon.name
+                    $("#"+this.data2.id).children("a").html(this.formCompon.name);
+                  }else{
+                    children2[index2].label = this.formCompon.name
+                    this.webPageAll[index1].children[index2].pageName = this.formCompon.name
+                    $("#"+this.data2.id).children("a").html(this.formCompon.name)
+                  }
                   // let headerHtml = $('#headerHtml').html()
                   // this.webPageList.header = $('#headerHtml').html()
-                  console.log(this.headerId)
                   this.$api.apiUpdateTemplateComponent({
                     componentCode: $('#headerHtml').html(),
                     id: this.headerId,
@@ -414,14 +494,33 @@
         //删除导航和页面
         remove(node, data) {
           const parent = node.parent;
-          const children = parent.data.children || parent.data;
-          const index = children.findIndex(d => d.id === data.id);
+          // const index = children.findIndex(d => d.id === data.id);
+          const children =  parent.data;
+          const children2 = parent.data.children;
+          let index = ''
+          let index1 = ''
+          let index2 = ''
+          if(parent.data.children == undefined){
+            index = children.findIndex(d => d.id === data.id);
+          }else{
+            index1 = this.webPageAll.findIndex(d => d.pageAlias === children.pageAlias);
+            index2 = children2.findIndex(d => d.id === data.id);
+          }
           this.$api.apiDelTemplatePage(data.id).then(res => {
             if(res.msg === "success") {
-              children.splice(index, 1);
-              this.webPageAll.splice(index,1)
+              if(parent.data.children == undefined){
+                children.splice(index, 1);
+                this.webPageAll.splice(index,1)
+              }else{
+                children2.splice(index2, 1);
+                this.webPageAll[index1].children.splice(index2,1)
+              }
               this.webPageList.content = this.webPageAll[0].pageCode
-              $("#"+data.id).remove()
+              if(index2 == 0){
+                $("#"+data.id).parent().remove()
+              }else{
+                $("#"+data.id).remove()
+              }
               this.$api.apiUpdateTemplateComponent({
                 componentCode: $('#headerHtml').html(),
                 id: this.headerId,
@@ -481,12 +580,6 @@
               pageIndex++
             }
           }
-          this.webPageAll.push({
-            pageName:data.name,
-            templateId:this.templateId,
-            pageCode:this.webPageList.content,
-            pageAlias:data.catExt,
-            pageParent:0,})
           this.$api.apiAddTemplatePage({
             pageName: data.name,
             templateId: this.templateId,
@@ -496,12 +589,20 @@
           }).then(res => {
             console.log(res)
             if(res.code === 200) {
-              const newChild = { id: res.data.id, label: data.name, children: [] };
+              this.webPageAll.push({
+                id:res.data.id,
+                pageName:data.name,
+                templateId:this.templateId,
+                pageCode:this.webPageList.content,
+                pageAlias:data.catExt,
+                pageParent:0,
+                children: []})
+              const newChild = { id: res.data.id, label: data.name,pageAlias:data.catExt, children: [] };
               // if (!this.data1.children) {
               //   this.$set(this.data1, '关于我们', []);
               // }
               this.data1.push(newChild);
-              $('#silder').append('<li id="'+newChild.id+'" style="padding: 0 2vw;"><a href="'+data.catExt+'.html" class="padding_a" style="text-decoration: none;color: inherit;" onmouseover="this.style.borderBottom = \'0.2vw solid #409EFF\'" onmouseout="this.style.borderBottom = \'0.2vw solid transparent\'">'+data.name+'</a></li>')
+              $('#silder').append('<li class="drop-down" id="'+newChild.id+'" style="padding: 0 2vw;"><a class="padding_a" href="'+data.catExt+'.html" style="min-width: 4.2vw;text-decoration: none;color: inherit;" onmouseover="this.style.borderBottom = \'0.2vw solid #409EFF\'" onmouseout="this.style.borderBottom = \'0.2vw solid transparent\'">'+data.name+'</a></li>')
               // let headerHtml = $('#headerHtml').html()
               // this.webPageList.header = headerHtml
               if(pageNum == 1){
@@ -551,11 +652,19 @@
               this.webPageList.content = res.data[0].pageCode
               this.webPageAll = res.data
               for (let i = 0;i<res.data.length;i++){
-                const newChild = { id: res.data[i].id, label: res.data[i].pageName, children: [] };
-                // if (!this.data1.children) {
-                //   this.$set(this.data1, '关于我们', []);
-                // }
+                const newChild = { id: res.data[i].id,pageAlias: res.data[i].pageAlias,label: res.data[i].pageName, children: [] };
                 this.data1.push(newChild);
+                for(let j = 0;j<res.data[i].children.length;j++){
+                  const newChild2 = {
+                    id: res.data[i].children[j].id,
+                    label: res.data[i].children[j].pageName,
+                    pageParent: res.data[i].children[j].pageParent,
+                    pageAlias:res.data[i].children[j].pageAlias,
+                    isEdit: false,
+                    children: []
+                  }
+                  this.data1[i].children.push(newChild2);
+                }
               }
             }
           });
@@ -596,16 +705,11 @@
         })
         this.getPage()
         setTimeout(function () {
-          $("ul").on("click","li",function(){      //点击顶部导航切换页面
+          $("#silder").on("click",".drop-down",function(e){      //点击顶部导航切换页面
+            // e.stopPropagation();
             headerIndex = $(this).index();
+            headerId = $(this).attr("id")
             app.$store.commit('saveHeaderIndex',headerIndex)
-          });
-        },1000)
-      },
-      watch: {
-        '$store.state.headerIndex': function(val) {
-          if(val != null){
-            this.webPageList.content = this.webPageAll[val].pageCode;
             var evt = evt || window.event; //获取event对象
             if (evt.preventDefault) {
               evt.preventDefault(); //非IE浏览器
@@ -613,6 +717,38 @@
               evt.returnValue = false; //在早期的IE版本中
             }
             event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true); //阻止事件冒泡
+          });
+          $(".drop-down-content").on("click","li",function(e){      //点击顶部导航切换页面
+            headerIndex = $(this).index();
+            headerId = $(this).attr("id")
+            app.$store.commit('saveHeaderIndex',headerIndex)
+            var evt = evt || window.event; //获取event对象
+            if (evt.preventDefault) {
+              evt.preventDefault(); //非IE浏览器
+            } else {
+              evt.returnValue = false; //在早期的IE版本中
+            }
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true); //阻止事件冒泡
+          });
+        },1000)
+      },
+      watch: {
+        '$store.state.headerIndex': function(val) {
+          if(val != null){
+            hIndex = this.webPageAll.findIndex(d => d.id === parseInt(headerId));
+            for(let i=0;i<this.webPageAll.length;i++){
+              let a = this.webPageAll[i].children.findIndex(d => d.id === parseInt(headerId));
+              if(a != -1){
+                hIndex2 = a
+                hIndex = i
+              }
+            }
+            if(hIndex2 == null){
+              this.webPageList.content = this.webPageAll[hIndex].pageCode
+            }else{
+              this.webPageList.content = this.webPageAll[hIndex].children[hIndex2].pageCode
+              hIndex2 = null
+            }
           }
           this.$store.commit('saveHeaderIndex',null)
         }
