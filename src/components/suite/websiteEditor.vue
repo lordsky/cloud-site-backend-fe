@@ -55,7 +55,7 @@
               <span>
                 <i class="el-icon-circle-plus-outline ico-size" v-if="data.children" @click="() => append(node, data)"></i>
                 <i class="el-icon-edit-outline ico-size" @click="() => editor(node, data)"></i>
-                <i class="el-icon-delete ico-size" @click="() => remove(node, data)" v-if="data1.length>1 && data.children.length<1"></i>
+                <i class="el-icon-delete ico-size" @click="() => remove(node, data)" v-if="data1.length>1 || !data.children"></i>
               </span>
             </span>
             </el-tree>
@@ -334,18 +334,22 @@
           const children = parent.data.children || parent.data;
           const index = children.findIndex(x => x.id === d.id);
           //防止网名重复
-          for(let i=0;i<this.webPageAll.length;i++){
-            if(this.webPageAll[i].pageAlias == data.catExt){
-              catExt = data.catExt + '-' + pageIndex
-              pageIndex++
-            }
-            for(let j=0;j<this.webPageAll[i].children.length;j++){
-              if(this.webPageAll[j].children.pageAlias == data.catExt){
-                catExt = data.catExt + '-' + pageIndex
-                pageIndex++
-              }
-            }
-          }
+          // for(let i=0;i<this.webPageAll.length;i++){
+          //   for(let j=0;j<this.webPageAll[i].children.length;j++){
+          //     if(this.webPageAll[i].pageAlias == data.catExt || this.webPageAll[j].children.pageAlias == data.catExt){
+                catExt = data.catExt + '-' + (Math.random().toFixed(4))*10000
+                // pageIndex++
+              // }else{
+              //   catExt = data.catExt
+              // }
+              // if(this.webPageAll[j].children.pageAlias == data.catExt){
+              //   catExt = data.catExt + '-' + pageIndex
+              //   pageIndex++
+              // }else{
+              //   catExt = data.catExt
+              // }
+          //   }
+          // }
           let parm = {
             pageName: data.name,
             templateId: this.templateId,
@@ -371,7 +375,7 @@
                 pageParent: res.data.pageParent,
                 pageAlias:catExt,
                 isEdit: false,
-                children: []
+                // children: []
               })
               const newChild = {
                 id: res.data.id,
@@ -487,6 +491,10 @@
           let index1 = ''
           let index2 = ''
           if(parent.data.children == undefined){
+            if(data.children.length > 0){
+              this.$message.warning("此级存在二级页面，不能删除！")
+              return
+            }
              index = children.findIndex(d => d.id === data.id);
           }else{
              index1 = this.webPageAll.findIndex(d => d.pageAlias === children.pageAlias);
@@ -560,12 +568,12 @@
           this.dialogVisible3=false
           this.webPageList.content = data.pageCode
           //this.webPageAll.push(this.webPageList.content)
-          for(let i=0;i<this.webPageAll.length;i++){
-            if(this.webPageAll[i].pageAlias == data.catExt){
-              data.catExt = data.catExt + '-' + pageIndex
-              pageIndex++
-            }
-          }
+          // for(let i=0;i<this.webPageAll.length;i++){
+          //   if(this.webPageAll[i].pageAlias == data.catExt){
+              data.catExt = data.catExt + '-' + (Math.random().toFixed(4))*10000
+          //     pageIndex++
+          //   }
+          // }
           this.$api.apiAddTemplatePage({
             pageName: data.name,
             templateId: this.templateId,
