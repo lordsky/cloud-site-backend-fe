@@ -158,6 +158,12 @@
             // this.webPageList.content = this.pageList[index1].children[index2].pageCode
           }
         }
+        setTimeout(()=>{
+          this.NavSwitch()
+          setTimeout(()=>{
+            $('.header-hsw') .css('position','absolute')
+          },10)
+        },10)
       },
       // get template page code
       getTemplatePage : async function(statu) {
